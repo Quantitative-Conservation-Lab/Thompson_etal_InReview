@@ -1,0 +1,113 @@
+
+model{
+
+# -------------------------------------------------
+# Parameters:
+# gamma: invasion probability
+# eps: erradication probability
+# p: probability of observing the plant
+# -------------------------------------------------
+# States (S):
+# 1 empty
+# 2 invaded
+# 
+# Observations (O):  
+# 1 absent
+# 2 present
+# -------------------------------------------------
+
+# Priors 
+  eps ~ dbeta(eps_a,eps_b) #erradication
+  p ~ dbeta(p_a,p_b) #detection
+  gamma0 ~dnorm(gamma0_a,gamma0_b) #intrinsic invasion probability 
+  gamma1 ~ dnorm(gamma1_a, gamma1_b) #effect of neighboring locations on invasion probability
+
+
+# Define state-transition and observation matrices
+for (i in 1:n.sites){  
+  # State transition probabilities: probability of S(t+1) given S(t)
+  for (t in 1:n.months){
+    #index = [current state, location, time, future state]
+    #empty stay empty
+    ps[1,i,t,1] <- 1-gamma[i,t]
+    
+    #empty to invaded
+    ps[1,i,t,2] <- gamma[i,t]
+
+    #invaded to empty
+    ps[2,i,t,1] <- (eps*rem.vec[i])
+    
+    #invaded to invaded
+    ps[2,i,t,2] <- 1- (eps*rem.vec[i]) 
+
+      
+    # Observation probabilities of given S(t)
+    #index = [current state, location, time, current observation]
+   
+    #empty observed absent   
+    po[1,i,t,1] <- 1
+    
+    #empty observed present  
+    po[1,i,t,2] <- 0
+ 
+    #invaded observed absent 
+    po[2,i,t,1] <- 1-p
+    
+    #invaded observed present
+    po[2,i,t,2] <- p
+   
+   #### PRIORS ####
+   logit(gamma[i,t]) <- gamma0 + gamma1*D[i,t] #invasion probability
+
+   
+  } #t
+} #i
+
+  # Likelihood 
+  for (i in 2:(n.sites-1)){
+    # Define state at beginning
+    State[i,1] <- S.init[i] #we know state at the start
+    D[i,1] <- D.init[i]
+    
+    for (t in 2:n.months){ #12
+      # State process: 
+      State[i,t] ~ dcat(ps[State[i,t-1], i, t-1, ])
+      
+      
+      D[i,t] <- State[i-1,t] + State[i+1,t]
+      
+     
+    } #t
+      
+      #Derived parameter:
+      
+      State.fin[i] <- State[i,n.months]
+  } #i
+  
+  #Fill in above for edge sites
+  State[1,1] <- S.init[1] 
+  State[n.sites,1] <- S.init[n.sites] 
+  D[1,1] <- D.init[1]
+  D[n.sites,1] <- D.init[n.sites]
+  
+   for (t in 2:n.months){
+      State[1,t] ~ dcat(ps[State[1,t-1], 1, t-1, ])
+      State[n.sites,t] ~ dcat(ps[State[n.sites,t-1], n.sites, t-1, ])
+      D[1,t] <- State[2,t]
+      D[n.sites,t] <- State[n.sites-1,t]
+    } 
+
+  State.fin[1] <- State[1,n.months]
+  State.fin[n.sites] <- State[n.sites,n.months]
+  
+  
+  for(h in 1:n.obs){
+     # Observation process: draw O(t) given S(t) 
+
+      y[site.obs[h]] ~ dcat(po[State.fin[site.obs[h]], site.obs[h], n.months-1, ])
+    
+  } #obs sites
+  
+
+} #end model
+
