@@ -13,7 +13,7 @@ library(strex)
 start.time <- Sys.time()
 
 #### jags model ####
-sink("Flower_mod_dat3.txt")
+sink("Flower_mod_datboth.txt")
 cat("
 model{
 
@@ -35,8 +35,9 @@ model{
 #### PRIORS ####
   eps.l ~ dbeta(eps.l_a,eps.l_b) #erradication when at low state
   eps.h ~ dbeta(eps.h_a,eps.h_b) #erradication when at high state
-  pl ~ dbeta(pl_a,pl_b) #detection low
-  ph ~ dbeta(ph_a,ph_b) #detection high
+  pl ~ dbeta(pl_a,pl_b) #detection low (for multistate data)
+  ph ~ dbeta(ph_a,ph_b) #detection high (for multistate data)
+  p ~ dbeta(p_a,p_b) #detection probability (for d/nd data)
   delta ~ dbeta(delta_a, delta_b) #probability of obesrving high state given species has been detected and true state is high
   gamma0 ~dnorm(gamma0_a,gamma0_b) #intrinsic invasion probability 
   gamma1 ~ dnorm(gamma1_a, gamma1_b) #effect of neighboring locations on invasion probability
@@ -44,7 +45,8 @@ model{
   phi.lh ~ dbeta(phi.lh_a, phi.lh_b) #transition from low to high
   phi.hh ~ dbeta(phi.hh_a, phi.hh_b) #transition from high to high
 
-# Define state-transition and observation matrices
+#--------------------------------------------------#
+# STATE TRANSITION
 for (i in 1:n.sites){  
   # State transition probabilities: probability of S(t+1) given S(t)
   for (t in 1:n.months){
@@ -75,7 +77,31 @@ for (i in 1:n.sites){
     
     #low abundance to high abundance
     ps[3,i,t,3] <- (1- eps.h*rem.vec[i])*(phi.hh)
-      
+    
+    #--------------------------------------------------#
+    # OBSERVATION PROBABILITIES (for detection/nondetection data)
+    
+    #empty observed absent   
+    po_dat2[1,i,t,1] <- 1
+    
+    #empty observed present  
+    po_dat2[1,i,t,2] <- 0
+ 
+    #invaded observed absent 
+    po_dat2[2,i,t,1] <- 1-p #not detected probability
+    
+    #invaded observed present
+    po_dat2[2,i,t,2] <- p #detection probability
+    
+    #invaded observed absent 
+    po_dat2[3,i,t,1] <- 1-p #not detected probability
+    
+    #invaded observed present
+    po_dat2[3,i,t,2] <- p #detection probability
+    
+    
+    #--------------------------------------------------#
+    # OBSERVATION PROBABILITIES (for multistate data) 
     # Observation probabilities of given S(t)
     #index = [current state, location, time, current observation]
    
@@ -152,8 +178,11 @@ for (i in 1:n.sites){
   
   for(h in 1:n.obs){
   
-     # Observation process: draw observation given state
-      y[site.obs[h]] ~ dcat(po_dat3[State.fin[site.obs[h]], site.obs[h], n.months-1, ])
+    # Observation process: draw observation given state
+    y2[site.obs2[h]] ~ dcat(po_dat2[State.fin[site.obs2[h]], site.obs2[h], n.months-1, ])
+    
+    y3[site.obs3[h]] ~ dcat(po_dat3[State.fin[site.obs3[h]], site.obs3[h], n.months-1, ])
+    
     
   } #obs sites
   
@@ -173,8 +202,10 @@ phi.eh <- 0.05  #transition from empty to high
 phi.lh <- 0.1 #transition from low to high
 phi.hh <- 0.6 #transition from high to high
 
-pl <- 0.3 #detection probability
-ph <- 0.6 #detection probability
+p <- 0.5 #detection probability (for detection/nondetection data)
+
+pl <- 0.3 #detection probability (for multistate data)
+ph <- 0.6 #detection probability (for multistate data)
 delta <- 0.5
 n.sites <- 20 #number of sites
 n.months <- 12 
@@ -267,16 +298,31 @@ for(s in 1:n.sims){
 }
 
 #observation matrix:
-#Let 1 = absent, 2 = present
-#we make one observation each year
-Obs <- array(NA, c(n.sites, n.year, n.sims))
+Obs2 <- array(NA, c(n.sites, n.year, n.sims))
 
-#assign year 1 locations for detection/non detection
+#assign year 1 locations for detection/non detection data 
+#random for all sites
+available.obs2 <- seq(1,n.sites)
+
+site.obs2 <- array(NA, c(n.obs, n.year, n.sims))
+site.obs2[,1,] <- sort(sample(available.obs2, n.obs))
+
+po_dat2<- array(NA, c(3,2))
+po_dat2[1,1] <- 1
+po_dat2[1,2] <- 0
+po_dat2[2,1] <- 1-p
+po_dat2[2,2] <- p
+po_dat2[3,1] <- 1-p
+po_dat2[3,2] <- p
+
+
+#assign year 1 locations for multistate detection data
 #find locations where removal is not happening and choose those locations randomly
-available.obs <- setdiff(seq(1,n.sites), site.rem[,1,1])
+Obs3 <- array(NA, c(n.sites, n.year, n.sims))
+available.obs3 <- setdiff(seq(1,n.sites), site.rem[,1,1])
 
-site.obs <- array(NA, c(n.obs, n.year, n.sims))
-site.obs[,1,] <- sort(sample(available.obs, n.obs))
+site.obs3 <- array(NA, c(n.obs, n.year, n.sims))
+site.obs3[,1,] <- sort(sample(available.obs3, n.obs))
 
 po_dat3<- array(NA, c(n.states,n.states))
 po_dat3[1,1] <- 1
@@ -302,6 +348,9 @@ eps.l_b <- array(NA, c(n.year, n.sims))
 eps.h_a <- array(NA, c(n.year, n.sims))
 eps.h_b <- array(NA, c(n.year, n.sims))
 
+p_a <- array(NA, c(n.year, n.sims))
+p_b <- array(NA, c(n.year, n.sims))
+
 pl_a <- array(NA, c(n.year, n.sims))
 pl_b <- array(NA, c(n.year, n.sims))
 ph_a <- array(NA, c(n.year, n.sims))
@@ -319,7 +368,8 @@ phi.hh_b <- array(NA, c(n.year, n.sims))
 
 S.init <-  array(NA, c(n.sites, n.year, n.sims))
 D.init <- array(NA, c(n.sites,n.year,n.sims))
-y.dat <- array(NA, c(n.sites,n.year, n.sims))
+y2.dat <- array(NA, c(n.sites,n.year, n.sims))
+y3.dat <- array(NA, c(n.sites,n.year, n.sims))
 rhat_vals <- array(NA, c(n.year, n.sims))
 my.data <- list()
 outs <- rep(NA,n.sims)
@@ -334,6 +384,7 @@ gamma0.est <- rep(NA, n.sims)
 gamma1.est <- rep(NA, n.sims)
 eps.l.est <- rep(NA, n.sims)
 eps.h.est <- rep(NA, n.sims)
+p.est <- rep(NA, n.sims)
 pl.est <- rep(NA, n.sims)
 ph.est <- rep(NA, n.sims)
 delta.est <- rep(NA, n.sims)
@@ -346,6 +397,7 @@ all.gamma0.est <- rep(NA, n.sims)
 all.gamma1.est <- rep(NA, n.sims)
 all.eps.l.est <- rep(NA, n.sims)
 all.eps.h.est <- rep(NA, n.sims)
+all.p.est <- rep(NA, n.sims)
 all.pl.est <- rep(NA, n.sims)
 all.ph.est <- rep(NA, n.sims)
 all.delta.est <- rep(NA, n.sims)
@@ -363,6 +415,9 @@ alpha.eps.l <- rep(NA, n.sims)
 beta.eps.l <- rep(NA, n.sims)
 alpha.eps.h <- rep(NA, n.sims)
 beta.eps.h <- rep(NA, n.sims)
+
+alpha.ps <- rep(NA, n.sims)
+beta.ps <- rep(NA, n.sims)
 
 alpha.pls <- rep(NA, n.sims)
 beta.pls <- rep(NA, n.sims)
@@ -462,7 +517,8 @@ year <- 1
     
     for(i in 1:n.sites){
       # Observation process: draw O(t) given S(t) 
-      Obs[i,year,s] <- rcat(1,po_dat3[State[i,n.months,year,s], ])
+      Obs2[i,year,s] <- rcat(1,po_dat2[State[i,n.months,year,s], ])
+      Obs3[i,year,s] <- rcat(1,po_dat3[State[i,n.months,year,s], ])
     } 
   } #s
   
@@ -481,6 +537,9 @@ year <- 1
     eps.l_b[1,] <- 1
     eps.h_a[1,] <- 1
     eps.h_b[1,] <- 1
+    
+    p_a[1,] <- 1
+    p_b[1,] <- 1
     
     pl_a[1,] <- 1
     pl_b[1,] <- 1
@@ -511,7 +570,8 @@ year <- 1
   ###### 2b. JAGS data ######
   
   for(s in 1:n.sims){
-    y.dat[site.obs[,year,s],year,s] <- Obs[site.obs[,year,s],year,s]
+    y2.dat[site.obs2[,year,s],year,s] <- Obs2[site.obs2[,year,s],year,s]
+    y3.dat[site.obs3[,year,s],year,s] <- Obs3[site.obs3[,year,s],year,s]
   }
   
   #D.init 
@@ -526,12 +586,10 @@ year <- 1
   }
 
   
-  #y.dat
-  
   #Parameters monitored
   parameters.to.save <- c("State.fin", "eps.l",
                           "eps.h","gamma0","gamma1",
-                          "pl", "ph", 
+                          "pl", "ph", "p", "delta",
                           "phi.eh", "phi.lh", "phi.hh")
   
   
@@ -552,9 +610,11 @@ year <- 1
                          n.obs = n.obs,
                          S.init = S.init[,year,s],
                          D.init = D.init[,year,s],
-                         y = y.dat[,year,s],
+                         y2 = y2.dat[,year,s],
+                         y3 = y3.dat[,year,s],
                          rem.vec = rem.vec[,year,s],
-                         site.obs = site.obs[,year,s], 
+                         site.obs2 = site.obs2[,year,s], 
+                         site.obs3 = site.obs3[,year,s], 
                          
                          #priors
                          gamma0_a = gamma0_a[year,s],
@@ -565,6 +625,8 @@ year <- 1
                          eps.l_b = eps.l_b[year,s],
                          eps.h_a = eps.h_a[year,s], 
                          eps.h_b = eps.h_b[year,s],
+                         p_a = p_a[year,s], 
+                         p_b = p_b[year,s],
                          pl_a = pl_a[year,s], 
                          pl_b = pl_b[year,s],
                          ph_a = ph_a[year,s], 
@@ -592,7 +654,7 @@ year <- 1
     outs[s]<- paste("out", s, sep = "_")
     assign(outs[s],
            jagsUI::jags(data = my.data[[s]],inits = initial.values,
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_dat3.txt",
+                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_datboth.txt",
                         n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
   }
   
@@ -619,9 +681,9 @@ year <- 1
   
   mcmc_1 <- out_1$samples
   mcmc_2 <- out_2$samples
-  mcmc_3 <- out_3$samples
-  mcmc_4 <- out_4$samples
-  mcmc_5 <- out_5$samples
+  # mcmc_3 <- out_3$samples
+  # mcmc_4 <- out_4$samples
+  # mcmc_5 <- out_5$samples
  
   for(s in 1:n.sims){
     MCMCtrace(get(mcmcs[s]), 
@@ -655,6 +717,15 @@ year <- 1
               pdf = TRUE, 
               open_pdf = FALSE,
               filename = paste0(res,'/eps.h_sim_', s, '_year', year))
+    
+    MCMCtrace(get(mcmcs[s]), 
+              params = 'p', 
+              type = 'density', 
+              ind = TRUE, 
+              pdf = TRUE, 
+              open_pdf = FALSE,
+              filename = paste0(res,'/p_sim_', s, '_year', year))
+    
     
     MCMCtrace(get(mcmcs[s]), 
               params = 'pl', 
@@ -760,6 +831,17 @@ year <- 1
            ))  
   }
   
+  #-------p -------#
+  for(s in 1:n.sims){
+    p.est[s]<- paste("p.est", s, sep = "_")
+    assign(p.est[s], filter(get(outputs[s]), grepl("^p", param)))
+    
+    assign(p.est[s], 
+           cbind(get(p.est[s]), cv = get(p.est[s])$sd/get(p.est[s])$mean
+           ))  
+    
+  }
+  
   #-------pl -------#
   for(s in 1:n.sims){
     pl.est[s]<- paste("pl.est", s, sep = "_")
@@ -821,7 +903,7 @@ year <- 1
     assign(delta.est[s], filter(get(outputs[s]), grepl("^delta", param)))
     
     assign(delta.est[s], 
-           cbind(get(pdelta.est[s]), cv = get(delta.est[s])$sd/get(delta.est[s])$mean
+           cbind(get(delta.est[s]), cv = get(delta.est[s])$sd/get(delta.est[s])$mean
            ))  
     
   }
@@ -842,6 +924,9 @@ year <- 1
     
     assign(eps.h.est[s], 
            cbind(get(eps.h.est[s]), year = year))
+    
+    assign(p.est[s], 
+           cbind(get(p.est[s]), year = year))
     
     assign(ph.est[s], 
            cbind(get(ph.est[s]), year = year))
@@ -869,6 +954,7 @@ year <- 1
     all.gamma1.est[s]<- paste("gamma1.allsummary", s, sep = "_")
     all.eps.l.est[s]<- paste("eps.l.allsummary", s, sep = "_")
     all.eps.h.est[s]<- paste("eps.h.allsummary", s, sep = "_")
+    all.p.est[s]<- paste("p.allsummary", s, sep = "_")
     all.pl.est[s]<- paste("pl.allsummary", s, sep = "_")
     all.ph.est[s]<- paste("ph.allsummary", s, sep = "_")
     all.phi.eh.est[s]<- paste("phi.eh.allsummary", s, sep = "_")
@@ -895,7 +981,10 @@ year <- 1
       
       assign(all.eps.h.est[s], 
              get(eps.h.est[s]))
-      
+
+      assign(all.p.est[s], 
+             get(p.est[s]))
+            
       assign(all.pl.est[s], 
              get(pl.est[s]))
       
