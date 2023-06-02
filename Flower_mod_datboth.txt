@@ -19,16 +19,28 @@ model{
 #### PRIORS ####
   eps.l ~ dbeta(eps.l_a,eps.l_b) #erradication when at low state
   eps.h ~ dbeta(eps.h_a,eps.h_b) #erradication when at high state
-  pl ~ dbeta(pl_a,pl_b) #detection low (for multistate data)
-  ph ~ dbeta(ph_a,ph_b) #detection high (for multistate data)
-  p ~ dbeta(p_a,p_b) #detection probability (for d/nd data)
-  delta ~ dbeta(delta_a, delta_b) #probability of obesrving high state given species has been detected and true state is high
   gamma0 ~dnorm(gamma0_a,gamma0_b) #intrinsic invasion probability 
   gamma1 ~ dnorm(gamma1_a, gamma1_b) #effect of neighboring locations on invasion probability
-  phi.eh ~ dbeta(phi.eh_a, phi.eh_b) #transition from empty to high
   phi.lh ~ dbeta(phi.lh_a, phi.lh_b) #transition from low to high
   phi.hh ~ dbeta(phi.hh_a, phi.hh_b) #transition from high to high
+  
+  rho.l ~ dbeta(pl_a,pl_b) #base detection for low state
+  alpha.l ~ dnorm(l_mean,l_tau) #difference in baseline detection probability between observation1 and 2, low state
+  rho.h ~ dbeta(ph_a,ph_b) #base detection for high state
+  alpha.h ~ dnorm(h_mean, h_tau) #difference in baseline detection probability between observation1 and 2, high state
+  delta ~ dbeta(delta_a, delta_b) #probability of observing the high state given species has been detected and true state is high
 
+
+  #detection parameters
+  l_tau <- 1/(l_sd * l_sd) #precision
+  h_tau <- 1/(h_sd * h_sd) #precision
+  logit(p1.l) <- rho.l
+  logit(p1.h) <- rho.h
+  
+  
+  logit(p2.l) <- alpha.l + rho.l 
+  logit(p2.h) <- alpha.h + rho.h
+  
 #--------------------------------------------------#
 # STATE TRANSITION
 for (i in 1:n.sites){  
@@ -39,13 +51,14 @@ for (i in 1:n.sites){
     ps[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
     
     #empty to low abundance
-    ps[1,i,t,2] <- gamma[i,t]*(1-phi.eh) #invasion probability
+    ps[1,i,t,2] <- gamma[i,t] #invasion probability
     
     #empty to high abundance
-    ps[1,i,t,3] <- gamma[i,t]*(phi.eh) #invasion probability
+    ps[1,i,t,3] <- 0 #invasion probability
 
     #low abundance to empty
     ps[2,i,t,1] <- (eps.l*rem.vec[i]) #erradication probability
+                                      # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
     #low abundance to low abundance
     ps[2,i,t,2] <- (1- eps.l*rem.vec[i])*(1-phi.lh) #erradication failure probability
@@ -63,58 +76,58 @@ for (i in 1:n.sites){
     ps[3,i,t,3] <- (1- eps.h*rem.vec[i])*(phi.hh)
     
     #--------------------------------------------------#
-    # OBSERVATION PROBABILITIES (for detection/nondetection data)
+    # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
     
-    #empty observed absent   
-    po_dat2[1,i,t,1] <- 1
+    #Empty and not observed  
+    po_dat1[1,i,t,1] <- 1
     
-    #empty observed present  
-    po_dat2[1,i,t,2] <- 0
+    #Empty and observed
+    po_dat1[1,i,t,2] <- 0
  
-    #invaded observed absent 
-    po_dat2[2,i,t,1] <- 1-p #not detected probability
+    #Low state and not observed
+    po_dat1[2,i,t,1] <- 1-p1.l #not detected probability
     
-    #invaded observed present
-    po_dat2[2,i,t,2] <- p #detection probability
+    #Low state and observed
+    po_dat1[2,i,t,2] <- p1.l #detection probability
     
-    #invaded observed absent 
-    po_dat2[3,i,t,1] <- 1-p #not detected probability
+    #High state and not observed
+    po_dat1[3,i,t,1] <- 1-p1.h #not detected probability
     
-    #invaded observed present
-    po_dat2[3,i,t,2] <- p #detection probability
+    #High state and observed
+    po_dat1[3,i,t,2] <- p1.h #detection probability
     
     
     #--------------------------------------------------#
-    # OBSERVATION PROBABILITIES (for multistate data) 
+    # OBSERVATION PROBABILITIES 2 (for multistate data) 
     # Observation probabilities of given S(t)
     #index = [current state, location, time, current observation]
    
-    #empty observed absent   
-    po_dat3[1,i,t,1] <- 1
+    #Empty and not observed    
+    po_dat2[1,i,t,1] <- 1
     
-    #empty observed low  
-    po_dat3[1,i,t,2] <- 0
+    #Empty and observed low 
+    po_dat2[1,i,t,2] <- 0
     
-    #empty observed high  
-    po_dat3[1,i,t,3] <- 0
+    #Empty and observed high  
+    po_dat2[1,i,t,3] <- 0
  
-    #low abundance observed absent 
-    po_dat3[2,i,t,1] <- 1-pl #not detected probability
+    #Low state and not observed   
+    po_dat2[2,i,t,1] <- 1-p2.l #not detected probability
     
-    #low abundance observed low abundance
-    po_dat3[2,i,t,2] <- pl #detection probability
+    #Low state and observed low 
+    po_dat2[2,i,t,2] <- p2.l #detection probability
     
-    #low abundance observed high abundance
-    po_dat3[2,i,t,3] <- 0 
+    #Low state and observed high 
+    po_dat2[2,i,t,3] <- 0 
     
-    #high abundance observed absent 
-    po_dat3[3,i,t,1] <- 1-ph #not detected probability
+    #High state and not observed   
+    po_dat2[3,i,t,1] <- 1-p2.h #not detected probability
     
-    #high abundance observed low abundance
-    po_dat3[3,i,t,2] <- (1-ph)*(1-delta) #detection probability
+    #High state and observed low 
+    po_dat2[3,i,t,2] <- (1-p2.h)*(1-delta) #detection probability
     
     #high abundance observed high abundance
-    po_dat3[3,i,t,3] <- ph*delta
+    po_dat2[3,i,t,3] <- p2.h*delta
    
 
    logit(gamma[i,t]) <- gamma0 + gamma1*D[i,t] #invasion probability
@@ -163,9 +176,9 @@ for (i in 1:n.sites){
   for(h in 1:n.obs){
   
     # Observation process: draw observation given state
-    y2[site.obs2[h]] ~ dcat(po_dat2[State.fin[site.obs2[h]], site.obs2[h], n.months-1, ])
+    y1[site.obs1[h]] ~ dcat(po_dat1[State.fin[site.obs1[h]], site.obs1[h], n.months-1, ])
     
-    y3[site.obs3[h]] ~ dcat(po_dat3[State.fin[site.obs3[h]], site.obs3[h], n.months-1, ])
+    y2[site.obs2[h]] ~ dcat(po_dat2[State.fin[site.obs2[h]], site.obs2[h], n.months-1, ])
     
     
   } #obs sites
