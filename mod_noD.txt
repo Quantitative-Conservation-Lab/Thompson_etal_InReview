@@ -19,8 +19,9 @@ model{
 #### PRIORS ####
   eps.l ~ dbeta(eps.l_a,eps.l_b) #erradication when at low state
   eps.h ~ dbeta(eps.h_a,eps.h_b) #erradication when at high state
-  gamma0 ~dnorm(gamma0_a,gamma0_b) #intrinsic invasion probability 
-  gamma1 ~ dnorm(gamma1_a, gamma1_b) #effect of neighboring locations on invasion probability
+  
+  gamma ~ dbeta(1,1)
+  
   phi.lh ~ dbeta(phi.lh_a, phi.lh_b) #transition from low to high
   phi.hh ~ dbeta(phi.hh_a, phi.hh_b) #transition from high to high
   
@@ -48,10 +49,10 @@ for (i in 1:n.sites){
   for (t in 1:n.months){
     #index = [current state, location, time, future state]
     #empty stay empty
-    ps[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
+    ps[1,i,t,1] <- 1-gamma #1-gamma = not invasion probability
     
     #empty to low abundance
-    ps[1,i,t,2] <- gamma[i,t] #invasion probability
+    ps[1,i,t,2] <- gamma #invasion probability
     
     #empty to high abundance
     ps[1,i,t,3] <- 0 #invasion probability
@@ -128,49 +129,28 @@ for (i in 1:n.sites){
     
     #high abundance observed high abundance
     po_dat2[3,i,t,3] <- p2.h*delta
-   
-
-   logit(gamma[i,t]) <- gamma1*D[i,t] + gamma0 #invasion probability
 
    
   } #t
 } #i
 
   #### Likelihood ####
-  for (i in 2:(n.sites-1)){
+  for (i in 1:n.sites){
     # Define state at beginning
     State[i,1] <- S.init[i] #we know state at the start
-    D[i,1] <- D.init[i]
     
     for (t in 2:n.months){ #12
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(ps[State[i,t-1], i, t-1, ]) 
       
-      D[i,t] <- State[i-1,t] + State[i+1,t] #state of neighbors 
-      
-     
     } #t
       
       #Derived parameter:
       
       State.fin[i] <- State[i,n.months] #state after 12 months
+      
   } #i
   
-  #Fill in above for edge sites (1 and n.sites)
-  State[1,1] <- S.init[1] 
-  State[n.sites,1] <- S.init[n.sites] 
-  D[1,1] <- D.init[1]
-  D[n.sites,1] <- D.init[n.sites]
-  
-   for (t in 2:n.months){
-      State[1,t] ~ dcat(ps[State[1,t-1], 1, t-1, ])
-      State[n.sites,t] ~ dcat(ps[State[n.sites,t-1], n.sites, t-1, ])
-      D[1,t] <- State[2,t]
-      D[n.sites,t] <- State[n.sites-1,t]
-    } 
-
-  State.fin[1] <- State[1,n.months]
-  State.fin[n.sites] <- State[n.sites,n.months]
   
   
   for(h in 1:n.obs){

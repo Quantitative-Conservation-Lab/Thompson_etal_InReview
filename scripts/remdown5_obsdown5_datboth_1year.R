@@ -146,7 +146,7 @@ for (i in 1:n.sites){
     po_dat2[3,i,t,3] <- p2.h*delta
    
 
-   logit(gamma[i,t]) <- gamma0 + gamma1*D[i,t] #invasion probability
+   logit(gamma[i,t]) <- gamma1*D[i,t] + gamma0 #invasion probability
 
    
   } #t
@@ -318,7 +318,8 @@ for(s in 1:n.sims){
 #Observation data 1
 obs1 <- array(NA, c(n.sites, n.year, n.sims))
 
-#assign year 1 locations for obs data 1 detection/non detection data 
+#assign year 1 locations for obs data 1 detection/non detection data
+#random removal
 available.obs1 <- seq(1,n.sites)
 site.obs1 <- array(NA, c(n.obs, n.year, n.sims))
 site.obs1[,1,] <- sort(sample(available.obs1, n.obs))
@@ -404,10 +405,10 @@ eps.h.est <- rep(NA, n.sims)
 phi.lh.est <- rep(NA, n.sims)
 phi.hh.est <- rep(NA, n.sims)
 
-rho.l <- rep(NA, n.sims)
-alpha.l <- rep(NA, n.sims)
-rho.h <- rep(NA, n.sims)
-alpha.h <- rep(NA, n.sims)
+rho.l.est <- rep(NA, n.sims)
+alpha.l.est <- rep(NA, n.sims)
+rho.h.est <- rep(NA, n.sims)
+alpha.h.est <- rep(NA, n.sims)
 delta.est <- rep(NA, n.sims)
 
 all.final.states <- rep(NA, n.sims)
@@ -462,6 +463,7 @@ add.obs <- list()
 inbetween.rem <- list()
 add.obs1 <- list()
 add.obs2 <- list()
+initial.values <- list() #initial value list
 
 ####################################################################################
 #### Run 1 year ####
@@ -544,16 +546,23 @@ year <- 1
   
   #------------------------Year 1 Priors------------------------#
   if(year == 1){
+    #State process
     gamma0_a[1,] <- 0
     gamma0_b[1,] <- 1
     gamma1_a[1,] <- 0
     gamma1_b[1,] <- 0.1
     
+    phi.lh_a[1,] <- 1
+    phi.lh_b[1,] <- 1
+    phi.hh_a[1,] <- 1
+    phi.hh_b[1,] <- 1
     
     eps.l_a[1,] <- 1
     eps.l_b[1,] <- 1
     eps.h_a[1,] <- 1
     eps.h_b[1,] <- 1
+    
+    #Observation process
     
     pl_a[1,] <- 1
     pl_b[1,] <- 1
@@ -568,10 +577,7 @@ year <- 1
     delta_a[1,] <- 1
     delta_b[1,] <- 1
     
-    phi.lh_a[1,] <- 1
-    phi.lh_b[1,] <- 1
-    phi.hh_a[1,] <- 1
-    phi.hh_b[1,] <- 1
+
     
     #random initial states for year 1
     #S.init[,year,] <- sample(c(1,2), n.sites*n.sims, replace = T) 
@@ -580,6 +586,7 @@ year <- 1
     ##### Initial Estimated State #####
     S.init[1:5,year,] <- 3
     S.init[6:n.sites,year,] <- sample(c(1,2), (n.sites-5)*n.sims, replace = T) 
+
     
   } 
 
@@ -609,12 +616,12 @@ year <- 1
                           "delta","phi.lh", "phi.hh")
   
   
-  #settings
-  # n.burnin <- 1000
-  # n.iter <- 100000 + n.burnin
+  #settings: this works fine
+  # n.burnin <- 10000
+  # n.iter <- 1000000 + n.burnin
   # n.chains <- 3
   # n.thin <- 1
-  
+
   n.burnin <- 10
   n.iter <- 100 + n.burnin
   n.chains <- 3
@@ -624,7 +631,8 @@ year <- 1
     my.data[[s]] <- list(n.sites = n.sites,
                          n.months = n.months, 
                          n.obs = n.obs,
-                         S.init = S.init[,year,s],
+                         #S.init = S.init[,year,s],
+                         S.init = State[,1,year,s],
                          D.init = D.init[,year,s],
                          y1 = y1.dat[,year,s],
                          y2 = y2.dat[,year,s],
@@ -660,16 +668,35 @@ year <- 1
   }
   
   ###### 2c. Run JAGS #####
-  State.init <- array(NA, c(n.sites,n.months))
-  State.init[,2:n.months] <- 2
-  
-  #State.init[,2:n.months] <- State[,2:n.months,year]
-  #initial.values <- function(){list(State = State.init)}
+  State.init <- array(NA, c(n.sites,n.months,n.sims))
+
   
   for(s in 1:n.sims){
+    for(i in 1:n.sites){
+      if(i %in% c(site.obs1[,year,s], site.obs2[,year,s])){
+        State.init[i,12,s] <- max(y1.dat[i,year,s], y2.dat[i,year,s], na.rm = T)
+      }
+    }
+  }
+  
+  
+  State.init[,2:12,] <- State[,2:12,year,]
+  
+  
+  for(s in 1:n.sims){
+    initial.values[[s]] <- function()list(State = State.init[,,s],
+                                          eps.l = 0.5,
+                                          eps.h = 0.5,
+                                          phi.lh = 0.05,
+                                          phi.hh = 0.5
+                                          )}
+  
+  
+  for(s in 1:n.sims){
+    
     outs[s]<- paste("out", s, sep = "_")
     assign(outs[s],
-           jagsUI::jags(data = my.data[[s]],inits = initial.values,
+           jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
                         parameters.to.save = parameters.to.save, model.file = "Flower_mod_datboth.txt",
                         n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
   }
@@ -735,14 +762,6 @@ year <- 1
               open_pdf = FALSE,
               filename = paste0(res,'/eps.h_sim_', s, '_year', year))
     
-    MCMCtrace(get(mcmcs[s]), 
-              params = 'p', 
-              type = 'density', 
-              ind = TRUE, 
-              pdf = TRUE, 
-              open_pdf = FALSE,
-              filename = paste0(res,'/p_sim_', s, '_year', year))
-    
     
     MCMCtrace(get(mcmcs[s]), 
               params = 'pl', 
@@ -759,14 +778,6 @@ year <- 1
               pdf = TRUE, 
               open_pdf = FALSE,
               filename = paste0(res,'/ph_sim_', s, '_year', year))
-    
-    MCMCtrace(get(mcmcs[s]), 
-              params = 'phi.eh', 
-              type = 'density', 
-              ind = TRUE, 
-              pdf = TRUE, 
-              open_pdf = FALSE,
-              filename = paste0(res,'/phi.eh_sim_', s, '_year', year))
     
     MCMCtrace(get(mcmcs[s]), 
               params = 'phi.lh', 
@@ -795,6 +806,7 @@ year <- 1
   #   write.csv(get(outputs[s]),file_name[s])
   # }
   # 
+  
   
   #save rhat outputs
   for(s in 1:n.sims){
@@ -848,49 +860,6 @@ year <- 1
            ))  
   }
   
-  #-------p -------#
-  for(s in 1:n.sims){
-    p.est[s]<- paste("p.est", s, sep = "_")
-    assign(p.est[s], filter(get(outputs[s]), grepl("^p", param)))
-    
-    assign(p.est[s], 
-           cbind(get(p.est[s]), cv = get(p.est[s])$sd/get(p.est[s])$mean
-           ))  
-    
-  }
-  
-  #-------pl -------#
-  for(s in 1:n.sims){
-    pl.est[s]<- paste("pl.est", s, sep = "_")
-    assign(pl.est[s], filter(get(outputs[s]), grepl("^pl", param)))
-    
-    assign(pl.est[s], 
-           cbind(get(pl.est[s]), cv = get(pl.est[s])$sd/get(pl.est[s])$mean
-           ))  
-    
-  }
-  
-  #-------ph -------#
-  for(s in 1:n.sims){
-    ph.est[s]<- paste("ph.est", s, sep = "_")
-    assign(ph.est[s], filter(get(outputs[s]), grepl("^ph", param)))
-    
-    assign(ph.est[s], 
-           cbind(get(ph.est[s]), cv = get(ph.est[s])$sd/get(ph.est[s])$mean
-           ))  
-    
-  }
-  
-  #-------phi.eh -------#
-  for(s in 1:n.sims){
-    phi.eh.est[s]<- paste("phi.eh.est", s, sep = "_")
-    assign(phi.eh.est[s], filter(get(outputs[s]), grepl("^phi.eh", param)))
-    
-    assign(phi.eh.est[s], 
-           cbind(get(phi.eh.est[s]), cv = get(phi.eh.est[s])$sd/get(phi.eh.est[s])$mean
-           ))  
-    
-  }
   
   #-------phi.lh -------#
   for(s in 1:n.sims){
@@ -911,6 +880,44 @@ year <- 1
     assign(phi.hh.est[s], 
            cbind(get(phi.hh.est[s]), cv = get(phi.hh.est[s])$sd/get(phi.hh.est[s])$mean
            ))  
+    
+  }
+  
+  #-------rho.l.est -------#
+  for(s in 1:n.sims){
+    rho.l.est[s]<- paste("rho.l.est", s, sep = "_")
+    assign(rho.l.est[s], filter(get(outputs[s]), grepl("^rho.l", param)))
+    
+    assign(rho.l.est[s], 
+           cbind(get(rho.l.est[s]), cv = get(rho.l.est[s])$sd/get(rho.l.est[s])$mean
+           ))  
+    
+  }
+  
+  #-------rho.h.est -------#
+  for(s in 1:n.sims){
+    rho.h.est[s]<- paste("rho.h.est", s, sep = "_")
+    assign(rho.h.est[s], filter(get(outputs[s]), grepl("^rho.h", param)))
+    
+    assign(rho.h.est[s], 
+           cbind(get(rho.h.est[s]), cv = get(rho.h.est[s])$sd/get(rho.h.est[s])$mean
+           ))  
+    
+  }
+  
+  #-------alpha.l.est -------#
+  
+  for(s in 1:n.sims){
+    alpha.l.est[s]<- paste("alpha.l.est", s, sep = "_")
+    assign(alpha.l.est[s], filter(get(outputs[s]), grepl("^alpha.l", param)))
+    
+  }
+
+  #-------alpha.h.est -------#
+  
+  for(s in 1:n.sims){
+    alpha.h.est[s]<- paste("alpha.h.est", s, sep = "_")
+    assign(alpha.h.est[s], filter(get(outputs[s]), grepl("^alpha.h", param)))
     
   }
   
@@ -942,21 +949,18 @@ year <- 1
     assign(eps.h.est[s], 
            cbind(get(eps.h.est[s]), year = year))
     
-    assign(p.est[s], 
-           cbind(get(p.est[s]), year = year))
+    assign(rho.l.est[s], 
+           cbind(get(rho.l.est[s]), year = year))
     
-    assign(ph.est[s], 
-           cbind(get(ph.est[s]), year = year))
+    assign(rho.h.est[s], 
+           cbind(get(rho.h.est[s]), year = year))
     
-    assign(pl.est[s], 
-           cbind(get(pl.est[s]), year = year))
+    assign(alpha.l.est[s], 
+           cbind(get(alpha.l.est[s]), year = year))
     
-    assign(pl.est[s], 
-           cbind(get(pl.est[s]), year = year))
-    
-    assign(phi.eh.est[s], 
-           cbind(get(phi.eh.est[s]), year = year))
-    
+    assign(alpha.h.est[s], 
+           cbind(get(alpha.h.est[s]), year = year))
+
     assign(phi.lh.est[s], 
            cbind(get(phi.lh.est[s]), year = year))
     
@@ -971,12 +975,12 @@ year <- 1
     all.gamma1.est[s]<- paste("gamma1.allsummary", s, sep = "_")
     all.eps.l.est[s]<- paste("eps.l.allsummary", s, sep = "_")
     all.eps.h.est[s]<- paste("eps.h.allsummary", s, sep = "_")
-    all.p.est[s]<- paste("p.allsummary", s, sep = "_")
-    all.pl.est[s]<- paste("pl.allsummary", s, sep = "_")
-    all.ph.est[s]<- paste("ph.allsummary", s, sep = "_")
-    all.phi.eh.est[s]<- paste("phi.eh.allsummary", s, sep = "_")
     all.phi.lh.est[s]<- paste("phi.lh.allsummary", s, sep = "_")
     all.phi.hh.est[s]<- paste("phi.hh.allsummary", s, sep = "_")
+    all.rho.l.est[s]<- paste("rho.l.allsummary", s, sep = "_")
+    all.rho.h.est[s]<- paste("rho.h.allsummary", s, sep = "_")
+    all.alpha.l.est[s]<- paste("alpha.l.allsummary", s, sep = "_")
+    all.alpha.h.est[s]<- paste("alpha.h.allsummary", s, sep = "_")
     all.delta.est[s]<- paste("delta.allsummary", s, sep = "_")
     
   }
@@ -998,24 +1002,24 @@ year <- 1
       
       assign(all.eps.h.est[s], 
              get(eps.h.est[s]))
-
-      assign(all.p.est[s], 
-             get(p.est[s]))
-            
-      assign(all.pl.est[s], 
-             get(pl.est[s]))
-      
-      assign(all.ph.est[s], 
-             get(ph.est[s]))
-      
-      assign(all.phi.eh.est[s], 
-             get(phi.eh.est[s]))
       
       assign(all.phi.lh.est[s], 
              get(phi.lh.est[s]))
       
       assign(all.phi.hh.est[s], 
              get(phi.hh.est[s]))
+      
+      assign(all.rho.l.est[s], 
+             get(rho.l.est[s]))
+      
+      assign(all.rho.h.est[s], 
+             get(rho.h.est[s]))
+      
+      assign(all.alpha.l.est[s], 
+             get(alpha.l.est[s]))
+      
+      assign(all.alpha.h.est[s], 
+             get(alpha.h.est[s]))
       
       assign(all.delta.est[s], 
              get(delta.est[s]))
