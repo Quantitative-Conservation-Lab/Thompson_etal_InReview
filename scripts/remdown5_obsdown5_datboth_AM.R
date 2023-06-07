@@ -337,10 +337,13 @@ po_dat1[3,2] <- p1.h
 #assign year 1 locations for multistate detection data
 #find locations where removal is not happening and choose those locations randomly
 obs2 <- array(NA, c(n.sites, n.year, n.sims))
-available.obs2 <- setdiff(seq(1,n.sites), site.rem[,1,1])
-
 site.obs2 <- array(NA, c(n.obs, n.year, n.sims))
-site.obs2[,1,] <- sort(sample(available.obs2, n.obs))
+available.obs2 <- list()
+
+for(s in 1:n.sims){
+  available.obs2[[s]] <- setdiff(seq(1,n.sites), site.rem[,s,1])
+  site.obs2[,year,s] <- sort(sample(available.obs2[[s]], n.obs))
+}
 
 #observation probabilities for data 2
 po_dat2<- array(NA, c(n.states,n.states))
@@ -464,6 +467,7 @@ inbetween.rem <- list()
 add.obs1 <- list()
 add.obs2 <- list()
 initial.values <- list() #initial value list
+final.states.mean <- array(NA, dim = c(n.sites, n.year, n.sims))
 
 ####################################################################################
 #### Run ####
@@ -471,6 +475,8 @@ initial.values <- list() #initial value list
 for(year in 1:n.year){
 
 year <- 1
+
+year <- 2
 
 #### 1. Simulate truth #####
 ##### 1b. Months 1+ ####
@@ -618,16 +624,16 @@ parameters.to.save <- c("State.fin", "eps.l",
                         "delta","phi.lh", "phi.hh")
 
 
-#settings
-n.burnin <- 10000
-n.iter <- 1000000 + n.burnin
-n.chains <- 3
-n.thin <- 1
-
-# n.burnin <- 10
-# n.iter <- 100 + n.burnin
+#settings: this works fine
+# n.burnin <- 10000
+# n.iter <- 1000000 + n.burnin
 # n.chains <- 3
 # n.thin <- 1
+
+n.burnin <- 10
+n.iter <- 100 + n.burnin
+n.chains <- 3
+n.thin <- 1
 
 for(s in 1:n.sims){
   my.data[[s]] <- list(n.sites = n.sites,
@@ -1029,8 +1035,41 @@ for(s in 1:n.sims){
 }
 
 ##### 3. Decision for next year ####
-#final.states[s]
+#Removal decision: remove at 5 most downstream segments
+  #Extract final states from model:
+  if(year < n.year){
+    for(s in 1:n.sims){
+      final.states.mean[,year,s] <- round((get(final.states[s]))$mean)
+        
+      site.rem.options[[s]] <- which(final.states.mean[,year,s] >= 2)
+        
+    }
+      
+      for(s in 1:n.sims){
+        if(length(site.rem.options[[s]]) < n.rem){
+          site.rem[,year+1,s] <- c(site.rem.options[[s]], rep(NA,n.rem-length(site.rem.options[[s]])))
+        }else{
+          site.rem[,year+1,s] <- tail(site.rem.options[[s]], n.rem)
+        }
+        
+        rem.vec[site.rem[,year+1,s],year+1,s] <- 1
 
+      
+        #Monitoring decision: 
+        #Data 1: remove at random locations for data type 1 
+        site.obs1[,year+1,s] <- sort(sample(available.obs1, n.obs))
+        
+        #Data 2: remove at random locations for data type 2, but diferent from removal locations
+        available.obs2[[s]] <- setdiff(seq(1,n.sites), site.rem[,year+1,s])
+        
+        site.obs2[,year+1,s] <- sort(sample(available.obs2[[s]], n.obs))
+      }
+    
+      
+    } #ends year < 6 loop
+    
+    
+    
 }
 
 
