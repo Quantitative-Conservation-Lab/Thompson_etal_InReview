@@ -449,6 +449,7 @@ beta.rhols <- rep(NA, n.sims)
 alpha.rhohs <- rep(NA, n.sims)
 beta.rhohs <- rep(NA, n.sims)
 
+#### FIX ####
 alpha.lmeans <- rep(NA, n.sims)
 alpha.lsds <- rep(NA, n.sims)
 alpha.hmeans <- rep(NA, n.sims)
@@ -1293,5 +1294,5 @@ for(s in 1:n.sims){
 
 #################################################################################################
 
-cbind(State[,1,1,1],State[,12,,1])
+
 
