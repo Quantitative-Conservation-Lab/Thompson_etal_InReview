@@ -45,7 +45,7 @@ model{
 # STATE TRANSITION
 for (i in 1:n.sites){  
   # State transition probabilities: probability of S(t+1) given S(t)
-  for (t in 1:n.months){
+  for (t in 1:n.weeks){
     #index = [current state, location, time, future state]
     #empty stay empty
     ps[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
@@ -103,31 +103,31 @@ for (i in 1:n.sites){
     #index = [current state, location, time, current observation]
    
     #Empty and not observed    
-    po_dat2[1,i,t,1] <- 1
+    po_multi[1,i,t,1] <- 1
     
     #Empty and observed low 
-    po_dat2[1,i,t,2] <- 0
+    po_multi[1,i,t,2] <- 0
     
     #Empty and observed high  
-    po_dat2[1,i,t,3] <- 0
+    po_multi[1,i,t,3] <- 0
  
     #Low state and not observed   
-    po_dat2[2,i,t,1] <- 1-p2.l #not detected probability
+    po_multi[2,i,t,1] <- 1-p2.l #not detected probability
     
     #Low state and observed low 
-    po_dat2[2,i,t,2] <- p2.l #detection probability
+    po_multi[2,i,t,2] <- p2.l #detection probability
     
     #Low state and observed high 
-    po_dat2[2,i,t,3] <- 0 
+    po_multi[2,i,t,3] <- 0 
     
     #High state and not observed   
-    po_dat2[3,i,t,1] <- 1-p2.h #not detected probability
+    po_multi[3,i,t,1] <- 1-p2.h #not detected probability
     
     #High state and observed low 
-    po_dat2[3,i,t,2] <- (1-p2.h)*(1-delta) #detection probability
+    po_multi[3,i,t,2] <- (1-p2.h)*(1-delta) #detection probability
     
     #high abundance observed high abundance
-    po_dat2[3,i,t,3] <- p2.h*delta
+    po_multi[3,i,t,3] <- p2.h*delta
    
 
    logit(gamma[i,t]) <- gamma1*D[i,t] + gamma0 #invasion probability
@@ -142,7 +142,7 @@ for (i in 1:n.sites){
     State[i,1] <- S.init[i] #we know state at the start
     D[i,1] <- D.init[i]
     
-    for (t in 2:n.months){ #12
+    for (t in 2:n.weeks){ #12
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(ps[State[i,t-1], i, t-1, ]) 
       
@@ -153,7 +153,7 @@ for (i in 1:n.sites){
       
       #Derived parameter:
       
-      State.fin[i] <- State[i,n.months] #state after 12 months
+      State.fin[i] <- State[i,n.weeks] #state after 12 months
   } #i
   
   #Fill in above for edge sites (1 and n.sites)
@@ -162,23 +162,23 @@ for (i in 1:n.sites){
   D[1,1] <- D.init[1]
   D[n.sites,1] <- D.init[n.sites]
   
-   for (t in 2:n.months){
+   for (t in 2:n.weeks){
       State[1,t] ~ dcat(ps[State[1,t-1], 1, t-1, ])
       State[n.sites,t] ~ dcat(ps[State[n.sites,t-1], n.sites, t-1, ])
       D[1,t] <- State[2,t]
       D[n.sites,t] <- State[n.sites-1,t]
     } 
 
-  State.fin[1] <- State[1,n.months]
-  State.fin[n.sites] <- State[n.sites,n.months]
+  State.fin[1] <- State[1,n.weeks]
+  State.fin[n.sites] <- State[n.sites,n.weeks]
   
   
   for(h in 1:n.obs){
   
     # Observation process: draw observation given state
-    y1[site.obs1[h]] ~ dcat(po_dat1[State.fin[site.obs1[h]], site.obs1[h], n.months-1, ])
+    y1[site.obs1[h]] ~ dcat(po_dat1[State.fin[site.obs1[h]], site.obs1[h], n.weeks-1, ])
     
-    y2[site.obs2[h]] ~ dcat(po_dat2[State.fin[site.obs2[h]], site.obs2[h], n.months-1, ])
+    y2[site.obs.multi[h]] ~ dcat(po_multi[State.fin[site.obs.multi[h]], site.obs.multi[h], n.weeks-1, ])
     
     
   } #obs sites

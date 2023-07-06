@@ -3,8 +3,6 @@ library(plyr)
 library(tidyverse)
 
 #### Data ####
-n.rem <- 5 #number of removal locations
-n.obs <- 5 #number of detection/non-detection locations
 n.sims <- 2 #simulations
 eps.l <- 0.6 #erradication when at low state
 eps.h <- 0.6 #erradication when at low state
@@ -13,36 +11,25 @@ phi.lh <- 0.1 #transition from low to high
 phi.hh <- 0.6 #transition from high to high
 
 n.sites <- 20 #number of sites
-n.months <- 12 
+n.weeks <- 4 
 n.year <- 10 #time steps
 n.states <- 3
 
-##### Initial Removal Sites #####
-#none!
-site.rem <- array(0, c(n.rem,n.year,n.sims))
-
-
-#vector of locations where removal occurs for year 1. Removal= 1, no removal = 0
-rem.vec <- array(0, c(n.sites, n.year, n.sims))
-rem.vec[site.rem[,1,],1,] <- 1
-
 #transition probabilities
-State <- array(NA, c(n.sites, n.months, n.year, n.sims))
+State <- array(NA, c(n.sites, n.weeks, n.year, n.sims))
 
 ##### Initial True State #####
-#Initial state/observation
-#start with random states?
-#State[1:n.sites,1,1,] <- sample(c(1,2), n.sites, replace = T) 
-#Here I am starting with first 5 upstream segments are invaded
-State[1:5,1,1,] <- 2 #n.states #3
-State[6:n.sites,1,1,] <- 1
+#first 5 sites are highly invaded, then next 5 sites are low abnundance, then none
+State[1:5,1,1,] <- 3 #n.states
+State[6:10,1,1,] <- 2
+State[11:20,1,1,] <- 1
 
-ps<- array(NA, c(n.states,n.sites,n.months, n.states)) #state transition array
+ps<- array(NA, c(n.states,n.sites,n.weeks, n.states)) #state transition array
 
-gamma <- array(NA, c(n.sites,n.months,n.year,n.sims)) #invasion
+gamma <- array(NA, c(n.sites,n.weeks,n.year,n.sims)) #invasion
 gamma0 <- -2 #intrinsic invasion
 gamma1 <- 0.5 #effect of neighboring locations on invasion probability
-D <- array(NA, c(n.sites,n.months, n.year,n.sims)) #neighbor states
+D <- array(NA, c(n.sites,n.weeks, n.year,n.sims)) #neighbor states
 
 year <- 1
 
@@ -112,9 +99,9 @@ if(year > 1){
   for(s in 1:n.sims){
     for (i in 2:(n.sites-1)){
       # State process: 
-      State[i,1,year,s] <- rcat(1,ps[State[i,n.months,year-1,s], i, n.months, ])
-      State[1,1,year,s] <- rcat(1,ps[State[1,n.months,year-1,s], 1, n.months, ])
-      State[n.sites,1,year,s] <- rcat(1,ps[State[n.sites,n.months,year-1,s], n.sites, n.months, ])
+      State[i,1,year,s] <- rcat(1,ps[State[i,n.weeks,year-1,s], i, n.weeks, ])
+      State[1,1,year,s] <- rcat(1,ps[State[1,n.weeks,year-1,s], 1, n.weeks, ])
+      State[n.sites,1,year,s] <- rcat(1,ps[State[n.sites,n.weeks,year-1,s], n.sites, n.weeks, ])
     }
     for (i in 2:(n.sites-1)){ 
       D[1,1,year,s] <- State[2,1,year,s]
@@ -169,7 +156,7 @@ if(year > 1){
 ##### 1b. Months 1+ ####
 # State transition
 for(s in 1:n.sims){
-  for (t in 2:n.months){ #12
+  for (t in 2:n.weeks){ #12
     for (i in 2:(n.sites-1)){
       # State process: 
       State[i,t,year,s] <- rcat(1,ps[State[i,t-1,year,s], i, t-1, ])
@@ -232,7 +219,5 @@ for(s in 1:n.sims){
 } #s
 }
 
-cbind(State[,1,1,1],State[,12,,1])
-
 #final result
-State[,12,n.year,1]
+State[,4,n.year,]
