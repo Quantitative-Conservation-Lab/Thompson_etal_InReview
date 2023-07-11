@@ -6,11 +6,14 @@ library(plyr)
 library(tidyverse)
 library(strex)
 
-#### JAGS MODEL ####
+
+#Remove at downstream 5 locations but collect monitoring data
+#at next 5 downstream locations
 
 start.time <- Sys.time()
 
-sink("Flower_mod_dat_1.txt")
+#### jags model ####
+sink("Flower_mod_datboth.txt")
 cat("
 model{
 
@@ -22,13 +25,11 @@ model{
 # -------------------------------------------------
 # States (S):
 # 1 empty
-# 2 low state
-# 3 high state
+# 2 invaded
 # 
 # Observations (O):  
-# 1 not observed
-# 2 observed low state
-# 3 observed high state
+# 1 absent
+# 2 present
 # -------------------------------------------------
 
 #### PRIORS ####
@@ -49,11 +50,12 @@ model{
   #detection parameters
   l_tau <- 1/(l_sd * l_sd) #precision
   h_tau <- 1/(h_sd * h_sd) #precision
-
+  logit(p1.l) <- rho.l
+  logit(p1.h) <- rho.h
   
   
-  logit(pmulti.l) <- alpha.l + rho.l 
-  logit(pmulti.h) <- alpha.h + rho.h
+  logit(p2.l) <- alpha.l + rho.l 
+  logit(p2.h) <- alpha.h + rho.h
   
 #--------------------------------------------------#
 # STATE TRANSITION
@@ -71,27 +73,48 @@ for (i in 1:n.sites){
     ps[1,i,t,3] <- 0 #invasion probability
 
     #low abundance to empty
-    ps[2,i,t,1] <- (eps.l*rem.vec[i,t]) #erradication probability
-                                      # rem.vec[i,t] = 0,1 if 0, then no removal and no erradiction
+    ps[2,i,t,1] <- (eps.l*rem.vec[i]) #erradication probability
+                                      # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
     #low abundance to low abundance
-    ps[2,i,t,2] <- (1- eps.l*rem.vec[i,t])*(1-phi.lh) #erradication failure probability
+    ps[2,i,t,2] <- (1- eps.l*rem.vec[i])*(1-phi.lh) #erradication failure probability
     
     #low abundance to high abundance
-    ps[2,i,t,3] <- (1- eps.l*rem.vec[i,t])*(phi.lh)
+    ps[2,i,t,3] <- (1- eps.l*rem.vec[i])*(phi.lh)
     
     #high abundance to empty
-    ps[3,i,t,1] <- (eps.h*rem.vec[i,t]) #erradication probability
+    ps[3,i,t,1] <- (eps.h*rem.vec[i]) #erradication probability
     
     #high abundance to low abundance
-    ps[3,i,t,2] <- (1- eps.h*rem.vec[i,t])*(1-phi.hh) #erradication failure probability
+    ps[3,i,t,2] <- (1- eps.h*rem.vec[i])*(1-phi.hh) #erradication failure probability
     
     #low abundance to high abundance
-    ps[3,i,t,3] <- (1- eps.h*rem.vec[i,t])*(phi.hh)
-
+    ps[3,i,t,3] <- (1- eps.h*rem.vec[i])*(phi.hh)
     
     #--------------------------------------------------#
-    # OBSERVATION PROBABILITIES (for multistate data) 
+    # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
+    
+    #Empty and not observed  
+    po_dat1[1,i,t,1] <- 1
+    
+    #Empty and observed
+    po_dat1[1,i,t,2] <- 0
+ 
+    #Low state and not observed
+    po_dat1[2,i,t,1] <- 1-p1.l #not detected probability
+    
+    #Low state and observed
+    po_dat1[2,i,t,2] <- p1.l #detection probability
+    
+    #High state and not observed
+    po_dat1[3,i,t,1] <- 1-p1.h #not detected probability
+    
+    #High state and observed
+    po_dat1[3,i,t,2] <- p1.h #detection probability
+    
+    
+    #--------------------------------------------------#
+    # OBSERVATION PROBABILITIES 2 (for multistate data) 
     # Observation probabilities of given S(t)
     #index = [current state, location, time, current observation]
    
@@ -105,22 +128,22 @@ for (i in 1:n.sites){
     po_multi[1,i,t,3] <- 0
  
     #Low state and not observed   
-    po_multi[2,i,t,1] <- 1-pmulti.l #not detected probability
+    po_multi[2,i,t,1] <- 1-p2.l #not detected probability
     
     #Low state and observed low 
-    po_multi[2,i,t,2] <- pmulti.l #detection probability
+    po_multi[2,i,t,2] <- p2.l #detection probability
     
     #Low state and observed high 
     po_multi[2,i,t,3] <- 0 
     
     #High state and not observed   
-    po_multi[3,i,t,1] <- 1-pmulti.h #not detected probability
+    po_multi[3,i,t,1] <- 1-p2.h #not detected probability
     
     #High state and observed low 
-    po_multi[3,i,t,2] <- (1-pmulti.h)*(1-delta) #detection probability
+    po_multi[3,i,t,2] <- (1-p2.h)*(1-delta) #detection probability
     
     #high abundance observed high abundance
-    po_multi[3,i,t,3] <- pmulti.h*delta
+    po_multi[3,i,t,3] <- p2.h*delta
    
 
    logit(gamma[i,t]) <- gamma1*D[i,t] + gamma0 #invasion probability
@@ -135,16 +158,12 @@ for (i in 1:n.sites){
     State[i,1] <- S.init[i] #we know state at the start
     D[i,1] <- D.init[i]
     
-    y.multi[i,1] ~ dcat(po_multi[State[i,1], i, 1,])
-    
-    
-    
     for (t in 2:n.weeks){ #12
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(ps[State[i,t-1], i, t-1, ]) 
       
       D[i,t] <- State[i-1,t] + State[i+1,t] #state of neighbors 
-      y.multi[i,t] ~ dcat(po_multi[State[i,t], i, t,])
+      
      
     } #t
       
@@ -159,24 +178,26 @@ for (i in 1:n.sites){
   D[1,1] <- D.init[1]
   D[n.sites,1] <- D.init[n.sites]
   
-  y.multi[1,1] ~ dcat(po_multi[State[1,1], 1, 1,])
-  y.multi[n.sites,1] ~ dcat(po_multi[State[n.sites,1], n.sites, 1,])
-  
-  
    for (t in 2:n.weeks){
       State[1,t] ~ dcat(ps[State[1,t-1], 1, t-1, ])
       State[n.sites,t] ~ dcat(ps[State[n.sites,t-1], n.sites, t-1, ])
       D[1,t] <- State[2,t]
       D[n.sites,t] <- State[n.sites-1,t]
-      
-      y.multi[1,t] ~ dcat(po_multi[State[1,t], 1, t,])
-      y.multi[n.sites,t] ~ dcat(po_multi[State[n.sites,t], n.sites, t,])
-      
     } 
 
   State.fin[1] <- State[1,n.weeks]
   State.fin[n.sites] <- State[n.sites,n.weeks]
   
+  
+  for(h in 1:n.obs){
+  
+    # Observation process: draw observation given state
+    y1[site.obs1[h]] ~ dcat(po_dat1[State.fin[site.obs1[h]], site.obs1[h], n.weeks-1, ])
+    
+    y2[site.obs2[h]] ~ dcat(po_multi[State.fin[site.obs2[h]], site.obs2[h], n.weeks-1, ])
+    
+    
+  } #obs sites
   
 
 } #end model
@@ -185,11 +206,11 @@ sink()
 
 #### Data ####
 n.sims <- 2 #simulations
-eps.l <- 0.9 #eradication when at low state
-eps.h <- 0.7 #eradication when at high state
+eps.l <- 0.6 #eradication when at low state
+eps.h <- 0.6 #eradication when at low state
 
-phi.lh <- 0.05 #transition from low to high
-phi.hh <- 0.9 #transition from high to high
+phi.lh <- 0.1 #transition from low to high
+phi.hh <- 0.6 #transition from high to high
 
 p1.l <- 0.2 #detection probability (for multistate data)
 p1.h <- 0.6 #detection probability (for multistate data)
@@ -201,21 +222,92 @@ n.sites <- 20 #number of sites
 n.rem <- n.sites
 n.obs <- n.sites
 n.weeks <- 4
-n.years <- 10 #time steps
+n.year <- 4 #time steps
 n.states <- 3
 
+##### Initial Removal Sites #####
+site.rem.sim1 <- list()
+
+site.rem.sim1[[1]] <- seq(1:n.sites)
+
+#vector of locations where removal occurs for year 1. Removal= 1, no removal = 0
+rem.vec <- array(0, c(n.sites, n.year, n.sims))
+rem.vec[site.rem[,1,],1,] <- 1
+
+#transition probabilities
+State <- array(NA, c(n.sites, n.weeks, n.year, n.sims))
+
+##### Initial True State #####
+#first 5 sites are highly invaded, then next 5 sites are low abnundance, then none
+State[1:5,1,1,] <- 3 #n.states
+State[6:10,1,1,] <- 2
+State[11:20,1,1,] <- 1
 
 ps<- array(NA, c(n.states,n.sites,n.weeks, n.states)) #state transition array
 
-gamma <- array(NA, c(n.sites,n.weeks,n.yearss,n.sims)) #invasion
+gamma <- array(NA, c(n.sites,n.weeks,n.year,n.sims)) #invasion
 gamma0 <- -2 #intrinsic invasion
 gamma1 <- 0.5 #effect of neighboring locations on invasion probability
+D <- array(NA, c(n.sites,n.weeks, n.year,n.sims)) #neighbor states
 
-#transition probabilities
-State <- array(NA, c(n.sites, n.weeks, n.yearss, n.sims))
+year <- 1
 
-# Observation probabilities 
-Obs.multi <- array(NA, c(n.sites, n.weeks, n.yearss, n.sims))
+#filling in transitions for first month, year 1
+
+for(s in 1:n.sims){
+  for(i in 2:(n.sites-1)){  #for all locations, not the edges
+    D[i,1,year,s] <- State[i+1,1,year,s] + State[i-1,1,year,s] 
+    
+    gamma[i,1,year,s] <- invlogit(gamma0 + gamma1*D[i,1,year,s]) #invasion probability
+    
+    ps[1,i,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
+    ps[1,i,1,2] <- gamma[i,1,year,s] #empty to low abundance
+    ps[1,i,1,3] <- 0
+    
+    ps[2,i,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+    ps[2,i,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+    ps[2,i,1,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+    
+    ps[3,i,1,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+    ps[3,i,1,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+    ps[3,i,1,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+    
+  }
+  
+  #for edges location
+  D[1,1,year,s] <- State[2,1,year,s]
+  D[n.sites,1,year,s] <- State[(n.sites-1),1,year,s]
+  
+  gamma[1,1,year,s] <- invlogit(gamma0 + gamma1*D[1,1,year,s])
+  ps[1,1,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
+  ps[1,1,1,2] <- gamma[i,1,year,s]
+  ps[1,1,1,3] <- 0
+  
+  ps[2,1,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+  ps[2,1,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+  ps[2,1,1,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+  
+  ps[3,1,1,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+  ps[3,1,1,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+  ps[3,1,1,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+  
+  gamma[n.sites,1,year,s] <- invlogit(gamma0 + gamma1*D[n.sites,1,year,s])
+  ps[1,n.sites,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
+  ps[1,n.sites,1,2] <- gamma[i,1,year,s]
+  ps[1,n.sites,1,3] <- gamma[i,1,year,s]
+  
+  ps[2,n.sites,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+  ps[2,n.sites,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+  ps[2,n.sites,1,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+  
+  ps[3,n.sites,1,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+  ps[3,n.sites,1,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+  ps[3,n.sites,1,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+  
+}
+
+##### Observation probabilities ####
+obs.multi <- array(NA, c(n.sites, n.year, n.sims))
 
 #observation probabilities for multistate observation data
 po_multi<- array(NA, c(n.states,n.states))
@@ -231,65 +323,39 @@ po_multi[3,1] <- 1-p2.h
 po_multi[3,2] <- (1-p2.h)*delta
 po_multi[3,3] <- p2.h*delta
 
-sites.rem <- array(NA, dim = c(5, n.weeks, n.yearss, n.sims))
+# JAGS data
+gamma0_a <- array(NA, c(n.year,n.sims))
+gamma0_b <- array(NA, c(n.year,n.sims))
+gamma1_a <- array(NA, c(n.year,n.sims))
+gamma1_b <- array(NA, c(n.year,n.sims))
 
-segs.selected <- array(1:n.sites, dim = c(5, n.weeks))
+eps.l_a <- array(NA, c(n.year, n.sims))
+eps.l_b <- array(NA, c(n.year, n.sims))
+eps.h_a <- array(NA, c(n.year, n.sims))
+eps.h_b <- array(NA, c(n.year, n.sims))
 
+phi.lh_a <- array(NA, c(n.year, n.sims))
+phi.lh_b <- array(NA, c(n.year, n.sims))
+phi.hh_a <- array(NA, c(n.year, n.sims))
+phi.hh_b <- array(NA, c(n.year, n.sims))
 
-##### Week 1 year 1 #####
-#Initial True State 
-#first 5 sites are highly invaded, then next 5 sites are low abundance, then none
-State[1:5,1,1,] <- 3 #n.states
-State[6:10,1,1,] <- 2
-State[11:20,1,1,] <- 1
-year <- 1
-for(s in 1:n.sims){
-  for(i in segs.selected[,1]){
-    Obs.multi[i,1,year,s] <- rcat(1,po_multi[State[i,1,year,s], ])
-  }
-}
+pl_a <- array(NA, c(n.year, n.sims))
+pl_b <- array(NA, c(n.year, n.sims))
+l_mean <- array(NA, c(n.year, n.sims))
+l_sd <- array(NA, c(n.year, n.sims))
+ph_a <- array(NA, c(n.year, n.sims))
+ph_b <- array(NA, c(n.year, n.sims))
+h_mean <- array(NA, c(n.year, n.sims))
+h_sd <- array(NA, c(n.year, n.sims))
 
+delta_a <- array(NA, c(n.year, n.sims))
+delta_b <- array(NA, c(n.year, n.sims))
 
-for(s in 1:n.sims){
-  sites.rem[1:length(which(Obs.multi[1:5,1,year,s] > 1)), 1, year, s] <- which(Obs.multi[1:5,1,year,s] > 1)
-}
-
-
-D <- array(NA, c(n.sites,n.weeks, n.yearss,n.sims)) #neighbor states
-
-#### JAGS data ####
-gamma0_a <- array(NA, c(n.years,n.sims))
-gamma0_b <- array(NA, c(n.years,n.sims))
-gamma1_a <- array(NA, c(n.years,n.sims))
-gamma1_b <- array(NA, c(n.years,n.sims))
-
-eps.l_a <- array(NA, c(n.years, n.sims))
-eps.l_b <- array(NA, c(n.years, n.sims))
-eps.h_a <- array(NA, c(n.years, n.sims))
-eps.h_b <- array(NA, c(n.years, n.sims))
-
-phi.lh_a <- array(NA, c(n.years, n.sims))
-phi.lh_b <- array(NA, c(n.years, n.sims))
-phi.hh_a <- array(NA, c(n.years, n.sims))
-phi.hh_b <- array(NA, c(n.years, n.sims))
-
-pl_a <- array(NA, c(n.years, n.sims))
-pl_b <- array(NA, c(n.years, n.sims))
-l_mean <- array(NA, c(n.years, n.sims))
-l_sd <- array(NA, c(n.years, n.sims))
-ph_a <- array(NA, c(n.years, n.sims))
-ph_b <- array(NA, c(n.years, n.sims))
-h_mean <- array(NA, c(n.years, n.sims))
-h_sd <- array(NA, c(n.years, n.sims))
-
-delta_a <- array(NA, c(n.years, n.sims))
-delta_b <- array(NA, c(n.years, n.sims))
-
-S.init <-  array(NA, c(n.sites, n.years, n.sims))
-D.init <- array(NA, c(n.sites,n.years,n.sims))
-rem.vec <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
-
-rhat_vals <- array(NA, c(n.years, n.sims))
+S.init <-  array(NA, c(n.sites, n.year, n.sims))
+D.init <- array(NA, c(n.sites,n.year,n.sims))
+y1.dat <- array(NA, c(n.sites,n.year, n.sims))
+y2.dat <- array(NA, c(n.sites,n.year, n.sims))
+rhat_vals <- array(NA, c(n.year, n.sims))
 my.data <- list()
 outs <- rep(NA,n.sims)
 outputsfull <- rep(NA, n.sims)
@@ -326,7 +392,7 @@ all.rho.h.est <- rep(NA, n.sims)
 all.alpha.h.est <- rep(NA, n.sims)
 all.delta.est <- rep(NA, n.sims)
 
-final.states.mean <- array(NA, dim = c(n.sites, n.years, n.sims))
+final.states.mean <- array(NA, dim = c(n.sites, n.year, n.sims))
 site.rem.options <- list()
 
 alpha.gammas <- rep(NA, n.sims)
@@ -365,227 +431,147 @@ inbetween.rem <- list()
 add.obs1 <- list()
 add.obs2 <- list()
 initial.values <- list() #initial value list
-final.states.mean <- array(NA, dim = c(n.sites, n.years, n.sims))
-
+final.states.mean <- array(NA, dim = c(n.sites, n.year, n.sims))
 
 ####################################################################################
 #### Run ####
+
+for(year in 1:n.year){
+
 year <- 1
 
-for(year in 1:n.years){
+year <- 2
 
 #### 1. Simulate truth #####
-for(s in 1:n.sims){
-#----- year 1 simulations -----#
-if(year == 1 ){
-  for(week in 2:n.weeks){
-    for(i in 1:(n.sites)){
-      ##---- edge transitions ----##
-      if(i %in% 2:(n.sites-1)){
-        D[i,week-1,year,s] <- State[i+1,week-1,year,s] + State[i-1,week-1,year,s] 
-        gamma[i,week-1,year,s] <- invlogit(gamma0 + gamma1*D[i,week-1,year,s]) #invasion probability
-        
-        ps[1,i,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
-        ps[1,i,week-1,2] <- gamma[i,week-1,year,s] #empty to low abundance
-        ps[1,i,week-1,3] <- 0
-      }else{
-        D[1,week-1,year,s] <- State[2,week-1,year,s]
-        D[n.sites,week-1,year,s] <- State[(n.sites-1),week-1,year,s]
-        
-        gamma[1,week-1,year,s] <- invlogit(gamma0 + gamma1*D[1,week-1,year,s])
-        ps[1,1,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
-        ps[1,1,week-1,2] <- gamma[i,week-1,year,s]
-        ps[1,1,week-1,3] <- 0
-        
-        gamma[n.sites,week-1,year,s] <- invlogit(gamma0 + gamma1*D[n.sites,week-1,year,s])
-        ps[1,n.sites,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
-        ps[1,n.sites,week-1,2] <- gamma[i,week-1,year,s]
-        ps[1,n.sites,week-1,3] <- gamma[i,week-1,year,s]
-      }
-      
-      ##---- Removal site transitions ----##
-      #Transitions if in removal site locations
-      if(i %in% discard(sites.rem[,week-1,year,s], is.na) ){
-        ps[2,i,week-1,1] <- eps.l #low abundance to empty
-        ps[2,i,week-1,2] <- (1- eps.l*(1-phi.lh)) #low abundance to low abundance
-        ps[2,i,week-1,3] <- (1- eps.l*(phi.lh)) #low abundance to high abundance
-        
-        ps[3,i,week-1,1] <- (eps.h) #high abundance to empty
-        ps[3,i,week-1,2] <- (1- eps.h)*(1-phi.hh) #high abundance to low abundance
-        ps[3,i,week-1,3] <- (1- eps.h)*(phi.hh) #high abundance to high abundance
-      }else{
-        ps[2,i,week-1,1] <- 0 #low abundance to empty
-        ps[2,i,week-1,2] <- (1-phi.lh) #low abundance to low abundance
-        ps[2,i,week-1,3] <- (phi.lh) #low abundance to high abundance
-        
-        ps[3,i,week-1,1] <- 0
-        ps[3,i,week-1,2] <- (1-phi.hh) #high abundance to low abundance
-        ps[3,i,week-1,3] <- (phi.hh) #high abundance to high abundance
-      }
-      
-      State[i,week,year,s] <- rcat(1,ps[State[i,week-1,year,s], i, (week-1), ])
-      
-    }
-    
-    ##---- Observation data ----##
-    for(i in segs.selected[,week]){
-      Obs.multi[i,week,year,s] <- rcat(1,po_multi[State[i,week,year,s], ])
-    }
-    
-    ##---- Sites for removal ----##
-    #if we have no sites for removal then we record that
-    if(sum(Obs.multi[,week,year,s] >= 2, na.rm = TRUE) == 0){
-      sites.rem[1:5, week, year, s] <- rep(NA, 5)
-    }else{
-      sites.rem[1:length(which(Obs.multi[,week,year,s] >= 2)), week, year, s] <- which(Obs.multi[,week,year,s] >= 2)
-    }
-    
-  } #ends week loop
- 
-} #ends year == 1 
-
-#----- year > 1 simulations -----#
+##### 1b. Year 1+, month 1 ######
 if(year > 1){
-  
-  ##### week 1 ####
-  week <- 1
-  
-  for(i in 1:(n.sites)){
-    ## State Transitions 
-    ## edge transitions
-    if(i %in% 2:(n.sites-1)){
-      D[i,4,year-1,s] <- State[i+1,4,year-1,s] + State[i-1,4,year-1,s] 
-      gamma[i,4,year-1,s] <- invlogit(gamma0 + gamma1*D[i,4,year-1,s]) #invasion probability
-      
-      ps[1,i,4,1] <- 1-gamma[i,4,year-1,s] #empty stay empty
-      ps[1,i,4,2] <- gamma[i,4,year-1,s] #empty to low abundance
-      ps[1,i,4,3] <- 0
-    }else{
-      D[1,4,year-1,s] <- State[2,4,year-1,s]
-      D[n.sites,4,year-1,s] <- State[(n.sites-1),4,year-1,s]
-      
-      gamma[1,4,year-1,s] <- invlogit(gamma0 + gamma1*D[1,4,year-1,s])
-      ps[1,1,4,1] <- 1-gamma[i,4,year-1,s] #empty stay empty
-      ps[1,1,4,2] <- gamma[i,4,year-1,s]
-      ps[1,1,4,3] <- 0
-      
-      gamma[n.sites,4,year-1,s] <- invlogit(gamma0 + gamma1*D[n.sites,4,year-1,s])
-      ps[1,n.sites,4,1] <- 1-gamma[i,4,year-1,s] #empty stay empty
-      ps[1,n.sites,4,2] <- gamma[i,4,year-1,s]
-      ps[1,n.sites,4,3] <- gamma[i,4,year-1,s]
+  for(s in 1:n.sims){
+    for (i in 2:(n.sites-1)){
+      # State process: 
+      State[i,1,year,s] <- rcat(1,ps[State[i,n.weeks,year-1,s], i, n.weeks, ])
+      State[1,1,year,s] <- rcat(1,ps[State[1,n.weeks,year-1,s], 1, n.weeks, ])
+      State[n.sites,1,year,s] <- rcat(1,ps[State[n.sites,n.weeks,year-1,s], n.sites, n.weeks, ])
     }
-    
-    ##removal site transitions 
-    #Transitions if in removal site locations
-    if(i %in% discard(sites.rem[,4,year-1,s], is.na) ){
-      ps[2,i,4,1] <- eps.l #low abundance to empty
-      ps[2,i,4,2] <- (1- eps.l*(1-phi.lh)) #low abundance to low abundance
-      ps[2,i,4,3] <- (1- eps.l*(phi.lh)) #low abundance to high abundance
+    for (i in 2:(n.sites-1)){ 
+      D[1,1,year,s] <- State[2,1,year,s]
+      D[i,1,year,s] <- State[i-1,1,year,s] + State[i+1,1,year,s]
+      D[n.sites,1,year,s] <- State[n.sites-1,1,year,s]
       
-      ps[3,i,4,1] <- (eps.h) #high abundance to empty
-      ps[3,i,4,2] <- (1- eps.h)*(1-phi.hh) #high abundance to low abundance
-      ps[3,i,4,3] <- (1- eps.h)*(phi.hh) #high abundance to high abundance
-    }else{
-      ps[2,i,4,1] <- 0 #low abundance to empty
-      ps[2,i,4,2] <- (1-phi.lh) #low abundance to low abundance
-      ps[2,i,4,3] <- (phi.lh) #low abundance to high abundance
+      #probability calculations
+      gamma[i,1,year,s] <- invlogit(gamma0 + gamma1*D[i,1,year,s]) #invasion probability
       
-      ps[3,i,4,1] <- 0
-      ps[3,i,4,2] <- (1-phi.hh) #high abundance to low abundance
-      ps[3,i,4,3] <- (phi.hh) #high abundance to high abundance
+      ps[1,i,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
+      ps[1,i,1,2] <- gamma[i,1,year,s]
+      ps[1,i,1,3] <- 0
+      
+      ps[2,i,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+      ps[2,i,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+      ps[2,i,1,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+      
+      ps[3,i,1,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+      ps[3,i,1,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+      ps[3,i,1,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+      
+      #probability calculations for edge
+      gamma[1,1,year,s] <- invlogit(gamma0 + gamma1*D[1,1,year,s])
+      ps[1,1,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
+      ps[1,1,1,2] <- gamma[i,1,year,s] #empty to low abundance
+      ps[1,1,1,3] <- 0
+      
+      ps[2,1,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+      ps[2,1,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+      ps[2,1,1,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+      
+      ps[3,1,1,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+      ps[3,1,1,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+      ps[3,1,1,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+      
+      gamma[n.sites,1,year,s] <- invlogit(gamma0 + gamma1*D[n.sites,1,year,s])
+      ps[1,n.sites,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
+      ps[1,n.sites,1,2] <- gamma[i,1,year,s] #empty to low abundance
+      ps[1,n.sites,1,3] <- 0
+      
+      ps[2,n.sites,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+      ps[2,n.sites,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+      ps[2,n.sites,1,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+      
+      ps[3,n.sites,1,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+      ps[3,n.sites,1,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+      ps[3,n.sites,1,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
     }
-    
-    State[i,week,year,s] <- rcat(1,ps[State[i,4,year-1,s], i, 4, ])
-    
   }
-  
-  ## Observation data 
-  for(i in segs.selected[,week]){
-    Obs.multi[i,week,year,s] <- rcat(1,po_multi[State[i,week,year,s], ])
-  }
-  
-  ## Sites for removal
-  #if we have no sites for removal then we record that
-  if(sum(Obs.multi[,week,year,s] >= 2, na.rm = TRUE) == 0){
-    sites.rem[1:5, week, year, s] <- rep(NA, 5)
-  }else{
-    sites.rem[1:length(which(Obs.multi[,week,year,s] >= 2)), week, year, s] <- which(Obs.multi[,week,year,s] >= 2)
-  }
-  
-  ##### week 2+ ####
-  for(week in 2:n.weeks){
-    for(i in 1:(n.sites)){
-      ###### State Transitions ######
-      ##---- edge transitions ----##
-      if(i %in% 2:(n.sites-1)){
-        D[i,week-1,year,s] <- State[i+1,week-1,year,s] + State[i-1,week-1,year,s] 
-        gamma[i,week-1,year,s] <- invlogit(gamma0 + gamma1*D[i,week-1,year,s]) #invasion probability
-        
-        ps[1,i,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
-        ps[1,i,week-1,2] <- gamma[i,week-1,year,s] #empty to low abundance
-        ps[1,i,week-1,3] <- 0
-      }else{
-        D[1,week-1,year,s] <- State[2,week-1,year,s]
-        D[n.sites,week-1,year,s] <- State[(n.sites-1),week-1,year,s]
-        
-        gamma[1,week-1,year,s] <- invlogit(gamma0 + gamma1*D[1,week-1,year,s])
-        ps[1,1,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
-        ps[1,1,week-1,2] <- gamma[i,week-1,year,s]
-        ps[1,1,week-1,3] <- 0
-        
-        gamma[n.sites,week-1,year,s] <- invlogit(gamma0 + gamma1*D[n.sites,week-1,year,s])
-        ps[1,n.sites,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
-        ps[1,n.sites,week-1,2] <- gamma[i,week-1,year,s]
-        ps[1,n.sites,week-1,3] <- gamma[i,week-1,year,s]
-      }
-      
-      ###### removal site transitions #####
-      #Transitions if in removal site locations
-      if(i %in% discard(sites.rem[,week-1,year,s], is.na) ){
-        ps[2,i,week-1,1] <- eps.l #low abundance to empty
-        ps[2,i,week-1,2] <- (1- eps.l*(1-phi.lh)) #low abundance to low abundance
-        ps[2,i,week-1,3] <- (1- eps.l*(phi.lh)) #low abundance to high abundance
-        
-        ps[3,i,week-1,1] <- (eps.h) #high abundance to empty
-        ps[3,i,week-1,2] <- (1- eps.h)*(1-phi.hh) #high abundance to low abundance
-        ps[3,i,week-1,3] <- (1- eps.h)*(phi.hh) #high abundance to high abundance
-      }else{
-        ps[2,i,week-1,1] <- 0 #low abundance to empty
-        ps[2,i,week-1,2] <- (1-phi.lh) #low abundance to low abundance
-        ps[2,i,week-1,3] <- (phi.lh) #low abundance to high abundance
-        
-        ps[3,i,week-1,1] <- 0
-        ps[3,i,week-1,2] <- (1-phi.hh) #high abundance to low abundance
-        ps[3,i,week-1,3] <- (phi.hh) #high abundance to high abundance
-      }
-      
-      State[i,week,year,s] <- rcat(1,ps[State[i,week-1,year,s], i, (week-1), ])
-      
-    }
-    
-    ###### Observation data ######
-    for(i in segs.selected[,week]){
-      Obs.multi[i,week,year,s] <- rcat(1,po_multi[State[i,week,year,s], ])
-    }
-    
-    ###### Sites for removal ######
-    #if we have no sites for removal then we record that
-    if(sum(Obs.multi[,week,year,s] >= 2, na.rm = TRUE) == 0){
-      sites.rem[1:5, week, year, s] <- rep(NA, 5)
-    }else{
-      sites.rem[1:length(which(Obs.multi[,week,year,s] >= 2)), week, year, s] <- which(Obs.multi[,week,year,s] >= 2)
-    }
-    
-  } #ends week loop
-  
 } #ends year > 1 things
+
+##### 1b. Months 1+ ####
+# State transition
+for(s in 1:n.sims){
+  for (t in 2:n.weeks){ #12
+    for (i in 2:(n.sites-1)){
+      # State process: 
+      State[i,t,year,s] <- rcat(1,ps[State[i,t-1,year,s], i, t-1, ])
+      
+      #Edge state process 
+      State[1,t,year,s] <- rcat(1,ps[State[1,t-1,year,s], 1, t-1, ])
+      State[n.sites,t,year,s] <- rcat(1,ps[State[n.sites,t-1,year,s], n.sites, t-1, ])
+    }
+    for (i in 2:(n.sites-1)){
+      D[1,t,year,s] <- State[2,t,year,s]
+      D[i,t,year,s] <- State[i-1,t,year,s] + State[i+1,t,year,s]
+      D[n.sites,t,year,s] <- State[n.sites-1,t,year,s]
+      
+      #probability calculations
+      gamma[i,t,year,s] <- invlogit(gamma0 + gamma1*D[i,t,year,s]) #invasion probability
+      
+      ps[1,i,t,1] <- 1-gamma[i,t,year,s] #empty stay empty
+      ps[1,i,t,2] <- gamma[i,t,year,s] #empty to low abundance
+      ps[1,i,t,3] <- 0
+      
+      ps[2,i,t,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+      ps[2,i,t,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+      ps[2,i,t,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+      
+      ps[3,i,t,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+      ps[3,i,t,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+      ps[3,i,t,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+      
+      #probability calculations for edge
+      gamma[1,t,year,s] <- invlogit(gamma0 + gamma1*D[1,t,year,s])
+      ps[1,1,t,1] <- 1-gamma[i,t,year,s] #empty stay empty
+      ps[1,1,t,2] <- gamma[i,t,year,s] #empty to low abundance
+      ps[1,1,t,3] <- 0
+      
+      ps[2,1,t,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+      ps[2,1,t,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+      ps[2,1,t,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+      
+      ps[3,1,t,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+      ps[3,1,t,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+      ps[3,1,t,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+      
+      gamma[n.sites,t,year,s] <- invlogit(gamma0 + gamma1*D[n.sites,t,year,s])
+      ps[1,n.sites,t,1] <- 1-gamma[i,t,year,s] #empty stay empty
+      ps[1,n.sites,t,2] <- gamma[i,t,year,s] #empty to low abundance
+      ps[1,n.sites,t,3] <- 0
+      
+      ps[2,n.sites,t,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
+      ps[2,n.sites,t,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
+      ps[2,n.sites,t,3] <- (1- eps.l*rem.vec[i,year,s])*(phi.lh) #low abundance to high abundance
+      
+      ps[3,n.sites,t,1] <- (eps.h*rem.vec[i,year,s]) #high abundance to empty
+      ps[3,n.sites,t,2] <- (1- eps.h*rem.vec[i,year,s])*(1-phi.hh) #high abundance to low abundance
+      ps[3,n.sites,t,3] <- (1- eps.h*rem.vec[i,year,s])*(phi.hh) #high abundance to high abundance
+      
+    }
+    
+  } #t
   
-} #ends simulations
+  for(i in 1:n.sites){
+    # Observation process: draw O(t) given S(t) 
+    obs1[i,year,s] <- rcat(1,po_dat1[State[i,n.weeks,year,s], ])
+    obs2[i,year,s] <- rcat(1,po_multi[State[i,n.weeks,year,s], ])
+  } 
+} #s
 
-
-#check:
-#discard(sites.rem[,1,year,2], is.na)
-#Obs.multi[, 1, year, 2]
 
 ##### Initial priors #####
 
@@ -622,18 +608,18 @@ if(year == 1){
   delta_a[1,] <- 1
   delta_b[1,] <- 1
   
+  
+  #### FIX ####
+  # Initial Estimated State
+  #random initial states for year 1
+  #S.init[,year,] <- sample(c(1,2), n.sites*n.sims, replace = T) 
+  #initial 5 are invaded but no clue about the rest
   S.init[1:5,year,] <- 3
   S.init[6:n.sites,year,] <- sample(c(1,2), (n.sites-5)*n.sims, replace = T)
   
-  for(s in 1:n.sims){
-    for(i in 2:(n.sites-1)){
-      D.init[i,year,s] <- S.init[i+1,year,s] + S.init[i-1,year,s]
-    }
-    
-    D.init[1,year,s] <- S.init[2,year,s]
-    D.init[n.sites,year,s] <- S.init[(n.sites-1),year,s]
-    
-  }
+  #But doing this makes the model work...
+  
+  S.init[,year,] <- State[,1,year,]
   
   
 } else{
@@ -773,37 +759,31 @@ if(year == 1){
   
   #-------Initial estimated state -------#
   #### FIX ####
-  S.init[6:n.sites,year,] <- final.states.mean[6:n.sites,year-1,]
-  
-  S.init[1:5,year,] <- Obs.multi[1:5,1,year,]
-  
+  S.init[,year,] <- final.states.mean[,year-1,]
   #S.init[,year,] <- State[,1,year,]
   
-  for(s in 1:n.sims){
-    for(i in 2:(n.sites-1)){
-      D.init[i,year,s] <- S.init[i+1,year,s] + S.init[i-1,year,s]
-    }
-    
-    D.init[1,year,s] <- S.init[2,year,s]
-    D.init[n.sites,year,s] <- S.init[(n.sites-1),year,s]
-    
-  }
+
   
-} #ends priors loops
+} 
+
 
 ###### 2b. JAGS data ######
-#turning sites.rem into vectors of 1s and 0s
-for(s in 1:n.sims){
-  for(i in 1:n.sites){
-    for(week in 1:n.weeks){
-      if(i %in% sites.rem[,week,year,s]){
-        rem.vec[i,week,year,s] <- 1
-      } else{rem.vec[i,week,year,s] <- 0}
-    }
-  }
-}
-  
 
+for(s in 1:n.sims){
+  y1.dat[site.obs1[,year,s],year,s] <- obs1[site.obs1[,year,s],year,s]
+  y2.dat[site.obs2[,year,s],year,s] <- obs2[site.obs2[,year,s],year,s]
+}
+
+#D.init 
+for(s in 1:n.sims){
+  for(i in 2:(n.sites-1)){
+    D.init[i,year,s] <- S.init[i+1,year,s] + S.init[i-1,year,s]
+  }
+  
+  D.init[1,year,s] <- S.init[2,year,s]
+  D.init[n.sites,year,s] <- S.init[(n.sites-1),year,s]
+  
+}
 
 #Parameters monitored
 parameters.to.save <- c("State.fin", "eps.l",
@@ -818,18 +798,22 @@ parameters.to.save <- c("State.fin", "eps.l",
 # n.chains <- 3
 # n.thin <- 1
 
-n.burnin <- 1000
-n.iter <- 10000 + n.burnin
+n.burnin <- 10
+n.iter <- 100 + n.burnin
 n.chains <- 3
 n.thin <- 1
 
 for(s in 1:n.sims){
   my.data[[s]] <- list(n.sites = n.sites,
                        n.weeks = n.weeks, 
+                       n.obs = n.obs,
                        S.init = S.init[,year,s],
                        D.init = D.init[,year,s],
-                       y.multi = Obs.multi[,,year,s],
-                       rem.vec = rem.vec[,,year,s],
+                       y1 = y1.dat[,year,s],
+                       y2 = y2.dat[,year,s],
+                       rem.vec = rem.vec[,year,s],
+                       site.obs1 = site.obs1[,year,s], 
+                       site.obs2 = site.obs2[,year,s], 
                        
                        #priors
                        gamma0_a = gamma0_a[year,s],
@@ -859,69 +843,56 @@ for(s in 1:n.sims){
 }
 
 ###### 2c. Run JAGS #####
-##### Run year 1 #####
-if(year == 1){
-  State.start <- array(NA, c(n.sites,n.weeks,n.sims))
-    
-  State.start[1:5,2:4,] <- 3
-  State.start[6:20,2,] <- 2
-  State.start[6:20,3,] <- 2
-  State.start[6:20,4,] <- 3
-    
-    
-  for(s in 1:n.sims){
-    initial.values[[s]] <- function()list(State = State.start[,,s],
+#### FIX: not sure what initial conditions work.... ####
+  if(year == 1){
+    State.start <- array(NA, c(n.sites,n.weeks,n.sims))
+  
+    State.start[,2:12,] <- State[,2:12,year,]
+  
+    for(s in 1:n.sims){
+      initial.values[[s]] <- function()list(State = State.start[,,s],
                                           eps.l = 0.5,
                                           eps.h = 0.5,
                                           phi.lh = 0.5,
                                           phi.hh = 0.5
-    )}
-  
-  for(s in 1:n.sims){
+      )}
     
-    outs[s]<- paste("out", s, sep = "_")
-    assign(outs[s],
-           jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_dat_1.txt",
-                        n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
-  }
+  }else{
     
-}else{
-    
-  ##### Run year > 1 #####
-  State.start <- array(NA, c(n.sites,n.weeks,n.sims))
-  
-  #just try for only data with > 3
-  for(s in 1:n.sims){
-    for(week in 2:n.weeks){
-      if(sum(which(Obs.multi[,week,year,s] == 3)) >= 1){
-        State.start[which(Obs.multi[,week,year,s] == 3),week,s] <- 3
+    #### FIX ####
+    for(s in 1:n.sims){
+      for(i in 1:n.sites){
+        if(i %in% c(site.obs1[,year,s], site.obs2[,year,s])){
+          State.start[i,12,s] <- max(y1.dat[i,year,s], y2.dat[i,year,s], na.rm = T)
+        }
       }
     }
+    
+    State.start[,2:12,] <- State[,2:12,year,]
+    
+    for(s in 1:n.sims){
+      initial.values[[s]] <- function()list(#State = State.start[,,s],
+                                            eps.l = 0.5,
+                                            eps.h = 0.5,
+                                            phi.lh = 0.5,
+                                            phi.hh = 0.5
+      )}
+    
+    for(s in 1:n.sims){
+      initial.values[[s]] <- function()list()}
+    
   }
 
+for(s in 1:n.sims){
   
-  
-  for(s in 1:n.sims){
-    initial.values[[s]] <- function()list(State = State.start[,,s],
-                                          eps.l = 0.5,
-                                          eps.h = 0.5,
-                                          phi.lh = 0.5,
-                                          phi.hh = 0.5
-    )}
-  
-  for(s in 1:n.sims){
-    
-    outs[s]<- paste("out", s, sep = "_")
-    assign(outs[s],
-           jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_dat_1.txt",
-                        n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
-  }
-  
+  outs[s]<- paste("out", s, sep = "_")
+  assign(outs[s],
+         jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
+                      parameters.to.save = parameters.to.save, model.file = "Flower_mod_datboth.txt",
+                      n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
 }
 
-#### 3. Extract estimation results ####
+#### 3. Decision for next year ####
 ###### 3a. Extract parameters #####
 for(s in 1:n.sims){ 
   outputsfull[s]<- paste("outputfull", s, sep = "_")
@@ -944,6 +915,9 @@ for(s in 1:n.sims){
 
 mcmc_1 <- out_1$samples
 mcmc_2 <- out_2$samples
+# mcmc_3 <- out_3$samples
+# mcmc_4 <- out_4$samples
+# mcmc_5 <- out_5$samples
 
 for(s in 1:n.sims){
   MCMCtrace(get(mcmcs[s]), 
@@ -1243,11 +1217,42 @@ for(s in 1:n.sims){
   }
 }
 
-for(s in 1:n.sims){
-  final.states.mean[,year,s] <- round((get(final.states[s]))$mean)
-}
+##### 3. Decision for next year ####
+#Removal decision: remove at 5 most downstream segments
+  #Extract final states from model:
+  if(year < n.year){
+    for(s in 1:n.sims){
+      final.states.mean[,year,s] <- round((get(final.states[s]))$mean)
+        
+      site.rem.options[[s]] <- which(final.states.mean[,year,s] >= 2)
+        
+    }
+      
+      for(s in 1:n.sims){
+        if(length(site.rem.options[[s]]) < n.rem){
+          site.rem[,year+1,s] <- c(site.rem.options[[s]], rep(NA,n.rem-length(site.rem.options[[s]])))
+        }else{
+          site.rem[,year+1,s] <- tail(site.rem.options[[s]], n.rem)
+        }
+        
+        rem.vec[site.rem[,year+1,s],year+1,s] <- 1
 
-  
+      
+        #Monitoring decision: 
+        #Data 1: remove at random locations for data type 1 
+        site.obs1[,year+1,s] <- sort(sample(available.obs1, n.obs))
+        
+        #Data 2: remove at random locations for data type 2, but diferent from removal locations
+        available.obs2[[s]] <- setdiff(seq(1,n.sites), site.rem[,year+1,s])
+        
+        site.obs2[,year+1,s] <- sort(sample(available.obs2[[s]], n.obs))
+      }
+    
+      
+    } #ends year < 6 loop
+    
+    
+    
 }
 
 

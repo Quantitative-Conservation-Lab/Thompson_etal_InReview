@@ -78,20 +78,25 @@ for(s in 1:n.sims){
 }
 
 
-#### Week 2+ year 1 #####
 D <- array(NA, c(n.sites,n.weeks, n.years,n.sims)) #neighbor states
 
+#checking
+# discard(sites.rem[,4,year,2], is.na)
+# Obs.multi[, 4, 1, 2]
+# 
+# State[,4,1,2]
 
-#filling in transitions for second week, year 1
+#### Simulations ####
 for(s in 1:n.sims){
+  year <- 1
   for(week in 2:n.weeks){
     for(i in 1:(n.sites)){
-      ###### State Transitions ######
+      #### Year == 1 ####
       ###### edge transitions #####
       if(i %in% 2:(n.sites-1)){
         D[i,week-1,year,s] <- State[i+1,week-1,year,s] + State[i-1,week-1,year,s] 
         gamma[i,week-1,year,s] <- invlogit(gamma0 + gamma1*D[i,week-1,year,s]) #invasion probability
-          
+        
         ps[1,i,week-1,1] <- 1-gamma[i,week-1,year,s] #empty stay empty
         ps[1,i,week-1,2] <- gamma[i,week-1,year,s] #empty to low abundance
         ps[1,i,week-1,3] <- 0
@@ -128,16 +133,16 @@ for(s in 1:n.sims){
         ps[3,i,week-1,2] <- (1-phi.hh) #high abundance to low abundance
         ps[3,i,week-1,3] <- (phi.hh) #high abundance to high abundance
       }
-        
-      State[i,week,year,s] <- rcat(1,ps[State[i,week-1,year,s], i, (week-1), ])
-        
-    }
       
+      State[i,week,year,s] <- rcat(1,ps[State[i,week-1,year,s], i, (week-1), ])
+      
+    }
+    
     ###### Observation data ######
     for(i in segs.selected[,week]){
       Obs.multi[i,week,year,s] <- rcat(1,po_multi[State[i,week,year,s], ])
     }
-      
+    
     ###### Sites for removal ######
     #if we have no sites for removal then we record that
     if(sum(Obs.multi[,week,year,s] >= 2, na.rm = TRUE) == 0){
@@ -147,20 +152,10 @@ for(s in 1:n.sims){
     }
     
   } #ends week loop
-
   
-} #ends sims loop
-
-#checking
-# discard(sites.rem[,4,year,2], is.na)
-# Obs.multi[, 4, 1, 2]
-# 
-# State[,4,1,2]
-
-#### Years 2+ ####
-#filling in transitions for second week, year 1
-for(s in 1:n.sims){
+  #### years > 1 ####
   for(year in 2:n.years){
+    for(week in 1:n.weeks)
     ##### week 1 ####
     week <- 1
     
