@@ -27,16 +27,6 @@ model{
 # -------------------------------------------------
 
 #### PRIORS ####
-  #occupancy parameters
-  beta0.l ~ dbeta(beta0.l_a,beta0.l_b) #intrinsic occupancy at low state
-  beta0.h ~ dbeta(beta0.h_a,beta0.h_b) #intrinsic occupancy at high state
-  
-  beta1.l ~ dbeta(beta1.l_a,beta1.l_b) #effect of being previously in low state
-  beta1.h ~ dbeta(beta1.h_a,beta1.h_b) #effect of being previously in high state
-  
-  beta2.l ~ dbeta(beta2.l_a,beta2.l_b) #effect of being previously managed in low state
-  beta2.h ~ dbeta(beta2.h_a,beta2.h_b) #effect of being previously managed in high state
-  
   
   #detection parameters
   
@@ -56,13 +46,13 @@ model{
   #--------------------------------------------------#
   # OCCUPANCY PROBABILITIES
   for (i in 1:n.sites){  
-    logit(ps[2,i]) <- beta0.l + beta1.l*X1.l[i] + beta2.l*X2.l[i]
   
-    logit(ps[3,i]) <- beta0.h + beta1.h*X1.h[i] + beta2.h*X2.h[i]
-  
-    ps[1,i] <- 1 - ps[2,i] - ps[2,i]
-  
-    logit(gamma[i,t]) <- gamma1*D[i,t] + gamma0 #invasion probability
+    omega[i] ~ dbeta(omega.a[i], omega.b[i]) #probability of being invaded regardless of state
+    phi[i] ~ dbeta(phi.a[i], phi.b[i]) #conditional probability that FR is high abundance given present
+    
+    ps[1,i] <- 1-omega[i] #probability of not invaded
+    ps[2,i] <- omega[i]*(1-phi[i]) #probability of invaded at low abundance
+    ps[3,i] <- omega[i]*phi[i] #probability of invaded at high abundance
   
     
   #--------------------------------------------------#
@@ -99,12 +89,12 @@ model{
 
 
   #### LIKELIHOOD ####
-    S[i] ~ dcat(ps[,i]/ sum(psi[,i]))
+    State[i] ~ dcat(ps[,i])
   
-  y.multi[i] ~ dcat(po_multi[State[i], i, ])
+    y.multi[i] ~ dcat(po_multi[State[i], i, ])
   
-  #Derived parmeter
-  State.fin[i] <- State[i] 
+    #Derived parmeter
+    State.fin[i] <- State[i] 
    
 } #i
   
@@ -190,21 +180,14 @@ for(s in 1:n.sims){
 D <- array(NA, c(n.sites,n.years,n.sims)) #neighbor states
 
 #### JAGS data ####
-gamma0_a <- array(NA, c(n.years,n.sims))
-gamma0_b <- array(NA, c(n.years,n.sims))
-gamma1_a <- array(NA, c(n.years,n.sims))
-gamma1_b <- array(NA, c(n.years,n.sims))
+#State parameters:
+omega.a <- array(NA, c(n.sites,n.years,n.sims))
+omega.b <- array(NA, c(n.sites,n.years,n.sims))
 
-eps.l_a <- array(NA, c(n.years, n.sims))
-eps.l_b <- array(NA, c(n.years, n.sims))
-eps.h_a <- array(NA, c(n.years, n.sims))
-eps.h_b <- array(NA, c(n.years, n.sims))
+phi.a <- array(NA, c(n.sites,n.years,n.sims))
+phi.b <- array(NA, c(n.sites,n.years,n.sims))
 
-phi.lh_a <- array(NA, c(n.years, n.sims))
-phi.lh_b <- array(NA, c(n.years, n.sims))
-phi.hh_a <- array(NA, c(n.years, n.sims))
-phi.hh_b <- array(NA, c(n.years, n.sims))
-
+#Detection parameters:
 pl_a <- array(NA, c(n.years, n.sims))
 pl_b <- array(NA, c(n.years, n.sims))
 l_mean <- array(NA, c(n.years, n.sims))
@@ -231,12 +214,8 @@ x <- list()
 final.states <- rep(NA, n.sims)
 segments <- list()
 
-gamma0.est <- rep(NA, n.sims)
-gamma1.est <- rep(NA, n.sims)
-eps.l.est <- rep(NA, n.sims)
-eps.h.est <- rep(NA, n.sims)
-phi.lh.est <- rep(NA, n.sims)
-phi.hh.est <- rep(NA, n.sims)
+omega.est <- rep(NA, n.sims)
+phi.est <- rep(NA, n.sims)
 
 rho.l.est <- rep(NA, n.sims)
 alpha.l.est <- rep(NA, n.sims)
@@ -245,12 +224,9 @@ alpha.h.est <- rep(NA, n.sims)
 delta.est <- rep(NA, n.sims)
 
 all.final.states <- rep(NA, n.sims)
-all.gamma0.est <- rep(NA, n.sims)
-all.gamma1.est <- rep(NA, n.sims)
-all.eps.l.est <- rep(NA, n.sims)
-all.eps.h.est <- rep(NA, n.sims)
-all.phi.lh.est <- rep(NA, n.sims)
-all.phi.hh.est <- rep(NA, n.sims)
+all.omega.est <- rep(NA, n.sims)
+all.phi.est <- rep(NA, n.sims)
+
 
 all.rho.l.est <- rep(NA, n.sims)
 all.alpha.l.est <- rep(NA, n.sims)
@@ -261,19 +237,10 @@ all.delta.est <- rep(NA, n.sims)
 final.states.mean <- array(NA, dim = c(n.sites, n.years, n.sims))
 site.rem.options <- list()
 
+alpha.omegas <- rep(NA, n.sims)
+beta.omegas <- rep(NA, n.sims)
 alpha.gammas <- rep(NA, n.sims)
 beta.gammas <- rep(NA, n.sims)
-
-alpha.eps.l <- rep(NA, n.sims)
-beta.eps.l <- rep(NA, n.sims)
-alpha.eps.h <- rep(NA, n.sims)
-beta.eps.h <- rep(NA, n.sims)
-
-alpha.phi.lh <- rep(NA, n.sims)
-beta.phi.lh <- rep(NA, n.sims)
-
-alpha.phi.hh <- rep(NA, n.sims)
-beta.phi.hh <- rep(NA, n.sims)
 
 alpha.rhols <- rep(NA, n.sims)
 beta.rhols <- rep(NA, n.sims)
@@ -374,35 +341,15 @@ if(year > 1){
 #Obs.multi[, 1, year, 2]
 
 ##### Initial priors #####
-#### FIX ####
 #------------------------Year 1 Priors------------------------#
 if(year == 1){
   
-  
-  beta0.l ~ dbeta(beta0.l_a,beta0.l_b) #intrinsic occupancy at low state
-  beta0.h ~ dbeta(beta0.h_a,beta0.h_b) #intrinsic occupancy at high state
-  
-  beta1.l ~ dbeta(beta1.l_a,beta1.l_b) #effect of being previously in low state
-  beta1.h ~ dbeta(beta1.h_a,beta1.h_b) #effect of being previously in high state
-  
-  beta2.l ~ dbeta(beta2.l_a,beta2.l_b) #effect of being previously managed in low state
-  beta2.h ~ dbeta(beta2.h_a,beta2.h_b) #effect of being previously managed in high state
-  
   #State process
-  gamma0_a[1,] <- 0
-  gamma0_b[1,] <- 1
-  gamma1_a[1,] <- 0
-  gamma1_b[1,] <- 0.1
+  omega.a[,1,] <- 1
+  omega.b[,1,] <- 1
   
-  beta0.l_a[1,] <- 1
-  phi.lh_b[1,] <- 1
-  phi.hh_a[1,] <- 1
-  phi.hh_b[1,] <- 1
-  
-  eps.l_a[1,] <- 1
-  eps.l_b[1,] <- 1
-  eps.h_a[1,] <- 1
-  eps.h_b[1,] <- 1
+  phi.a[,1,] <- 1
+  phi.b[,1,] <- 1
   
   #Observation process
   
@@ -418,95 +365,13 @@ if(year == 1){
   
   delta_a[1,] <- 1
   delta_b[1,] <- 1
-  
-  S.init[segs.selected,year,] <- Obs.multi[segs.selected,year,]
-  S.init[c(2,4), year,] <- sample(c(1,2,3), 2, replace = T)
-  
-  for(s in 1:n.sims){
-    for(i in 2:(n.sites-1)){
-      D.init[i,year,s] <- S.init[i+1,year,s] + S.init[i-1,year,s]
-    }
     
-    D.init[1,year,s] <- S.init[2,year,s]
-    D.init[n.sites,year,s] <- S.init[(n.sites-1),year,s]
-    
-  }
-  
-  
-} else{
+  }else{
   for(s in 1:n.sims){
     #### Fix HERE ####
     ##### Year 1+ prior #####
     #State process
-    #-------gamma priors: invasion probability -------#
     
-    gamma0_a[year,s] <- get(gamma0.est[s])$mean
-    gamma0_b[year,s] <- get(gamma0.est[s])$sd
-    gamma1_a[year,s] <- get(gamma1.est[s])$mean
-    gamma1_b[year,s] <- get(gamma1.est[s])$sd
-    
-    #-------phi priors: transition probabilities -------# 
-    ## Transition low to high ##
-    alpha.phi.lh[s]<- paste("alpha.phi.lh", s, sep = "_")
-    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-    assign(alpha.phi.lh[s],
-           (1 - get(phi.lh.est[s])$mean*(1 + get(phi.lh.est[s])$cv^2))/(get(phi.lh.est[s])$cv^2))
-    
-    beta.phi.lh[s]<- paste("beta.phi.lh", s, sep = "_")
-    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-    assign(beta.phi.lh[s],
-           get(alpha.phi.lh[s])*(1 - get(phi.lh.est[s])$mean)/get(phi.lh.est[s])$mean)
-    
-    #assigning these values for the next jags run:
-    phi.lh_a[year,s] <- get(alpha.phi.lh[s])
-    phi.lh_b[year,s] <- get(beta.phi.lh[s])
-  
-    ## Transition high to high ##
-    alpha.phi.hh[s]<- paste("alpha.phi.hh", s, sep = "_")
-    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-    assign(alpha.phi.hh[s],
-           (1 - get(phi.hh.est[s])$mean*(1 + get(phi.hh.est[s])$cv^2))/(get(phi.hh.est[s])$cv^2))
-    
-    beta.phi.hh[s]<- paste("beta.phi.hh", s, sep = "_")
-    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-    assign(beta.phi.hh[s],
-           get(alpha.phi.hh[s])*(1 - get(phi.hh.est[s])$mean)/get(phi.hh.est[s])$mean)
-    
-    #assigning these values for the next jags run:
-    phi.hh_a[year,s] <- get(alpha.phi.hh[s])
-    phi.hh_b[year,s] <- get(beta.phi.hh[s])
-    
-    
-    #-------eps priors: eradication probability -------#
-    ## Low ##
-    alpha.eps.l[s]<- paste("alpha.eps.l", s, sep = "_")
-    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-    assign(alpha.eps.l[s],
-           (1 - get(eps.l.est[s])$mean*(1 + get(eps.l.est[s])$cv^2))/(get(eps.l.est[s])$cv^2))
-    
-    beta.eps.l[s]<- paste("beta.eps.l", s, sep = "_")
-    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-    assign(beta.eps.l[s],
-           get(alpha.eps.l[s])*(1 - get(eps.l.est[s])$mean)/get(eps.l.est[s])$mean)
-    
-    #assigning these values for the next jags run:
-    eps.l_a[year,s] <- get(alpha.eps.l[s])
-    eps.l_b[year,s] <- get(beta.eps.l[s])
-    
-    ## High ##
-    alpha.eps.h[s]<- paste("alpha.eps.h", s, sep = "_")
-    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-    assign(alpha.eps.h[s],
-           (1 - get(eps.h.est[s])$mean*(1 + get(eps.h.est[s])$cv^2))/(get(eps.h.est[s])$cv^2))
-    
-    beta.eps.h[s]<- paste("beta.eps.h", s, sep = "_")
-    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-    assign(beta.eps.h[s],
-           get(alpha.eps.h[s])*(1 - get(eps.h.est[s])$mean)/get(eps.h.est[s])$mean)
-    
-    #assigning these values for the next jags run:
-    eps.h_a[year,s] <- get(alpha.eps.h[s])
-    eps.h_b[year,s] <- get(beta.eps.h[s])
     
 
     #Observation process
@@ -589,31 +454,14 @@ if(year == 1){
 } #ends priors loops
 
 ###### 2b. JAGS data ######
-#turning sites.rem into vectors of 1s and 0s
-for(s in 1:n.sims){
-  for(i in 1:n.sites){
-      if(i %in% sites.rem[,year,s]){
-        rem.vec[i,year,s] <- 1
-      } else{rem.vec[i,year,s] <- 0}
-    }
-  }
-}
-  
-
 
 #Parameters monitored
-parameters.to.save <- c("State.fin", "eps.l",
-                        "eps.h","gamma0","gamma1",
+parameters.to.save <- c("State.fin", "omega", "phi",
                         "rho.l", "alpha.l", "rho.h", "alpha.h",
-                        "delta","phi.lh", "phi.hh")
+                        "delta")
 
 
 #settings: this works fine
-# n.burnin <- 10000
-# n.iter <- 1000000 + n.burnin
-# n.chains <- 3
-# n.thin <- 1
-
 n.burnin <- 1000
 n.iter <- 10000 + n.burnin
 n.chains <- 3
@@ -621,11 +469,25 @@ n.thin <- 1
 
 for(s in 1:n.sims){
   my.data[[s]] <- list(n.sites = n.sites,
-                       S.init = S.init[,year,s],
                        y.multi = Obs.multi[,year,s],
-                       rem.vec = rem.vec[,year,s],
                        
                        #priors
+                       phi.a = phi.a[,year,s],
+                       phi.b = phi.b[,year,s],
+                       omega.a = omega.a[,year,s],
+                       omega.b = omega.b[,year,s],
+                       
+                       pl_a = pl_a[year,s], 
+                       pl_b = pl_b[year,s],
+                       l_mean= l_mean[year,s],
+                       l_sd= l_sd[year,s],
+                       ph_a = ph_a[year,s], 
+                       ph_b = ph_b[year,s],
+                       h_mean= h_mean[year,s],
+                       h_sd= h_sd[year,s],
+                       delta_a = delta_a[year,s],
+                       delta_b = delta_b[year,s]                  
+                       
  
   )
 }
@@ -633,61 +495,43 @@ for(s in 1:n.sims){
 ###### 2c. Run JAGS #####
 ##### Run year 1 #####
 if(year == 1){
-  State.start <- array(NA, c(n.sites,n.weeks,n.sims))
-    
-  State.start[1:5,2:4,] <- 3
-  State.start[6:20,2,] <- 2
-  State.start[6:20,3,] <- 2
-  State.start[6:20,4,] <- 3
-    
+  
+  State.start <- array(NA, c(n.sites,n.sims))
+  
+  State.start <- Obs.multi[,year,]
+  
     
   for(s in 1:n.sims){
-    initial.values[[s]] <- function()list(State = State.start[,,s],
-                                          eps.l = 0.5,
-                                          eps.h = 0.5,
-                                          phi.lh = 0.5,
-                                          phi.hh = 0.5
-    )}
+    initial.values[[s]] <- function()list(State = State.start[,s])
+    }
   
   for(s in 1:n.sims){
     
     outs[s]<- paste("out", s, sep = "_")
     assign(outs[s],
            jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_dat_1.txt",
+                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_basic.txt",
                         n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
   }
     
 }else{
     
   ##### Run year > 1 #####
-  State.start <- array(NA, c(n.sites,n.weeks,n.sims))
+  State.start <- array(NA, c(n.sites,n.sims))
   
-  #just try for only data with > 3
+  State.start <- Obs.multi[,year,]
+  
+  
   for(s in 1:n.sims){
-    for(week in 2:n.weeks){
-      if(sum(which(Obs.multi[,week,year,s] == 3)) >= 1){
-        State.start[which(Obs.multi[,week,year,s] == 3),week,s] <- 3
-      }
-    }
+    initial.values[[s]] <- function()list(State = State.start[,s])
   }
-
-  
-  
-  for(s in 1:n.sims){
-    initial.values[[s]] <- function()list(State = State.start[,,s],
-                                          eps.l = 0.5,
-                                          eps.h = 0.5,
-                                          phi.lh = 0.5,
-                                          phi.hh = 0.5
-    )}
   
   for(s in 1:n.sims){
     
     outs[s]<- paste("out", s, sep = "_")
     assign(outs[s],
            jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_dat_1.txt",
+                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_basic.txt",
                         n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
   }
   
