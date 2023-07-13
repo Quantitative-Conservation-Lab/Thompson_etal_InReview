@@ -5,6 +5,7 @@ library(MCMCvis)
 library(plyr)
 library(tidyverse)
 library(strex)
+library(here)
 
 #### JAGS MODEL ####
 
@@ -101,6 +102,10 @@ model{
 } #end model
 ", fill = TRUE)
 sink()
+
+path <- here::here("results", "ESA", "statusquo")
+res <- c('results/ESA/statusquo') #subset of path for plot save
+
 
 #### Data ####
 n.sims <- 2 #simulations
@@ -239,8 +244,8 @@ site.rem.options <- list()
 
 alpha.omegas <- rep(NA, n.sims)
 beta.omegas <- rep(NA, n.sims)
-alpha.gammas <- rep(NA, n.sims)
-beta.gammas <- rep(NA, n.sims)
+alpha.phis <- rep(NA, n.sims)
+beta.phis <- rep(NA, n.sims)
 
 alpha.rhols <- rep(NA, n.sims)
 beta.rhols <- rep(NA, n.sims)
@@ -314,22 +319,22 @@ if(year > 1){
         ps[3,i,3] <- (phi.hh) #high abundance to high abundance
       }
       
-      State[i,year,s] <- rcat(1,ps[State[i,year,s], i, ])
+      State[i,year,s] <- rcat(1,ps[State[i,year-1,s], i, ])
       
     }
     
     ###### Observation data ######
-    for(i in segs.selected[,week]){
+    for(i in segs.selected){
       Obs.multi[i,year,s] <- rcat(1,po_multi[State[i,year,s], ])
     }
     
     ###### Sites for removal ######
-    #if we have no sites for removal then we record that
-    if(sum(Obs.multi[,year,s] >= 2, na.rm = TRUE) == 0){
-      sites.rem[1:5, year, s] <- rep(NA, 5)
+    if(length(which(Obs.multi[,year,s] > 1)) == 0){
+      sites.rem[,year,s] <- rep(NA,n.rem)
     }else{
-      sites.rem[1:length(which(Obs.multi[,year,s] >= 2)), year, s] <- which(Obs.multi[,year,s] >= 2)
+      sites.rem[1:length(which(Obs.multi[,year,s] > 1)), year, s] <- which(Obs.multi[,year,s] > 1)
     }
+  
   
 } #ends year > 1 things
   
@@ -337,8 +342,8 @@ if(year > 1){
 
 
 #check:
-#discard(sites.rem[,1,year,2], is.na)
-#Obs.multi[, 1, year, 2]
+discard(sites.rem[,year,1], is.na)
+Obs.multi[, year, 1]
 
 ##### Initial priors #####
 #------------------------Year 1 Priors------------------------#
@@ -371,7 +376,37 @@ if(year == 1){
     #### Fix HERE ####
     ##### Year 1+ prior #####
     #State process
+    #-------phi priors -------#
+    alpha.phis[s]<- paste("alpha.phi", s, sep = "_")
+    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
+    assign(alpha.phis[s],
+           (1 - get(phi.est[s])$mean*(1 + get(phi.est[s])$cv^2))/(get(phi.est[s])$cv^2))
     
+    beta.phis[s]<- paste("beta.phi", s, sep = "_")
+    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
+    assign(beta.phis[s],
+           get(alpha.phis[s])*(1 - get(phi.est[s])$mean)/get(phi.est[s])$mean)
+    
+    #assigning these values for the next jags run:
+    phi.a[,year,s] <- get(alpha.phis[s])
+    phi.b[,year,s] <- get(beta.phis[s])
+    
+    #-------omega priors -------#
+    alpha.omegas[s]<- paste("alpha.omega", s, sep = "_")
+    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
+    assign(alpha.omegas[s],
+           (1 - get(omega.est[s])$mean*(1 + get(omega.est[s])$cv^2))/(get(omega.est[s])$cv^2))
+    
+    beta.omegas[s]<- paste("beta.phi", s, sep = "_")
+    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
+    assign(beta.omegas[s],
+           get(alpha.omegas[s])*(1 - get(omega.est[s])$mean)/get(omega.est[s])$mean)
+    
+    #assigning these values for the next jags run:
+    omega.a[,year,s] <- get(alpha.omegas[s])
+    omega.b[,year,s] <- get(beta.omegas[s])
+    
+   
     
 
     #Observation process
@@ -434,22 +469,6 @@ if(year == 1){
     
   }
   
-  #-------Initial estimated state -------#
-  S.init[6:n.sites,year,] <- final.states.mean[6:n.sites,year-1,]
-  
-  S.init[1:5,year,] <- Obs.multi[1:5,1,year,]
-  
-  #S.init[,year,] <- State[,1,year,]
-  
-  for(s in 1:n.sims){
-    for(i in 2:(n.sites-1)){
-      D.init[i,year,s] <- S.init[i+1,year,s] + S.init[i-1,year,s]
-    }
-    
-    D.init[1,year,s] <- S.init[2,year,s]
-    D.init[n.sites,year,s] <- S.init[(n.sites-1),year,s]
-    
-  }
   
 } #ends priors loops
 
@@ -562,83 +581,49 @@ mcmc_1 <- out_1$samples
 mcmc_2 <- out_2$samples
 
 for(s in 1:n.sims){
+
   MCMCtrace(get(mcmcs[s]), 
-            params = 'gamma0', 
+            params = 'rho.l', 
             type = 'density', 
             ind = TRUE, 
             pdf = TRUE, 
             open_pdf = FALSE,
-            filename = paste0(res,'/gamma0_sim_', s, '_year', year))
-  
+            filename = paste0(res,'/rho.l_sim_', s, '_year', year))
+
   MCMCtrace(get(mcmcs[s]), 
-            params = 'gamma1', 
+            params = 'rho.h', 
             type = 'density', 
             ind = TRUE, 
             pdf = TRUE, 
             open_pdf = FALSE,
-            filename = paste0(res,'/gamma1_sim_', s, '_year', year))
+            filename = paste0(res,'/rho.h_sim_', s, '_year', year))
   
   MCMCtrace(get(mcmcs[s]), 
-            params = 'eps.l', 
+            params = 'alpha.l', 
             type = 'density', 
             ind = TRUE, 
             pdf = TRUE, 
             open_pdf = FALSE,
-            filename = paste0(res,'/eps.l_sim_', s, '_year', year))
+            filename = paste0(res,'/alpha.l_sim_', s, '_year', year))
   
   MCMCtrace(get(mcmcs[s]), 
-            params = 'eps.h', 
+            params = 'alpha.h', 
             type = 'density', 
             ind = TRUE, 
             pdf = TRUE, 
             open_pdf = FALSE,
-            filename = paste0(res,'/eps.h_sim_', s, '_year', year))
-  
+            filename = paste0(res,'/alpha.h_sim_', s, '_year', year))
   
   MCMCtrace(get(mcmcs[s]), 
-            params = 'pl', 
+            params = 'delta', 
             type = 'density', 
             ind = TRUE, 
             pdf = TRUE, 
             open_pdf = FALSE,
-            filename = paste0(res,'/pl_sim_', s, '_year', year))
-  
-  MCMCtrace(get(mcmcs[s]), 
-            params = 'ph', 
-            type = 'density', 
-            ind = TRUE, 
-            pdf = TRUE, 
-            open_pdf = FALSE,
-            filename = paste0(res,'/ph_sim_', s, '_year', year))
-  
-  MCMCtrace(get(mcmcs[s]), 
-            params = 'phi.lh', 
-            type = 'density', 
-            ind = TRUE, 
-            pdf = TRUE, 
-            open_pdf = FALSE,
-            filename = paste0(res,'/phi.lh_sim_', s, '_year', year))
-  
-  MCMCtrace(get(mcmcs[s]), 
-            params = 'phi.hh', 
-            type = 'density', 
-            ind = TRUE, 
-            pdf = TRUE, 
-            open_pdf = FALSE,
-            filename = paste0(res,'/phi.hh_sim_', s, '_year', year))
+            filename = paste0(res,'/delta_sim_', s, '_year', year))
   
   
 }
-
-
-#save outs into a csv file!
-# file_name <- rep(NA, S)
-# for(s in 1:S){
-#   file_name[s] = paste(path, paste0('Output_',s,'year', year, '.csv'),sep = '/')
-#   write.csv(get(outputs[s]),file_name[s])
-# }
-# 
-
 
 #save rhat outputs
 for(s in 1:n.sims){
@@ -662,57 +647,24 @@ for(s in 1:n.sims){
          cbind(get(final.states[s]), segment = segments[[s]])) #adding segment column  
 }
 
-#-------gamma -------#
+#-------phi -------#
 for(s in 1:n.sims){
-  gamma0.est[s]<- paste("gamma0.est", s, sep = "_")
-  assign(gamma0.est[s], filter(get(outputs[s]), grepl("^gamma0", param)))
+  phi.est[s]<- paste("phi.est", s, sep = "_")
+  assign(phi.est[s], filter(get(outputs[s]), grepl("^phi", param)))
   
-  gamma1.est[s]<- paste("gamma1.est", s, sep = "_")
-  assign(gamma1.est[s], filter(get(outputs[s]), grepl("^gamma1", param)))
-  
-}
-
-#-------eps.l -------#
-for(s in 1:n.sims){
-  eps.l.est[s]<- paste("eps.l.est", s, sep = "_")
-  assign(eps.l.est[s], filter(get(outputs[s]), grepl("^eps.l", param)))
-  
-  assign(eps.l.est[s], 
-         cbind(get(eps.l.est[s]), cv = get(eps.l.est[s])$sd/get(eps.l.est[s])$mean
+  assign(phi.est[s], 
+         cbind(get(phi.est[s]), cv = get(phi.est[s])$sd/get(phi.est[s])$mean
          ))  
 }
 
-#-------eps.h -------#
+#-------omega -------#
 for(s in 1:n.sims){
-  eps.h.est[s]<- paste("eps.h.est", s, sep = "_")
-  assign(eps.h.est[s], filter(get(outputs[s]), grepl("^eps.h", param)))
+  omega.est[s]<- paste("omega.est", s, sep = "_")
+  assign(omega.est[s], filter(get(outputs[s]), grepl("^omega", param)))
   
-  assign(eps.h.est[s], 
-         cbind(get(eps.h.est[s]), cv = get(eps.h.est[s])$sd/get(eps.h.est[s])$mean
+  assign(omega.est[s], 
+         cbind(get(omega.est[s]), cv = get(omega.est[s])$sd/get(omega.est[s])$mean
          ))  
-}
-
-
-#-------phi.lh -------#
-for(s in 1:n.sims){
-  phi.lh.est[s]<- paste("phi.lh.est", s, sep = "_")
-  assign(phi.lh.est[s], filter(get(outputs[s]), grepl("^phi.lh", param)))
-  
-  assign(phi.lh.est[s], 
-         cbind(get(phi.lh.est[s]), cv = get(phi.lh.est[s])$sd/get(phi.lh.est[s])$mean
-         ))  
-  
-}
-
-#-------phi.hh -------#
-for(s in 1:n.sims){
-  phi.hh.est[s]<- paste("phi.hh.est", s, sep = "_")
-  assign(phi.hh.est[s], filter(get(outputs[s]), grepl("^phi.hh", param)))
-  
-  assign(phi.hh.est[s], 
-         cbind(get(phi.hh.est[s]), cv = get(phi.hh.est[s])$sd/get(phi.hh.est[s])$mean
-         ))  
-  
 }
 
 #-------rho.l.est -------#
@@ -769,17 +721,12 @@ for(s in 1:n.sims){
   assign(final.states[s], 
          cbind(get(final.states[s]), year = year))
   
-  assign(gamma0.est[s], 
-         cbind(get(gamma0.est[s]), year = year))
+  assign(phi.est[s], 
+         cbind(get(phi.est[s]), year = year))
   
-  assign(gamma1.est[s], 
-         cbind(get(gamma1.est[s]), year = year))
   
-  assign(eps.l.est[s], 
-         cbind(get(eps.l.est[s]), year = year))
-  
-  assign(eps.h.est[s], 
-         cbind(get(eps.h.est[s]), year = year))
+  assign(omega.est[s], 
+         cbind(get(omega.est[s]), year = year))
   
   assign(rho.l.est[s], 
          cbind(get(rho.l.est[s]), year = year))
@@ -793,22 +740,13 @@ for(s in 1:n.sims){
   assign(alpha.h.est[s], 
          cbind(get(alpha.h.est[s]), year = year))
   
-  assign(phi.lh.est[s], 
-         cbind(get(phi.lh.est[s]), year = year))
-  
-  assign(phi.hh.est[s], 
-         cbind(get(phi.hh.est[s]), year = year))
-  
   assign(delta.est[s], 
          cbind(get(delta.est[s]), year = year))
   
   all.final.states[s]<- paste("final.states.allsummary", s, sep = "_")
-  all.gamma0.est[s]<- paste("gamma0.allsummary", s, sep = "_")
-  all.gamma1.est[s]<- paste("gamma1.allsummary", s, sep = "_")
-  all.eps.l.est[s]<- paste("eps.l.allsummary", s, sep = "_")
-  all.eps.h.est[s]<- paste("eps.h.allsummary", s, sep = "_")
-  all.phi.lh.est[s]<- paste("phi.lh.allsummary", s, sep = "_")
-  all.phi.hh.est[s]<- paste("phi.hh.allsummary", s, sep = "_")
+  all.phi.est[s]<- paste("phi.allsummary", s, sep = "_")
+  all.omega.est[s]<- paste("omega.allsummary", s, sep = "_")
+ 
   all.rho.l.est[s]<- paste("rho.l.allsummary", s, sep = "_")
   all.rho.h.est[s]<- paste("rho.h.allsummary", s, sep = "_")
   all.alpha.l.est[s]<- paste("alpha.l.allsummary", s, sep = "_")
@@ -823,23 +761,11 @@ for(s in 1:n.sims){
     assign(all.final.states[s], 
            get(final.states[s]))
     
-    assign(all.gamma0.est[s], 
-           get(gamma0.est[s]))
+    assign(all.phi.est[s], 
+           get(phi.est[s]))
     
-    assign(all.gamma1.est[s], 
-           get(gamma1.est[s]))
-    
-    assign(all.eps.l.est[s], 
-           get(eps.l.est[s]))
-    
-    assign(all.eps.h.est[s], 
-           get(eps.h.est[s]))
-    
-    assign(all.phi.lh.est[s], 
-           get(phi.lh.est[s]))
-    
-    assign(all.phi.hh.est[s], 
-           get(phi.hh.est[s]))
+    assign(all.omega.est[s], 
+           get(omega.est[s]))
     
     assign(all.rho.l.est[s], 
            get(rho.l.est[s]))
