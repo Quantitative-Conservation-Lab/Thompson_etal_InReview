@@ -6,7 +6,7 @@ path <- here::here("results", "ESA", "nocontrol")
 res <- c('results/ESA/nocontrol') #subset of path for plot save
 
 #### Data ####
-n.sims <- 50 #simulations
+n.sims <- 100 #simulations
 eps.l <- 0.9 #eradication when at low state
 eps.h <- 0.7 #eradication when at high state
 

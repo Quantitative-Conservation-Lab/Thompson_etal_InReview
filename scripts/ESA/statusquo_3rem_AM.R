@@ -104,7 +104,7 @@ res <- c('results/ESA/statusquo') #subset of path for plot save
 
 
 #### Data ####
-n.sims <- 50 #simulations 50
+n.sims <- 100 #simulations
 eps.l <- 0.9 #eradication when at low state
 eps.h <- 0.7 #eradication when at high state
 
