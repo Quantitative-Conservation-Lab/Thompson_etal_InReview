@@ -31,23 +31,21 @@ model{
   
   #detection parameters
   
-  rho.l ~ dbeta(pl_a,pl_b) #base detection for low state
-  alpha.l ~ dnorm(l_mean,l_tau) #difference in baseline detection probability between observation1 and 2, low state
-  rho.h ~ dbeta(ph_a,ph_b) #base detection for high state
-  alpha.h ~ dnorm(h_mean, h_tau) #difference in baseline detection probability between observation1 and 2, high state
-  delta ~ dbeta(delta_a, delta_b) #probability of observing the high state given species has been detected and true state is high
+  rho.l ~ dbeta(pl.a,pl.b) #base detection for low state
+  alpha.l ~ dnorm(l.mean,l.tau) #difference in baseline detection probability between observation1 and 2, low state
+  rho.h ~ dbeta(ph.a,ph.b) #base detection for high state
+  alpha.h ~ dnorm(h.mean, h.tau) #difference in baseline detection probability between observation1 and 2, high state
+  delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species has been detected and true state is high
 
-  l_tau <- 1/(l_sd * l_sd) #precision
-  h_tau <- 1/(h_sd * h_sd) #precision
+  l.tau <- 1/(l.sd * l.sd) #precision
+  h.tau <- 1/(h.sd * h.sd) #precision
 
   logit(pmulti.l) <- alpha.l + rho.l 
   logit(pmulti.h) <- alpha.h + rho.h
   
+  #state parameters
   
-  #--------------------------------------------------#
-  # OCCUPANCY PROBABILITIES
   for (i in 1:n.sites){  
-  
     omega[i] ~ dbeta(omega.a[i], omega.b[i]) #probability of being invaded regardless of state
     phi[i] ~ dbeta(phi.a[i], phi.b[i]) #conditional probability that FR is high abundance given present
     
@@ -57,42 +55,42 @@ model{
   
     
   #--------------------------------------------------#
-  # OBSERVATION PROBABILITIES (for multistate data) 
+  # OBSERVATION PROBABILITIES 
     # Observation probabilities of given S(t)
     #index = [current state, location, current observation]
    
     #Empty and not observed    
-    po_multi[1,i,1] <- 1
+    po.multi[1,i,1] <- 1
     
     #Empty and observed low 
-    po_multi[1,i,2] <- 0
+    po.multi[1,i,2] <- 0
     
     #Empty and observed high  
-    po_multi[1,i,3] <- 0
+    po.multi[1,i,3] <- 0
  
     #Low state and not observed   
-    po_multi[2,i,1] <- 1-pmulti.l #not detected probability
+    po.multi[2,i,1] <- 1-pmulti.l #not detected probability
     
     #Low state and observed low 
-    po_multi[2,i,2] <- pmulti.l #detection probability
+    po.multi[2,i,2] <- pmulti.l #detection probability
       
     #Low state and observed high 
-    po_multi[2,i,3] <- 0 
+    po.multi[2,i,3] <- 0 
       
     #High state and not observed   
-    po_multi[3,i,1] <- 1-pmulti.h #not detected probability
+    po.multi[3,i,1] <- 1-pmulti.h #not detected probability
       
     #High state and observed low 
-    po_multi[3,i,2] <- (1-pmulti.h)*(1-delta) #detection probability
+    po.multi[3,i,2] <- (1-pmulti.h)*(1-delta) #detection probability
       
     #high abundance observed high abundance
-    po_multi[3,i,3] <- pmulti.h*delta
+    po.multi[3,i,3] <- pmulti.h*delta
 
 
   #### LIKELIHOOD ####
     State[i] ~ dcat(ps[,i])
   
-    y.multi[i] ~ dcat(po_multi[State[i], i, ])
+    y.multi[i] ~ dcat(po.multi[State[i], i, ])
   
     #Derived parmeter
     State.fin[i] <- State[i] 
@@ -108,25 +106,21 @@ res <- c('results/ESA/statusquo') #subset of path for plot save
 
 
 #### Data ####
-n.sims <- 2 #simulations
+n.sims <- 50 #simulations
 eps.l <- 0.9 #eradication when at low state
 eps.h <- 0.7 #eradication when at high state
 
-phi.lh <- 0.05 #transition from low to high
+phi.lh <- 0.1 #transition from low to high
 phi.hh <- 0.9 #transition from high to high
 
-p1.l <- 0.2 #detection probability (for multistate data)
-p1.h <- 0.6 #detection probability (for multistate data)
-
-p2.l <- 0.4 #detection probability (for multistate data)
-p2.h <- 0.8 #detection probability (for multistate data)
+p2.l <- 0.6 #detection probability (for multistate data)
+p2.h <- 0.9 #detection probability (for multistate data)
 delta <- 0.5
 n.sites <- 5 #number of sites
 n.rem <- 3 #number of removal sites per week
 n.obs <- 3
-n.years <- 5 #time steps
+n.years <- 10 #time steps
 n.states <- 3
-
 
 ps<- array(NA, c(n.states,n.sites, n.states)) #state transition array
 
@@ -141,18 +135,18 @@ State <- array(NA, c(n.sites, n.years, n.sims))
 Obs.multi <- array(NA, c(n.sites, n.years, n.sims))
 
 #observation probabilities for multistate observation data
-po_multi<- array(NA, c(n.states,n.states))
-po_multi[1,1] <- 1
-po_multi[1,2] <- 0
-po_multi[1,3] <- 0
+po.multi<- array(NA, c(n.states,n.states))
+po.multi[1,1] <- 1
+po.multi[1,2] <- 0
+po.multi[1,3] <- 0
 
-po_multi[2,1] <- 1-p2.l
-po_multi[2,2] <- p2.l
-po_multi[2,3] <- 0
+po.multi[2,1] <- 1-p2.l
+po.multi[2,2] <- p2.l
+po.multi[2,3] <- 0
 
-po_multi[3,1] <- 1-p2.h
-po_multi[3,2] <- (1-p2.h)*delta
-po_multi[3,3] <- p2.h*delta
+po.multi[3,1] <- 1-p2.h
+po.multi[3,2] <- (1-p2.h)*delta
+po.multi[3,3] <- p2.h*delta
 
 sites.rem <- array(NA, dim = c(n.rem, n.years, n.sims))
 
@@ -169,7 +163,7 @@ segs.selected <- c(1,3,5)
 year <- 1
 for(s in 1:n.sims){
   for(i in segs.selected){
-    Obs.multi[i,year,s] <- rcat(1,po_multi[State[i,year,s], ])
+    Obs.multi[i,year,s] <- rcat(1,po.multi[State[i,year,s], ])
   }
 }
 
@@ -193,23 +187,23 @@ phi.a <- array(NA, c(n.sites,n.years,n.sims))
 phi.b <- array(NA, c(n.sites,n.years,n.sims))
 
 #Detection parameters:
-pl_a <- array(NA, c(n.years, n.sims))
-pl_b <- array(NA, c(n.years, n.sims))
-l_mean <- array(NA, c(n.years, n.sims))
-l_sd <- array(NA, c(n.years, n.sims))
-ph_a <- array(NA, c(n.years, n.sims))
-ph_b <- array(NA, c(n.years, n.sims))
-h_mean <- array(NA, c(n.years, n.sims))
-h_sd <- array(NA, c(n.years, n.sims))
+pl.a <- array(NA, c(n.years, n.sims))
+pl.b <- array(NA, c(n.years, n.sims))
+l.mean <- array(NA, c(n.years, n.sims))
+l.sd <- array(NA, c(n.years, n.sims))
+ph.a <- array(NA, c(n.years, n.sims))
+ph.b <- array(NA, c(n.years, n.sims))
+h.mean <- array(NA, c(n.years, n.sims))
+h.sd <- array(NA, c(n.years, n.sims))
 
-delta_a <- array(NA, c(n.years, n.sims))
-delta_b <- array(NA, c(n.years, n.sims))
+delta.a <- array(NA, c(n.years, n.sims))
+delta.b <- array(NA, c(n.years, n.sims))
 
 S.init <-  array(NA, c(n.sites, n.years, n.sims))
 D.init <- array(NA, c(n.sites,n.years,n.sims))
 rem.vec <- array(NA, dim = c(n.sites, n.years, n.sims))
 
-rhat_vals <- array(NA, c(n.years, n.sims))
+rhat.vals <- array(NA, c(n.years, n.sims))
 my.data <- list()
 outs <- rep(NA,n.sims)
 outputsfull <- rep(NA, n.sims)
@@ -231,7 +225,6 @@ delta.est <- rep(NA, n.sims)
 all.final.states <- rep(NA, n.sims)
 all.omega.est <- rep(NA, n.sims)
 all.phi.est <- rep(NA, n.sims)
-
 
 all.rho.l.est <- rep(NA, n.sims)
 all.alpha.l.est <- rep(NA, n.sims)
@@ -262,6 +255,7 @@ beta.delta <- rep(NA, n.sims)
 
 initial.values <- list() #initial value list
 final.states.mean <- array(NA, dim = c(n.sites, n.years, n.sims))
+final.mean <- array(NA, dim = c(n.sites, n.years, n.sims))
 
 ####################################################################################
 #### Run ####
@@ -284,6 +278,7 @@ if(year > 1){
         ps[1,i,1] <- 1-gamma[i,year-1,s] #empty stay empty
         ps[1,i,2] <- gamma[i,year-1,s] #empty to low abundance
         ps[1,i,3] <- 0
+        
       }else{
         D[1,year-1,s] <- State[2,year-1,s]
         D[n.sites,year-1,s] <- State[(n.sites-1),year-1,s]
@@ -325,7 +320,7 @@ if(year > 1){
     
     ###### Observation data ######
     for(i in segs.selected){
-      Obs.multi[i,year,s] <- rcat(1,po_multi[State[i,year,s], ])
+      Obs.multi[i,year,s] <- rcat(1,po.multi[State[i,year,s], ])
     }
     
     ###### Sites for removal ######
@@ -344,6 +339,11 @@ if(year > 1){
 #check:
 discard(sites.rem[,year,1], is.na)
 Obs.multi[, year, 1]
+State[,year,1]
+
+discard(sites.rem[,year,2], is.na)
+Obs.multi[, year, 2]
+State[,year,2]
 
 ##### Initial priors #####
 #------------------------Year 1 Priors------------------------#
@@ -358,22 +358,21 @@ if(year == 1){
   
   #Observation process
   
-  pl_a[1,] <- 1
-  pl_b[1,] <- 1
-  l_mean[1,] <- 0
-  l_sd[1,] <- 10
+  pl.a[1,] <- 1
+  pl.b[1,] <- 1
+  l.mean[1,] <- 0
+  l.sd[1,] <- 10
   
-  ph_a[1,] <- 1
-  ph_b[1,] <- 1
-  h_mean[1,] <- 0
-  h_sd[1,] <- 10
+  ph.a[1,] <- 1
+  ph.b[1,] <- 1
+  h.mean[1,] <- 0
+  h.sd[1,] <- 10
   
-  delta_a[1,] <- 1
-  delta_b[1,] <- 1
+  delta.a[1,] <- 1
+  delta.b[1,] <- 1
     
   }else{
   for(s in 1:n.sims){
-    #### Fix HERE ####
     ##### Year 1+ prior #####
     #State process
     #-------phi priors -------#
@@ -423,8 +422,8 @@ if(year == 1){
            get(alpha.rhols[s])*(1 - get(rho.l.est[s])$mean)/get(rho.l.est[s])$mean)
     
     #assigning these values for the next jags run:
-    pl_a[year,s] <- get(alpha.rhols[s])
-    pl_b[year,s] <- get(beta.rhols[s])
+    pl.a[year,s] <- get(alpha.rhols[s])
+    pl.b[year,s] <- get(beta.rhols[s])
 
     ## High ##
     alpha.rhohs[s]<- paste("alpha.ph", s, sep = "_")
@@ -438,18 +437,18 @@ if(year == 1){
            get(alpha.rhohs[s])*(1 - get(rho.h.est[s])$mean)/get(rho.h.est[s])$mean)
     
     #assigning these values for the next jags run:
-    ph_a[year,s] <- get(alpha.rhohs[s])
-    ph_b[year,s] <- get(beta.rhohs[s])
+    ph.a[year,s] <- get(alpha.rhohs[s])
+    ph.b[year,s] <- get(beta.rhohs[s])
     
     
     #-------alpha priors: difference in baseline detection -------#
     ## Low ##
-    l_mean[year,] <- get(alpha.l.est[s])$mean
-    l_sd[year,] <- get(alpha.l.est[s])$sd
+    l.mean[year,] <- get(alpha.l.est[s])$mean
+    l.sd[year,] <- get(alpha.l.est[s])$sd
     
     ## High ##
-    h_mean[year,] <- get(alpha.h.est[s])$mean
-    h_sd[year,] <- get(alpha.h.est[s])$sd
+    h.mean[year,] <- get(alpha.h.est[s])$mean
+    h.sd[year,] <- get(alpha.h.est[s])$sd
     
     #-------delta priors -------#
     #delta = probability of observing the high state given species has been detected and true state is high
@@ -464,8 +463,8 @@ if(year == 1){
            get(alpha.delta[s])*(1 - get(delta.est[s])$mean)/get(delta.est[s])$mean)
     
     #assigning these values for the next jags run:
-    delta_a[year,s] <- get(alpha.delta[s])
-    delta_b[year,s] <- get(beta.delta[s])
+    delta.a[year,s] <- get(alpha.delta[s])
+    delta.b[year,s] <- get(beta.delta[s])
     
   }
   
@@ -496,16 +495,16 @@ for(s in 1:n.sims){
                        omega.a = omega.a[,year,s],
                        omega.b = omega.b[,year,s],
                        
-                       pl_a = pl_a[year,s], 
-                       pl_b = pl_b[year,s],
-                       l_mean= l_mean[year,s],
-                       l_sd= l_sd[year,s],
-                       ph_a = ph_a[year,s], 
-                       ph_b = ph_b[year,s],
-                       h_mean= h_mean[year,s],
-                       h_sd= h_sd[year,s],
-                       delta_a = delta_a[year,s],
-                       delta_b = delta_b[year,s]                  
+                       pl.a = pl.a[year,s], 
+                       pl.b = pl.b[year,s],
+                       l.mean= l.mean[year,s],
+                       l.sd= l.sd[year,s],
+                       ph.a = ph.a[year,s], 
+                       ph.b = ph.b[year,s],
+                       h.mean= h.mean[year,s],
+                       h.sd= h.sd[year,s],
+                       delta.a = delta.a[year,s],
+                       delta.b = delta.b[year,s]                  
                        
  
   )
@@ -575,12 +574,13 @@ for(s in 1:n.sims){
 
 for(s in 1:n.sims){
   mcmcs[s]<- paste("mcmc", s, sep = "_")
+  assign(mcmcs[s], get(outs[3])$samples)
 }
 
-mcmc_1 <- out_1$samples
-mcmc_2 <- out_2$samples
+#select random 5 sims for sampling
+rand5 <- sample(seq(1:n.sims), 5, replace = F)
 
-for(s in 1:n.sims){
+for(s in rand5){
 
   MCMCtrace(get(mcmcs[s]), 
             params = 'rho.l', 
@@ -628,7 +628,7 @@ for(s in 1:n.sims){
 #save rhat outputs
 for(s in 1:n.sims){
   x[[s]] <- as.numeric(unlist(get(outputsfull[s])$Rhat))
-  rhat_vals[year,s] <-  sum(x[[s]] > 1.1, na.rm = TRUE)/ length(x[[s]])
+  rhat.vals[year,s] <-  sum(x[[s]] > 1.1, na.rm = TRUE)/ length(x[[s]])
 }
 
 
@@ -743,20 +743,21 @@ for(s in 1:n.sims){
   assign(delta.est[s], 
          cbind(get(delta.est[s]), year = year))
   
+}
+
+for(s in 1:n.sims){
+  
   all.final.states[s]<- paste("final.states.allsummary", s, sep = "_")
   all.phi.est[s]<- paste("phi.allsummary", s, sep = "_")
   all.omega.est[s]<- paste("omega.allsummary", s, sep = "_")
- 
+  
   all.rho.l.est[s]<- paste("rho.l.allsummary", s, sep = "_")
   all.rho.h.est[s]<- paste("rho.h.allsummary", s, sep = "_")
   all.alpha.l.est[s]<- paste("alpha.l.allsummary", s, sep = "_")
   all.alpha.h.est[s]<- paste("alpha.h.allsummary", s, sep = "_")
   all.delta.est[s]<- paste("delta.allsummary", s, sep = "_")
   
-}
-
-#If year 1 we set summary data frame to itself
-for(s in 1:n.sims){
+  #If year 1 we set summary data frame to itself
   if(year == 1){
     assign(all.final.states[s], 
            get(final.states[s]))
@@ -782,18 +783,91 @@ for(s in 1:n.sims){
     assign(all.delta.est[s], 
            get(delta.est[s]))
     
+  }else{ #if beyond first year, we append previous summary to new summary
+    assign(all.final.states[s], 
+           rbind(get(all.final.states[s]), get(final.states[s])))
+    
+    assign(all.phi.est[s], 
+           rbind(get(all.phi.est[s]), get(phi.est[s])))
+    
+    assign(all.omega.est[s], 
+           rbind(get(all.omega.est[s]), get(omega.est[s])))
+    
+    assign(all.rho.l.est[s], 
+           rbind(get(all.rho.l.est[s]), get(rho.l.est[s])))
+    
+    assign(all.rho.h.est[s], 
+           rbind(get(all.rho.h.est[s]), get(rho.h.est[s])))
+    
+    assign(all.alpha.l.est[s], 
+           rbind(get(all.alpha.l.est[s]), get(alpha.l.est[s])))
+    
+    assign(all.alpha.h.est[s], 
+           rbind(get(all.alpha.h.est[s]), get(alpha.h.est[s])))
+    
+    assign(all.delta.est[s], 
+           rbind(get(all.delta.est[s]), get(delta.est[s])))
+    
   }
 }
 
 for(s in 1:n.sims){
   final.states.mean[,year,s] <- round((get(final.states[s]))$mean)
+  final.mean[,year,s] <- get(final.states[s])$mean #not rounded
 }
 
+final.mean.wide <- data.frame(t(final.mean[,year,]))
+colnames(final.mean.wide) <- seq(1:n.sites)
+final.mean.wide$sim <- seq(1:n.sims)  
+
+final.mean.long <- gather(final.mean.wide, site, state, 1:5, factor_key=TRUE)
+final.mean.long$site <- as.numeric(final.mean.long$site)
+
+final.mean.long$year <- year
+
+if(year == 1){
+  final.mean.years <- final.mean.long
+}else{
+  final.mean.years <- rbind(final.mean.years, final.mean.long)
+}
   
 }
 
 
 #################################################################################################
 
-cbind(State[,1,1,1],State[,12,,1])
+#### Save True Data ####
+#results for each sim
+States.df <- adply(State, c(1,2,3))
+
+colnames(States.df) <- c("site", "year", "sim", "state")              
+
+file_name = paste(path, 'States_statusquo.csv',sep = '/')
+write.csv(States.df,file_name)
+
+
+#mean across simulations
+Mean.States.df <- aggregate(state ~ site+year,
+                            data = as.data.frame(States.df), FUN = mean)
+
+
+file_name = paste(path, 'Mean.States_statusquo.csv',sep = '/')
+write.csv(Mean.States.df ,file_name)
+
+
+#### Estimated Data ####
+States.est.df <- final.mean.years %>% select(site,year,sim,state)
+
+file_name = paste(path, 'States.est_statusquo.csv',sep = '/')
+write.csv(States.est.df,file_name)
+
+
+#mean across simulations
+Mean.States.est.df <- aggregate(state ~ site+year,
+                            data = as.data.frame(States.est.df), FUN = mean)
+
+file_name = paste(path, 'Mean.States.est_statusquo.csv',sep = '/')
+write.csv(Mean.States.est.df ,file_name)
+
+
 

@@ -17,23 +17,17 @@ model{
   
   #detection parameters
   
-  rho.l ~ dbeta(pl_a,pl_b) #base detection for low state
-  alpha.l ~ dnorm(l_mean,l_tau) #difference in baseline detection probability between observation1 and 2, low state
-  rho.h ~ dbeta(ph_a,ph_b) #base detection for high state
-  alpha.h ~ dnorm(h_mean, h_tau) #difference in baseline detection probability between observation1 and 2, high state
-  delta ~ dbeta(delta_a, delta_b) #probability of observing the high state given species has been detected and true state is high
+  rho.l ~ dbeta(pl.a,pl.b) #base detection for low state
+  rho.h ~ dbeta(ph.a,ph.b) #base detection for high state
 
-  l_tau <- 1/(l_sd * l_sd) #precision
-  h_tau <- 1/(h_sd * h_sd) #precision
+  delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species has been detected and true state is high
 
-  logit(pmulti.l) <- alpha.l + rho.l 
-  logit(pmulti.h) <- alpha.h + rho.h
+  pmulti.l <-  rho.l
+  pmulti.h <-  rho.h
   
+  #state parameters
   
-  #--------------------------------------------------#
-  # OCCUPANCY PROBABILITIES
   for (i in 1:n.sites){  
-  
     omega[i] ~ dbeta(omega.a[i], omega.b[i]) #probability of being invaded regardless of state
     phi[i] ~ dbeta(phi.a[i], phi.b[i]) #conditional probability that FR is high abundance given present
     
@@ -43,42 +37,42 @@ model{
   
     
   #--------------------------------------------------#
-  # OBSERVATION PROBABILITIES (for multistate data) 
+  # OBSERVATION PROBABILITIES 
     # Observation probabilities of given S(t)
     #index = [current state, location, current observation]
    
     #Empty and not observed    
-    po_multi[1,i,1] <- 1
+    po.multi[1,i,1] <- 1
     
     #Empty and observed low 
-    po_multi[1,i,2] <- 0
+    po.multi[1,i,2] <- 0
     
     #Empty and observed high  
-    po_multi[1,i,3] <- 0
+    po.multi[1,i,3] <- 0
  
     #Low state and not observed   
-    po_multi[2,i,1] <- 1-pmulti.l #not detected probability
+    po.multi[2,i,1] <- 1-pmulti.l #not detected probability
     
     #Low state and observed low 
-    po_multi[2,i,2] <- pmulti.l #detection probability
+    po.multi[2,i,2] <- pmulti.l #detection probability
       
     #Low state and observed high 
-    po_multi[2,i,3] <- 0 
+    po.multi[2,i,3] <- 0 
       
     #High state and not observed   
-    po_multi[3,i,1] <- 1-pmulti.h #not detected probability
+    po.multi[3,i,1] <- 1-pmulti.h #not detected probability
       
     #High state and observed low 
-    po_multi[3,i,2] <- (1-pmulti.h)*(1-delta) #detection probability
+    po.multi[3,i,2] <- (1-pmulti.h)*(1-delta) #detection probability
       
     #high abundance observed high abundance
-    po_multi[3,i,3] <- pmulti.h*delta
+    po.multi[3,i,3] <- pmulti.h*delta
 
 
   #### LIKELIHOOD ####
     State[i] ~ dcat(ps[,i])
   
-    y.multi[i] ~ dcat(po_multi[State[i], i, ])
+    y.multi[i] ~ dcat(po.multi[State[i], i, ])
   
     #Derived parmeter
     State.fin[i] <- State[i] 
