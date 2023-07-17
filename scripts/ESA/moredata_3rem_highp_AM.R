@@ -7,11 +7,13 @@ library(tidyverse)
 library(strex)
 library(here)
 
+start.time <- Sys.time()
+
 #### JAGS MODEL ####
 
 start.time <- Sys.time()
 
-sink("Flower_mod_basic.txt")
+sink("Flower_mod_basic2.txt")
 cat("
 model{
 
@@ -21,27 +23,38 @@ model{
 # 2 low state
 # 3 high state
 # 
-# Observations (O):  
-# 1 not observed
-# 2 observed low state
-# 3 observed high state
+# Observations (y.single):  
+# 1 not detected
+# 2 detected 
+#
+# Observations (y.multi):  
+# 1 not detected
+# 2 detected low state
+# 3 detected high state
 # -------------------------------------------------
 
+#--------------------------------------------------#
 #### PRIORS ####
   
   #detection parameters
   
-  rho.l ~ dbeta(pl.a,pl.b) #base detection for low state
-  alpha.l ~ dnorm(l.mean,l.tau) #difference in baseline detection probability between observation1 and 2, low state
+  rho.l ~ dbeta(pl.a,pl.b) #base detection for low state 
+  alpha.l ~ dnorm(l.mean,l.tau) #difference in low state detection probability between observation datas
+  
   rho.h ~ dbeta(ph.a,ph.b) #base detection for high state
-  alpha.h ~ dnorm(h.mean, h.tau) #difference in baseline detection probability between observation1 and 2, high state
+  alpha.h ~ dnorm(h.mean,h.tau) #difference in low state detection probability between observation datas
+
   delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species has been detected and true state is high
+
 
   l.tau <- 1/(l.sd * l.sd) #precision
   h.tau <- 1/(h.sd * h.sd) #precision
+  
+  logit(psingle.l) <- rho.l - alpha.l
+  logit(psingle.h) <- rho.h - alpha.h
 
-  logit(pmulti.l) <- alpha.l + rho.l 
-  logit(pmulti.h) <- alpha.h + rho.h
+  pmulti.l <-  rho.l
+  pmulti.h <-  rho.h
   
   #state parameters
   
@@ -55,43 +68,64 @@ model{
   
     
   #--------------------------------------------------#
-  # OBSERVATION PROBABILITIES 
-    # Observation probabilities of given S(t)
-    #index = [current state, location, current observation]
-   
-    #Empty and not observed    
+  # OBSERVATION PROBABILITIES
+  #index = [current state, location, current observation]
+  ###-------------- single state data --------------###
+    #Empty and not observed  
+    po.single[1,i,1] <- 1
+    
+    #Empty and observed
+    po.single[1,i,2] <- 0
+ 
+    #Low state and not observed
+    po.single[2,i,1] <- 1-psingle.l 
+    
+    #Low state and observed
+    po.single[2,i,2] <- psingle.l 
+    
+    #High state and not observed
+    po.single[3,i,1] <- 1-psingle.h 
+    
+    #High state and observed
+    po.single[3,i,2] <- psingle.h 
+  
+  ###-------------- multi state data --------------###
+    
+    #Empty and not detected    
     po.multi[1,i,1] <- 1
     
-    #Empty and observed low 
+    #Empty and detected low 
     po.multi[1,i,2] <- 0
     
-    #Empty and observed high  
+    #Empty and detected high  
     po.multi[1,i,3] <- 0
  
-    #Low state and not observed   
-    po.multi[2,i,1] <- 1-pmulti.l #not detected probability
+    #Low state and not detected   
+    po.multi[2,i,1] <- 1-pmulti.l 
     
-    #Low state and observed low 
-    po.multi[2,i,2] <- pmulti.l #detection probability
+    #Low state and detected low 
+    po.multi[2,i,2] <- pmulti.l 
       
-    #Low state and observed high 
+    #Low state and detected high 
     po.multi[2,i,3] <- 0 
       
-    #High state and not observed   
-    po.multi[3,i,1] <- 1-pmulti.h #not detected probability
+    #High state and not detected   
+    po.multi[3,i,1] <- 1-pmulti.h 
       
-    #High state and observed low 
-    po.multi[3,i,2] <- (1-pmulti.h)*(1-delta) #detection probability
+    #High state and detected low 
+    po.multi[3,i,2] <- (1-pmulti.h)*(1-delta) 
       
-    #high abundance observed high abundance
+    #high abundance detected high abundance
     po.multi[3,i,3] <- pmulti.h*delta
 
-
+  #--------------------------------------------------#
   #### LIKELIHOOD ####
     State[i] ~ dcat(ps[,i])
   
     y.multi[i] ~ dcat(po.multi[State[i], i, ])
   
+    y.single[i] ~ dcat(po.single[State[i],i,])
+    
     #Derived parmeter
     State.fin[i] <- State[i] 
    
@@ -101,20 +135,23 @@ model{
 ", fill = TRUE)
 sink()
 
-path <- here::here("results", "ESA", "statusquo")
-res <- c('results/ESA/statusquo') #subset of path for plot save
+path <- here::here("results", "ESA", "moredata_highp")
+res <- c('results/ESA/moredata_highp') #subset of path for plot save
 
 
 #### Data ####
-n.sims <- 50 #simulations
+n.sims <- 100 #simulations 100
 eps.l <- 0.9 #eradication when at low state
 eps.h <- 0.7 #eradication when at high state
 
 phi.lh <- 0.1 #transition from low to high
 phi.hh <- 0.9 #transition from high to high
 
-p2.l <- 0.6 #detection probability (for multistate data)
-p2.h <- 0.9 #detection probability (for multistate data)
+psingle.l <- 0.4 #detection probability (for single state data)
+psingle.h <- 0.8 #detection probability (for single state data)
+
+pmulti.l <- 0.6 #detection probability (for multistate data)
+pmulti.h <- 0.9 #detection probability (for multistate data)
 delta <- 0.5
 n.sites <- 5 #number of sites
 n.rem <- 3 #number of removal sites per week
@@ -131,24 +168,42 @@ gamma1 <- 0.5 #effect of neighboring locations on invasion probability
 #transition probabilities
 State <- array(NA, c(n.sites, n.years, n.sims))
 
-# Observation probabilities 
+# Observation probabilities
+#--- single state data ---#
+Obs.single <- array(NA, c(n.sites, n.years, n.sims))
+sites.single <- c(2,4) #sites where single state data could occur
+
+site.single <- array(NA, c(n.years, n.sims))
+
+for(s in 1:n.sims){
+  site.single[1,s] <- sort(sample(c(2,4), 1)) #single state data location year 1
+}
+
+po.single<- array(NA, c(3,2))
+po.single[1,1] <- 1
+po.single[1,2] <- 0
+po.single[2,1] <- 1-psingle.l 
+po.single[2,2] <- psingle.l 
+po.single[3,1] <- 1-psingle.h
+po.single[3,2] <- psingle.h
+
+#--- multi state data ---#
+
 Obs.multi <- array(NA, c(n.sites, n.years, n.sims))
 
-#observation probabilities for multistate observation data
+#observation probabilities for multi state observation data
 po.multi<- array(NA, c(n.states,n.states))
 po.multi[1,1] <- 1
 po.multi[1,2] <- 0
 po.multi[1,3] <- 0
 
-po.multi[2,1] <- 1-p2.l
-po.multi[2,2] <- p2.l
+po.multi[2,1] <- 1-pmulti.l
+po.multi[2,2] <- pmulti.l
 po.multi[2,3] <- 0
 
-po.multi[3,1] <- 1-p2.h
-po.multi[3,2] <- (1-p2.h)*delta
-po.multi[3,3] <- p2.h*delta
-
-sites.rem <- array(NA, dim = c(n.rem, n.years, n.sims))
+po.multi[3,1] <- 1-pmulti.h
+po.multi[3,2] <- (1-pmulti.h)*delta
+po.multi[3,3] <- pmulti.h*delta
 
 ##### year 1 #####
 #Initial True State 
@@ -158,14 +213,39 @@ State[3,1,] <- 2
 State[4,1,] <- 2 
 State[5,1,] <- 1 
 
-segs.selected <- c(1,3,5)
-
+###### Single state d/nd data ####
 year <- 1
+
 for(s in 1:n.sims){
-  for(i in segs.selected){
+  for(i in site.single[year,s]){
+    Obs.single[i,year,s] <- rcat(1,po.single[State[i,year,s], ])
+  }
+}
+
+###### Multi state data  ####
+site.multi <- array(NA, c(n.rem, n.years, n.sims))
+orig.multi <- c(1,3,5) #original, status quo sites
+
+#if single state d/nd detected flowering rush, select those sites for multi-state data
+for(s in 1:n.sims){
+  if(Obs.single[site.single[year,s],year,s] > 1){
+    site.multi[1,year,s] <- site.single[year,s]
+    site.multi[2:3,year,s] <- sample(orig.multi, 2, replace = F)
+  }else{
+    site.multi[,year,s] <- orig.multi
+  }
+}
+
+#If single state d/nd detected flowering rush, select those sites for multi-state data
+#now that we chose the sites, collect multi state occupancy data
+for(s in 1:n.sims){
+  for(i in site.multi[,year,s]){
     Obs.multi[i,year,s] <- rcat(1,po.multi[State[i,year,s], ])
   }
 }
+
+###### Select removal sites based on observation data  ####
+sites.rem <- array(NA, dim = c(n.rem, n.years, n.sims))
 
 for(s in 1:n.sims){
   if(length(which(Obs.multi[,year,s] > 1)) == 0){
@@ -175,10 +255,10 @@ for(s in 1:n.sims){
   }
 }
 
-
 D <- array(NA, c(n.sites,n.years,n.sims)) #neighbor states
 
 #### JAGS data ####
+##### FIX ####
 #State parameters:
 omega.a <- array(NA, c(n.sites,n.years,n.sims))
 omega.b <- array(NA, c(n.sites,n.years,n.sims))
@@ -211,15 +291,17 @@ outputs <- rep(NA, n.sims)
 mcmcs <- rep(NA, n.sims)
 x <- list()
 final.states <- rep(NA, n.sims)
-segments <- list()
+sites <- list()
 
 omega.est <- rep(NA, n.sims)
 phi.est <- rep(NA, n.sims)
 
 rho.l.est <- rep(NA, n.sims)
 alpha.l.est <- rep(NA, n.sims)
+
 rho.h.est <- rep(NA, n.sims)
 alpha.h.est <- rep(NA, n.sims)
+
 delta.est <- rep(NA, n.sims)
 
 all.final.states <- rep(NA, n.sims)
@@ -228,8 +310,10 @@ all.phi.est <- rep(NA, n.sims)
 
 all.rho.l.est <- rep(NA, n.sims)
 all.alpha.l.est <- rep(NA, n.sims)
+
 all.rho.h.est <- rep(NA, n.sims)
 all.alpha.h.est <- rep(NA, n.sims)
+
 all.delta.est <- rep(NA, n.sims)
 
 final.states.mean <- array(NA, dim = c(n.sites, n.years, n.sims))
@@ -265,7 +349,6 @@ for(year in 1:n.years){
 
 #### 1. Simulate truth #####
 for(s in 1:n.sims){
-
 #----- year > 1 simulations -----#
 if(year > 1){
     for(i in 1:(n.sites)){
@@ -318,17 +401,29 @@ if(year > 1){
       
     }
     
-    ###### Observation data ######
-    for(i in segs.selected){
-      Obs.multi[i,year,s] <- rcat(1,po.multi[State[i,year,s], ])
+    ###### Single Observation data ######
+    for(i in site.single[year,s]){
+      Obs.single[i,year,s] <- rcat(1,po.single[State[i,year,s], ])
     }
+  
+  ##### Multi Observation data ######
+  if(Obs.single[site.single[year,s],year,s] > 1){
+    site.multi[1,year,s] <- site.single[year,s]
+    site.multi[2:3,year,s] <- sample(orig.multi, 2, replace = F)
+  }else{
+    site.multi[,year,s] <- orig.multi
+  }
+  
+  for(i in site.multi[,year,s]){
+    Obs.multi[i,year,s] <- rcat(1,po.multi[State[i,year,s], ])
+  }
     
-    ###### Sites for removal ######
-    if(length(which(Obs.multi[,year,s] > 1)) == 0){
-      sites.rem[,year,s] <- rep(NA,n.rem)
-    }else{
-      sites.rem[1:length(which(Obs.multi[,year,s] > 1)), year, s] <- which(Obs.multi[,year,s] > 1)
-    }
+  ###### Sites for removal ######
+  if(length(which(Obs.multi[,year,s] > 1)) == 0){
+    sites.rem[,year,s] <- rep(NA,n.rem)
+  }else{
+    sites.rem[1:length(which(Obs.multi[,year,s] > 1)), year, s] <- which(Obs.multi[,year,s] > 1)
+  }
   
   
 } #ends year > 1 things
@@ -337,13 +432,13 @@ if(year > 1){
 
 
 #check:
-discard(sites.rem[,year,1], is.na)
-Obs.multi[, year, 1]
-State[,year,1]
+ #discard(sites.rem[,year,1], is.na)
+ #Obs.multi[, year, 1]
+ #State[,year,1]
 
-discard(sites.rem[,year,2], is.na)
-Obs.multi[, year, 2]
-State[,year,2]
+# discard(sites.rem[,year,2], is.na)
+# Obs.multi[, year, 2]
+# State[,year,2]
 
 ##### Initial priors #####
 #------------------------Year 1 Priors------------------------#
@@ -475,7 +570,7 @@ if(year == 1){
 
 #Parameters monitored
 parameters.to.save <- c("State.fin", "omega", "phi",
-                        "rho.l", "alpha.l", "rho.h", "alpha.h",
+                        "rho.l", "rho.h","alpha.l", "alpha.h",
                         "delta")
 
 
@@ -488,6 +583,7 @@ n.thin <- 1
 for(s in 1:n.sims){
   my.data[[s]] <- list(n.sites = n.sites,
                        y.multi = Obs.multi[,year,s],
+                       y.single = Obs.single[,year,s],
                        
                        #priors
                        phi.a = phi.a[,year,s],
@@ -497,12 +593,16 @@ for(s in 1:n.sims){
                        
                        pl.a = pl.a[year,s], 
                        pl.b = pl.b[year,s],
-                       l.mean= l.mean[year,s],
-                       l.sd= l.sd[year,s],
+
                        ph.a = ph.a[year,s], 
                        ph.b = ph.b[year,s],
+                       
+                       l.mean= l.mean[year,s],
+                       l.sd= l.sd[year,s],
+                       
                        h.mean= h.mean[year,s],
                        h.sd= h.sd[year,s],
+                      
                        delta.a = delta.a[year,s],
                        delta.b = delta.b[year,s]                  
                        
@@ -511,49 +611,38 @@ for(s in 1:n.sims){
 }
 
 ###### 2c. Run JAGS #####
-##### Run year 1 #####
-if(year == 1){
+State.start <- array(NA, c(n.sites,n.sims))
+
+State.start <- Obs.multi[,year,]
+
+#State start 
+for(s in 1:n.sims){
   
-  State.start <- array(NA, c(n.sites,n.sims))
-  
-  State.start <- Obs.multi[,year,]
-  
-    
-  for(s in 1:n.sims){
-    initial.values[[s]] <- function()list(State = State.start[,s])
-    }
-  
-  for(s in 1:n.sims){
-    
-    outs[s]<- paste("out", s, sep = "_")
-    assign(outs[s],
-           jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_basic.txt",
-                        n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
-  }
-    
-}else{
-    
-  ##### Run year > 1 #####
-  State.start <- array(NA, c(n.sites,n.sims))
-  
-  State.start <- Obs.multi[,year,]
-  
-  
-  for(s in 1:n.sims){
-    initial.values[[s]] <- function()list(State = State.start[,s])
+  for(i in intersect(site.single[year,s], site.multi[,year,s])){
+     if(Obs.multi[i,year,s] < Obs.single[i,year,s]){
+       State.start[i,s] <- Obs.single[i,year,s]
+     }
   }
   
-  for(s in 1:n.sims){
-    
-    outs[s]<- paste("out", s, sep = "_")
-    assign(outs[s],
-           jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_basic.txt",
-                        n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
+  for(i in setdiff(site.single[year,s], site.multi[,year,s])){
+    State.start[i,s] <- Obs.single[i,year,s]
   }
   
 }
+
+#initial values list    
+for(s in 1:n.sims){
+  initial.values[[s]] <- function()list(State = State.start[,s])
+}
+  
+for(s in 1:n.sims){
+  outs[s]<- paste("out", s, sep = "_")
+  assign(outs[s],
+           jagsUI::jags(data = my.data[[s]], inits = initial.values[[s]],
+                        parameters.to.save = parameters.to.save, model.file = "Flower_mod_basic2.txt",
+                        n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
+}
+    
 
 #### 3. Extract estimation results ####
 ###### 3a. Extract parameters #####
@@ -574,7 +663,7 @@ for(s in 1:n.sims){
 
 for(s in 1:n.sims){
   mcmcs[s]<- paste("mcmc", s, sep = "_")
-  assign(mcmcs[s], get(outs[3])$samples)
+  assign(mcmcs[s], get(outs[s])$samples)
 }
 
 #select random 5 sims for sampling
@@ -598,21 +687,6 @@ for(s in rand5){
             open_pdf = FALSE,
             filename = paste0(res,'/rho.h_sim_', s, '_year', year))
   
-  MCMCtrace(get(mcmcs[s]), 
-            params = 'alpha.l', 
-            type = 'density', 
-            ind = TRUE, 
-            pdf = TRUE, 
-            open_pdf = FALSE,
-            filename = paste0(res,'/alpha.l_sim_', s, '_year', year))
-  
-  MCMCtrace(get(mcmcs[s]), 
-            params = 'alpha.h', 
-            type = 'density', 
-            ind = TRUE, 
-            pdf = TRUE, 
-            open_pdf = FALSE,
-            filename = paste0(res,'/alpha.h_sim_', s, '_year', year))
   
   MCMCtrace(get(mcmcs[s]), 
             params = 'delta', 
@@ -637,14 +711,14 @@ for(s in 1:n.sims){
   final.states[s]<- paste("final.states", s, sep = "_")
   assign(final.states[s], filter(get(outputs[s]), grepl("^S", param)))
   
-  segments[[s]] <- as.numeric(str_nth_number((get(final.states[s]))$param, n = 1))
+  sites[[s]] <- as.numeric(str_nth_number((get(final.states[s]))$param, n = 1))
   
 }
 
 
 for(s in 1:n.sims){
   assign(final.states[s], 
-         cbind(get(final.states[s]), segment = segments[[s]])) #adding segment column  
+         cbind(get(final.states[s]), site = sites[[s]])) #adding site column  
 }
 
 #-------phi -------#
@@ -655,6 +729,14 @@ for(s in 1:n.sims){
   assign(phi.est[s], 
          cbind(get(phi.est[s]), cv = get(phi.est[s])$sd/get(phi.est[s])$mean
          ))  
+
+  sites[[s]] <- as.numeric(str_nth_number((get(phi.est[s]))$param, n = 1))
+  
+}
+
+for(s in 1:n.sims){
+  assign(phi.est[s], 
+         cbind(get(phi.est[s]), site = sites[[s]])) #adding site column  
 }
 
 #-------omega -------#
@@ -665,6 +747,14 @@ for(s in 1:n.sims){
   assign(omega.est[s], 
          cbind(get(omega.est[s]), cv = get(omega.est[s])$sd/get(omega.est[s])$mean
          ))  
+  
+  sites[[s]] <- as.numeric(str_nth_number((get(omega.est[s]))$param, n = 1))
+  
+}
+
+for(s in 1:n.sims){
+  assign(omega.est[s], 
+         cbind(get(omega.est[s]), site = sites[[s]])) #adding site column  
 }
 
 #-------rho.l.est -------#
@@ -705,6 +795,7 @@ for(s in 1:n.sims){
   
 }
 
+
 #-------delta -------#
 for(s in 1:n.sims){
   delta.est[s]<- paste("delta.est", s, sep = "_")
@@ -716,6 +807,7 @@ for(s in 1:n.sims){
   
 }
 
+
 #save annual data
 for(s in 1:n.sims){
   assign(final.states[s], 
@@ -723,7 +815,6 @@ for(s in 1:n.sims){
   
   assign(phi.est[s], 
          cbind(get(phi.est[s]), year = year))
-  
   
   assign(omega.est[s], 
          cbind(get(omega.est[s]), year = year))
@@ -753,8 +844,10 @@ for(s in 1:n.sims){
   
   all.rho.l.est[s]<- paste("rho.l.allsummary", s, sep = "_")
   all.rho.h.est[s]<- paste("rho.h.allsummary", s, sep = "_")
+ 
   all.alpha.l.est[s]<- paste("alpha.l.allsummary", s, sep = "_")
   all.alpha.h.est[s]<- paste("alpha.h.allsummary", s, sep = "_")
+  
   all.delta.est[s]<- paste("delta.allsummary", s, sep = "_")
   
   #If year 1 we set summary data frame to itself
@@ -771,14 +864,14 @@ for(s in 1:n.sims){
     assign(all.rho.l.est[s], 
            get(rho.l.est[s]))
     
-    assign(all.rho.h.est[s], 
-           get(rho.h.est[s]))
-    
     assign(all.alpha.l.est[s], 
            get(alpha.l.est[s]))
     
     assign(all.alpha.h.est[s], 
            get(alpha.h.est[s]))
+    
+    assign(all.rho.h.est[s], 
+           get(rho.h.est[s]))
     
     assign(all.delta.est[s], 
            get(delta.est[s]))
@@ -830,8 +923,13 @@ if(year == 1){
 }else{
   final.mean.years <- rbind(final.mean.years, final.mean.long)
 }
-  
+
+###### 3c. Select single obs data locations #####
+for(s in 1:n.sims){
+  site.single[year+1,s] <- sort(sample(c(2,4), 1)) #single state data location year 1
 }
+
+} #ends years loop
 
 
 #################################################################################################
@@ -842,7 +940,7 @@ States.df <- adply(State, c(1,2,3))
 
 colnames(States.df) <- c("site", "year", "sim", "state")              
 
-file_name = paste(path, 'States_statusquo.csv',sep = '/')
+file_name = paste(path, 'States_moredat_highp.csv',sep = '/')
 write.csv(States.df,file_name)
 
 
@@ -851,23 +949,157 @@ Mean.States.df <- aggregate(state ~ site+year,
                             data = as.data.frame(States.df), FUN = mean)
 
 
-file_name = paste(path, 'Mean.States_statusquo.csv',sep = '/')
+file_name = paste(path, 'Mean.States_moredat_highp.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
+#observation data -multi
+Obs.multi.df <- adply(Obs.multi, c(1,2,3))
+
+colnames(Obs.multi.df) <- c("site", "year", "sim", "observed.state")              
+
+file_name = paste(path, 'Obs.multi_moredat_highp.csv',sep = '/')
+write.csv(Obs.multi.df,file_name)
+
+#observation data -single
+Obs.single.df <- adply(Obs.single, c(1,2,3))
+
+colnames(Obs.single.df) <- c("site", "year", "sim", "observed.state")              
+
+file_name = paste(path, 'Obs.single_moredat_highp.csv',sep = '/')
+write.csv(Obs.single.df,file_name)
 
 #### Estimated Data ####
+##### Estimated States ####
 States.est.df <- final.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_statusquo.csv',sep = '/')
+file_name = paste(path, 'States.est_moredat_highp.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
 #mean across simulations
 Mean.States.est.df <- aggregate(state ~ site+year,
-                            data = as.data.frame(States.est.df), FUN = mean)
+                                data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_statusquo.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_moredat_highp.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
+##### Estimated parameters ####
+###### omega ######
 
+omegas <- list()
+
+for(s in 1:n.sims){
+  assign(all.omega.est[s], 
+         cbind(get(all.omega.est[s]), sim = s))
+  
+  omegas[[s]] <- get(all.omega.est[s])
+}
+
+omegas.df <- do.call("rbind", omegas)
+
+file_name = paste(path, 'omegas.est_moredat_highp.csv',sep = '/')
+write.csv(omegas.df,file_name)
+
+
+###### phi ######
+
+phis <- list()
+
+for(s in 1:n.sims){
+  assign(all.phi.est[s], 
+         cbind(get(all.phi.est[s]), sim = s))
+  
+  phis[[s]] <- get(all.phi.est[s])
+}
+
+phis.df <- do.call("rbind", phis)
+
+file_name = paste(path, 'phis.est_moredat_highp.csv',sep = '/')
+write.csv(phis.df,file_name)
+
+###### rho.l ######
+rho.ls <- list()
+
+for(s in 1:n.sims){
+  assign(all.rho.l.est[s], 
+         cbind(get(all.rho.l.est[s]), sim = s))
+  
+  rho.ls[[s]] <- get(all.rho.l.est[s])
+}
+
+rho.ls.df <- do.call("rbind", rho.ls)
+
+file_name = paste(path, 'rho.ls.est_moredat_highp.csv',sep = '/')
+write.csv(rho.ls.df,file_name)
+
+###### rho.h ######
+rho.hs <- list()
+
+for(s in 1:n.sims){
+  assign(all.rho.h.est[s], 
+         cbind(get(all.rho.h.est[s]), sim = s))
+  
+  rho.hs[[s]] <- get(all.rho.h.est[s])
+}
+
+rho.hs.df <- do.call("rbind", rho.ls)
+
+file_name = paste(path, 'rho.hs.est_moredat_highp.csv',sep = '/')
+write.csv(rho.hs.df,file_name)
+
+###### alpha.l ######
+alpha.ls <- list()
+
+for(s in 1:n.sims){
+  assign(all.alpha.l.est[s], 
+         cbind(get(all.alpha.l.est[s]), sim = s))
+  
+  alpha.ls[[s]] <- get(all.alpha.l.est[s])
+}
+
+alpha.ls.df <- do.call("rbind", alpha.ls)
+
+file_name = paste(path, 'alpha.ls.est_moredat_highp.csv',sep = '/')
+write.csv(alpha.ls.df,file_name)
+
+###### alpha.h ######
+alpha.hs <- list()
+
+for(s in 1:n.sims){
+  assign(all.alpha.h.est[s], 
+         cbind(get(all.alpha.h.est[s]), sim = s))
+  
+  alpha.hs[[s]] <- get(all.alpha.h.est[s])
+}
+
+alpha.hs.df <- do.call("rbind", alpha.hs)
+
+file_name = paste(path, 'alpha.hs.est_moredat_highp.csv',sep = '/')
+write.csv(alpha.hs.df,file_name)
+
+###### delta ######
+deltas <- list()
+
+for(s in 1:n.sims){
+  assign(all.delta.est[s], 
+         cbind(get(all.delta.est[s]), sim = s))
+  
+  deltas[[s]] <- get(all.delta.est[s])
+}
+
+deltas.df <- do.call("rbind", deltas)
+
+file_name = paste(path, 'deltas.est_moredat_highp.csv',sep = '/')
+write.csv(deltas.df,file_name)
+
+###### rhat vals ######
+file_name = paste(path, 'rhat.vals_moredat_highp.csv',sep = '/')
+write.csv(rhat.vals,file_name)
+
+#### TIMING ####
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+
+file_name = paste(path, 'moredat_highp_time.txt',sep = '/')
+write.table(time.taken,file_name)
 
