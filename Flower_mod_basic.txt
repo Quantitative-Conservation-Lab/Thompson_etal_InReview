@@ -13,8 +13,9 @@ model{
 # 3 detected high state
 # -------------------------------------------------
 
+#--------------------------------------------------#  
 #### PRIORS ####
-  
+
   #detection parameters
   
   rho.l ~ dbeta(pl.a,pl.b) #base detection for low state
@@ -68,7 +69,7 @@ model{
     #high abundance detected high abundance
     po.multi[3,i,3] <- pmulti.h*delta
 
-
+  #--------------------------------------------------#
   #### LIKELIHOOD ####
     State[i] ~ dcat(ps[,i])
   
@@ -78,8 +79,6 @@ model{
     State.fin[i] <- State[i] 
    
 } #i
-
-x <- 1--2
   
 } #end model
 

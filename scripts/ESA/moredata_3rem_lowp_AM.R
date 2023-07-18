@@ -925,8 +925,10 @@ if(year == 1){
 }
 
 ###### 3c. Select single obs data locations #####
-for(s in 1:n.sims){
-  site.single[year+1,s] <- sort(sample(c(2,4), 1)) #single state data location year 1
+if(year < n.years){
+  for(s in 1:n.sims){
+    site.single[year+1,s] <- sort(sample(c(2,4), 1)) #single state data location year 1
+  }
 }
 
 } #ends years loop
