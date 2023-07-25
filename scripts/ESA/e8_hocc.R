@@ -70,7 +70,7 @@ path <- here::here("results", "ESA", "e8_hocc")
 res <- c('results/ESA/e8_hocc') 
 
 #### Data ####
-n.sims <- 2
+n.sims <- 100
 n.sites <- 50 #number of sites
 n.years <- 10 
 n.occs <- 2 #number of occasions for occupancy data collection
