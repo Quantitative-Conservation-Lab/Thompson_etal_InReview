@@ -12,9 +12,9 @@ model{
 #--------------------------------------------------#
 #### LIKELIHOOD ####  
 for(i in 1:n.sites){
-  logit(psi[i]) <- psi0 - psi1*previous.rem[i] + psi2*site.char[i]
+  logit(psi.est[i]) <- psi0 - psi1*previous.rem[i] + psi2*site.char[i]
     
-  State[i] ~ dbern(psi[i])
+  State[i] ~ dbern(psi.est[i])
 
   for(j in 1:n.occs){
 
@@ -32,7 +32,7 @@ for(i in 1:n.sites){
     psi0 ~ dbeta(psi0.a, psi0.b) #base occupancy rate
     psi1 ~ dnorm(psi1.mean,psi1.tau) #effect on removal previously taking place at site i 
     psi1.tau <- 1/(psi1.sd * psi1.sd) #precision
-    psi2 ~ dnorm(psi2.mean, psi2.tau)
+    psi2 ~ dnorm(psi2.mean, psi2.tau) #effect of habitat
     psi2.tau <- 1/(psi2.sd * psi2.sd) #precision
   
     #FIX update b1
