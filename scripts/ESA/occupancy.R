@@ -24,7 +24,7 @@ occ.pr <- occ <- rep(NA,sites)
 detect.pr <- detect <- matrix(NA,nrow=sites,ncol = occasions)
 
 #simulate occupancy
-test <- rep(NA, sites)
+test <- array(NA, c(sites, 2))
 
 for(i in 1:sites){
   occ.pr[i] <- 1/(1+exp(-(b0 + b1*site.char[i]))) #inv.logit
@@ -34,7 +34,8 @@ for(i in 1:sites){
 #simulate detection 
 for(i in 1:sites){
   for(j in 1:2){
-    detect.pr[i,j] <- 1/(1+exp(-(a1 + a1*log(effort[i,j]))))
+    detect.pr[i,j] <- 1/(1+exp(-(a0 + a1*log(effort[i,j]))))
+    test[i,j] <- invlogit(a0+a1*log(effort[i,j]))
   }
   detect[i,1] <- rbinom(1,1,detect.pr[i,1])*occ[i]
   if(detect[i,1]==1){
@@ -43,6 +44,8 @@ for(i in 1:sites){
     detect[i,2] <- rbinom(1,1,detect.pr[i,2])*occ[i] #occupancy data
   }
 }
+
+all.equal(detect.pr, test)
 
 plot(effort[,1], detect.pr[,1])
 

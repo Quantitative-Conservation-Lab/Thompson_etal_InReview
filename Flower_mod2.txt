@@ -12,13 +12,14 @@ model{
 #--------------------------------------------------#
 #### LIKELIHOOD ####  
 for(i in 1:n.sites){
-  logit(psi.est[i]) <- psi0 - psi1*previous.rem[i] + psi2*site.char[i]
+  logit(psi.est[i]) <- psi0 - psi1*previous.rem[i] + psi2*site.char[i] + psi3*prev.state[i]
     
   State[i] ~ dbern(psi.est[i])
 
   for(j in 1:n.occs){
 
-    logit(obs.pr[i,j]) <- a0 + a1*logeffort[i,j] #probability of detection
+    #logit(obs.pr[i,j]) <- a0 + a1*logeffort[i,j] #probability of detection
+     obs.pr[i,j] <- 1/(1+exp(-(a0 + a1*logeffort[i,j] )))
       
     y.obs[i,j] ~ dbin(obs.pr[i,j] * State[i], n.occs)
   
@@ -34,6 +35,8 @@ for(i in 1:n.sites){
     psi1.tau <- 1/(psi1.sd * psi1.sd) #precision
     psi2 ~ dnorm(psi2.mean, psi2.tau) #effect of habitat
     psi2.tau <- 1/(psi2.sd * psi2.sd) #precision
+    psi3 ~ dnorm(psi3.mean, psi3.tau) #effect of previous invasion
+    psi3.tau <- 1/(psi3.sd * psi3.sd) #effect of previous invasion
   
     #FIX update b1
     b1 ~ dnorm(0,1)
