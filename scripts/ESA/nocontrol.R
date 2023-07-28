@@ -23,7 +23,18 @@ n.resource <- 20 #number of resource units available
 psi <- State <- array(NA,c(n.sites, n.years+1, n.sims)) 
 # effect of habitat quality on occupancy
 set.seed(03222021)
-site.char <- runif(n.sites) #might be multivariate, this is data
+#site.char <- runif(n.sites) #might be multivariate, this is data
+
+#State.init.allsims <- State[,1,1]
+
+path2 <- here::here("data")
+file_name = paste(path2, 'Site_char.csv',sep = '/')
+# write.csv(site.char,file_name)
+
+site.chardat <- read.csv(file_name)
+
+site.char <- site.chardat[,2]
+
 psi0 <- -1 #base occupancy
 psi2 <- 0.5  #effect of site characteristics 
 psi3 <- 2
@@ -36,11 +47,11 @@ set.seed(03222021)
 #   State[i,1,1:n.sims] <- rbinom(1,1,psi[i,1,1:n.sims]) #true state
 # }
 
-State.init.allsims <- State[,1,1]
+#State.init.allsims <- State[,1,1]
 
 path2 <- here::here("data")
 file_name = paste(path2, 'States_init.csv',sep = '/')
-write.csv(State.init.allsims,file_name)
+# write.csv(State.init.allsims,file_name)
 
 State.init <- read.csv(file_name)
 
@@ -114,3 +125,6 @@ write.csv(Mean.States.df ,file_name)
 round((Mean.States.df %>% filter(year == n.years))[,3])
 sum( round((Mean.States.df %>% filter(year == n.years))[,3]))
 
+
+dat <- Mean.States.df %>% filter(year == n.years)
+mean(dat[,3])
