@@ -491,7 +491,6 @@ e625_rand_effort <- e625_rand_effort %>% filter(effort2 < 10)
 e625_rand_effort <- e625_rand_effort %>% filter(year == 10)
 e625.rand.effort <- min(e625_rand_effort$effort2)
 
-
 ##### e625, linear ####
 path2 <- "e625_linear"
 
@@ -604,6 +603,72 @@ heatmap.dat <- rbind(e375_hocc_map, e375_rand_map, e375_linear_map)
 ggplot(heatmap.dat, aes(x = site, y = dr, fill = state)) +
   geom_tile()+
   theme_classic()
+
+#### Sites visited and removed avg ####
+path2 <- "e375_hocc"
+file_name = paste(path, path2,'rem.site_e375_hocc.csv',sep = '/')
+e375_hocc_rems <- read.csv(file_name)[-1]
+
+rem.s <- array(NA, dim = c(n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(y in 1:n.years){
+    df <- e375_hocc_rems %>% filter(year == y, sim == s)
+    rem.s[y,s] <- sum(df$observed.state)
+  }
+}
+
+colMeans(rem.s)
+
+path2 <- "e375_random"
+file_name = paste(path, path2,'rem.site_e375_random.csv',sep = '/')
+e375_rand_rems <- read.csv(file_name)[-1]
+
+rem.s2 <- array(NA, dim = c(n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(y in 1:n.years){
+    df <- e375_rand_rems %>% filter(year == y, sim == s)
+    rem.s2[y,s] <- sum(df$observed.state)
+  }
+}
+
+colMeans(rem.s2)
+
+path2 <- "e375_random"
+file_name = paste(path, path2,'rem.site_e375_random.csv',sep = '/')
+e375_rand_rems <- read.csv(file_name)[-1]
+
+rem.s2 <- array(NA, dim = c(n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(y in 1:n.years){
+    df <- e375_rand_rems %>% filter(year == y, sim == s)
+    rem.s[y,s] <- sum(df$observed.state)
+  }
+}
+
+path2 <- "e375_linear"
+file_name = paste(path, path2,'rem.site_e375_linear.csv',sep = '/')
+e375_linear_rems <- read.csv(file_name)[-1]
+
+rem.s3 <- array(NA, dim = c(n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(y in 1:n.years){
+    df <- e375_linear_rems %>% filter(year == y, sim == s)
+    rem.s3[y,s] <- sum(df$observed.state)
+  }
+}
+
+colMeans(rem.s3)
+
+###### compare ####
+colMeans(rem.s)
+colMeans(rem.s2)
+colMeans(rem.s3)
+
+colMeans(rem.s3) > colMeans(rem.s)
 
 #### Learning ####
 ##### psi 0 ####
