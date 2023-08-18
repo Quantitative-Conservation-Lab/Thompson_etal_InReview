@@ -69,8 +69,8 @@ sink()
 
 
 #### Path Name ####
-path <- here::here("results", "ESA", "e5_linear")
-res <- c('results/ESA/e5_linear') 
+path <- here::here("results", "ESA", "e25_random")
+res <- c('results/ESA/e25_random') 
 
 #### Data ####
 n.sims <-  25 #100
@@ -92,6 +92,7 @@ psi <- State <- array(NA,c(n.sites, n.years+1, n.sims))
 set.seed(03222021)
 site.char <- runif(n.sites) #might be multivariate, this is data
 
+
 # set.seed(03222021)
 # 
 # for(i in 1:n.sites){
@@ -111,7 +112,7 @@ State[,1,1:n.sims] <- State.init[,2]
 #Randomly order all sites (next year order of sites will be based on some factor)
 sites.rem <- array(NA, dim = c(n.sites, n.years, n.sims))
 
-sites.rem[,1:n.years,] <- seq(1,n.sites)
+sites.rem[,1,] <- sample(seq(1,n.sites), n.sites, replace = F)
 
 logsearch.effort <- array(NA, c(n.occs,n.years, n.sims))
 
@@ -779,12 +780,12 @@ for(year in 1:n.years){
   }
   
   ###### 3b. Make decision  #####
-  #Effort level: remove at effort where detection probability is estimated to be 0.8
+  #Effort level: remove at effort where detection probability is estimated to be 0.25
   #Removal locations: rank sites by occupancy probability, remove until resource is expelled
   
-  #1. find effort where detection probability = 0.5
+  #1. find effort where detection probability = 0.25
   
-  det.p <- log(0.5/(1-0.5))
+  det.p <- log(0.25/(1-0.25))
   
   if(year < n.years){
     for(s in 1:n.sims){
@@ -799,6 +800,10 @@ for(year in 1:n.years){
     
     mean.psis <- array(NA, c(n.sites, n.years, n.sims))
     
+    #2. find locations
+    for(s in 1:n.sims){
+      sites.rem[,year+1,s] <- sample(seq(1,n.sites), n.sites, replace = F)
+    }
     
   }else{
     #during the final year, we estimate the final states
@@ -825,7 +830,7 @@ States.df <- adply(State, c(1,2,3))
 
 colnames(States.df) <- c("site", "year", "sim", "state")              
 
-file_name = paste(path, 'States_e5_linear.csv',sep = '/')
+file_name = paste(path, 'States_e25_random.csv',sep = '/')
 write.csv(States.df,file_name)
 
 
@@ -834,7 +839,7 @@ Mean.States.df <- aggregate(state ~ site+year,
                             data = as.data.frame(States.df), FUN = mean)
 
 
-file_name = paste(path, 'Mean.States_e5_linear.csv',sep = '/')
+file_name = paste(path, 'Mean.States_e25_random.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
@@ -842,14 +847,13 @@ y.obs.df <- adply(y.obs, c(1,2,3,4))
 
 colnames(y.obs.df) <- c("site", "occasion", "year", "sim", "observed.state")              
 
-file_name = paste(path, 'y.obs_e5_linear.csv',sep = '/')
+file_name = paste(path, 'y.obs_e25_random.csv',sep = '/')
 write.csv(y.obs.df,file_name)
 
 
 rem.site.df <- y.obs.df %>% filter(observed.state == 1)
-file_name = paste(path, 'rem.site_e5_linear.csv',sep = '/')
+file_name = paste(path, 'rem.site_e25_random.csv',sep = '/')
 write.csv(rem.site.df,file_name)
-
 
 #### sites visited ####
 sites.visit <- adply(rem.vec, c(1,2,3))
@@ -862,12 +866,12 @@ sites.visit <- sites.visit %>% filter(!is.na(rem.val))
 sites.visit.norem <- sites.visit %>% filter(rem.val == 0)
 sites.visit.norem$rem.val <- 1
 sites.visit.norem <- aggregate(rem.val ~ year + sim,
-                       data = as.data.frame(sites.visit.norem), FUN = sum)
+                               data = as.data.frame(sites.visit.norem), FUN = sum)
 
 
 
 sites.visit.norem.avg <- aggregate(rem.val ~ year,
-                                 data = as.data.frame(sites.visit.norem), FUN = mean)
+                                   data = as.data.frame(sites.visit.norem), FUN = mean)
 
 colnames(sites.visit.norem.avg)[2] <- "num.visit.norem"
 
@@ -875,26 +879,24 @@ colnames(sites.visit.norem.avg)[2] <- "num.visit.norem"
 sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
 
 sites.visit.rem<- aggregate(rem.val ~ year + sim,
-                                 data = as.data.frame(sites.visit.rem), FUN = sum)
+                            data = as.data.frame(sites.visit.rem), FUN = sum)
 
 sites.visit.rem.avg <- aggregate(rem.val ~ year,
-                               data = as.data.frame(sites.visit.rem), FUN = mean)
+                                 data = as.data.frame(sites.visit.rem), FUN = mean)
 
 
 colnames(sites.visit.rem.avg)[2] <- "num.visit.rem"
 
 sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
 
-file_name = paste(path, 'sites.visit_e5_linear.csv',sep = '/')
+file_name = paste(path, 'sites.visit_e25_random.csv',sep = '/')
 write.csv(sites.df,file_name)
-
-
 
 #### Estimated Data ####
 ##### Estimated States ####
 States.est.df <- States.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'States.est_e25_random.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
@@ -902,7 +904,7 @@ write.csv(States.est.df,file_name)
 Mean.States.est.df <- aggregate(state ~ site+year,
                                 data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_e25_random.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
 ##### Estimated effort ####
@@ -910,7 +912,7 @@ logsearch.effort.df <- adply(logsearch.effort[1,,], c(1,2))
 
 colnames(logsearch.effort.df) <- c("year", "sim", "effort")              
 
-file_name = paste(path, 'logeffort_e5_linear.csv',sep = '/')
+file_name = paste(path, 'logeffort_e25_random.csv',sep = '/')
 write.csv(logsearch.effort.df,file_name)
 
 ##### Estimated parameters ####
@@ -927,7 +929,7 @@ for(s in 1:n.sims){
 
 psis.df <- do.call("rbind", psis)
 
-file_name = paste(path, 'psis.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'psis.est_e25_random.csv',sep = '/')
 write.csv(psis.df,file_name)
 
 ###### psi0 ######
@@ -942,7 +944,7 @@ for(s in 1:n.sims){
 
 psi0s.est.df <- do.call("rbind", psi0s.est)
 
-file_name = paste(path, 'psi0s.est.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'psi0s.est.est_e25_random.csv',sep = '/')
 write.csv(psi0s.est.df,file_name)
 
 ###### psi1 ######
@@ -957,7 +959,7 @@ for(s in 1:n.sims){
 
 psi1s.est.df <- do.call("rbind", psi1s.est)
 
-file_name = paste(path, 'psi1s.est.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'psi1s.est.est_e25_random.csv',sep = '/')
 write.csv(psi1s.est.df,file_name)
 
 ###### psi2 ######
@@ -972,7 +974,7 @@ for(s in 1:n.sims){
 
 psi2s.est.df <- do.call("rbind", psi2s.est)
 
-file_name = paste(path, 'psi2s.est.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'psi2s.est.est_e25_random.csv',sep = '/')
 write.csv(psi2s.est.df,file_name)
 
 ###### psi3 ######
@@ -987,7 +989,7 @@ for(s in 1:n.sims){
 
 psi3s.est.df <- do.call("rbind", psi3s.est)
 
-file_name = paste(path, 'psi3s.est.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'psi3s.est.est_e25_random.csv',sep = '/')
 write.csv(psi3s.est.df,file_name)
 
 ###### a0 ######
@@ -1002,7 +1004,7 @@ for(s in 1:n.sims){
 
 a0s.est.df <- do.call("rbind", a0s.est)
 
-file_name = paste(path, 'a0s.est.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'a0s.est.est_e25_random.csv',sep = '/')
 write.csv(a0s.est.df,file_name)
 
 ###### a1 ######
@@ -1017,18 +1019,18 @@ for(s in 1:n.sims){
 
 a1s.est.df <- do.call("rbind", a1s.est)
 
-file_name = paste(path, 'a1s.est.est_e5_linear.csv',sep = '/')
+file_name = paste(path, 'a1s.est.est_e25_random.csv',sep = '/')
 write.csv(a1s.est.df,file_name)
 
 ###### rhat vals ######
-file_name = paste(path, 'rhat.vals_e5_linear.csv',sep = '/')
+file_name = paste(path, 'rhat.vals_e25_random.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
 #### TIMING ####
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-file_name = paste(path, 'e5_linear_time.txt',sep = '/')
+file_name = paste(path, 'e25_random_time.txt',sep = '/')
 write.table(time.taken,file_name)
 
 round((Mean.States.df %>% filter(year == n.years))[,3])

@@ -93,13 +93,13 @@ for(s in 1:n.sims){
           
         if(y.obs[i,2, year, s]==1){
            rem.vec[i,year,s] <- 1
-           resource.total[year,s] <- resource.total[year,s] + 0.5 + 2
+           resource.total[year,s] <- resource.total[year,s] + 2*0.5 + 2
         } 
           
          #if we don't detect anything, then 
          if(y.obs[i,2, year, s]==0){
            rem.vec[i,year,s] <- 0
-           resource.total[year,s] <- resource.total[year,s] + 0.5
+           resource.total[year,s] <- resource.total[year,s] + 2*0.5
          } 
       }
     #if we do not have any more resources to spend:
@@ -169,13 +169,13 @@ for(year in 1:n.years){
             
             if(y.obs[i,2, year, s]==1){
               rem.vec[i,year,s] <- 1
-              resource.total[year,s] <- resource.total[year,s] + exp(logsearch.effort[1,year,s]) + 2
+              resource.total[year,s] <- resource.total[year,s] + 2*exp(logsearch.effort[1,year,s]) + 2
             } 
             
             #if we don't detect anything, then 
             if(y.obs[i,2, year, s]==0){
               rem.vec[i,year,s] <- 0
-              resource.total[year,s] <- resource.total[year,s] + exp(logsearch.effort[1,year,s])
+              resource.total[year,s] <- resource.total[year,s] + 2*exp(logsearch.effort[1,year,s])
             } 
           }
           #if we do not have any more resources to spend:
@@ -241,3 +241,40 @@ write.csv(rem.site.df,file_name)
 #round((Mean.States.est.df %>% filter(year == n.years))[,3])
 
 sum(round((Mean.States.df %>% filter(year == n.years+1))[,3]))
+
+#### sites visited ####
+sites.visit <- adply(rem.vec, c(1,2,3))
+
+colnames(sites.visit) <- c("site", "year", "sim", "rem.val")   
+
+sites.visit <- sites.visit %>% filter(!is.na(rem.val))
+
+#visit no remove
+sites.visit.norem <- sites.visit %>% filter(rem.val == 0)
+sites.visit.norem$rem.val <- 1
+sites.visit.norem <- aggregate(rem.val ~ year + sim,
+                               data = as.data.frame(sites.visit.norem), FUN = sum)
+
+
+
+sites.visit.norem.avg <- aggregate(rem.val ~ year,
+                                   data = as.data.frame(sites.visit.norem), FUN = mean)
+
+colnames(sites.visit.norem.avg)[2] <- "num.visit.norem"
+
+#visit remove
+sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
+
+sites.visit.rem<- aggregate(rem.val ~ year + sim,
+                            data = as.data.frame(sites.visit.rem), FUN = sum)
+
+sites.visit.rem.avg <- aggregate(rem.val ~ year,
+                                 data = as.data.frame(sites.visit.rem), FUN = mean)
+
+
+colnames(sites.visit.rem.avg)[2] <- "num.visit.rem"
+
+sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
+
+file_name = paste(path, 'sites.visit_eno_random.csv',sep = '/')
+write.csv(sites.df,file_name)

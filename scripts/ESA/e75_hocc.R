@@ -69,8 +69,8 @@ sink()
 
 
 #### Path Name ####
-path <- here::here("results", "ESA", "e5_hocc_AR")
-res <- c('results/ESA/e5_hocc_AR') 
+path <- here::here("results", "ESA", "e75_hocc")
+res <- c('results/ESA/e75_hocc') 
 
 #### Data ####
 n.sims <-  25 #100
@@ -157,13 +157,13 @@ for(s in 1:n.sims){
           
         if(y.obs[i,2, year, s]==1){
            rem.vec[i,year,s] <- 1
-           resource.total[year,s] <- resource.total[year,s] + 0.5 + 2
+           resource.total[year,s] <- resource.total[year,s] + 2*0.5 + 2
         } 
           
          #if we don't detect anything, then 
          if(y.obs[i,2, year, s]==0){
            rem.vec[i,year,s] <- 0
-           resource.total[year,s] <- resource.total[year,s] + 0.5
+           resource.total[year,s] <- resource.total[year,s] + 2*0.5
          } 
       }
     #if we do not have any more resources to spend:
@@ -299,13 +299,13 @@ for(year in 1:n.years){
             
             if(y.obs[i,2, year, s]==1){
               rem.vec[i,year,s] <- 1
-              resource.total[year,s] <- resource.total[year,s] + exp(logsearch.effort[1,year,s]) + 2
+              resource.total[year,s] <- resource.total[year,s] + 2*exp(logsearch.effort[1,year,s]) + 2
             } 
             
             #if we don't detect anything, then 
             if(y.obs[i,2, year, s]==0){
               rem.vec[i,year,s] <- 0
-              resource.total[year,s] <- resource.total[year,s] + exp(logsearch.effort[1,year,s])
+              resource.total[year,s] <- resource.total[year,s] + 2*exp(logsearch.effort[1,year,s])
             } 
           }
           #if we do not have any more resources to spend:
@@ -787,12 +787,12 @@ for(year in 1:n.years){
   }
   
   ###### 3b. Make decision  #####
-  #Effort level: remove at effort where detection probability is estimated to be 0.8
+  #Effort level: remove at effort where detection probability is estimated to be 0.75
   #Removal locations: rank sites by occupancy probability, remove until resource is expelled
   
-  #1. find effort where detection probability = 0.5
+  #1. find effort where detection probability = 0.75
   
-  det.p <- log(0.5/(1-0.5))
+  det.p <- log(0.75/(1-0.75))
   
   if(year < n.years){
     for(s in 1:n.sims){
@@ -838,7 +838,7 @@ States.df <- adply(State, c(1,2,3))
 
 colnames(States.df) <- c("site", "year", "sim", "state")              
 
-file_name = paste(path, 'States_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'States_e75_hocc.csv',sep = '/')
 write.csv(States.df,file_name)
 
 
@@ -847,7 +847,7 @@ Mean.States.df <- aggregate(state ~ site+year,
                             data = as.data.frame(States.df), FUN = mean)
 
 
-file_name = paste(path, 'Mean.States_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States_e75_hocc.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
@@ -855,19 +855,56 @@ y.obs.df <- adply(y.obs, c(1,2,3,4))
 
 colnames(y.obs.df) <- c("site", "occasion", "year", "sim", "observed.state")              
 
-file_name = paste(path, 'y.obs_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'y.obs_e75_hocc.csv',sep = '/')
 write.csv(y.obs.df,file_name)
 
 
 rem.site.df <- y.obs.df %>% filter(observed.state == 1)
-file_name = paste(path, 'rem.site_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'rem.site_e75_hocc.csv',sep = '/')
 write.csv(rem.site.df,file_name)
+
+#### sites visited ####
+sites.visit <- adply(rem.vec, c(1,2,3))
+
+colnames(sites.visit) <- c("site", "year", "sim", "rem.val")   
+
+sites.visit <- sites.visit %>% filter(!is.na(rem.val))
+
+#visit no remove
+sites.visit.norem <- sites.visit %>% filter(rem.val == 0)
+sites.visit.norem$rem.val <- 1
+sites.visit.norem <- aggregate(rem.val ~ year + sim,
+                               data = as.data.frame(sites.visit.norem), FUN = sum)
+
+
+
+sites.visit.norem.avg <- aggregate(rem.val ~ year,
+                                   data = as.data.frame(sites.visit.norem), FUN = mean)
+
+colnames(sites.visit.norem.avg)[2] <- "num.visit.norem"
+
+#visit remove
+sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
+
+sites.visit.rem<- aggregate(rem.val ~ year + sim,
+                            data = as.data.frame(sites.visit.rem), FUN = sum)
+
+sites.visit.rem.avg <- aggregate(rem.val ~ year,
+                                 data = as.data.frame(sites.visit.rem), FUN = mean)
+
+
+colnames(sites.visit.rem.avg)[2] <- "num.visit.rem"
+
+sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
+
+file_name = paste(path, 'sites.visit_e75_hocc.csv',sep = '/')
+write.csv(sites.df,file_name)
 
 #### Estimated Data ####
 ##### Estimated States ####
 States.est.df <- States.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'States.est_e75_hocc.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
@@ -875,7 +912,7 @@ write.csv(States.est.df,file_name)
 Mean.States.est.df <- aggregate(state ~ site+year,
                                 data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_e75_hocc.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
 ##### Estimated effort ####
@@ -883,7 +920,7 @@ logsearch.effort.df <- adply(logsearch.effort[1,,], c(1,2))
 
 colnames(logsearch.effort.df) <- c("year", "sim", "effort")              
 
-file_name = paste(path, 'logeffort_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'logeffort_e75_hocc.csv',sep = '/')
 write.csv(logsearch.effort.df,file_name)
 
 ##### Estimated parameters ####
@@ -900,7 +937,7 @@ for(s in 1:n.sims){
 
 psis.df <- do.call("rbind", psis)
 
-file_name = paste(path, 'psis.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'psis.est_e75_hocc.csv',sep = '/')
 write.csv(psis.df,file_name)
 
 ###### psi0 ######
@@ -915,7 +952,7 @@ for(s in 1:n.sims){
 
 psi0s.est.df <- do.call("rbind", psi0s.est)
 
-file_name = paste(path, 'psi0s.est.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'psi0s.est.est_e75_hocc.csv',sep = '/')
 write.csv(psi0s.est.df,file_name)
 
 ###### psi1 ######
@@ -930,7 +967,7 @@ for(s in 1:n.sims){
 
 psi1s.est.df <- do.call("rbind", psi1s.est)
 
-file_name = paste(path, 'psi1s.est.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'psi1s.est.est_e75_hocc.csv',sep = '/')
 write.csv(psi1s.est.df,file_name)
 
 ###### psi2 ######
@@ -945,7 +982,7 @@ for(s in 1:n.sims){
 
 psi2s.est.df <- do.call("rbind", psi2s.est)
 
-file_name = paste(path, 'psi2s.est.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'psi2s.est.est_e75_hocc.csv',sep = '/')
 write.csv(psi2s.est.df,file_name)
 
 ###### psi3 ######
@@ -960,7 +997,7 @@ for(s in 1:n.sims){
 
 psi3s.est.df <- do.call("rbind", psi3s.est)
 
-file_name = paste(path, 'psi3s.est.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'psi3s.est.est_e75_hocc.csv',sep = '/')
 write.csv(psi3s.est.df,file_name)
 
 ###### a0 ######
@@ -975,7 +1012,7 @@ for(s in 1:n.sims){
 
 a0s.est.df <- do.call("rbind", a0s.est)
 
-file_name = paste(path, 'a0s.est.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'a0s.est.est_e75_hocc.csv',sep = '/')
 write.csv(a0s.est.df,file_name)
 
 ###### a1 ######
@@ -990,18 +1027,18 @@ for(s in 1:n.sims){
 
 a1s.est.df <- do.call("rbind", a1s.est)
 
-file_name = paste(path, 'a1s.est.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'a1s.est.est_e75_hocc.csv',sep = '/')
 write.csv(a1s.est.df,file_name)
 
 ###### rhat vals ######
-file_name = paste(path, 'rhat.vals_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'rhat.vals_e75_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
 #### TIMING ####
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-file_name = paste(path, 'e5_hocc_time.txt',sep = '/')
+file_name = paste(path, 'e75_hocc_time.txt',sep = '/')
 write.table(time.taken,file_name)
 
 round((Mean.States.df %>% filter(year == n.years))[,3])
