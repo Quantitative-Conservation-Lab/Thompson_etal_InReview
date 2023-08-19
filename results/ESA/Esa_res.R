@@ -5,6 +5,7 @@ library(plyr)
 library(boot)
 library(ggsci)
 library(gridExtra)
+library(RColorBrewer)
 
 path <- here::here("results", "ESA")
 n.sites <- 50
