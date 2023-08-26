@@ -34,31 +34,34 @@ model{
 # -------------------------------------------------
 
 #### PRIORS ####
-  eps.l ~ dbeta(eps.l_a,eps.l_b) #erradication when at low state
-  eps.h ~ dbeta(eps.h_a,eps.h_b) #erradication when at high state
-  gamma0 ~dnorm(gamma0_a,gamma0_b) #intrinsic invasion probability 
-  gamma1 ~ dnorm(gamma1_a, gamma1_b) #effect of neighboring locations on invasion probability
-  phi.lh ~ dbeta(phi.lh_a, phi.lh_b) #transition from low to high
-  phi.hh ~ dbeta(phi.hh_a, phi.hh_b) #transition from high to high
+  eps.l ~ dbeta(eps.la,eps.l.b) #erradication when at low state
+  eps.h ~ dbeta(eps.h.a,eps.h.b) #erradication when at high state
   
-  rho.l ~ dbeta(pl_a,pl_b) #base detection for low state
-  alpha.l ~ dnorm(l_mean,l_tau) #difference in baseline detection probability between observation1 and 2, low state
-  rho.h ~ dbeta(ph_a,ph_b) #base detection for high state
-  alpha.h ~ dnorm(h_mean, h_tau) #difference in baseline detection probability between observation1 and 2, high state
-  delta ~ dbeta(delta_a, delta_b) #probability of observing the high state given species has been detected and true state is high
+  gamma.0 ~dnorm(gamma.0.mean,gamma.0.tau) #intrinsic invasion probability
+  gamma.0.tau <- 1/(gamma.0.sd*gamma.0.sd)
+  gamma.1 ~dnorm(gamma.1.mean, gamma.1.tau) #effect of neighboring locations on invasion probability
+  gamma.1.tau <- 1/(gamma.1.sd*gamma.1.sd)
+  
+  phi.lh ~ dbeta(phi.lh.a, phi.lh.b) #transition from low to high
+  phi.hh ~ dbeta(phi.hh.a, phi.hh.b) #transition from high to high
+  
+  p.l0 ~ dbeta(p.l0.a, p.l0.b) #base detection for low state
+  p.l1 ~ dnorm(p.l1.mean, p.l1.tau) #effect of effort 
+  p.l1.tau <- 1/(p.l1.sd * p.l1.sd)
+  
+  p.h0 ~ dbeta(p.h0.a, p.h0.b) #base detection for high state
+  p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
+  p.h1.tau <- 1/(p.h1.sd * p.h1.sd)
+  
+  logit(pD.l[i,j]) <- p.l0 + p.l1*logeffort[i,j]
+  logit(pD.h[i,j]) <- p.h0 + p.h1*logeffort[i,j]
 
-
-  #detection parameters
-  l_tau <- 1/(l_sd * l_sd) #precision
-  h_tau <- 1/(h_sd * h_sd) #precision
-  
-  logit(𝑝_𝑠^𝐷 )=𝑝_𝑠0^𝐷+𝑝_𝑠1^𝐷∗log⁡(effort_s )
-  
-  logit(pD.l) <- rho.l
-  logit(pD.h) <- rho.h
-  
 
 #--------------------------------------------------#
+###############################
+#start fixing here: #################
+###################################
+
 # STATE TRANSITION
 for (i in 1:n.sites){  
   # State transition probabilities: probability of S(t+1) given S(t)
