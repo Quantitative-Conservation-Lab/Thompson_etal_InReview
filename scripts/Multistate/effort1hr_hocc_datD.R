@@ -34,38 +34,45 @@ model{
 # -------------------------------------------------
 
 #### PRIORS ####
+  #Erradication:
   eps.l ~ dbeta(eps.la,eps.l.b) #erradication when at low state
   eps.h ~ dbeta(eps.h.a,eps.h.b) #erradication when at high state
   
+  #Invasion:
   gamma.0 ~dnorm(gamma.0.mean,gamma.0.tau) #intrinsic invasion probability
   gamma.0.tau <- 1/(gamma.0.sd*gamma.0.sd)
-  gamma.1 ~dnorm(gamma.1.mean, gamma.1.tau) #effect of neighboring locations on invasion probability
+  gamma.1 ~dnorm(gamma.1.mean, gamma.1.tau) #effect of site characteristics on invasion probability
   gamma.1.tau <- 1/(gamma.1.sd*gamma.1.sd)
+  gamma.2 ~dnorm(gamma.2.mean, gamma.2.tau) #effect of site characteristics on invasion probability
+  gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd)
   
+  #State transition:
   phi.lh ~ dbeta(phi.lh.a, phi.lh.b) #transition from low to high
   phi.hh ~ dbeta(phi.hh.a, phi.hh.b) #transition from high to high
   
+  #Detection low state:
   p.l0 ~ dbeta(p.l0.a, p.l0.b) #base detection for low state
   p.l1 ~ dnorm(p.l1.mean, p.l1.tau) #effect of effort 
   p.l1.tau <- 1/(p.l1.sd * p.l1.sd)
   
+  #Detection high state:
   p.h0 ~ dbeta(p.h0.a, p.h0.b) #base detection for high state
   p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
   p.h1.tau <- 1/(p.h1.sd * p.h1.sd)
   
-  logit(pD.l[i,j]) <- p.l0 + p.l1*logeffort[i,j]
-  logit(pD.h[i,j]) <- p.h0 + p.h1*logeffort[i,j]
-
+  for(i in 1:n.sites){
+    for(j in 1:n.obs){
+      logit(pD.l[i,j]) <- p.l0 + p.l1*logeffort[i,j]
+      logit(pD.h[i,j]) <- p.h0 + p.h1*logeffort[i,j]
+    }
+  }
+  
 
 #--------------------------------------------------#
-###############################
-#start fixing here: #################
-###################################
-
 # STATE TRANSITION
 for (i in 1:n.sites){  
   # State transition probabilities: probability of S(t+1) given S(t)
-  for (t in 1:n.months){
+  for (t in 1:n.weeks){
     #index = [current state, location, time, future state]
     #empty stay empty
     ps[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
@@ -95,41 +102,43 @@ for (i in 1:n.sites){
     #low abundance to high abundance
     ps[3,i,t,3] <- (1- eps.h*rem.vec[i])*(phi.hh)
     
+    logit(gamma[i,t]) <-gamma0 + gamma1*site.char[i] + gamma2*D[i,t] +  #invasion probability
+    
     #--------------------------------------------------#
     # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
     
-    #Empty and not observed  
-    po_datD[1,i,t,1] <- 1
-    
-    #Empty and observed
-    po_datD[1,i,t,2] <- 0
- 
-    #Low state and not observed
-    po_datD[2,i,t,1] <- 1-p1.l #not detected probability
-    
-    #Low state and observed
-    po_datD[2,i,t,2] <- p1.l #detection probability
-    
-    #High state and not observed
-    po_datD[3,i,t,1] <- 1-p1.h #not detected probability
-    
-    #High state and observed
-    po_datD[3,i,t,2] <- p1.h #detection probability
-   
+    for(j in 1:n.obs){
 
-   logit(gamma[i,t]) <- gamma1*D[i,t] + gamma0 #invasion probability
-
+      #Empty and not observed  
+      po_datD[1,i,j,t,1] <- 1
+      
+      #Empty and observed
+      po_datD[1,i,j,t,2] <- 0
    
+      #Low state and not observed
+      po_datD[2,i,j,t,1] <- 1-pD.l[i,j] #not detected probability
+      
+      #Low state and observed
+      po_datD[2,i,j,t,2] <- pD.l[i,j] #detection probability
+      
+      #High state and not observed
+      po_datD[3,i,j,t,1] <- 1-pD.h[i,j] #not detected probability
+      
+      #High state and observed
+      po_datD[3,i,j,t,2] <- pD.h[i,j] #detection probability
+      
+    } #j 
   } #t
 } #i
 
+#### START FIXING HERE ####
   #### Likelihood ####
   for (i in 2:(n.sites-1)){
     # Define state at beginning
     State[i,1] <- S.init[i] #we know state at the start
     D[i,1] <- D.init[i]
     
-    for (t in 2:n.months){ #12
+    for (t in 2:n.weeks){ #12
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(ps[State[i,t-1], i, t-1, ]) 
       
