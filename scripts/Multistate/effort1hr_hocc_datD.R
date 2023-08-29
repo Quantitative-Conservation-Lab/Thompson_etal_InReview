@@ -13,7 +13,7 @@ library(plyr)
 start.time <- Sys.time()
 
 #### JAGS model ####
-sink("Flower_mutlistate_datD.txt")
+sink("Flower_multistate_datD.txt")
 cat("
 model{
 
@@ -35,12 +35,12 @@ model{
 
 #### PRIORS ####
   #Erradication:
-  eps.l0 ~ dbeta(eps.la,eps.l.b) #erradication when at low state
-  eps.l1 ~ dnorm(eps.l1.mean, eps.l1.tau) #effect of effort 
+  eps.l0 ~ dbeta(eps.l0.a,eps.l0.b) #eradication when at low state
+  eps.l1 ~ dnorm(eps.l1.mean, eps.l1.tau) #effect of eradication 
   eps.l1.tau <- 1/(eps.l1.sd * eps.l1.sd)
   
-  eps.h0 ~ dbeta(eps.h.a,eps.h.b) #erradication when at high state
-  eps.h1 ~ dnorm(eps.h1.mean, eps.h1.tau) #effect of effort 
+  eps.h0 ~ dbeta(eps.h0.a,eps.h0.b) #eradication when at high state
+  eps.h1 ~ dnorm(eps.h1.mean, eps.h1.tau) #effect of eradication 
   eps.h1.tau <- 1/(eps.h1.sd * eps.h1.sd)
   
   #Invasion:
@@ -48,7 +48,7 @@ model{
   gamma.0.tau <- 1/(gamma.0.sd*gamma.0.sd)
   gamma.1 ~dnorm(gamma.1.mean, gamma.1.tau) #effect of site characteristics on invasion probability
   gamma.1.tau <- 1/(gamma.1.sd*gamma.1.sd)
-  gamma.2 ~dnorm(gamma.2.mean, gamma.2.tau) #effect of site Neighboring invasion state
+  gamma.2 ~dnorm(gamma.2.mean, gamma.2.tau) #effect of Neighboring invasion state
   gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd)
   
   #State transition:
@@ -65,13 +65,16 @@ model{
   p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
   p.h1.tau <- 1/(p.h1.sd * p.h1.sd)
 
+  logit(pD.l) <- p.l0 + p.l1*logeffort #detection low state
+  logit(pD.h) <- p.h0 + p.h1*logeffort #detection high state
+  
 #--------------------------------------------------#
 # STATE TRANSITION
 for (i in 1:n.sites){  
   # State transition probabilities: probability of S(t+1) given S(t)
   for (t in 1:n.weeks){
   
-    logit(gamma[i,t]) <-gamma0 + gamma1*site.char[i] + gamma2*D[i,t] #invasion probability
+    logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
     logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]
     logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]
     
@@ -108,10 +111,7 @@ for (i in 1:n.sites){
     #--------------------------------------------------#
     # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
     
-    for(j in 1:n.obs){
-
-      logit(pD.l[i,j]) <- p.l0 + p.l1*logeffort[i,j]
-      logit(pD.h[i,j]) <- p.h0 + p.h1*logeffort[i,j]
+    for(j in 1:n.occs){
 
       #Empty and not observed  
       po.datD[1,i,j,t,1] <- 1
@@ -120,16 +120,16 @@ for (i in 1:n.sites){
       po.datD[1,i,j,t,2] <- 0
    
       #Low state and not observed
-      po.datD[2,i,j,t,1] <- 1-pD.l[i,j] #not detected probability
+      po.datD[2,i,j,t,1] <- 1-pD.l #not detected probability
       
       #Low state and observed
-      po.datD[2,i,j,t,2] <- pD.l[i,j] #detection probability
+      po.datD[2,i,j,t,2] <- pD.l #detection probability
       
       #High state and not observed
-      po.datD[3,i,j,t,1] <- 1-pD.h[i,j] #not detected probability
+      po.datD[3,i,j,t,1] <- 1-pD.h #not detected probability
       
       #High state and observed
-      po.datD[3,i,j,t,2] <- pD.h[i,j] #detection probability
+      po.datD[3,i,j,t,2] <- pD.h #detection probability
       
     } #j 
   } #t
@@ -149,10 +149,11 @@ for (i in 1:n.sites){
      
     } #t
 
-    for(j in 1:n.obs){
+    for(j in 1:n.occs){
       for(t in 1:n.weeks){
         # Observation process: draw observation given state
-        yD[i,j,t] ~ dcat(po.datD[State[i,t], i, j, t-1,])
+        yD[i,j,t] ~ dcat(po.datD[State[i,t], i, j, t,]) #shoult this be t or t-1?
+                         
       } #t
     } #j
     
@@ -229,8 +230,8 @@ State <- array(NA,c(n.sites, n.weeks, n.years+1, n.sims)) #state array
 State[,1,1,1:n.sims] <- State.init[,2] + 1 #initial state
 
 D <- array(NA, c(n.sites, n.weeks, n.years+1, n.sims)) #neighbors array
-for(i in 1:n.sites){
-  for(s in 1:n.sims){
+for(s in 1:n.sims){
+  for(i in 1:n.sites){
     D[i,1,1,s] <- sum(State[neighbors[i,], 1,1,s])/2 #state of neighbors
 }}
  
@@ -289,7 +290,6 @@ po.datD[3,2] <- pD.h #detection probability
 #simulate occupancy data for year 1 across sims
 year <- 1
 
-#### CHECK HERE ####
 for(s in 1:n.sims){
   for(week in 1:n.weeks){
     if(week > 1){
@@ -309,8 +309,7 @@ for(s in 1:n.sims){
         D[i,week,year,s] <- sum(State[neighbors[i,], week,year,s])/2 #state of neighbors
       }
       
-      
-      #create transition matrix that will be used for next week
+      #create transition matrix that will be used for next time
       gamma[,week,year,s] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,week,year,s]) #week or week-1?
       eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec2)
       eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec2)
@@ -370,34 +369,41 @@ for(s in 1:n.sims){
 #
 State[,4,year,]
 
-#check
-# y.obs[,,year,2]
-# which(rowSums(y.obs[,,year,s], na.rm = T) != 0)
-# rem.vec[,year,s]
-
-
-
 #### JAGS arrays ####
-previous.rem <- array(NA, c(n.sites,n.years, n.sims))
+S.init <- array(NA, c(n.sites,n.years, n.sims))
+D.init <- array(NA, c(n.sites,n.years, n.sims))
 
 #priors:
-psi0.a <- array(NA, c(n.years, n.sims))
-psi0.b <- array(NA, c(n.years, n.sims))
+eps.l0.a <- array(NA, c(n.years, n.sims))
+eps.l0.b <- array(NA, c(n.years, n.sims))
+eps.l1.mean <- array(NA, c(n.years, n.sims))
+eps.l1.sd <- array(NA, c(n.years, n.sims))
 
-psi1.mean <- array(NA, c(n.years, n.sims))
-psi1.sd <- array(NA, c(n.years, n.sims))
+eps.h0.a <- array(NA, c(n.years, n.sims))
+eps.h0.b <- array(NA, c(n.years, n.sims))
+eps.h1.mean <- array(NA, c(n.years, n.sims))
+eps.h1.sd <- array(NA, c(n.years, n.sims))
 
-psi2.mean <- array(NA, c(n.years, n.sims))
-psi2.sd <- array(NA, c(n.years, n.sims))
+gamma.0.mean <- array(NA, c(n.years, n.sims))
+gamma.0.sd <- array(NA, c(n.years, n.sims))
+gamma.1.mean <- array(NA, c(n.years, n.sims))
+gamma.1.sd <- array(NA, c(n.years, n.sims))
+gamma.2.mean <- array(NA, c(n.years, n.sims))
+gamma.2.sd <- array(NA, c(n.years, n.sims))
 
-psi3.mean <- array(NA, c(n.years, n.sims))
-psi3.sd <- array(NA, c(n.years, n.sims))
+phi.lh.a <- array(NA, c(n.years, n.sims))
+phi.lh.b <- array(NA, c(n.years, n.sims))
+phi.hh.a <- array(NA, c(n.years, n.sims))
+phi.hh.b <- array(NA, c(n.years, n.sims))
 
-a0.a <- array(NA, c(n.years, n.sims))
-a0.b <- array(NA, c(n.years, n.sims))
-
-a1.mean <- array(NA, c(n.years, n.sims))
-a1.sd <- array(NA, c(n.years, n.sims))
+p.l0.a <- array(NA, c(n.years, n.sims))
+p.l0.b <- array(NA, c(n.years, n.sims))
+p.l1.mean <- array(NA, c(n.years, n.sims))
+p.l1.sd <- array(NA, c(n.years, n.sims))
+p.h0.a <- array(NA, c(n.years, n.sims))
+p.h0.b <- array(NA, c(n.years, n.sims))
+p.h1.mean <- array(NA, c(n.years, n.sims))
+p.h1.sd <- array(NA, c(n.years, n.sims))
 
 x <- list()
 rhat_vals <- array(NA, c(n.years, n.sims))
@@ -407,37 +413,64 @@ outputsfull <- rep(NA, n.sims)
 outputs <- rep(NA, n.sims)
 mcmcs <- rep(NA, n.sims)
 
-State.est <- rep(NA, n.sims)
-psi.est <- rep(NA, n.sims)
+eps.l0.as <- rep(NA, n.sims)
+eps.l0.bs<- rep(NA, n.sims)
+eps.l1.means <- rep(NA, n.sims)
+eps.l1.sds <- rep(NA, n.sims)
+eps.h0.as <- rep(NA, n.sims)
+eps.h0.bs <- rep(NA, n.sims)
+eps.h1.means <- rep(NA, n.sims)
+eps.h1.sds <- rep(NA, n.sims)
+gamma.0.means <- rep(NA, n.sims)
+gamma.0.sds <- rep(NA, n.sims)
+gamma.1.means <- rep(NA, n.sims)
+gamma.1.sds <- rep(NA, n.sims)
+gamma.2.means <- rep(NA, n.sims)
+gamma.2.sds <- rep(NA, n.sims)
+phi.lh.as <- rep(NA, n.sims)
+phi.lh.bs <- rep(NA, n.sims)
+phi.hh.as <- rep(NA, n.sims)
+phi.hh.bs <- rep(NA, n.sims)
+p.l0.as <- rep(NA, n.sims)
+p.l0.bs <- rep(NA, n.sims)
+p.l1.means <- rep(NA, n.sims)
+p.l1.sds <- rep(NA, n.sims)
+p.h0.as <- rep(NA, n.sims)
+p.h0.bs <- rep(NA, n.sims)
+p.h1.means <- rep(NA, n.sims)
+p.h1.sds <- rep(NA, n.sims)
+
 sites <- list()
-psi0s <- rep(NA, n.sims)
-psi1s <- rep(NA, n.sims)
-psi2s <- rep(NA, n.sims)
-psi3s <- rep(NA, n.sims)
-a0s <- rep(NA, n.sims)
-a1s <- rep(NA, n.sims)
+States.mean.round <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+States.mean <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
 
-States.mean.round <- array(NA, c(n.sites, n.years, n.sims))
-States.mean <- array(NA, c(n.sites, n.years, n.sims))
+all.eps.l0.as <- rep(NA, n.sims)
+all.eps.l0.bs<- rep(NA, n.sims)
+all.eps.l1.means <- rep(NA, n.sims)
+all.eps.l1.taus <- rep(NA, n.sims)
+all.eps.h0.as <- rep(NA, n.sims)
+all.eps.h0.bs <- rep(NA, n.sims)
+all.eps.h1.means <- rep(NA, n.sims)
+all.eps.h1.sds <- rep(NA, n.sims)
+all.gamma.0.means <- rep(NA, n.sims)
+all.gamma.0.sds <- rep(NA, n.sims)
+all.gamma.1.means <- rep(NA, n.sims)
+all.gamma.1.sds <- rep(NA, n.sims)
+all.gamma.2.means <- rep(NA, n.sims)
+all.gamma.2.sds <- rep(NA, n.sims)
+all.phi.lh.as <- rep(NA, n.sims)
+all.phi.lh.bs <- rep(NA, n.sims)
+all.phi.hh.as <- rep(NA, n.sims)
+all.phi.hh.bs <- rep(NA, n.sims)
+all.p.l0.as <- rep(NA, n.sims)
+all.p.l0.bs <- rep(NA, n.sims)
+all.p.l1.means <- rep(NA, n.sims)
+all.p.l1.sds <- rep(NA, n.sims)
+all.p.h0.as <- rep(NA, n.sims)
+all.p.h0.bs <- rep(NA, n.sims)
+all.p.h1.means <- rep(NA, n.sims)
+all.p.h1.sds <- rep(NA, n.sims)
 
-all.state.est <- rep(NA, n.sims)
-all.psi.est <- rep(NA, n.sims)
-all.psi0 <- rep(NA, n.sims)
-all.psi1 <- rep(NA, n.sims)
-all.psi2 <- rep(NA, n.sims)
-all.psi3 <- rep(NA, n.sims)
-all.a0 <- rep(NA, n.sims)
-all.a1 <- rep(NA, n.sims)
-all.a2 <- rep(NA, n.sims)
-
-a0.sim <- rep(NA, n.sims)
-a1.sim <- rep(NA, n.sims)
-
-alpha.psi0s <- rep(NA, n.sims)
-beta.psi0s <- rep(NA, n.sims)
-
-alpha.a0s <- rep(NA, n.sims)
-beta.a0s <- rep(NA, n.sims)
 initial.values <- list()
 
 prev.state <- array(NA, c(n.sites, n.sims))
@@ -450,69 +483,15 @@ year <- 1
 
 for(year in 1:n.years){
   #### 1. Simulate truth #####
+  #### FIX ####
   if(year > 1){ #we simulated year 1 data above
     
-    for(s in 1:n.sims){
-      #locations where removal occured at year -1
-      rem.vec.sim <- rem.vec[,year-1,]
-      rem.vec.sim[,s][is.na(rem.vec.sim[,s])] <- 0 #replaces nas with 0
-      previous.rem[,year,s] <- rem.vec.sim[,s]
-      
-    }
-    
+  }
     ###### State Transitions ######
-    for(s in 1:n.sims){
-      for(i in 1:n.sites){
-        psi[i,year,s]  <- invlogit(psi0 + psi1*previous.rem[i,year,s]+ psi2*site.char[i] + psi3*State[i,year-1,s])
-        State[i,year,s] <- rbinom(1,1,psi[i,year,s]) #true state
-      }
-    }
+
 
     ###### Occupancy Data ######
-    for(s in 1:n.sims){
-      for(i in sites.rem[,year,s]){
-        
-        #while we still have resources to spend:
-        if(resource.total[year,s] < n.resource){
-          for(j in 1:2){ #detection probability
-            obs.pr[i,j, year, s] <- 1/(1+exp(-(a0 + a1*logsearch.effort[j,year,s])))
-          }
-          
-          #first occasion occupancy data
-          y.obs[i,1, year, s] <- rbinom(1,1,obs.pr[i,1, year, s])*State[i, year, s]
-          
-          #second occasion occupancy data
-          if(y.obs[i,1, year, s]==1){ #if already seen, do not search again and remove
-            y.obs[i,2, year, s] <- NA 
-            rem.vec[i,year,s] <- 1
-            resource.total[year,s] <- resource.total[year,s] + exp(logsearch.effort[1,year,s]) + 2
-            
-          }else{
-            y.obs[i,2, year, s] <- rbinom(1,1,obs.pr[i,2, year, s])*State[i, year, s] #occupancy data
-            
-            if(y.obs[i,2, year, s]==1){
-              rem.vec[i,year,s] <- 1
-              resource.total[year,s] <- resource.total[year,s] + 2*exp(logsearch.effort[1,year,s]) + 2
-            } 
-            
-            #if we don't detect anything, then 
-            if(y.obs[i,2, year, s]==0){
-              rem.vec[i,year,s] <- 0
-              resource.total[year,s] <- resource.total[year,s] + 2*exp(logsearch.effort[1,year,s])
-            } 
-          }
-          #if we do not have any more resources to spend:
-        }else{
-          #if we do not have enough data
-          y.obs[i,1:2, year, s] <- NA
-          rem.vec[i,year,s] <- NA
-        }
-        
-      } #ends site loop
-      
-    } #ends sims loop
-    
-  } #ends years > 1 simulations 
+}
   #### 2. Learning: ####
   
   ##### 2a. Update priors #####
@@ -520,177 +499,166 @@ for(year in 1:n.years){
   #------------------------Year 1 Priors------------------------#
   if(year == 1){
     
-    #psi = occupancy probability
-    #psi0 = base occupancy rate (beta distribution)
-      psi0.a[year,] <- 1
-      psi0.b[year,] <- 1
+    # --- eps.l ---  eradication low state --- #
+      #eps.l0 = base eradication at low state (beta distribution)
+      eps.l0.a[year,] <- 1 #alpha shape
+      eps.l0.b[year,] <- 1 #beta shape
       
-    #psi1 = effect on removal previously taking place (normal distribution)
-      psi1.mean[year,] <- 0
-      psi1.sd[year,] <- 10
+      #eps.l1 = effect of eradication at low state (normal distribution)
+      eps.l1.mean[year,] <- 0 #mean
+      eps.l1.sd[year,] <-  10 #sd
+    
+    # --- eps.h ---  eradication high state --- #
+      #eps.h0 = base eradication at high state (beta distribution)
+      eps.h0.a[year,] <- 1 #alpha shape
+      eps.h0.b[year,] <- 1 #beta shape
+    
+      #eps.h1 = effect of eradication at high state (normal distribution)
+      eps.h1.mean[year,] <- 0 #mean
+      eps.h1.sd[year,] <- 10 #sd
+    
+    # --- gamma ---  invasion --- #  
+      #gamma.0 = intrinsic invasion (normal distribution)
+      gamma.0.mean[year,] <- 0 #mean
+      gamma.0.sd[year, ] <- 10 #sd
       
-    #psi2 = effect on habitat locations (normal distribution)
-      psi2.mean[year,] <- 0
-      psi2.sd[year,] <- 10
+      #gamma.1 = effect of site characteristics (normal distribution)
+      gamma.1.mean[year,] <- 0 #mean
+      gamma.1.sd[year,] <- 10 #sd
+    
+      #gamma.2 = effect of neighboring state (normal distribution)
+      gamma.2.mean[year,] <- 0 #mean
+      gamma.2.sd[year,] <- 10 #sd
+    
+    
+    # --- phi ---  transition rates --- #
+      #phi.lh = transition low to high (beta distribution)
+      phi.lh.a[year,] <- 1 #alpha shape
+      phi.lh.b[year,] <- 1 #beta shape
       
-    #psi3 = effect of previous year state
-      psi3.mean[year,] <- 0
-      psi3.sd[year,] <- 10
+      #phi.hh = transition high to high (beta distribution)
+      phi.hh.a[year,] <- 1 #alpha shape
+      phi.hh.b[year,] <- 1 #beta shape
+   
+    # --- p.l ---  detection low state --- #
+      #p.l.0 = base detection low state (beta distribution)
+      p.l0.a[year,] <- 1 #alpha shape
+      p.l0.b[year,] <- 1 #beta shape
+      
+      #p.l.1 = effect of effort (normal distribution)
+      p.l1.mean[year,] <- 0 #mean
+      p.l1.sd[year,] <- 10 #sd
     
-    #obs.pr = detection probability
-    #a0 = base detection (beta distribution)
-      a0.a[year,] <- 1
-      a0.b[year,] <- 1
-    
-    #a1 = effect of effort on detection (normal distribution)
-      a1.mean[year,] <- 0
-      a1.sd[year,] <- 10
-    
-      previous.rem[,year,1:n.sims] <- 0
+    # --- p.h ---  detection high state --- #
+      #p.h.0 = base detection high state (beta distribution)
+      p.h0.a[year,] <- 1 #alpha shape
+      p.h0.b[year,] <- 1 #beta shape
+      
+      #p.h.1 = effect of effort (normal distribution)
+      p.h1.mean[year,] <- 0 #mean
+      p.h1.sd[year,] <- 10 #sd
+      
+      #### Unsure if correct ####
+      #Initial states and initial neighboring states
+      for(s in 1:n.sims){
+        for(i in 1:n.sites){
+          S.init[i,year,s] <- max(yD[i,,1,year,1], na.rm = T)
+          
+          if(S.init[i,year,s] == -Inf){
+            S.init[i,year,s] <- sample(c(1,2,3),1)
+          }
+        }
+        
+        for(i in 1:n.sites){
+          D.init[i,year,s] <- sum(S.init[neighbors[i,], year,s])/2 #state of neighbors
+        }
+      }
+
     
   } else{
     #------------------------Year 1+ Priors------------------------#
     for(s in 1:n.sims){
-      #-------- psi0 --------#
-      #psi = occupancy probability
-      #psi0 = base occupancy rate (beta distribution)
-      alpha.psi0s[s]<- paste("alpha.psi0", s, sep = "_")
-      #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-      assign(alpha.psi0s[s],
-             (1 - get(psi0s[s])$mean*(1 + get(psi0s[s])$cv^2))/(get(psi0s[s])$cv^2))
-      
-      beta.psi0s[s]<- paste("beta.psi0", s, sep = "_")
-      #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-      assign(beta.psi0s[s],
-             get(alpha.psi0s[s])*(1 - get(psi0s[s])$mean)/get(psi0s[s])$mean)
-      
-      #assigning these values for the next jags run:
-      psi0.a[year,s] <- get(alpha.psi0s[s])
-      psi0.b[year,s] <- get(beta.psi0s[s])
-      
-      #-------- psi1 ---------------------------------------------------------#
-      #psi1 = effect on removal previously taking place (normal distribution)
- 
-      psi1.mean[year,s] <- get(psi1s[s])$mean
-      psi1.sd[year,s] <- get(psi1s[s])$sd
-      
-      #-------- psi2 ---------------------------------------------------------#
-      #psi2 = effect on habitat locations (normal distribution)
-      psi2.mean[year,s] <- get(psi2s[s])$mean
-      psi2.sd[year,s] <- get(psi2s[s])$sd
-      
-      #-------- psi3 ---------------------------------------------------------#
-      #psi3 = effect of previous year state
-      psi3.mean[year,s] <- get(psi3s[s])$mean
-      psi3.sd[year,s] <- get(psi3s[s])$sd
-      
-      #-------- a0 -----------------------------------------------------------#
-      #obs.pr = detection probability
-      #a0 = base detection (beta distribution)
-      alpha.a0s[s]<- paste("alpha.a0", s, sep = "_")
-      #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-      assign(alpha.a0s[s],
-             (1 - get(a0s[s])$mean*(1 + get(a0s[s])$cv^2))/(get(a0s[s])$cv^2))
-      
-      beta.a0s[s]<- paste("beta.a0", s, sep = "_")
-      #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-      assign(beta.a0s[s],
-             get(alpha.a0s[s])*(1 - get(a0s[s])$mean)/get(a0s[s])$mean)
-      
-      #assigning these values for the next jags run:
-      a0.a[year,s] <- get(alpha.a0s[s])
-      a0.b[year,s] <- get(beta.a0s[s])
-      
-      #-------- a1 ----------------------------------------------------------#
-      #a1 = effect of effort on detection (normal distribution)
-      a1.mean[year,s] <- get(a1s[s])$mean
-      a1.sd[year,s] <- get(a1s[s])$sd
-      
      
+     #### FIX ####
   
     }
   }
  
   ###### 2b. JAGS data ######
-  effort.dat <- array(0, c(n.sites, n.occs, n.sims))
-  
-  #creating effort data matrix for jags 
-  #assigning search effort to the locations where removal occured
-  for(s in 1:n.sims){
-    effort.dat[rem.vec[,year,s] >= 0,1:2,s] <- logsearch.effort[1,year,s] 
-    if(year > 1){
-      prev.state[,s] <- round(get(State.est[s])$mean)
-    }else{
-      prev.state[,s] <- 0
-    }
-  }
-  
-  
+
+  #sites where removal occurred
+  rem.vec.dat <- rem.vec[,,year,] 
+  rem.vec.dat[is.na(rem.vec.dat)] <- 0 #replaces na with 0
+
   #Parameters monitored
-  parameters.to.save <- c("psi.est", "psi0", "psi1", "psi2","psi3" , "a0","a1", "State")
-  
+  parameters.to.save <- c("eps.l0", "eps.l1", "eps.h0", "eps.h1", "gamma.0", "gamma.1",
+                          "gamma.2", "phi.lh", "phi.hh", "p.l0", "p.l1", "p.h0", "p.h1", 
+                          "State.fin")
+                          
   #settings
-  n.burnin <- 1000
-  n.iter <- 10000 + n.burnin
+  n.burnin <- 10 #00
+  n.iter <- 100 #00 + n.burnin
   n.chains <- 3
   n.thin <- 1
   
   for(s in 1:n.sims){
     my.data[[s]] <- list( #constants
                          n.sites = n.sites,
+                         n.weeks = n.weeks,
                          n.occs = n.occs, 
+                         neighbors = neighbors,
 
                          #data
-                         y.obs = y.obs[,,year,s],
-                         previous.rem = previous.rem[,year,s],
+                         yD= yD[,,,year,s],
                          site.char = site.char,
-                         logeffort = effort.dat[,,s],
-                         prev.state = prev.state[,s],
+                         logeffort = logsearch.effort,
+                         S.init = S.init[,year,s], 
+                         D.init = D.init[,year,s],
+                         rem.vec = rem.vec.dat[,,s],
                          
                          #priors
-                         psi0.a = psi0.a[year,s], 
-                         psi0.b = psi0.b[year,s], 
-                         
-                         psi1.mean = psi1.mean[year,s], 
-                         psi1.sd = psi1.sd[year,s], 
-                         
-                         psi2.mean = psi2.mean[year,s], 
-                         psi2.sd = psi2.sd[year,s], 
-                         
-                         psi3.mean = psi3.mean[year,s], 
-                         psi3.sd = psi3.sd[year,s], 
-
-                         a0.a = a0.a[year,s],
-                         a0.b = a0.b[year,s],
-                         
-                         a1.mean = a1.mean[year,s],
-                         a1.sd = a1.sd[year,s]
-                         
-
+                         eps.l0.a = eps.l0.a[year,s], 
+                         eps.l0.b = eps.l0.a[year,s], 
+                         eps.l1.mean = eps.l1.mean[year,s],
+                         eps.l1.sd= eps.l1.sd[year,s],
+                         eps.h0.a = eps.h0.a[year,s],
+                         eps.h0.b= eps.h0.b[year,s],
+                         eps.h1.mean= eps.h1.mean[year,s],
+                         eps.h1.sd= eps.h1.sd[year,s],
+                         gamma.0.mean= gamma.0.mean[year,s],
+                         gamma.0.sd= gamma.0.sd[year,s],
+                         gamma.1.mean= gamma.1.mean[year,s],
+                         gamma.1.sd= gamma.1.sd[year,s],
+                         gamma.2.mean = gamma.2.mean[year,s],
+                         gamma.2.sd = gamma.2.sd[year,s],
+                         phi.lh.a = phi.lh.a[year,s],
+                         phi.lh.b = phi.lh.b[year,s],
+                         phi.hh.a = phi.hh.a[year,s],
+                         phi.hh.b = phi.hh.b[year,s],
+                         p.l0.a = p.l0.a[year,s],
+                         p.l0.b = p.l0.b[year,s],
+                         p.l1.mean = p.l1.mean[year,s],
+                         p.l1.sd = p.l1.sd[year,s],
+                         p.h0.a = p.h0.a[year,s],
+                         p.h0.b = p.h0.b[year,s],
+                         p.h1.mean = p.h1.mean[year,s],
+                         p.h1.sd = p.h1.sd[year,s]
+                
     )
   }
   
   ###### 2c. Run JAGS #####
-  State.init <- array(NA, c(n.sites, n.sims))
+  #### FIX ####
   
-  y.obs.info <- y.obs[,,year,]
-  y.obs.info[is.na(y.obs.info)] <- 1
-  
-  
-  for(s in 1:n.sims){
-    for(i in 1:n.sites){
-      State.init[i,s] <- max(y.obs.info[i,,s])
-    }
-  
-    initial.values[[s]] <- function(){list(State = State.init[,s])}
+  #### invalid parent nodes ####
+  initial.values[[s]] <- function(){list()}
     
-  }
-  
+
   for(s in 1:n.sims){
     outs[s]<- paste("out", s, sep = "_")
     assign(outs[s],
            jagsUI::jags(data = my.data[[s]],inits = initial.values[[s]],
-                        parameters.to.save = parameters.to.save, model.file = "Flower_mod2.txt",
+                        parameters.to.save = parameters.to.save, model.file = "Flower_multistate_datD.txt",
                         n.chains = n.chains, n.thin = n.thin, n.iter = n.iter , n.burnin = n.burnin))
   }
   
