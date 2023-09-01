@@ -37,19 +37,19 @@ model{
   #Erradication:
   eps.l0 ~ dbeta(eps.l0.a,eps.l0.b) #eradication when at low state
   eps.l1 ~ dnorm(eps.l1.mean, eps.l1.tau) #effect of eradication 
-  eps.l1.tau <- 1/(eps.l1.sd * eps.l1.sd)
+  eps.l1.tau <- 1/(eps.l1.sd * eps.l1.sd) #precision parameter
   
   eps.h0 ~ dbeta(eps.h0.a,eps.h0.b) #eradication when at high state
   eps.h1 ~ dnorm(eps.h1.mean, eps.h1.tau) #effect of eradication 
-  eps.h1.tau <- 1/(eps.h1.sd * eps.h1.sd)
+  eps.h1.tau <- 1/(eps.h1.sd * eps.h1.sd) #precision parameter
   
   #Invasion:
   gamma.0 ~dnorm(gamma.0.mean,gamma.0.tau) #intrinsic invasion probability
-  gamma.0.tau <- 1/(gamma.0.sd*gamma.0.sd)
+  gamma.0.tau <- 1/(gamma.0.sd*gamma.0.sd) #precision parameter
   gamma.1 ~dnorm(gamma.1.mean, gamma.1.tau) #effect of site characteristics on invasion probability
-  gamma.1.tau <- 1/(gamma.1.sd*gamma.1.sd)
+  gamma.1.tau <- 1/(gamma.1.sd*gamma.1.sd) #precision parameter
   gamma.2 ~dnorm(gamma.2.mean, gamma.2.tau) #effect of Neighboring invasion state
-  gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd)
+  gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd) #precision parameter
   
   #State transition:
   phi.lh ~ dbeta(phi.lh.a, phi.lh.b) #transition from low to high
@@ -58,12 +58,12 @@ model{
   #Detection low state:
   p.l0 ~ dbeta(p.l0.a, p.l0.b) #base detection for low state
   p.l1 ~ dnorm(p.l1.mean, p.l1.tau) #effect of effort 
-  p.l1.tau <- 1/(p.l1.sd * p.l1.sd)
+  p.l1.tau <- 1/(p.l1.sd * p.l1.sd) #precision parameter
   
   #Detection high state:
   p.h0 ~ dbeta(p.h0.a, p.h0.b) #base detection for high state
   p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
-  p.h1.tau <- 1/(p.h1.sd * p.h1.sd)
+  p.h1.tau <- 1/(p.h1.sd * p.h1.sd) #precision parameter
 
   logit(pD.l) <- p.l0 + p.l1*logeffort #detection low state
   logit(pD.h) <- p.h0 + p.h1*logeffort #detection high state
@@ -75,8 +75,8 @@ for (i in 1:n.sites){
   for (t in 1:n.weeks){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
-    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]
-    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]
+    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t] #erradication low state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t] #erradication high state
     
     #index = [current state, location, time, future state]
     #empty stay empty
@@ -138,8 +138,9 @@ for (i in 1:n.sites){
   #### Likelihood ####
   for (i in 1:n.sites){
     # Define state at beginning
-    State[i,1] <- S.init[i] #we know state at the start?
-    D[i,1] <- D.init[i]     #we know neighbor states at the start
+
+    State[i,1] <- S.init[i] # initial state 
+    D[i,1] <- D.init[i]     # initial neighboring state
     
     for (t in 2:n.weeks){ 
       # State process: state given previous state and transition probability
@@ -153,10 +154,10 @@ for (i in 1:n.sites){
       for(t in 1:n.weeks){
         # Observation process: draw observation given state
         yD[i,j,t] ~ dcat(po.datD[State[i,t], i, j, t,]) #shoult this be t or t-1?
-                         
+
       } #t
     } #j
-    
+
     #Derived parameter:
     State.fin[i] <- State[i,n.weeks] #state after 4 weeks
     
@@ -183,8 +184,8 @@ eps.l0 <- 0.3 #base eradication at low state
 eps.l1 <- 5 #effect of eradication at low state
 eps.h0 <- 0.2 #base eradication at high state
 eps.h1 <- 2 #effect of eradication at high state
-gamma.0 <- 0.3 #intrinsic invasion probability
-gamma.1 <- 0.1 #effect of site characteristics
+gamma.0 <- 0.2 #intrinsic invasion probability
+gamma.1 <- 0.2 #effect of site characteristics
 gamma.2 <- 1 #effect of neighboring invasion state
 phi.lh <- 0.1 #transition from low to high
 phi.hh <- 0.8 #transition from high to high
@@ -214,20 +215,32 @@ file_name = paste(path2, 'Site_char_multi.csv',sep = '/')
 site.chardat <- read.csv(file_name)
 site.char <- site.chardat[,2]
 
-##### week 1 -state ####
-#set.seed(03222021)
+##### week 1: state and data####
+#Code that generated initial true state
 # State.init <- rep(NA, n.sites)
-# 
+# rate.init <- rep(NA, n.sites)
+# occ.init <- rep(NA, n.sites)
+# init.matrix <- array(NA, c(n.sites, n.states))
 # for(i in 1:n.sites){
-#   State.init[i] <- rbinom(1,1,invlogit(gamma.0 + gamma.1*site.char[i])) #true state
+#   rate.init[i] <- mean(rbinom(100000,1,invlogit(gamma.0 + gamma.1*site.char[i]))) #invasion rate
+#   p.high <- 0.5 #say the probability of being in high state is 0.5
+#   
+#   occ.init[i] <- round(mean(rbern(100000,rate.init[i]))) #being invaded or not
+#   
+#   init.matrix[i,1] <- (1-rate.init[i])*occ.init[i] + (1-occ.init[i]) #empty 
+#   init.matrix[i,2] <- (rate.init[i])*occ.init[i]*(1-p.high) #low state
+#   init.matrix[i,3] <- (rate.init[i])*occ.init[i]*(p.high) #high state 
+#  
+#   State.init[i] <- rcat(1,init.matrix[i,1:3]) 
 # }
+#State.init
 #write.csv(State.init,file_name)
 
 path2 <- here::here("data")
 file_name = paste(path2, 'States_init_multi.csv',sep = '/')
 State.init <- read.csv(file_name)
 State <- array(NA,c(n.sites, n.weeks, n.years+1, n.sims)) #state array
-State[,1,1,1:n.sims] <- State.init[,2] + 1 #initial state
+State[,1,1,1:n.sims] <- State.init[,2] #initial state
 
 D <- array(NA, c(n.sites, n.weeks, n.years+1, n.sims)) #neighbors array
 for(s in 1:n.sims){
@@ -310,7 +323,7 @@ for(s in 1:n.sims){
       }
       
       #create transition matrix that will be used for next time
-      gamma[,week,year,s] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,week,year,s]) #week or week-1?
+      gamma[,week,year,s] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,week,year,s]) 
       eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec2)
       eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec2)
       
@@ -365,9 +378,6 @@ for(s in 1:n.sims){
     } #ends site loop
   } #ends week loop
 } #ends sims loop
-
-#
-State[,4,year,]
 
 #### JAGS arrays ####
 S.init <- array(NA, c(n.sites,n.years, n.sims))
@@ -559,13 +569,14 @@ for(year in 1:n.years){
       p.h1.sd[year,] <- 10 #sd
       
       #### Unsure if correct ####
+      
       #Initial states and initial neighboring states
       for(s in 1:n.sims){
         for(i in 1:n.sites){
           S.init[i,year,s] <- max(yD[i,,1,year,1], na.rm = T)
           
           if(S.init[i,year,s] == -Inf){
-            S.init[i,year,s] <- sample(c(1,2,3),1)
+            S.init[i,year,s] <- rcat(1,c(0.5, 0.25, 0.25)) #sample(c(1,2,3),1)
           }
         }
         
@@ -575,6 +586,7 @@ for(year in 1:n.years){
       }
 
     
+      
   } else{
     #------------------------Year 1+ Priors------------------------#
     for(s in 1:n.sims){
@@ -648,10 +660,14 @@ for(year in 1:n.years){
   }
   
   ###### 2c. Run JAGS #####
-  #### FIX ####
+  State.start <- array(NA, c(n.sites,n.weeks,n.sims))
   
-  #### invalid parent nodes ####
-  initial.values[[s]] <- function(){list()}
+  State.start[,2:n.weeks,] <- 2 #State[,2:n.weeks,year,]
+  
+  for(s in 1:n.sims){
+    initial.values[[s]] <- function()list(State = State.start[,,s])
+  }
+  
     
 
   for(s in 1:n.sims){
@@ -684,8 +700,10 @@ for(year in 1:n.years){
   }
   
    #select random 5 sims for sampling
+  ##### FIX HERE ####
    rand5 <- c(1,2) #sample(seq(1:n.sims), 5, replace = F)
   
+  #### START HERE ####
    for(s in rand5){
 
     MCMCtrace(get(mcmcs[s]),

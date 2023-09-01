@@ -268,7 +268,7 @@ for(s in 1:n.sims){
     
     ps[1,i,1,1] <- 1-gamma[i,1,year,s] #empty stay empty
     ps[1,i,1,2] <- gamma[i,1,year,s] #empty to low abundance
-    ps[1,i,1,3] <- 0
+    ps[1,i,1,3] <- 0 
     
     ps[2,i,1,1] <- (eps.l*rem.vec[i,year,s]) #low abundance to empty
     ps[2,i,1,2] <- (1- eps.l*rem.vec[i,year,s])*(1-phi.lh) #low abundance to low abundance
