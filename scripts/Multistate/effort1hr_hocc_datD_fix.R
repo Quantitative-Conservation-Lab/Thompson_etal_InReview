@@ -75,8 +75,8 @@ for (i in 1:n.sites){
   for (t in 1:n.weeks){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
-    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t] #erradication low state
-    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t] #erradication high state
+    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours #erradication low state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours #erradication high state
     
     #index = [current state, location, time, future state]
     #empty stay empty
@@ -196,6 +196,11 @@ p.l1 <- 1 #effect of effort
 p.h0 <- 0.8 #base detection for high state
 p.h1 <- 1 #effect of effort
 
+search.hours <- 1.1 #effort is fixed
+removal.hours <- 2 #effort is fixed
+logsearch.effort <- log(search.hours)
+
+resource.total <- array(0, c(n.weeks, n.years,n.sims))
 n.resource <- 20 #total resources we can use each week
 
 #neighbor data
@@ -253,13 +258,6 @@ sites.rem <- array(NA, dim = c(n.sites, n.weeks, n.years, n.sims))
 for(s in 1:n.sims){
   sites.rem[,1,1,s] <- sample(seq(1,n.sites), n.sites, replace = F)
 }
-
-#####effort ####
-#effort is fixed
-search.hours <- 1.1
-removal.hours <- 2
-logsearch.effort <- log(search.hours)
-resource.total <- array(0, c(n.weeks, n.years,n.sims))
 
 yD <- array(NA,c(n.sites, n.occs, n.weeks, n.years, n.sims)) #detection/non-detection data
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) #removal sites array
@@ -375,6 +373,7 @@ eps.h.est <- array(NA, c(n.sites,n.sims))
 prev.state <- array(NA, c(n.sites, n.sims))
 States.mean.round <- array(NA, c(n.sites, n.years, n.sims))
 States.mean <- array(NA, c(n.sites, n.years, n.sims))
+S.end <- array(NA, c(n.sites, n.sims))
 
 ####################################################################################
 #### Run Adaptive Management ####
@@ -430,8 +429,8 @@ for(year in 1:n.years){
     
     # TPM used for week 2
     gamma[,week,year,s] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,week,year,s]) 
-    eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec2)
-    eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec2)
+    eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec2*removal.hours)
+    eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec2*removal.hours)
     
     ps[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s]
     ps[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s]
@@ -448,7 +447,7 @@ for(year in 1:n.years){
     } #ends s loop
   } #ends year > 1 loop
   
-  ##### Week 1+ and Observation model #####
+  ##### Week 1+ State and Observation model #####
   for(s in 1:n.sims){
     for(week in 1:n.weeks){
       if(week > 1){
@@ -471,8 +470,8 @@ for(year in 1:n.years){
         
         #create transition matrix that will be used for next time
         gamma[,week,year,s] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,week,year,s]) 
-        eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec2)
-        eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec2)
+        eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec2*removal.hours)
+        eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec2*removal.hours)
         
         ps[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s]
         ps[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s]
@@ -593,7 +592,7 @@ for(year in 1:n.years){
       p.h1.mean[year,] <- 0 #mean
       p.h1.sd[year,] <- 10 #sd
       
-      #--- Initial states and initial neighboring states -----#
+      # --- S.init and D.init ---  Initial states ------------ #
       #### Unsure if correct ####
       for(s in 1:n.sims){
         for(i in 1:n.sites){
@@ -741,15 +740,15 @@ for(year in 1:n.years){
     p.h1.mean[year,s] <- get(p.h1.est[s])$mean #mean
     p.h1.sd[year,s] <- get(p.h1.est[s])$sd #sd
     
+    # --- S.init and D.init ---  Initial states -------------------- #
     #projecting initial states and initial neighboring states
     #Initial states and initial neighboring states
-    
     for(i in 1:n.sites){
       D.est[i,s] <- sum(States.mean.round[neighbors[i,],(year-1),s])/2 #state of neighbors
     
       gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
-      eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]) 
-      eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]) 
+      eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours) 
+      eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours) 
   
       ps.est[1,i,s,1] <- 1-gamma.est[i,s]
       ps.est[1,i,s,2] <- gamma.est[i,s]
@@ -814,6 +813,7 @@ for(year in 1:n.years){
                          S.init = S.init[,year,s], 
                          D.init = D.init[,year,s],
                          rem.vec = rem.vec.dat[,,s],
+                         removal.hours = removal.hours,
                          
                          #priors
                          eps.l0.a = eps.l0.a[year,s], 
@@ -1235,7 +1235,7 @@ for(year in 1:n.years){
   colnames(States.mean.wide) <- seq(1:n.sites)
   States.mean.wide$sim <- seq(1:n.sims)  
   
-  States.mean.long <- gather(States.mean.wide, site, state, 1:n.sites, factor_key=TRUE)
+  States.mean.long <- gather(States.mean.wide, site, state, all_of(n.sites), factor_key=TRUE)
   States.mean.long$site <- as.numeric(States.mean.long$site)
   
   States.mean.long$year <- year
@@ -1257,101 +1257,120 @@ for(year in 1:n.years){
     }
     
   }else{
-    #### FIX ####
     #during the final year, we estimate the final states
     for(s in 1:n.sims){
-      #locations where removal occured at final year
-      rem.vec.sim <- rem.vec[,n.years,]
-      rem.vec.sim[,s][is.na(rem.vec.sim[,s])] <- 0 #replaces nas with 0
-      previous.rem[,n.years,s] <- rem.vec.sim[,s]
       
-      #simulating final year....
+      #simulating truth at the end
       for(i in 1:n.sites){
-        psi[i,n.years+1,s]  <- invlogit(psi0 + psi1*previous.rem[i,n.years,s]+ psi2*site.char[i] + psi3*State[i,n.years, s])
-        State[i,n.years+1,s] <- rbinom(1,1,psi[i,n.years+1,s]) #true state
+        State[i,1,year+1,s] <- rcat(1,ps[State[i,4,year,s], i, 4, year, s,]) 
       }
+      
+      #estimating truth
+      for(i in 1:n.sites){
+        D.est[i,s] <- sum(States.mean.round[neighbors[i,],4,s])/2 #state of neighbors
+        
+        gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
+        eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours) 
+        eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours) 
+        
+        ps.est[1,i,s,1] <- 1-gamma.est[i,s]
+        ps.est[1,i,s,2] <- gamma.est[i,s]
+        ps.est[1,i,s,3] <- 0
+        ps.est[2,i,s,1] <- eps.l.est[i,s]
+        ps.est[2,i,s,2] <- (1- eps.l.est[i,s])*(1-get(phi.lh.est[s])$mean)
+        ps.est[2,i,s,3] <- (1- eps.l.est[i,s])*get(phi.lh.est[s])$mean
+        ps.est[3,i,s,1] <- eps.h.est[i,s]
+        ps.est[3,i,s,2] <- (1- eps.h.est[i,s])*(1-get(phi.hh.est[s])$mean)
+        ps.est[3,i,s,3] <- (1- eps.h.est[i,s])*get(phi.hh.est[s])$mean
+        
+      }
+      
+      for(i in 1:n.sites){
+        S.end[i,year,s] <- max(yD[i,,1,year,1], na.rm = T)
+        
+        if(S.end[i,s] == -Inf){
+          S.end[i,s] <- rcat(1,ps.est[States.mean.round[i,4,s], i, s,]) 
+        }
+      }
+
     }
   }
 
-  
 } #end adaptive management 
 
 #################################################################################################
-
-#### FIX ####
 #### Save True Data ####
 #results for each sim
-States.df <- adply(State, c(1,2,3))
+States.df <- adply(State, c(1,2,3,4))
 
-colnames(States.df) <- c("site", "year", "sim", "state")              
+colnames(States.df) <- c("site", "week", "year", "sim", "state")              
 
-file_name = paste(path, 'States_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'States_e1_hocc.csv',sep = '/')
 write.csv(States.df,file_name)
 
 
 #mean across simulations
-Mean.States.df <- aggregate(state ~ site+year,
+Mean.States.df <- aggregate(state ~ site+week+year,
                             data = as.data.frame(States.df), FUN = mean)
 
-
-file_name = paste(path, 'Mean.States_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States_e1_hocc.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
-y.obs.df <- adply(y.obs, c(1,2,3,4))
+yD.df <- adply(yD, c(1,2,3,4,5))
 
-colnames(y.obs.df) <- c("site", "occasion", "year", "sim", "observed.state")              
+colnames(yD.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
 
-file_name = paste(path, 'y.obs_e5_hocc.csv',sep = '/')
-write.csv(y.obs.df,file_name)
+file_name = paste(path, 'y.obs_e1_hocc.csv',sep = '/')
+write.csv(yD.df,file_name)
 
 
-rem.site.df <- y.obs.df %>% filter(observed.state == 1)
-file_name = paste(path, 'rem.site_e5_hocc.csv',sep = '/')
+rem.site.df <- yD.df %>% filter(observed.state > 1)
+file_name = paste(path, 'rem.site_e1_hocc.csv',sep = '/')
 write.csv(rem.site.df,file_name)
 
 #### sites visited ####
-sites.visit <- adply(rem.vec, c(1,2,3))
+sites.visit <- adply(rem.vec, c(1,2,4,3))
 
-colnames(sites.visit) <- c("site", "year", "sim", "rem.val")   
+colnames(sites.visit) <- c("site", "week", "year", "sim", "rem.val")   
 
 sites.visit <- sites.visit %>% filter(!is.na(rem.val))
 
 #visit no remove
 sites.visit.norem <- sites.visit %>% filter(rem.val == 0)
 sites.visit.norem$rem.val <- 1
-sites.visit.norem <- aggregate(rem.val ~ year + sim,
+sites.visit.norem <- aggregate(rem.val ~ week + year + sim,
                                data = as.data.frame(sites.visit.norem), FUN = sum)
 
 
 
-sites.visit.norem.avg <- aggregate(rem.val ~ year,
+sites.visit.norem.avg <- aggregate(rem.val ~ week+ year,
                                    data = as.data.frame(sites.visit.norem), FUN = mean)
 
-colnames(sites.visit.norem.avg)[2] <- "num.visit.norem"
+colnames(sites.visit.norem.avg)[3] <- "num.visit.norem"
 
 #visit remove
 sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
 
-sites.visit.rem<- aggregate(rem.val ~ year + sim,
+sites.visit.rem<- aggregate(rem.val ~ week+ year + sim,
                             data = as.data.frame(sites.visit.rem), FUN = sum)
 
-sites.visit.rem.avg <- aggregate(rem.val ~ year,
+sites.visit.rem.avg <- aggregate(rem.val ~ week + year,
                                  data = as.data.frame(sites.visit.rem), FUN = mean)
 
 
-colnames(sites.visit.rem.avg)[2] <- "num.visit.rem"
+colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
 
 sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
 
-file_name = paste(path, 'sites.visit_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'sites.visit_e1_hocc.csv',sep = '/')
 write.csv(sites.df,file_name)
 
 #### Estimated Data ####
 ##### Estimated States ####
 States.est.df <- States.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'States.est_e1_hocc.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
@@ -1359,140 +1378,211 @@ write.csv(States.est.df,file_name)
 Mean.States.est.df <- aggregate(state ~ site+year,
                                 data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_e5_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_e1_hocc.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
-##### Estimated effort ####
-logsearch.effort.df <- adply(logsearch.effort[1,,], c(1,2))
-
-colnames(logsearch.effort.df) <- c("year", "sim", "effort")              
-
-file_name = paste(path, 'logeffort_e5_hocc.csv',sep = '/')
-write.csv(logsearch.effort.df,file_name)
-
 ##### Estimated parameters ####
-###### psi ######
-
-psis <- list()
-
-for(s in 1:n.sims){
-  assign(all.psi.est[s], 
-         cbind(get(all.psi.est[s]), sim = s))
-  
-  psis[[s]] <- get(all.psi.est[s])
-}
-
-psis.df <- do.call("rbind", psis)
-
-file_name = paste(path, 'psis.est_e5_hocc.csv',sep = '/')
-write.csv(psis.df,file_name)
-
-###### psi0 ######
-psi0s.est <- list()
+## --- eps.l0 -----------------------------------------------#
+eps.l0s <- list()
 
 for(s in 1:n.sims){
-  assign(all.psi0[s], 
-         cbind(get(all.psi0[s]), sim = s))
+  assign(all.eps.l0.est[s], 
+         cbind(get(all.eps.l0.est[s]), sim = s))
   
-  psi0s.est[[s]] <- get(all.psi0[s])
+  eps.l0s[[s]] <- get(all.eps.l0.est[s])
 }
 
-psi0s.est.df <- do.call("rbind", psi0s.est)
+eps.l0s.df <- do.call("rbind", eps.l0s)
 
-file_name = paste(path, 'psi0s.est.est_e5_hocc.csv',sep = '/')
-write.csv(psi0s.est.df,file_name)
+file_name = paste(path, 'eps.l0.est_e1_hocc.csv',sep = '/')
+write.csv(eps.l0s.df,file_name)
 
-###### psi1 ######
-psi1s.est <- list()
+## --- eps.l1 -----------------------------------------------#
+eps.l1s <- list()
 
 for(s in 1:n.sims){
-  assign(all.psi1[s], 
-         cbind(get(all.psi1[s]), sim = s))
+  assign(all.eps.l1.est[s], 
+         cbind(get(all.eps.l1.est[s]), sim = s))
   
-  psi1s.est[[s]] <- get(all.psi1[s])
+  eps.l1s[[s]] <- get(all.eps.l1.est[s])
 }
 
-psi1s.est.df <- do.call("rbind", psi1s.est)
+eps.l1s.df <- do.call("rbind", eps.l1s)
 
-file_name = paste(path, 'psi1s.est.est_e5_hocc.csv',sep = '/')
-write.csv(psi1s.est.df,file_name)
-
-###### psi2 ######
-psi2s.est <- list()
+file_name = paste(path, 'eps.l1.est_e1_hocc.csv',sep = '/')
+write.csv(eps.l1s.df,file_name)
+## --- eps.h0 -----------------------------------------------#
+eps.h0s <- list()
 
 for(s in 1:n.sims){
-  assign(all.psi2[s], 
-         cbind(get(all.psi2[s]), sim = s))
+  assign(all.eps.h0.est[s], 
+         cbind(get(all.eps.h0.est[s]), sim = s))
   
-  psi2s.est[[s]] <- get(all.psi2[s])
+  eps.h0s[[s]] <- get(all.eps.h0.est[s])
 }
 
-psi2s.est.df <- do.call("rbind", psi2s.est)
+eps.h0s.df <- do.call("rbind", eps.h0s)
 
-file_name = paste(path, 'psi2s.est.est_e5_hocc.csv',sep = '/')
-write.csv(psi2s.est.df,file_name)
+file_name = paste(path, 'eps.h0.est_e1_hocc.csv',sep = '/')
+write.csv(eps.h0s.df,file_name)
 
-###### psi3 ######
-psi3s.est <- list()
+## --- eps.h1 -----------------------------------------------#
+eps.h1s <- list()
 
 for(s in 1:n.sims){
-  assign(all.psi3[s], 
-         cbind(get(all.psi3[s]), sim = s))
+  assign(all.eps.h1.est[s], 
+         cbind(get(all.eps.h1.est[s]), sim = s))
   
-  psi3s.est[[s]] <- get(all.psi3[s])
+  eps.h1s[[s]] <- get(all.eps.h1.est[s])
 }
 
-psi3s.est.df <- do.call("rbind", psi3s.est)
+eps.h1s.df <- do.call("rbind", eps.h1s)
 
-file_name = paste(path, 'psi3s.est.est_e5_hocc.csv',sep = '/')
-write.csv(psi3s.est.df,file_name)
+file_name = paste(path, 'eps.h1.est_e1_hocc.csv',sep = '/')
+write.csv(eps.h1s.df,file_name)
 
-###### a0 ######
-a0s.est <- list()
+## --- gamma.0 -----------------------------------------------#
+gamma.0s <- list()
 
 for(s in 1:n.sims){
-  assign(all.a0[s], 
-         cbind(get(all.a0[s]), sim = s))
+  assign(all.gamma.0.est[s], 
+         cbind(get(all.gamma.0.est[s]), sim = s))
   
-  a0s.est[[s]] <- get(all.a0[s])
+  gamma.0s[[s]] <- get(all.gamma.0.est[s])
 }
 
-a0s.est.df <- do.call("rbind", a0s.est)
+gamma.0s.df <- do.call("rbind", gamma.0s)
 
-file_name = paste(path, 'a0s.est.est_e5_hocc.csv',sep = '/')
-write.csv(a0s.est.df,file_name)
+file_name = paste(path, 'gamma.0.est_e1_hocc.csv',sep = '/')
+write.csv(gamma.0s.df,file_name)
 
-###### a1 ######
-a1s.est <- list()
+## --- gamma.1 -----------------------------------------------#
+gamma.1s <- list()
 
 for(s in 1:n.sims){
-  assign(all.a1[s], 
-         cbind(get(all.a1[s]), sim = s))
+  assign(all.gamma.1.est[s], 
+         cbind(get(all.gamma.1.est[s]), sim = s))
   
-  a1s.est[[s]] <- get(all.a1[s])
+  gamma.1s[[s]] <- get(all.gamma.1.est[s])
 }
 
-a1s.est.df <- do.call("rbind", a1s.est)
+gamma.1s.df <- do.call("rbind", gamma.1s)
 
-file_name = paste(path, 'a1s.est.est_e5_hocc.csv',sep = '/')
-write.csv(a1s.est.df,file_name)
+file_name = paste(path, 'gamma.1.est_e1_hocc.csv',sep = '/')
+write.csv(gamma.1s.df,file_name)
 
-###### rhat vals ######
-file_name = paste(path, 'rhat.vals_e5_hocc.csv',sep = '/')
+## --- gamma.2 -----------------------------------------------#
+gamma.2s <- list()
+
+for(s in 1:n.sims){
+  assign(all.gamma.2.est[s], 
+         cbind(get(all.gamma.2.est[s]), sim = s))
+  
+  gamma.2s[[s]] <- get(all.gamma.2.est[s])
+}
+
+gamma.2s.df <- do.call("rbind", gamma.2s)
+
+file_name = paste(path, 'gamma.2.est_e1_hocc.csv',sep = '/')
+write.csv(gamma.2s.df,file_name)
+
+## --- phi.lh -----------------------------------------------#
+phi.lhs <- list()
+
+for(s in 1:n.sims){
+  assign(all.phi.lh.est[s], 
+         cbind(get(all.phi.lh.est[s]), sim = s))
+  
+  phi.lhs[[s]] <- get(all.phi.lh.est[s])
+}
+
+phi.lhs.df <- do.call("rbind", phi.lhs)
+
+file_name = paste(path, 'phi.lh.est_e1_hocc.csv',sep = '/')
+write.csv(phi.lhs.df,file_name)
+
+## --- phi.hh -----------------------------------------------#
+phi.hhs <- list()
+
+for(s in 1:n.sims){
+  assign(all.phi.hh.est[s], 
+         cbind(get(all.phi.hh.est[s]), sim = s))
+  
+  phi.hhs[[s]] <- get(all.phi.hh.est[s])
+}
+
+phi.hhs.df <- do.call("rbind", phi.hhs)
+
+file_name = paste(path, 'phi.hh.est_e1_hocc.csv',sep = '/')
+write.csv(phi.hhs.df,file_name)
+
+## --- p.l0 -----------------------------------------------#
+p.l0.s <- list()
+
+for(s in 1:n.sims){
+  assign(all.p.l0.est[s], 
+         cbind(get(all.p.l0.est[s]), sim = s))
+  
+  p.l0.s[[s]] <- get(all.p.l0.est[s])
+}
+
+p.l0.s.df <- do.call("rbind", p.l0.s)
+
+file_name = paste(path, 'p.l0.est_e1_hocc.csv',sep = '/')
+write.csv(p.l0.s.df,file_name)
+
+## --- p.l1 -----------------------------------------------#
+p.l1.s <- list()
+
+for(s in 1:n.sims){
+  assign(all.p.l1.est[s], 
+         cbind(get(all.p.l1.est[s]), sim = s))
+  
+  p.l1.s[[s]] <- get(all.p.l1.est[s])
+}
+
+p.l1.s.df <- do.call("rbind", p.l1.s)
+
+file_name = paste(path, 'p.l1.est_e1_hocc.csv',sep = '/')
+write.csv(p.l1.s.df,file_name)
+
+## --- p.h0 -----------------------------------------------#
+p.h0.s <- list()
+
+for(s in 1:n.sims){
+  assign(all.p.h0.est[s], 
+         cbind(get(all.p.h0.est[s]), sim = s))
+  
+  p.h0.s[[s]] <- get(all.p.h0.est[s])
+}
+
+p.h0.s.df <- do.call("rbind", p.h0.s)
+
+file_name = paste(path, 'p.h0.est_e1_hocc.csv',sep = '/')
+write.csv(p.h0.s.df,file_name)
+
+## --- p.h1 -----------------------------------------------#
+p.h1.s <- list()
+
+for(s in 1:n.sims){
+  assign(all.p.h1.est[s], 
+         cbind(get(all.p.h1.est[s]), sim = s))
+  
+  p.h1.s[[s]] <- get(all.p.h1.est[s])
+}
+
+p.h1.s.df <- do.call("rbind", p.h1.s)
+
+file_name = paste(path, 'p.h1.est_e1_hocc.csv',sep = '/')
+write.csv(p.h1.s.df,file_name)
+
+##### rhat vals ######
+file_name = paste(path, 'rhat.vals_e1_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
 #### TIMING ####
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-file_name = paste(path, 'e5_hocc_time.txt',sep = '/')
+file_name = paste(path, 'e1_hocc_time.txt',sep = '/')
 write.table(time.taken,file_name)
-
-round((Mean.States.df %>% filter(year == n.years))[,3])
-round((Mean.States.df %>% filter(year == n.years+1))[,3])
-
-
-#round((Mean.States.df %>% filter(year == n.years))[,3])
-#round((Mean.States.est.df %>% filter(year == n.years))[,3])
-
-sum(round((Mean.States.df %>% filter(year == n.years+1))[,3]))
