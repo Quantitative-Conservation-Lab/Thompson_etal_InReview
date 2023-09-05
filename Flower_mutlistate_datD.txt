@@ -1,0 +1,150 @@
+
+model{
+
+# -------------------------------------------------
+# Parameters:
+# gamma: invasion probability
+# eps: erradication probability
+# p: probability of observing the plant
+# -------------------------------------------------
+# States (S):
+# 1 empty
+# 2 low abundance
+# 3 high abundance 
+# 
+# Observations (O):  
+# 1 absent
+# 2 present
+# -------------------------------------------------
+
+#### PRIORS ####
+  #Erradication:
+  eps.l0 ~ dbeta(eps.l0.a,eps.l0.b) #eradication when at low state
+  eps.l1 ~ dnorm(eps.l1.mean, eps.l1.tau) #effect of eradication 
+  eps.l1.tau <- 1/(eps.l1.sd * eps.l1.sd)
+  
+  eps.h0 ~ dbeta(eps.h1.a,eps.h1.b) #eradication when at high state
+  eps.h1 ~ dnorm(eps.h1.mean, eps.h1.tau) #effect of eradication 
+  eps.h1.tau <- 1/(eps.h1.sd * eps.h1.sd)
+  
+  #Invasion:
+  gamma.0 ~dnorm(gamma.0.mean,gamma.0.tau) #intrinsic invasion probability
+  gamma.0.tau <- 1/(gamma.0.sd*gamma.0.sd)
+  gamma.1 ~dnorm(gamma.1.mean, gamma.1.tau) #effect of site characteristics on invasion probability
+  gamma.1.tau <- 1/(gamma.1.sd*gamma.1.sd)
+  gamma.2 ~dnorm(gamma.2.mean, gamma.2.tau) #effect of Neighboring invasion state
+  gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd)
+  
+  #State transition:
+  phi.lh ~ dbeta(phi.lh.a, phi.lh.b) #transition from low to high
+  phi.hh ~ dbeta(phi.hh.a, phi.hh.b) #transition from high to high
+  
+  #Detection low state:
+  p.l0 ~ dbeta(p.l0.a, p.l0.b) #base detection for low state
+  p.l1 ~ dnorm(p.l1.mean, p.l1.tau) #effect of effort 
+  p.l1.tau <- 1/(p.l1.sd * p.l1.sd)
+  
+  #Detection high state:
+  p.h0 ~ dbeta(p.h0.a, p.h0.b) #base detection for high state
+  p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
+  p.h1.tau <- 1/(p.h1.sd * p.h1.sd)
+
+  logit(pD.l) <- p.l0 + p.l1*logeffort #detection low state
+  logit(pD.h) <- p.h0 + p.h1*logeffort #detection high state
+  
+#--------------------------------------------------#
+# STATE TRANSITION
+for (i in 1:n.sites){  
+  # State transition probabilities: probability of S(t+1) given S(t)
+  for (t in 1:n.weeks){
+  
+    logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
+    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]
+    
+    #index = [current state, location, time, future state]
+    #empty stay empty
+    ps[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
+    
+    #empty to low abundance
+    ps[1,i,t,2] <- gamma[i,t] #invasion probability
+    
+    #empty to high abundance
+    ps[1,i,t,3] <- 0 #invasion probability
+
+    #low abundance to empty
+    ps[2,i,t,1] <- eps.l[i,t] #erradication probability
+                                      # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
+    
+    #low abundance to low abundance
+    ps[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh) #erradication failure probability
+    
+    #low abundance to high abundance
+    ps[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh)
+    
+    #high abundance to empty
+    ps[3,i,t,1] <- eps.h[i,t] #erradication probability
+    
+    #high abundance to low abundance
+    ps[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh) #erradication failure probability
+    
+    #low abundance to high abundance
+    ps[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh)
+    
+    
+    #--------------------------------------------------#
+    # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
+    
+    for(j in 1:n.obs){
+
+      #Empty and not observed  
+      po.datD[1,i,j,t,1] <- 1
+      
+      #Empty and observed
+      po.datD[1,i,j,t,2] <- 0
+   
+      #Low state and not observed
+      po.datD[2,i,j,t,1] <- 1-pD.l #not detected probability
+      
+      #Low state and observed
+      po.datD[2,i,j,t,2] <- pD.l #detection probability
+      
+      #High state and not observed
+      po.datD[3,i,j,t,1] <- 1-pD.h #not detected probability
+      
+      #High state and observed
+      po.datD[3,i,j,t,2] <- pD.h #detection probability
+      
+    } #j 
+  } #t
+} #i
+
+  #### Likelihood ####
+  for (i in 1:n.sites){
+    # Define state at beginning
+    State[i,1] <- S.init[i] #we know state at the start?
+    D[i,1] <- D.init[i]     #we know neighbor states at the start
+    
+    for (t in 2:n.weeks){ 
+      # State process: state given previous state and transition probability
+      State[i,t] ~ dcat(ps[State[i,t-1], i, t-1, ]) 
+      
+      D[i,t] <- sum(State[neighbors[i,], t])/2 #state of neighbors 
+     
+    } #t
+
+    for(j in 1:n.obs){
+      for(t in 1:n.weeks){
+        # Observation process: draw observation given state
+        yD[i,j,t] ~ dcat(po.datD[State[i,t], i, j, t-1,])
+      } #t
+    } #j
+    
+    #Derived parameter:
+    State.fin[i] <- State[i,n.weeks] #state after 4 weeks
+    
+  } #i
+
+
+} #end model
+
