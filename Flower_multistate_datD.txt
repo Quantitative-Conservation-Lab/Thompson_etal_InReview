@@ -59,8 +59,13 @@ for (i in 1:n.sites){
   for (t in 1:n.weeks){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
+<<<<<<< HEAD
     logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t] #erradication low state
     logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t] #erradication high state
+=======
+    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours #erradication low state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours #erradication high state
+>>>>>>> 9b6f641e2e8697481f05e261510fb86151ea5928
     
     #index = [current state, location, time, future state]
     #empty stay empty
