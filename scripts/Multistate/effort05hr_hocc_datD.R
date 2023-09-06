@@ -170,8 +170,8 @@ for (i in 1:n.sites){
 sink()
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "e1hr_hocc_datD")
-res <- c('results/Multistate/e1hr_hocc_datD') 
+path <- here::here("results", "Multistate", "e05hr_hocc_datD")
+res <- c('results/Multistate/e05hr_hocc_datD') 
 
 #### Data and parameters ####
 n.sims <-  2 #25 #100
@@ -197,7 +197,7 @@ p.l1 <- 1 #effect of effort
 p.h0 <- 0.8 #base detection for high state
 p.h1 <- 1 #effect of effort
 
-search.hours <- 1.1 #effort is fixed
+search.hours <- 0.5 #effort is fixed
 removal.hours <- 2 #effort is fixed
 logsearch.effort <- log(search.hours) #log search effort
 
@@ -847,8 +847,8 @@ for(year in 1:n.years){
                           "State.fin")
                           
   #settings
-  n.burnin <- 10 #00
-  n.iter <- 100 #00 + n.burnin
+  n.burnin <- 10000
+  n.iter <- 100000 + n.burnin
   n.chains <- 3
   n.thin <- 1
   
@@ -1346,12 +1346,12 @@ for(year in 1:n.years){
       
         #if we visited the site for observation data
         if(!is.na(rem.vec[i,4,year,s])){ 
-          S.end[i,year,s] <- max(yD[i,,4,year,s], na.rm = T) 
+          S.end[i,s] <- max(yD[i,,4,year,s], na.rm = T) 
           
           #Note that we observe states = 1 or 2 where true states are 1,2,3 
           #So if we just assigned S.init = 2, now randomly assign if it's true state is 2 or 3
-          if( S.end[i,year,s] == 2){
-            S.end[i,year,s] <- sample(c(2,3), 1)
+          if( S.end[i,s] == 2){
+            S.end[i,s] <- sample(c(2,3), 1)
           }
           
         }else{
@@ -1366,21 +1366,27 @@ for(year in 1:n.years){
 } #end adaptive management 
 
 #################################################################################################
+#### TIMING ####
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+
+file_name = paste(path, 'e05_hocc_time.txt',sep = '/')
+write.table(time.taken,file_name)
+
 #### Save True Data ####
 #results for each sim
 States.df <- adply(State, c(1,2,3,4))
 
 colnames(States.df) <- c("site", "week", "year", "sim", "state")              
 
-file_name = paste(path, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'States_e05_hocc.csv',sep = '/')
 write.csv(States.df,file_name)
-
 
 #mean across simulations
 Mean.States.df <- aggregate(state ~ site+week+year,
                             data = as.data.frame(States.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States_e05_hocc.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
@@ -1388,12 +1394,12 @@ yD.df <- adply(yD, c(1,2,3,4,5))
 
 colnames(yD.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
 
-file_name = paste(path, 'y.obs_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'y.obs_e05_hocc.csv',sep = '/')
 write.csv(yD.df,file_name)
 
 
 rem.site.df <- yD.df %>% filter(observed.state > 1)
-file_name = paste(path, 'rem.site_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'rem.site_e05_hocc.csv',sep = '/')
 write.csv(rem.site.df,file_name)
 
 #### sites visited ####
@@ -1430,14 +1436,14 @@ colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
 
 sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
 
-file_name = paste(path, 'sites.visit_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'sites.visit_e05_hocc.csv',sep = '/')
 write.csv(sites.df,file_name)
 
 #### Estimated Data ####
 ##### Estimated States ####
 States.est.df <- States.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'States.est_e05_hocc.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
@@ -1445,7 +1451,7 @@ write.csv(States.est.df,file_name)
 Mean.States.est.df <- aggregate(state ~ site+year,
                                 data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_e05_hocc.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
 ##### Estimated parameters ####
@@ -1461,7 +1467,7 @@ for(s in 1:n.sims){
 
 eps.l0s.df <- do.call("rbind", eps.l0s)
 
-file_name = paste(path, 'eps.l0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.l0.est_e05_hocc.csv',sep = '/')
 write.csv(eps.l0s.df,file_name)
 
 ## --- eps.l1 -----------------------------------------------#
@@ -1476,7 +1482,7 @@ for(s in 1:n.sims){
 
 eps.l1s.df <- do.call("rbind", eps.l1s)
 
-file_name = paste(path, 'eps.l1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.l1.est_e05_hocc.csv',sep = '/')
 write.csv(eps.l1s.df,file_name)
 ## --- eps.h0 -----------------------------------------------#
 eps.h0s <- list()
@@ -1490,7 +1496,7 @@ for(s in 1:n.sims){
 
 eps.h0s.df <- do.call("rbind", eps.h0s)
 
-file_name = paste(path, 'eps.h0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.h0.est_e05_hocc.csv',sep = '/')
 write.csv(eps.h0s.df,file_name)
 
 ## --- eps.h1 -----------------------------------------------#
@@ -1505,7 +1511,7 @@ for(s in 1:n.sims){
 
 eps.h1s.df <- do.call("rbind", eps.h1s)
 
-file_name = paste(path, 'eps.h1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.h1.est_e05_hocc.csv',sep = '/')
 write.csv(eps.h1s.df,file_name)
 
 ## --- gamma.0 -----------------------------------------------#
@@ -1520,7 +1526,7 @@ for(s in 1:n.sims){
 
 gamma.0s.df <- do.call("rbind", gamma.0s)
 
-file_name = paste(path, 'gamma.0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'gamma.0.est_e05_hocc.csv',sep = '/')
 write.csv(gamma.0s.df,file_name)
 
 ## --- gamma.1 -----------------------------------------------#
@@ -1535,7 +1541,7 @@ for(s in 1:n.sims){
 
 gamma.1s.df <- do.call("rbind", gamma.1s)
 
-file_name = paste(path, 'gamma.1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'gamma.1.est_e05_hocc.csv',sep = '/')
 write.csv(gamma.1s.df,file_name)
 
 ## --- gamma.2 -----------------------------------------------#
@@ -1550,7 +1556,7 @@ for(s in 1:n.sims){
 
 gamma.2s.df <- do.call("rbind", gamma.2s)
 
-file_name = paste(path, 'gamma.2.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'gamma.2.est_e05_hocc.csv',sep = '/')
 write.csv(gamma.2s.df,file_name)
 
 ## --- phi.lh -----------------------------------------------#
@@ -1565,7 +1571,7 @@ for(s in 1:n.sims){
 
 phi.lhs.df <- do.call("rbind", phi.lhs)
 
-file_name = paste(path, 'phi.lh.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'phi.lh.est_e05_hocc.csv',sep = '/')
 write.csv(phi.lhs.df,file_name)
 
 ## --- phi.hh -----------------------------------------------#
@@ -1580,7 +1586,7 @@ for(s in 1:n.sims){
 
 phi.hhs.df <- do.call("rbind", phi.hhs)
 
-file_name = paste(path, 'phi.hh.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'phi.hh.est_e05_hocc.csv',sep = '/')
 write.csv(phi.hhs.df,file_name)
 
 ## --- p.l0 -----------------------------------------------#
@@ -1595,7 +1601,7 @@ for(s in 1:n.sims){
 
 p.l0.s.df <- do.call("rbind", p.l0.s)
 
-file_name = paste(path, 'p.l0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.l0.est_e05_hocc.csv',sep = '/')
 write.csv(p.l0.s.df,file_name)
 
 ## --- p.l1 -----------------------------------------------#
@@ -1610,7 +1616,7 @@ for(s in 1:n.sims){
 
 p.l1.s.df <- do.call("rbind", p.l1.s)
 
-file_name = paste(path, 'p.l1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.l1.est_e05_hocc.csv',sep = '/')
 write.csv(p.l1.s.df,file_name)
 
 ## --- p.h0 -----------------------------------------------#
@@ -1625,7 +1631,7 @@ for(s in 1:n.sims){
 
 p.h0.s.df <- do.call("rbind", p.h0.s)
 
-file_name = paste(path, 'p.h0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.h0.est_e05_hocc.csv',sep = '/')
 write.csv(p.h0.s.df,file_name)
 
 ## --- p.h1 -----------------------------------------------#
@@ -1640,16 +1646,10 @@ for(s in 1:n.sims){
 
 p.h1.s.df <- do.call("rbind", p.h1.s)
 
-file_name = paste(path, 'p.h1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.h1.est_e05_hocc.csv',sep = '/')
 write.csv(p.h1.s.df,file_name)
 
 ##### rhat vals ######
-file_name = paste(path, 'rhat.vals_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'rhat.vals_e05_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
-#### TIMING ####
-end.time <- Sys.time()
-time.taken <- end.time - start.time
-
-file_name = paste(path, 'e1_hocc_time.txt',sep = '/')
-write.table(time.taken,file_name)
