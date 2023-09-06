@@ -41,3 +41,6 @@ vignettes/*.pdf
 *.csv
 
 *.pdf
+
+# Results folder
+/results
