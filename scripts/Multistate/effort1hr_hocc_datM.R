@@ -680,10 +680,16 @@ for(year in 1:n.years){
       #### Unsure if correct ####
       for(s in 1:n.sims){
         for(i in 1:n.sites){
-          if(!is.na(rem.vec[i,1,year,s])){ #if we visited the site for observation data
+          if(!is.na(rem.vec[i,1,year,s])){ #if we visited the site week 1 for observation data
             S.init[i,year,s] <- max(yM[i,,1,year,s], na.rm = T) #Initial state = max observed detection
             
-          }else{ #if we did not visit the site for observation data, randomly sample 
+          }
+
+          if((!is.na(rem.vec[i,1,year,s]) == FALSE & !is.na(rem.vec[i,2,year,s]) == TRUE)){ #if we visited site week 2 for observation data
+            S.init[i,year,s] <- max(yM[i,,2,year,s], na.rm = T) #Initial state = max observed detection
+          }
+          
+          if(is.na(rem.vec[i,1,year,s])){ #if we did not visit the site for observation data, randomly sample 
             S.init[i,year,s] <- rcat(1,c(0.5, 0.25, 0.25)) #sample(c(1,2,3),1)
           }
         }
@@ -692,8 +698,6 @@ for(year in 1:n.years){
           D.init[i,year,s] <- sum(S.init[neighbors[i,], year,s])/2 #state of neighbors
         }
       }
-
-    
       
   } else{
     
@@ -989,6 +993,10 @@ for(year in 1:n.years){
     }
   }
 
+  #Initial values
+  for(s in 1:n.sims){
+    initial.values[[s]] <- function()list(State = State.start[,,s])
+  }
     
   #Running the model
   for(s in 1:n.sims){
@@ -1354,7 +1362,7 @@ for(year in 1:n.years){
              get(p.l1.est[s]))
       
       assign(all.alpha.l.est[s], 
-             get(p.alpha.l.est[s]))
+             get(alpha.l.est[s]))
       
       assign(all.p.h0.est[s], 
              get(p.h0.est[s]))
@@ -1363,10 +1371,10 @@ for(year in 1:n.years){
              get(p.h1.est[s]))
       
       assign(all.alpha.h.est[s], 
-             get(p.alpha.h.est[s]))
+             get(alpha.h.est[s]))
       
       assign(all.delta.est[s], 
-             get(p.delta.est[s]))
+             get(delta.est[s]))
       
       
     }else{ #if beyond first year, we append previous summary to new summary
