@@ -28,9 +28,9 @@ model{
 # 2 low abundance
 # 3 high abundance 
 # 
-# Observations (O):  
-# 1 absent
-# 2 present
+# Observations Dat D:  
+# 1 Detected
+# 2 Not detected
 # -------------------------------------------------
 
 #### PRIORS ####
@@ -110,7 +110,7 @@ for (i in 1:n.sites){
     
     
     #--------------------------------------------------#
-    # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
+    # OBSERVATION PROBABILITIES (for detection/nondetection data)
     
     for(j in 1:n.occs){
 

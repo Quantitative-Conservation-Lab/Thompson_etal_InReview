@@ -28,8 +28,8 @@ model{
 # 2 low abundance
 # 3 high abundance 
 # 
-# Observations (O):  
-# 1 absent
+# Observations Dat M:  
+# 1 not detected
 # 2 low abundance
 # 3 high abundance
 #
@@ -118,7 +118,7 @@ for (i in 1:n.sites){
     
     
     #--------------------------------------------------#
-    # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
+    # OBSERVATION PROBABILITIES (for multi state detection/nondetection data)
     
     for(j in 1:n.occs){
 
@@ -278,10 +278,10 @@ eps.h <- array(NA, c(n.sites, n.weeks, n.years+1, n.sims)) #eradication at high 
 
 #--- Initial removal sites ----#
 #Randomly order all sites for removal (next year order of sites will be based on some factor)
-sites.rem <- array(NA, dim = c(n.sites, n.weeks, n.years, n.sims))
+sites.rem.M <- array(NA, dim = c(n.sites, n.weeks, n.years, n.sims))
 
 for(s in 1:n.sims){
-  sites.rem[,1,1,s] <- sample(seq(1,n.sites), n.sites, replace = F)
+  sites.rem.M[,1,1,s] <- sample(seq(1,n.sites), n.sites, replace = F)
 }
 
 yM <- array(NA,c(n.sites, n.occs, n.weeks, n.years, n.sims)) #detection/non-detection data
@@ -539,14 +539,14 @@ for(year in 1:n.years){
         #week: Identify the sites where removal will occur 
         n.pre.visit <- length(which(rem.vec[,week-1,year,s] >= 0)) #number of sites that were sampled last week
         #put last weeks sampling sites at the end of the sampling queue 
-        sites.rem[,week,year,s] <- c(sites.rem[,(week-1),year,s][-1:-n.pre.visit],
-                                     sites.rem[,(week-1),year,s][1:n.pre.visit])
+        sites.rem.M[,week,year,s] <- c(sites.rem.M[,(week-1),year,s][-1:-n.pre.visit],
+                                     sites.rem.M[,(week-1),year,s][1:n.pre.visit])
       }
       
       ##### Observation process #######
       # Observation process: draw observation given current state
       
-      for(i in sites.rem[,week,year,s]){ #order of sites where removal occurs
+      for(i in sites.rem.M[,week,year,s]){ #order of sites where removal occurs
         
         #A. while we still have resources to spend:
         if(resource.total[week,year,s] < n.resource){
@@ -978,8 +978,6 @@ for(year in 1:n.years){
   State.start <- array(NA, c(n.sites,n.weeks,n.sims)) #State initial values
   
   #State.start[,2:n.weeks,] <- 2 #State[,2:n.weeks,year,]
-  
-  ###### INCONSISTENT PARENTS! #####
   
   for(s in 1:n.sims){
     for(i in 1:n.sites){
@@ -1461,7 +1459,7 @@ for(year in 1:n.years){
 
     #Removal locations: rank sites by state
      for(s in 1:n.sims){
-      sites.rem[,1,year+1,s] <- order(States.mean[,year,s], decreasing = T)
+      sites.rem.M[,1,year+1,s] <- order(States.mean[,year,s], decreasing = T)
     }
     
   }else{
@@ -1549,9 +1547,9 @@ file_name = paste(path, 'y.obs_e1_hocc.csv',sep = '/')
 write.csv(yM.df,file_name)
 
 
-rem.site.df <- yM.df %>% filter(observed.state > 1)
-file_name = paste(path, 'rem.site_e1_hocc.csv',sep = '/')
-write.csv(rem.site.df,file_name)
+rem.site.M.df <- yM.df %>% filter(observed.state > 1)
+file_name = paste(path, 'rem.site.M_e1_hocc.csv',sep = '/')
+write.csv(rem.site.M.df,file_name)
 
 #### sites visited ####
 sites.visit <- adply(rem.vec, c(1,2,4,3))
