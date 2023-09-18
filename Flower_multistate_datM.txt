@@ -12,8 +12,8 @@ model{
 # 2 low abundance
 # 3 high abundance 
 # 
-# Observations (O):  
-# 1 absent
+# Observations Dat M:  
+# 1 not detected
 # 2 low abundance
 # 3 high abundance
 #
@@ -55,7 +55,8 @@ model{
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species was detected and true state is high
+  #delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species was detected and true state is high
+  delta <- 0
 
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
@@ -67,8 +68,8 @@ for (i in 1:n.sites){
   for (t in 1:n.weeks){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
-    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours #erradication low state
-    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours #erradication high state
+    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours[2] #erradication low state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
     #index = [current state, location, time, future state]
@@ -102,7 +103,7 @@ for (i in 1:n.sites){
     
     
     #--------------------------------------------------#
-    # OBSERVATION PROBABILITIES 1 (for detection/nondetection data)
+    # OBSERVATION PROBABILITIES (for multi state detection/nondetection data)
     
     for(j in 1:n.occs){
 

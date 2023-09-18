@@ -62,12 +62,12 @@ model{
   delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species was detected and true state is high
 
   #Data = D detection 
-  logit(pD.l) <- p.l0 + p.l1*logeffort #detection low state
-  logit(pD.h) <- p.h0 + p.h1*logeffort #detection high state
+  logit(pD.l) <- p.l0 + p.l1*logeffort.D #detection low state
+  logit(pD.h) <- p.h0 + p.h1*logeffort.D #detection high state
 
   #Data = M detection
-  logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
-  logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
+  logit(pM.l) <- p.l0 + p.l1*logeffort.M + alpha.l #detection low state
+  logit(pM.h) <- p.h0 + p.h1*logeffort.M + alpha.h #detection high state
   
 #--------------------------------------------------#
 # STATE TRANSITION
@@ -76,8 +76,8 @@ for (i in 1:n.sites){
   for (t in 1:n.weeks){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
-    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours #erradication low state
-    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours #erradication high state
+    logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours[2] #erradication low state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
     #index = [current state, location, time, future state]
