@@ -37,11 +37,11 @@ model{
 
 #### PRIORS ####
   #Erradication:
-  eps.l0 ~ dbeta(eps.l0.a,eps.l0.b) #eradication when at low state
+  eps.l0 ~ dbeta(eps.l0.a,eps.l0.b)T(0.0001,0.9999) #eradication when at low state
   eps.l1 ~ dnorm(eps.l1.mean, eps.l1.tau) #effect of eradication 
   eps.l1.tau <- 1/(eps.l1.sd * eps.l1.sd) #precision parameter
   
-  eps.h0 ~ dbeta(eps.h0.a,eps.h0.b) #eradication when at high state
+  eps.h0 ~ dbeta(eps.h0.a,eps.h0.b)T(0.0001,0.9999) #eradication when at high state
   eps.h1 ~ dnorm(eps.h1.mean, eps.h1.tau) #effect of eradication 
   eps.h1.tau <- 1/(eps.h1.sd * eps.h1.sd) #precision parameter
   
@@ -54,24 +54,24 @@ model{
   gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd) #precision parameter
   
   #State transition:
-  phi.lh ~ dbeta(phi.lh.a, phi.lh.b) #transition from low to high
-  phi.hh ~ dbeta(phi.hh.a, phi.hh.b) #transition from high to high
+  phi.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
+  phi.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
   
   #Detection low state:
-  p.l0 ~ dbeta(p.l0.a, p.l0.b) #base detection for low state
+  p.l0 ~ dbeta(p.l0.a, p.l0.b)T(0.0001,0.9999) #base detection for low state
   p.l1 ~ dnorm(p.l1.mean, p.l1.tau) #effect of effort 
   p.l1.tau <- 1/(p.l1.sd * p.l1.sd) #precision parameter
   alpha.l ~ dnorm(l.mean,l.tau) #difference in baseline detection between dat D and M
   l.tau <- 1/(l.sd * l.sd) #precision
   
   #Detection high state:
-  p.h0 ~ dbeta(p.h0.a, p.h0.b) #base detection for high state
+  p.h0 ~ dbeta(p.h0.a, p.h0.b)T(0.0001,0.9999) #base detection for high state
   p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
   p.h1.tau <- 1/(p.h1.sd * p.h1.sd) #precision parameter
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  #delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species was detected and true state is high
+  #delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
   delta <- 0
 
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
@@ -188,11 +188,11 @@ for (i in 1:n.sites){
 sink()
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "e1hr_hocc_datM")
-res <- c('results/Multistate/e1hr_hocc_datM') 
+path <- here::here("results", "Multistate", "hocc_datM")
+res <- c('results/Multistate/hocc_datM') 
 
 #### Data and parameters ####
-n.sims <-  15 #25 #100
+n.sims <-  10 #25 #100
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 4 #number of weeks
@@ -1029,7 +1029,7 @@ for(year in 1:n.years){
   
   #select random 5 sims for density plot figures
   ##### FIX HERE ####
-   rand5 <- c(1,2) #sample(seq(1:n.sims), 5, replace = F)
+   rand5 <- sample(seq(1:n.sims), 5, replace = F)
   
   #Saving density:
    for(s in rand5){
@@ -1802,3 +1802,115 @@ write.csv(p.h1.s.df,file_name)
 file_name = paste(path, 'rhat.vals_e1_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
+#### QUICK RESULTS ####
+Mean.States.df.fin <- Mean.States.df %>% filter(year == 11)
+Mean.States.df.fin$state #distribution
+
+mean(Mean.States.df.fin$state) #average final state
+
+#check number of sites visited for removal on average each week
+mean(sites.df$num.visit.norem)
+mean(sites.df$num.visit.rem)
+
+#correct results: true state
+match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+match.dat <- array(NA, c(n.weeks, n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(year in 1:n.years){
+    for(week in 1:n.weeks){
+      State.M <- State[,week,year,s]
+      full.match <- (yM[,,week,year,s] == State.M)
+      full.match [,1] <- as.numeric(full.match [,1])
+      full.match [,2] <- as.numeric(full.match [,2])
+      full.match [is.na(full.match )] <- 3 #replace NA with 3
+      
+      
+      for(i in 1:n.sites){
+        
+        
+        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
+          match[i,week,year,s] <- 0
+        }
+        
+        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
+          match[i,week,year,s] <- NA #not visited
+        }
+        
+        
+      } #sites
+      
+      match2 <- discard(match[,week,year,s], is.na)
+      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
+      
+    } #weeks
+  } #year
+} #sims
+
+
+mean(match.dat)
+
+#correct results: detection/non-detection
+match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+match.dat <- array(NA, c(n.weeks, n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(year in 1:n.years){
+    for(week in 1:n.weeks){
+      State.D <- State[,week,year,s]
+      State.D[State.D == 3] <- 2
+      yM.2 <- yM[,,week,year,s]
+      yM.2[yM.2 == 3] <- 2
+      full.match <- (yM.2 == State.D)
+      full.match [,1] <- as.numeric(full.match [,1])
+      full.match [,2] <- as.numeric(full.match [,2])
+      full.match [is.na(full.match )] <- 3 #replace NA with 3
+      
+      
+      for(i in 1:n.sites){
+        
+        
+        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
+          match[i,week,year,s] <- 0
+        }
+        
+        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
+          match[i,week,year,s] <- NA #not visited
+        }
+        
+        
+      } #sites
+      
+      match2 <- discard(match[,week,year,s], is.na)
+      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
+      
+    } #weeks
+  } #year
+} #sims
+
+
+mean(match.dat)

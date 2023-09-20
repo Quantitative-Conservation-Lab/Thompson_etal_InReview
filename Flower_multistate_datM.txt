@@ -21,11 +21,11 @@ model{
 
 #### PRIORS ####
   #Erradication:
-  eps.l0 ~ dbeta(eps.l0.a,eps.l0.b) #eradication when at low state
+  eps.l0 ~ dbeta(eps.l0.a,eps.l0.b)T(0.0001,0.9999) #eradication when at low state
   eps.l1 ~ dnorm(eps.l1.mean, eps.l1.tau) #effect of eradication 
   eps.l1.tau <- 1/(eps.l1.sd * eps.l1.sd) #precision parameter
   
-  eps.h0 ~ dbeta(eps.h0.a,eps.h0.b) #eradication when at high state
+  eps.h0 ~ dbeta(eps.h0.a,eps.h0.b)T(0.0001,0.9999) #eradication when at high state
   eps.h1 ~ dnorm(eps.h1.mean, eps.h1.tau) #effect of eradication 
   eps.h1.tau <- 1/(eps.h1.sd * eps.h1.sd) #precision parameter
   
@@ -38,24 +38,24 @@ model{
   gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd) #precision parameter
   
   #State transition:
-  phi.lh ~ dbeta(phi.lh.a, phi.lh.b) #transition from low to high
-  phi.hh ~ dbeta(phi.hh.a, phi.hh.b) #transition from high to high
+  phi.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
+  phi.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
   
   #Detection low state:
-  p.l0 ~ dbeta(p.l0.a, p.l0.b) #base detection for low state
+  p.l0 ~ dbeta(p.l0.a, p.l0.b)T(0.0001,0.9999) #base detection for low state
   p.l1 ~ dnorm(p.l1.mean, p.l1.tau) #effect of effort 
   p.l1.tau <- 1/(p.l1.sd * p.l1.sd) #precision parameter
   alpha.l ~ dnorm(l.mean,l.tau) #difference in baseline detection between dat D and M
   l.tau <- 1/(l.sd * l.sd) #precision
   
   #Detection high state:
-  p.h0 ~ dbeta(p.h0.a, p.h0.b) #base detection for high state
+  p.h0 ~ dbeta(p.h0.a, p.h0.b)T(0.0001,0.9999) #base detection for high state
   p.h1 ~ dnorm(p.h1.mean, p.h1.tau) #effect of effort 
   p.h1.tau <- 1/(p.h1.sd * p.h1.sd) #precision parameter
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  #delta ~ dbeta(delta.a, delta.b) #probability of observing the high state given species was detected and true state is high
+  #delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
   delta <- 0
 
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
