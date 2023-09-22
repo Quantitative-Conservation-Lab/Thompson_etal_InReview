@@ -157,14 +157,18 @@ for (i in 1:n.sites){
   #### Likelihood ####
   for (i in 1:n.sites){
     #----- State Model -----#
+    ##### FIX THIS!!!!!!!!!!!!!!###########
     State[i,1] <- S.init[i] # initial state 
     D[i,1] <- D.init[i]     # initial neighboring state
+    ##################################################
     
     for (t in 2:n.weeks){ 
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
       
+      #below is not correct because it does not lead to a true state: 
       D[i,t] <- sum(State[neighbors[i,], t])/2 #state of neighbors 
+       
      
     } #t loop
 
