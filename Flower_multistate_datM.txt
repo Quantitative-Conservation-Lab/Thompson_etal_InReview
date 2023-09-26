@@ -55,11 +55,13 @@ model{
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  #delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
-  delta <- 0
+  delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
 
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
+  
+  #initial occupancy probabilities
+  psi[1:3] ~ ddirch(alpha) #alpha = rep(1,3)
   
 #--------------------------------------------------#
 # STATE TRANSITION
@@ -101,7 +103,6 @@ for (i in 1:n.sites){
     #low abundance to high abundance
     TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh)
     
-    
     #--------------------------------------------------#
     # OBSERVATION PROBABILITIES (for multi state detection/nondetection data)
     
@@ -140,15 +141,29 @@ for (i in 1:n.sites){
 
   #### Likelihood ####
   for (i in 1:n.sites){
-    #----- State Model -----#
-    State[i,1] <- S.init[i] # initial state 
-    D[i,1] <- D.init[i]     # initial neighboring state
+      
+    #-- initial state: --# 
     
+    #MORE COMPLEX VERSION, not quite correct: 
+      #gamma.init[i] <- gamma.0 + gamma.1*site.char[i] #probability of being invaded initially
+      #l.init <- 1- eps.l0                             #probably of being low abundance if invaded
+      #h.init <- 1- eps.h0                             #probably of being high abundance if invaded
+      #psi[i,1] <- 1-gamma.init[i]                     #probability of being empty
+      #psi[i,2] <- gamma.init[i]*l.init                #probability of low abundance
+      #psi[i,3] <- gamma.init[i]*h.init                #probability of high abundance
+    
+      State[i,1] ~ dcat(psi) #psi is written above in the priors
+    
+      D[i,1] <- sum(State[neighbors[i,], 1])/2 #state of neighbors 
+    
+    #-- initial state: --#
     for (t in 2:n.weeks){ 
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
       
+      #below is not correct because it does not lead to a true state: 
       D[i,t] <- sum(State[neighbors[i,], t])/2 #state of neighbors 
+       
      
     } #t loop
 
