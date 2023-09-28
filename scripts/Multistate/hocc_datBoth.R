@@ -232,7 +232,7 @@ res <- c('results/Multistate/hocc_datBoth')
 #### Data and parameters ####
 n.sims <-  2 #25 #100
 n.sites <- 40 #number of sites
-n.years <- 10 #number of years
+n.years <- 5 #10 #number of years
 n.weeks <- 4 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
@@ -1841,4 +1841,170 @@ write.csv(p.h1.s.df,file_name)
 ##### rhat vals ######
 file_name = paste(path, 'rhat.vals_e1_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
+
+#### QUICK RESULTS ####
+Mean.States.df.fin <- Mean.States.df %>% filter(year == 11)
+Mean.States.df.fin$state #distribution
+
+mean(Mean.States.df.fin$state) #average final state
+
+#check number of sites visited for removal on average each week
+mean(sites.df$num.visit.norem)
+mean(sites.df$num.visit.rem)
+
+#### multi state data check ####
+#correct results: true state
+match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+match.dat <- array(NA, c(n.weeks, n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(year in 1:n.years){
+    for(week in 1:n.weeks){
+      State.M <- State[,week,year,s]
+      full.match <- (yM[,,week,year,s] == State.M)
+      full.match [,1] <- as.numeric(full.match [,1])
+      full.match [,2] <- as.numeric(full.match [,2])
+      full.match [is.na(full.match )] <- 3 #replace NA with 3
+      
+      
+      for(i in 1:n.sites){
+        
+        
+        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
+          match[i,week,year,s] <- 0
+        }
+        
+        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
+          match[i,week,year,s] <- NA #not visited
+        }
+        
+        
+      } #sites
+      
+      match2 <- discard(match[,week,year,s], is.na)
+      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
+      
+    } #weeks
+  } #year
+} #sims
+
+
+mean(match.dat)
+
+#correct results: detection/non-detection
+match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+match.dat <- array(NA, c(n.weeks, n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(year in 1:n.years){
+    for(week in 1:n.weeks){
+      State.D <- State[,week,year,s]
+      State.D[State.D == 3] <- 2
+      yM.2 <- yM[,,week,year,s]
+      yM.2[yM.2 == 3] <- 2
+      full.match <- (yM.2 == State.D)
+      full.match [,1] <- as.numeric(full.match [,1])
+      full.match [,2] <- as.numeric(full.match [,2])
+      full.match [is.na(full.match )] <- 3 #replace NA with 3
+      
+      
+      for(i in 1:n.sites){
+        
+        
+        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
+          match[i,week,year,s] <- 0
+        }
+        
+        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
+          match[i,week,year,s] <- NA #not visited
+        }
+        
+        
+      } #sites
+      
+      match2 <- discard(match[,week,year,s], is.na)
+      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
+      
+    } #weeks
+  } #year
+} #sims
+
+
+mean(match.dat)
+
+#### d/nd data check ####
+#correct results: detection/non-detection
+match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+match.dat <- array(NA, c(n.weeks, n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(year in 1:n.years){
+    for(week in 1:n.weeks){
+      State.D <- State[,week,year,s]
+      State.D[State.D == 3] <- 2
+      full.match <- (yD[,,week,year,s] == State.D)
+      full.match [,1] <- as.numeric(full.match [,1])
+      full.match [,2] <- as.numeric(full.match [,2])
+      full.match [is.na(full.match )] <- 3 #replace NA with 3
+      
+      
+      for(i in 1:n.sites){
+        
+        
+        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
+          match[i,week,year,s] <- 1
+        }
+        
+        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
+          match[i,week,year,s] <- 0
+        }
+        
+        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
+          match[i,week,year,s] <- NA #not visited
+        }
+        
+        
+      } #sites
+      
+      match2 <- discard(match[,week,year,s], is.na)
+      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
+      
+    } #weeks
+  } #year
+} #sims
+
+
+mean(match.dat)
 

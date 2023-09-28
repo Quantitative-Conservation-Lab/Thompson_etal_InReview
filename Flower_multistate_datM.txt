@@ -87,7 +87,6 @@ for (i in 1:n.sites){
     #low abundance to empty
     TPM[2,i,t,1] <- eps.l[i,t] #erradication probability
                                       
-    
     #low abundance to low abundance
     TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh) #erradication failure probability
     
@@ -100,7 +99,7 @@ for (i in 1:n.sites){
     #high abundance to low abundance
     TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh) #erradication failure probability
     
-    #low abundance to high abundance
+    #high abundance to high abundance
     TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh)
     
     #--------------------------------------------------#
@@ -142,7 +141,7 @@ for (i in 1:n.sites){
   #### Likelihood ####
   for (i in 1:n.sites){
       
-    #-- initial state: --# 
+    #-- Initial State: --# 
     
     #MORE COMPLEX VERSION, not quite correct: 
       #gamma.init[i] <- gamma.0 + gamma.1*site.char[i] #probability of being invaded initially
@@ -156,7 +155,7 @@ for (i in 1:n.sites){
     
       D[i,1] <- sum(State[neighbors[i,], 1])/2 #state of neighbors 
     
-    #-- initial state: --#
+    #-- State Model: --#
     for (t in 2:n.weeks){ 
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
