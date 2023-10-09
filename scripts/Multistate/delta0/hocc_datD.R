@@ -942,7 +942,6 @@ for(year in 1:n.years){
   }
   
   #select random 5 sims for density plot figures
-  ##### FIX HERE ####
    rand5 <- sample(seq(1:n.sims), 5, replace = F)
   
   #Saving density:
@@ -1438,6 +1437,26 @@ sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num
 
 file_name = paste(path, 'sites.visit_e1_hocc.csv',sep = '/')
 write.csv(sites.df,file_name)
+
+#number of D sites. 
+n.ddat <- yD
+n.ddat[n.ddat == 2] <- 1
+
+week.d <- array(NA, dim = c(n.weeks, n.years, n.sims))
+
+for(s in 1:n.sims){
+  for(year in 1:n.years){
+    for(week in 1:n.weeks){
+      
+      week.d[week,year,s] <- sum(!is.na(n.ddat[,,week,year,s]))  
+
+    } #weeks
+  } #years
+} #sims
+
+mean(week.d)
+
+
 
 #### Estimated Data ####
 ##### Estimated States ####
