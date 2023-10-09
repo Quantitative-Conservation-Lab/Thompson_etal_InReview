@@ -6,8 +6,13 @@ gamma.0s <- c(0.2, 0.5, 0.8) #intrinsic invasion probability
 gamma.1s <- c(0.2, 0.5, 0.8) #effect of site characteristics
 gamma.2s <- c(0.2, 0.5, 0.8) #effect of neighboring invasion state
 
-eps.l0s <- c(0.8, 0.6, 0.4) #base eradication at low state
-eps.l1s <- c(0.8, 0.6, 0.4)  #effect of eradication at low state
+# eps.l0s <- c(0.8, 0.6, 0.4) #base eradication at low state
+# eps.l1s <- c(0.8, 0.6, 0.4)  #effect of eradication at low state
+# eps.h0s <- c(0.6, 0.4, 0.2)  #base eradication at high state
+# eps.h1s <- c(0.6, 0.4, 0.2) #effect of eradication at high state
+
+eps.l0s <- c(0.9, 0.6, 0.3) #base eradication at low state
+eps.l1s <- c(0.9, 0.6, 0.3)  #effect of eradication at low state
 eps.h0s <- c(0.6, 0.4, 0.2)  #base eradication at high state
 eps.h1s <- c(0.6, 0.4, 0.2) #effect of eradication at high state
 

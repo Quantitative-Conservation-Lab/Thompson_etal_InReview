@@ -202,43 +202,55 @@ for (i in 1:n.sites){
 sink()
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "hocc_datM")
-res <- c('results/Multistate/hocc_datM') 
+path <- here::here("results", "Multistate", "hocc_datM_p2")
+res <- c('results/Multistate/hocc_datM_p2') 
 
 #### Data and parameters ####
-n.sims <-  2 #10 #25 #100
+load("parameters.RData")
+
+n.sims <-  20
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 4 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
 
-eps.l0 <- 0.3 #base eradication at low state
-eps.l1 <- 5 #effect of eradication at low state
-eps.h0 <- 0.2 #base eradication at high state
-eps.h1 <- 2 #effect of eradication at high state
-gamma.0 <- 0.2 #intrinsic invasion probability
-gamma.1 <- 0.2 #effect of site characteristics
-gamma.2 <- 1 #effect of neighboring invasion state
-phi.lh <- 0.1 #transition from low to high
-phi.hh <- 0.8 #transition from high to high
+##### STATE VALUES ####
 
-p.l0 <- 0.3 #base detection for low state
-p.l1 <- 1 #effect of effort
-alpha.l <- 0.1 #difference in baseline detection between dat D and M
+gamma.0 <- gamma.0s[1] #intrinsic invasion probability
+gamma.1 <- gamma.1s[1] #effect of site characteristics
+gamma.2 <- gamma.2s[1] #effect of neighboring invasion state
 
-p.h0 <- 0.8 #base detection for high state
-p.h1 <- 1 #effect of effort
-alpha.h <- 0.1 #difference in baseline detection between dat D and M
-delta <- 0.5 # Probability of observing the high state given the species
-             # has been detected and the true state is high
+eps.l0 <- eps.l0s[1] #base eradication at low state
+eps.l1 <- eps.l1s[1] #effect of eradication at low state
+eps.h0 <- eps.h0s[1] #base eradication at high state
+eps.h1 <- eps.h1s[1] #effect of eradication at high state
+phi.lh <- phi.lhs[1] #transition from low to high
+phi.hh <- phi.hhs[1] #transition from high to high
 
-search.hours <- 1.1 #effort is fixed
-logsearch.effort <- log(search.hours) #log search effort
-#removal.hours <- 2 #effort is fixed
+TPM.48 <- TPM.48s[,,1] #TPM matrix for 48 week period
+
+##### OBSERVATION VALUES ####
+
+p.l0 <- p.l0s[3] #base detection for low state
+p.l1 <- p.l1s[3] #effect of effort
+alpha.l <- alpha.ls[3] #difference in baseline detection between dat D and M
+
+p.h0 <- p.h0s[3] #base detection for high state
+p.h1 <- p.h1s[3] #effect of effort
+alpha.h <- alpha.hs[3] #difference in baseline detection between dat D and M
+delta <- deltas[3] #probability of observing the high state given the species
+
+search.hours <- search.hourss[2] #search effort
+
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
-resource.total <- array(0, c(n.weeks, n.years,n.sims)) #matrix where we store the amount of resources used each week
-n.resource <- 40 #total resources we can use each week (hours)
+n.resource <- 80 #total hours per week
+
+#---- arrays ----#
+gamma <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+eps.l <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+eps.h <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states)) 
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
@@ -247,30 +259,9 @@ n.resource <- 40 #total resources we can use each week (hours)
 #Loading habitat data:
 path2 <- here::here("data")
 file_name = paste(path2, 'Site_char_multi.csv',sep = '/')
-# write.csv(site.char,file_name)
 site.chardat <- read.csv(file_name)
 site.char <- site.chardat[,2]
 
-#---Initial state data---#
-#Code that generated initial true state
-# State.init <- rep(NA, n.sites)
-# rate.init <- rep(NA, n.sites)
-# occ.init <- rep(NA, n.sites)
-# init.matrix <- array(NA, c(n.sites, n.states))
-# for(i in 1:n.sites){
-#   rate.init[i] <- mean(rbinom(100000,1,invlogit(gamma.0 + gamma.1*site.char[i]))) #invasion rate
-#   p.high <- 0.5 #say the probability of being in high state is 0.5
-# 
-#   occ.init[i] <- round(mean(rbern(100000,rate.init[i]))) #being invaded or not
-# 
-#   init.matrix[i,1] <- (1-rate.init[i])*occ.init[i] + (1-occ.init[i]) #empty
-#   init.matrix[i,2] <- (rate.init[i])*occ.init[i]*(1-p.high) #low state
-#   init.matrix[i,3] <- (rate.init[i])*occ.init[i]*(p.high) #high state
-# 
-#   State.init[i] <- rcat(1,init.matrix[i,1:3])
-# }
-
-#write.csv(State.init,file_name)
 path2 <- here::here("data") 
 file_name = paste(path2, 'States_init_multi.csv',sep = '/')
 State.init <- read.csv(file_name) #loading initial state data
@@ -285,40 +276,37 @@ neighbors[1,1] <- 2 #site 1 only has site 2 as its neighbor
 neighbors[2:n.sites, 1] <- seq(1,n.sites-1) #filling in upstream neighbors
 neighbors[n.sites,2] <- n.sites-1 #end site only has end site -1 as its neighbor
 neighbors[1:(n.sites-1), 2] <- seq(2,n.sites) #filling in downstream neighbors
+n.neighbors <- rep(2,n.sites)
+n.neighbors[1] <- n.neighbors[n.sites] <- 1
 
-TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states)) #state probability
-gamma <- array(NA, c(n.sites, n.weeks, n.years+1, n.sims)) #invasion probability
-eps.l <- array(NA, c(n.sites, n.weeks, n.years+1,n.sims)) #eradication at low state
-eps.h <- array(NA, c(n.sites, n.weeks, n.years+1, n.sims)) #eradication at high state
+#--- removal data and occupancy data ---#
 
-TPM.48 <- array(NA, c(n.states,n.sites,n.years + 1,n.sims, n.states)) #transition rate for 48 weeks
+sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#--- Initial removal sites ----#
-#Randomly order all sites for removal (next year order of sites will be based on some factor)
-sites.rem.M <- array(NA, dim = c(n.sites, n.weeks, n.years, n.sims))
-
-for(s in 1:n.sims){
-  sites.rem.M[,1,1,s] <- sample(seq(1,n.sites), n.sites, replace = F)
+for(s in 1: n.sims){
+  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
 }
 
-yM <- array(NA,c(n.sites, n.occs, n.weeks, n.years, n.sims)) #detection/non-detection data
-rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) #removal sites array
-P.datM <- array(NA, c(n.states, 3)) #detection probability
+
+yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
+resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
+
+logsearch.effort <- log(search.hours) #log search effort
 
 pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l) #low state detection probability (base detection + effect of effort)
+pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l)
+pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l)
+
+pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
 pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h) #high state detection probability (base detection + effect of effort)
+pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
 
-P.datM[1,1] <- 1 #empty and not detected
-P.datM[1,2] <- 0 #empty and detected low 
-P.datM[1,3] <- 0 #empty and detected high
-
-P.datM[2,1] <- 1-pM.l #low state and not detected 
-P.datM[2,2] <- pM.l #low state and detected low
-P.datM[2,3] <- 0 #low state and detected high
-
-P.datM[3,1] <- 1-pM.h #high state and not detected 
-P.datM[3,2] <- pM.h*(1-delta) #high state and detected low
-P.datM[3,3] <- pM.h*delta #high state and detected high
+P.datM <- array(NA, dim = c(n.states, n.states))
+P.datM[1,] <- c(1,0,0)
+P.datM[2,] <- c(1-pM.l, pM.l, 0)
+P.datM[3,] <- c(1-pM.h, pM.h*(1-delta), pM.h*delta)
+  
+rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) #removal sites array
 
 #### JAGS arrays ####
 S.init <- array(NA, c(n.sites,n.years, n.sims))
@@ -458,7 +446,7 @@ for(year in 1:n.years){
     
     for(s in 1:n.sims){
       for(i in 1:n.sites){
-        D[i,1,1,s] <- sum(State[neighbors[i,], 1,1,s])/2 #state of neighbors
+        D[i,1,1,s] <- sum(State[neighbors[i,], 1,1,s])/n.neighbors[i] #state of neighbors
       }
     }
     
@@ -486,25 +474,14 @@ for(year in 1:n.years){
   
   if(year > 1){
     for(s in 1:n.sims){
-      ####### UNSURE about transition rates?? ####
-      TPM.48[1,,year,s,1] <- 1-gamma[,4,(year-1),s] #stay empty after 48 weeks
-      TPM.48[1,,year,s,2] <- gamma[,4,(year-1),s] #transition empty to low state after 48 weeks
-      TPM.48[1,,year,s,3] <- 0 #transition empty to high state after 48 weeks
-      
-      TPM.48[2,,year,s,1] <- eps.l[,4,(year-1),s] #low to empty after 48 weeks
-      TPM.48[2,,year,s,2] <- (1-eps.l[,4,(year-1),s])*(1-phi.lh)   #stay low after 48 weeks
-      TPM.48[2,,year,s,3] <- (1-eps.l[,4,(year-1),s])*(phi.lh) #low to high after 48 weeks
-      
-      TPM.48[3,,year,s,1] <- eps.h[,4,(year-1),s] #low to empty after 48 weeks
-      TPM.48[3,,year,s,2] <- (1-eps.h[,4,(year-1),s])*(1-phi.hh)   #stay low after 48 weeks
-      TPM.48[3,,year,s,3] <- (1-eps.h[,4,(year-1),s])*(phi.hh) #low to high after 48 weeks
+
       
       for(i in 1:n.sites){ #State process: state given previous state and transition probability
-        State[i,week,year,s] <- rcat(1,TPM.48[State[i,4,(year-1),s],i,year,s, ]) 
+        State[i,week,year,s] <- rcat(1,TPM.48[State[i,4,(year-1),s], ]) 
       }
         
       for(i in 1:n.sites){
-        D[i,week,year,s] <- sum(State[neighbors[i,], week,year,s])/2 #state of neighbors
+        D[i,week,year,s] <- sum(State[neighbors[i,], week,year,s])/n.neighbors[i] #state of neighbors
       }
       
     #--- Data for the TPM for the next week: week 2 ---#
@@ -545,7 +522,7 @@ for(year in 1:n.years){
         }
         
         for(i in 1:n.sites){ #state of neighbors
-          D[i,week,year,s] <- sum(State[neighbors[i,], week,year,s])/2 #state of neighbors
+          D[i,week,year,s] <- sum(State[neighbors[i,], week,year,s])/n.neighbors[i] #state of neighbors
         }
         
         #--- Data for the TPM for the next week: week 2+ ---#
@@ -576,7 +553,7 @@ for(year in 1:n.years){
         #put last weeks sampling sites at the end of the sampling queue 
         sites.rem.M[,week,year,s] <- c(sites.rem.M[,(week-1),year,s][-1:-n.pre.visit],
                                      sites.rem.M[,(week-1),year,s][1:n.pre.visit])
-      }
+      } #week > 1
       
       ##### Observation process #######
       # Observation process: draw observation given current state
@@ -889,10 +866,9 @@ for(year in 1:n.years){
                           "gamma.2", "phi.lh", "phi.hh", "p.l0", "p.l1", "p.h0", "p.h1", 
                           "State.fin", "alpha.l", "alpha.h", "delta", "psi")
   
-  #### Fix ####
   #settings
-  n.burnin <- 100#00
-  n.iter <- 1000#00 + n.burnin
+  n.burnin <- 10000
+  n.iter <- 100000 + n.burnin
   n.chains <- 3
   n.thin <- 1
   
@@ -910,6 +886,7 @@ for(year in 1:n.years){
                          alpha = alpha,
                          rem.vec = rem.vec.dat[,,s],
                          removal.hours = removal.hours,
+                         n.neighbors = n.neighbors,
                          
                          #priors
                          eps.l0.a = eps.l0.a[year,s], 
@@ -1001,59 +978,58 @@ for(year in 1:n.years){
   }
   
   #select random 5 sims for density plot figures
-  ##### FIX HERE ####
-   #rand5 <- sample(seq(1:n.sims), 5, replace = F)
-   rand5 <- c(1,2)
+   rand5 <- sample(seq(1:n.sims), 5, replace = F)
+   #rand5 <- c(1,2)
   
   #Saving density:
    for(s in rand5){
 
-    MCMCtrace(get(mcmcs[s]), params = 'eps.l0', type = 'density', ind = TRUE, pdf = TRUE,
+    MCMCtrace(get(mcmcs[s]), params = 'eps.l0', type = 'both', ind = TRUE, pdf = TRUE,
               open_pdf = FALSE, filename = paste0(res,'/densplots/eps.l0_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'eps.l1', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'eps.l1', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/eps.l1_sim_', s, '_year', year))
     
-     MCMCtrace(get(mcmcs[s]), params = 'eps.h0', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'eps.h0', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/eps.h0_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'eps.h1', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'eps.h1', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/eps.h1_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'gamma.0', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'gamma.0', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/gamma.0_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'gamma.1', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'gamma.1', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/gamma.1_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'gamma.2', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'gamma.2', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/gamma.2_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'phi.lh', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'phi.lh', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/phi.lh_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'phi.hh', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'phi.hh', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/phi.hh_sim_', s, '_year', year))
     
-     MCMCtrace(get(mcmcs[s]), params = 'p.l0', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'p.l0', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/p.l0_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'p.l1', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'p.l1', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/p.l1_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'alpha.l', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'alpha.l', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/alpha.l_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'p.h0', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'p.h0', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/p.h0_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'p.h1', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'p.h1', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/p.h1_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'alpha.h', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'alpha.h', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/alpha.h_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'delta', type = 'density', ind = TRUE, pdf = TRUE,
+     MCMCtrace(get(mcmcs[s]), params = 'delta', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/delta_sim_', s, '_year', year))
      
   }
@@ -1061,7 +1037,7 @@ for(year in 1:n.years){
   #save rhat outputs
   #remove state ones
   for(s in 1:n.sims){
-    x[[s]] <- as.numeric(unlist(get(outputsfull[s])$Rhat[1:13])) #ignore the state.fin rhat values 
+    x[[s]] <- as.numeric(unlist(get(outputsfull[s])$Rhat[c(c(1:13), c(15:18))])) #ignore the state.fin rhat values 
     rhat_vals[year,s] <-  sum(x[[s]] > 1.1, na.rm = TRUE)/ length(x[[s]]) #proportion of saved parameters that failed to converge
   }
   
@@ -1428,7 +1404,6 @@ for(year in 1:n.years){
   
   #--------------------------------------------------------------------------------#
   ###### 3b. Make decision  #####
-  #### Fix? ####
   # this is based on estimated state after 4 weeks... not based on 48 week projection
   if(year < n.years){
 

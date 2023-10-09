@@ -6,16 +6,55 @@ library(tidyverse)
 library(strex)
 library(plyr)
 
+#### Path Name ####
+path <- here::here("results", "Multistate", "random_datM")
+res <- c('results/Multistate/random_datM') 
+
 #### Data and parameters ####
 load("parameters.RData")
 
 n.sims <-  20
-n.params <- 3
+n.params <- 4
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 4 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
+
+##### STATE VALUES ####
+
+gamma.0  <- c(gamma.0s[1], gamma.0s[1], gamma.0s[3], gamma.0s[3]) #base invasion
+gamma.1  <- c(gamma.1s[1], gamma.1s[1], gamma.1s[3], gamma.1s[3]) #effect of site characteristics
+gamma.2  <- c(gamma.2s[1], gamma.2s[1], gamma.2s[3], gamma.2s[3]) #effect of neighboring invasion state
+
+eps.l0 <- c(eps.l0s[1], eps.l0s[1], eps.l0s[3], eps.l0s[3]) #base eradication at low state
+eps.l1 <- c(eps.l1s[1], eps.l1s[1], eps.l1s[3], eps.l1s[3]) #effect of eradication at low state
+eps.h0 <- c(eps.h0s[1], eps.h0s[1], eps.h0s[3], eps.h0s[3]) #base eradication at high state
+eps.h1 <- c(eps.h1s[1], eps.h1s[1], eps.h1s[3], eps.h1s[3]) #effect of eradication at high state
+
+phi.lh <- c(phi.lhs[1], phi.lhs[1], phi.lhs[3], phi.lhs[3]) #transition from low to high
+phi.hh <- c(phi.hhs[1], phi.hhs[1], phi.hhs[3], phi.hhs[3]) #transition from high to high
+
+TPM.48 <- array(NA, dim = c(n.states, n.params, n.states))
+TPM.48[,1,] <- TPM.48s[,,1] #TPM matrix for 48 week period
+TPM.48[,2,] <- TPM.48s[,,1]
+TPM.48[,3,] <- TPM.48s[,,3]
+TPM.48[,4,] <- TPM.48s[,,3]
+
+##### OBSERVATION VALUES ####
+
+p.l0 <- c(p.l0s[1], p.l0s[3], p.l0s[1], p.l0s[3]) #base detection for low state
+p.l1 <- c(p.l1s[1], p.l1s[3], p.l1s[1], p.l1s[3]) #effect of effort
+alpha.l <- c(alpha.ls[1], alpha.ls[3], alpha.ls[1], alpha.ls[3])  #difference in baseline detection between dat D and M
+
+p.h0 <- c(p.h0s[1], p.h0s[3], p.h0s[1], p.h0s[3]) #base detection for high state
+p.h1 <- c(p.h1s[1], p.h1s[3], p.h1s[1], p.h1s[3]) #effect of effort
+alpha.h <- c(alpha.hs[1], alpha.hs[3], alpha.hs[1], alpha.hs[3]) #difference in baseline detection between dat D and M
+delta <- c(deltas[1], deltas[3], deltas[1], deltas[3]) #probability of observing the high state given the species
+
+search.hours <- search.hourss[2] #search effort
+removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
+n.resource <- 80 #total hours per week
 
 #---- arrays ----#
 gamma <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims))
@@ -71,31 +110,26 @@ logsearch.effort <- log(search.hours) #log search effort
 
 pM.l <- rep(NA, n.params)
 pM.h <- rep(NA, n.params)
-P.datMs <- array(NA, dim = c(n.states, n.params, n.states))
-
-pM.l[1] <- invlogit(p.l0s[3] + p.l1s[3]*logsearch.effort + alpha.ls[3]) #low state detection probability (base detection + effect of effort)
-pM.l[2] <- invlogit(p.l0s[3] + p.l1s[3]*logsearch.effort + alpha.ls[3])
-pM.l[3] <- invlogit(p.l0s[3] + p.l1s[3]*logsearch.effort + alpha.ls[3])
-
-pM.h[1] <- invlogit(p.h0s[3] + p.h1s[3]*logsearch.effort + alpha.hs[3])
-pM.h[2] <- invlogit(p.h0s[3] + p.h1s[3]*logsearch.effort + alpha.hs[3]) #high state detection probability (base detection + effect of effort)
-pM.h[3] <- invlogit(p.h0s[3] + p.h1s[3]*logsearch.effort + alpha.hs[3])
+P.datM <- array(NA, dim = c(n.states, n.params, n.states))
 
 for(p in 1:n.params){
-  P.datMs[1,p,] <- c(1,0,0)
-  P.datMs[2,p,] <- c(1-pM.l[p], pM.l[p], 0)
-  P.datMs[3,p,] <- c(1-pM.h[p], pM.h[p]*(1-deltas[p]), pM.h[p]*deltas[p])
+  pM.l[p] <- invlogit(p.l0[p] + p.l1[p]*logsearch.effort + alpha.l[p]) #low state detection probability (base detection + effect of effort)
+  pM.h[p] <- invlogit(p.h0[p] + p.h1[p]*logsearch.effort + alpha.h[p]) #high state detection probability (base detection + effect of effort)
+
+  P.datM[1,p,] <- c(1,0,0)
+  P.datM[2,p,] <- c(1-pM.l[p], pM.l[p], 0)
+  P.datM[3,p,] <- c(1-pM.h[p], pM.h[p]*(1-delta[p]), pM.h[p]*delta[p])
   
 }
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims)) #removal sites array
 
-
 #--------------------------------------------------------------------------------#
 #### 1. Simulate the truth ####
+year <- 1
 
-for(p in 1:n.params){
-  for(year in 1:n.years){
+for(year in 1:n.years){
+  for(p in 1:n.params){
     ##### Week 1 State model only #####
     week <- 1
     ###### Week 1 year 1 #####
@@ -109,9 +143,9 @@ for(p in 1:n.params){
         }
       }
       
-      gamma[,1,1,p,] <-invlogit(gamma.0s[p] + gamma.1s[p]*site.char + gamma.2s[p]*D[,1,1,p,]) #invasion (week 1 year 1)
-      eps.l[,1,1,p,] <- invlogit(eps.l0s[p]) #eradication low (week 1 year 1)
-      eps.h[,1,1,p,] <- invlogit(eps.h0s[p]) #eradication high (week 1 year 1)
+      gamma[,1,1,p,] <-invlogit(gamma.0[p] + gamma.1[p]*site.char + gamma.2[p]*D[,1,1,p,]) #invasion (week 1 year 1)
+      eps.l[,1,1,p,] <- invlogit(eps.l0[p]) #eradication low (week 1 year 1)
+      eps.h[,1,1,p,] <- invlogit(eps.h0[p]) #eradication high (week 1 year 1)
       
       # TPM used for week 2
       TPM[1,1:n.sites,1,1,p,,1] <- 1-gamma[,1,1,p,] #empty to empty (week 1 year 1)
@@ -119,12 +153,12 @@ for(p in 1:n.params){
       TPM[1,1:n.sites,1,1,p,,3] <- 0 #empty to high (week 1 year 1)
       
       TPM[2,1:n.sites,1,1,p,,1] <- eps.l[,1,1,p,] #low to empty (week 1 year 1)
-      TPM[2,1:n.sites,1,1,p,,2] <- (1- eps.l[,1,1,p,])*(1-phi.lhs[p]) #low to low (week 1 year 1)
-      TPM[2,1:n.sites,1,1,p,,3] <- (1- eps.l[,1,1,p,])*(phi.lhs[p]) #low to high (week 1 year 1)
+      TPM[2,1:n.sites,1,1,p,,2] <- (1- eps.l[,1,1,p,])*(1-phi.lh[p]) #low to low (week 1 year 1)
+      TPM[2,1:n.sites,1,1,p,,3] <- (1- eps.l[,1,1,p,])*(phi.lh[p]) #low to high (week 1 year 1)
       
       TPM[3,1:n.sites,1,1,p,,1] <- eps.h[,1,1,p,] #high to empty (week 1 year 1)
-      TPM[3,1:n.sites,1,1,p,,2] <- (1- eps.h[,1,1,p,])*(1-phi.hhs[p]) #high to low (week 1 year 1)
-      TPM[3,1:n.sites,1,1,p,,3] <- (1- eps.h[,1,1,p,])*(phi.hhs[p]) #high to high (week 1 year 1)
+      TPM[3,1:n.sites,1,1,p,,2] <- (1- eps.h[,1,1,p,])*(1-phi.hh[p]) #high to low (week 1 year 1)
+      TPM[3,1:n.sites,1,1,p,,3] <- (1- eps.h[,1,1,p,])*(phi.hh[p]) #high to high (week 1 year 1)
       
     } #ends year = 1 loop
     
@@ -135,7 +169,7 @@ for(p in 1:n.params){
       for(s in 1:n.sims){
         
         for(i in 1:n.sites){ #State process: state given previous state and transition probability
-          State[i,week,year,p,s] <- rcat(1,TPM.48s[State[i,4,(year-1),p,s],,p]) 
+          State[i,week,year,p,s] <- rcat(1,TPM.48[State[i,4,(year-1),p,s],p,]) 
         }
         
         for(i in 1:n.sites){
@@ -145,28 +179,28 @@ for(p in 1:n.params){
         prev.rem.vec <- replace(rem.vec[,4,(year-1),p,s], is.na(rem.vec[,4,(year-1),p,s]), 0) 
         
         #invasion probability =  base invasion + effect of site habitat + effect of neighbor being invaded
-        gamma[,week,year,p,s] <-invlogit(gamma.0s[p] + gamma.1s[p]*site.char + gamma.2s[p]*D[,week,year,p,s])
+        gamma[,week,year,p,s] <-invlogit(gamma.0[p] + gamma.1[p]*site.char + gamma.2[p]*D[,week,year,p,s])
         
         # eradication probability = base + effect of previous removal (removal*removal hours)
-        eps.l[,1,year,p,s] <- invlogit(eps.l0s[p]) #eradication low (week 1 year 1)
-        eps.h[,1,year,p,s] <- invlogit(eps.h0s[p]) #eradication high (week 1 year 1)
+        eps.l[,1,year,p,s] <- invlogit(eps.l0[p]) #eradication low (week 1 year 1)
+        eps.h[,1,year,p,s] <- invlogit(eps.h0[p]) #eradication high (week 1 year 1)
         
         
         # eradication probability = base + effect of previous removal (removal*removal hours)
-        eps.l[,week,year,p,s] <- invlogit(eps.l0s[p] + eps.l1s[p]*prev.rem.vec*removal.hours[2]) #low eradication 
-        eps.h[,week,year,p,s] <- invlogit(eps.h0s[p] + eps.h1s[p]*prev.rem.vec*removal.hours[3]) #high eradication
+        eps.l[,week,year,p,s] <- invlogit(eps.l0[p] + eps.l1[p]*prev.rem.vec*removal.hours[2]) #low eradication 
+        eps.h[,week,year,p,s] <- invlogit(eps.h0[p] + eps.h1[p]*prev.rem.vec*removal.hours[3]) #high eradication
         
         TPM[1,1:n.sites,week,year,p,s,1] <- 1-gamma[,week,year,p,s] #empty to empty
         TPM[1,1:n.sites,week,year,p,s,2] <- gamma[,week,year,p,s] #empty to low
         TPM[1,1:n.sites,week,year,p,s,3] <- 0 #empty to high
         
         TPM[2,1:n.sites,week,year,p,s,1] <- eps.l[,week,year,p,s] #low to empty (eradication)
-        TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lhs[p]) #low to low (eradication failure)
-        TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lhs[p]) #low to high 
+        TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lh[p]) #low to low (eradication failure)
+        TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lh[p]) #low to high 
         
         TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (eradication)
-        TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hhs[p]) #high to low 
-        TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hhs[p]) #high to high
+        TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[p]) #high to low 
+        TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[p]) #high to high
         
       } #ends s loop
     } #ends year > 1 loop
@@ -190,23 +224,23 @@ for(p in 1:n.params){
           prev.rem.vec <- replace(rem.vec[,week-1,year,p,s], is.na(rem.vec[,week-1,year,p,s]), 0)
           
           #invasion probability =  base invasion + effect of site habitat + effect of neighbor being invaded
-          gamma[,week,year,p,s] <-invlogit(gamma.0s[p] + gamma.1s[p]*site.char + gamma.2s[p]*D[,week,year,p,s]) 
+          gamma[,week,year,p,s] <-invlogit(gamma.0[p] + gamma.1[p]*site.char + gamma.2[p]*D[,week,year,p,s]) 
             
           # eradication probability = base + effect of previous removal (removal*removal hours)
-          eps.l[,week,year,p,s] <- invlogit(eps.l0s[p]+ eps.l1s[p]*prev.rem.vec*removal.hours[2]) #low eradication
-          eps.h[,week,year,p,s] <- invlogit(eps.h0s[p]+ eps.h1s[p]*prev.rem.vec*removal.hours[3]) #high eradication
+          eps.l[,week,year,p,s] <- invlogit(eps.l0[p]+ eps.l1[p]*prev.rem.vec*removal.hours[2]) #low eradication
+          eps.h[,week,year,p,s] <- invlogit(eps.h0[p]+ eps.h1[p]*prev.rem.vec*removal.hours[3]) #high eradication
           
           TPM[1,1:n.sites,week,year,p,s,1] <- 1-gamma[,week,year,p,s] #empty to empty
           TPM[1,1:n.sites,week,year,p,s,2] <- gamma[,week,year,p,s] #empty to low
           TPM[1,1:n.sites,week,year,p,s,3] <- 0 #empty to high
             
           TPM[2,1:n.sites,week,year,p,s,1] <- eps.l[,week,year,p,s] #low to empty (eradication)
-          TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lhs[p]) #low to low (eradication failure)
-          TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lhs[p]) #low to high
+          TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lh[p]) #low to low (eradication failure)
+          TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lh[p]) #low to high
             
           TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (eradication)
-          TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hhs[p]) #high to low
-          TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hhs[p]) #high to high
+          TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[p]) #high to low
+          TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[p]) #high to high
             
           #week: Identify the sites where removal will occur 
           n.pre.visit <- length(which(rem.vec[,week-1,year,p,s] >= 0)) #number of sites that were sampled last week
@@ -225,7 +259,7 @@ for(p in 1:n.params){
           if(resource.total[week,year,p,s] < n.resource){
             
             #1. first occasion occupancy data (1 = not detected, 2 = detected)
-            yM[i,1,week, year, p,s] <- rcat(1, P.datMs[State[i,week,year,p,s],p, ])
+            yM[i,1,week, year, p,s] <- rcat(1, P.datM[State[i,week,year,p,s],p, ])
             
             #2. second occasion occupancy data
             #2a. if seen in first occasion, do not search again and remove the rush
@@ -234,19 +268,19 @@ for(p in 1:n.params){
               rem.vec[i,week,year,p,s] <- 1 #notes that removal occurred that week at that site
               
               #Calculating resources used = resources already used + search hours + removal hours
-              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hourss[p] + removal.hours[State[i,week,year,p,s]]
+              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours + removal.hours[State[i,week,year,p,s]]
               
             }else{
               #2b. If not seen the first occasion, we need to search again:
               #Second occasion occupancy data
-              yM[i,2, week, year,p, s] <- rcat(1, P.datMs[State[i,week,year,p,s],p,])
+              yM[i,2, week, year,p, s] <- rcat(1, P.datM[State[i,week,year,p,s],p,])
               
               #2bi. If seen at the second occasion:
               if(yM[i,2, week, year,p, s] > 1){ #if seen (state observed > 1) the second time
                 rem.vec[i,week,year,p,s] <- 1 #notes that removal occurred that week at that site
                 
                 #Calculating resources used = resources already used + 2*search hours + removal hours
-                resource.total[week,year,p,s] <- resource.total[week,year,p,s] + 2*search.hourss[p] + removal.hours[State[i,week,year,p,s]]
+                resource.total[week,year,p,s] <- resource.total[week,year,p,s] + 2*search.hours + removal.hours[State[i,week,year,p,s]]
               } 
               
               #2bi. If we do not detect flowering rush during the second occasion:
@@ -254,7 +288,7 @@ for(p in 1:n.params){
                 rem.vec[i,week,year,p,s] <- 0 #notes removal did not occur
                 
                 #Calculating resources used = resources already used + 2*search hours
-                resource.total[week,year,p,s] <- resource.total[week,year,p,s] + 2*search.hourss[p]
+                resource.total[week,year,p,s] <- resource.total[week,year,p,s] + 2*search.hours
               } 
             }
             
@@ -270,7 +304,74 @@ for(p in 1:n.params){
   } #year loop
 } #params loop
 
-##### Final States ####
+
+#### Save True Data ####
+#results for each sim
+States.df <- adply(State, c(1,2,3,4))
+
+colnames(States.df) <- c("site", "week", "year", "sim", "state")              
+
+file_name = paste(path, 'States_random.csv',sep = '/')
+write.csv(States.df,file_name)
+
+#mean across simulations
+Mean.States.df <- aggregate(state ~ site+week+year,
+                            data = as.data.frame(States.df), FUN = mean)
+
+file_name = paste(path, 'Mean.States_random.csv',sep = '/')
+write.csv(Mean.States.df ,file_name)
+
+#observation data -multi
+yM.df <- adply(yM, c(1,2,3,4,5))
+
+colnames(yM.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
+
+file_name = paste(path, 'y.obs_random.csv',sep = '/')
+write.csv(yM.df,file_name)
+
+
+rem.site.M.df <- yM.df %>% filter(observed.state > 1)
+file_name = paste(path, 'rem.site.M_random.csv',sep = '/')
+write.csv(rem.site.M.df,file_name)
+
+###### sites visited ####
+sites.visit <- adply(rem.vec, c(1,2,3,4,5))
+
+colnames(sites.visit) <- c("site", "week", "year", "param", "sim", "rem.val")   
+
+file_name = paste(path, 'site.M_random.csv',sep = '/')
+write.csv(sites.visit,file_name)
+
+
+sites.visit <- sites.visit %>% filter(!is.na(rem.val))
+sites.visit$rem.val <- 1
+
+sites.visit.param <- aggregate(rem.val ~ param + sim,
+                               data = as.data.frame(sites.visit), FUN = sum)
+
+ggplot(sites.visit.param) + geom_bar(aes(x = param, y = rem.val), stat = "identity") +
+  facet_wrap(~sim)
+
+
+
+#visit remove
+sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
+
+sites.visit.rem<- aggregate(rem.val ~ week+ year + sim,
+                            data = as.data.frame(sites.visit.rem), FUN = sum)
+
+sites.visit.rem.avg <- aggregate(rem.val ~ week + year,
+                                 data = as.data.frame(sites.visit.rem), FUN = mean)
+
+
+colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
+
+sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
+
+file_name = paste(path, 'sites.visit_random.csv',sep = '/')
+write.csv(sites.df,file_name)
+
+#### Final States ####
 State.fins <- State[,4,n.years,,]
 State.fins.df <- adply(State.fins, c(1,2,3))
 colnames(State.fins.df) <- c("site", "param", "sim", "state")

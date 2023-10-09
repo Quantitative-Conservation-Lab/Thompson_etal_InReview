@@ -153,7 +153,7 @@ for (i in 1:n.sites){
     
       State[i,1] ~ dcat(psi) #psi is written above in the priors
     
-      D[i,1] <- sum(State[neighbors[i,], 1])/2 #state of neighbors 
+      D[i,1] <- sum(State[neighbors[i,], 1])/n.neighbors[i] #state of neighbors 
     
     #-- State Model: --#
     for (t in 2:n.weeks){ 
@@ -161,7 +161,7 @@ for (i in 1:n.sites){
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
       
       #below is not correct because it does not lead to a true state: 
-      D[i,t] <- sum(State[neighbors[i,], t])/2 #state of neighbors 
+      D[i,t] <- sum(State[neighbors[i,], t])/n.neighbors[i] #state of neighbors 
        
      
     } #t loop
