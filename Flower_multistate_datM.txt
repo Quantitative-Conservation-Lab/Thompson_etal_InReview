@@ -55,8 +55,6 @@ model{
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
-
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
   
@@ -129,10 +127,10 @@ for (i in 1:n.sites){
       P.datM[3,i,j,t,1] <- 1-pM.h #not detected probability high state
       
       #High state and observed low
-      P.datM[3,i,j,t,2] <- pM.h*(1-delta) 
+      P.datM[3,i,j,t,2] <- 0
       
       #High state and observed high
-      P.datM[3,i,j,t,3] <- pM.h*(delta) 
+      P.datM[3,i,j,t,3] <- pM.h
       
     } #j 
   } #t

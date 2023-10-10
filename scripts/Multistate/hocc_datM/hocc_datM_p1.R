@@ -71,8 +71,6 @@ model{
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
-
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
   
@@ -145,10 +143,10 @@ for (i in 1:n.sites){
       P.datM[3,i,j,t,1] <- 1-pM.h #not detected probability high state
       
       #High state and observed low
-      P.datM[3,i,j,t,2] <- pM.h*(1-delta) 
+      P.datM[3,i,j,t,2] <- 0
       
       #High state and observed high
-      P.datM[3,i,j,t,3] <- pM.h*(delta) 
+      P.datM[3,i,j,t,3] <- pM.h
       
     } #j 
   } #t
@@ -237,7 +235,6 @@ alpha.l <- alpha.ls[1] #difference in baseline detection between dat D and M
 p.h0 <- p.h0s[1] #base detection for high state
 p.h1 <- p.h1s[1] #effect of effort
 alpha.h <- alpha.hs[1] #difference in baseline detection between dat D and M
-delta <- deltas[1] #probability of observing the high state given the species
 
 TPM.48 <- TPM.48s[,,1] #TPM matrix for 48 week period
 
@@ -304,7 +301,7 @@ pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
 P.datM <- array(NA, dim = c(n.states, n.states))
 P.datM[1,] <- c(1,0,0)
 P.datM[2,] <- c(1-pM.l, pM.l, 0)
-P.datM[3,] <- c(1-pM.h, pM.h*(1-delta), pM.h*delta)
+P.datM[3,] <- c(1-pM.h, 0, pM.h)
   
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) #removal sites array
 
@@ -347,8 +344,6 @@ p.h1.mean <- array(NA, c(n.years, n.sims))
 p.h1.sd <- array(NA, c(n.years, n.sims))
 h.mean <- array(NA, c(n.years, n.sims))
 h.sd <- array(NA, c(n.years, n.sims))
-delta.a <- array(NA, c(n.years, n.sims))
-delta.b <- array(NA, c(n.years, n.sims))
 
 x <- list()
 rhat_vals <- array(NA, c(n.years, n.sims))
@@ -371,8 +366,6 @@ alpha.p.l0 <- rep(NA, n.sims)
 beta.p.l0 <- rep(NA, n.sims)
 alpha.p.h0 <- rep(NA, n.sims)
 beta.p.h0 <- rep(NA, n.sims)
-alpha.delta <- rep(NA, n.sims)
-beta.delta <- rep(NA, n.sims)
 
 State.est <- rep(NA, n.sims)
 eps.l0.est <- rep(NA, n.sims)
@@ -390,7 +383,6 @@ alpha.l.est <- rep(NA, n.sims)
 p.h0.est <- rep(NA, n.sims)
 p.h1.est <- rep(NA, n.sims)
 alpha.h.est <- rep(NA, n.sims)
-delta.est <- rep(NA, n.sims)
 
 all.State.est <- rep(NA, n.sims)
 all.eps.l0.est <- rep(NA, n.sims)
@@ -408,7 +400,6 @@ all.alpha.l.est <- rep(NA, n.sims)
 all.p.h0.est <- rep(NA, n.sims)
 all.p.h1.est <- rep(NA, n.sims)
 all.alpha.h.est <- rep(NA, n.sims)
-all.delta.est <- rep(NA, n.sims)
 
 initial.values <- list()
 
@@ -683,11 +674,6 @@ for(year in 1:n.years){
       h.mean[year,] <- 0 #mean
       h.sd[year,] <- 1 #sd
       
-    # --- delta --- = Probability of observing the high state given the 
-                      #species has been detected and the true state is high
-      delta.a[year,] <- 1 #alpha
-      delta.b[year,] <- 1 #beta
-
     ##### UNSURE ####
     # --- S.init and D.init ---  Initial states ------------ #
       alpha <- rep(1,n.states) #initial state probability vector
@@ -830,22 +816,6 @@ for(year in 1:n.years){
     h.mean[year,] <- get(alpha.h.est[s])$mean  #mean
     h.sd[year,] <- get(alpha.h.est[s])$sd
     
-    # --- delta --- = Probability of observing the high state given the 
-    #species has been detected and the true state is high
-    alpha.delta[s] <- paste("alpha.delta", s, sep = "_")
-    #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
-    assign(alpha.delta[s],
-           (1 - get(delta.est[s])$mean*(1 + get(delta.est[s])$cv^2))/(get(delta.est[s])$cv^2))
-    
-    #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
-    beta.delta[s]<- paste("beta.delta", s, sep = "_")
-    
-    assign(beta.delta[s],
-           get(alpha.delta[s])*(1 - get(delta.est[s])$mean)/get(delta.est[s])$mean)
-    
-    delta.a[year,s] <- get(alpha.delta[s]) #alpha shape
-    delta.b[year,s] <- get(beta.delta[s]) #beta shape
-    
     # --- S.init and D.init ---  Initial states -------------------- #
     #### Unsure ####
     alpha <- rep(1,n.states) #initial state probability vector
@@ -864,7 +834,7 @@ for(year in 1:n.years){
   #Parameters monitored
   parameters.to.save <- c("eps.l0", "eps.l1", "eps.h0", "eps.h1", "gamma.0", "gamma.1",
                           "gamma.2", "phi.lh", "phi.hh", "p.l0", "p.l1", "p.h0", "p.h1", 
-                          "State.fin", "alpha.l", "alpha.h", "delta", "psi")
+                          "State.fin", "alpha.l", "alpha.h", "psi")
   
   #settings
   n.burnin <- 10000
@@ -918,10 +888,7 @@ for(year in 1:n.years){
                          p.h1.mean = p.h1.mean[year,s],
                          p.h1.sd = p.h1.sd[year,s],
                          h.mean = h.mean[year,s], 
-                         h.sd = h.sd[year,s],
-                         delta.a = delta.a[year,s],
-                         delta.b = delta.b[year,s]
-                
+                         h.sd = h.sd[year,s]
     )
   }
   
@@ -1029,8 +996,6 @@ for(year in 1:n.years){
      MCMCtrace(get(mcmcs[s]), params = 'alpha.h', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/alpha.h_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'delta', type = 'both', ind = TRUE, pdf = TRUE,
-               open_pdf = FALSE, filename = paste0(res,'/densplots/delta_sim_', s, '_year', year))
      
   }
 
@@ -1181,18 +1146,6 @@ for(year in 1:n.years){
     assign(alpha.h.est[s], filter(get(outputs[s]), grepl("alpha.h", param)))
   }
   
-  # --- delta --- #Probability of observing the high state given the 
-  #species has been detected and the true state is high
-  
-  # #delta = (beta distribution)
-  for(s in 1:n.sims){
-     delta.est[s]<- paste("delta", s, sep = "_")
-     assign(delta.est[s], filter(get(outputs[s]), grepl("delta", param)))
-     
-     assign(delta.est[s], 
-            cbind(get(delta.est[s]), cv = get(delta.est[s])$sd/get(delta.est[s])$mean
-            ))  
-   }
    
   #save annual data
   for(s in 1:n.sims){
@@ -1244,8 +1197,6 @@ for(year in 1:n.years){
     assign(alpha.h.est[s], 
            cbind(get(alpha.h.est[s]), year = year))
     
-    assign(delta.est[s], 
-           cbind(get(delta.est[s]), year = year))
     
   }
   
@@ -1268,7 +1219,6 @@ for(year in 1:n.years){
     all.p.h0.est[s]<- paste("p.h0.allsummary", s, sep = "_")
     all.p.h1.est[s]<- paste("p.h1.allsummary", s, sep = "_")
     all.alpha.h.est[s]<- paste("alpha.h.allsummary", s, sep = "_")
-    all.delta.est[s]<- paste("delta.allsummary", s, sep = "_")
     
     
     #If year 1 we set summary data frame to itself
@@ -1321,8 +1271,6 @@ for(year in 1:n.years){
       assign(all.alpha.h.est[s], 
              get(alpha.h.est[s]))
       
-       assign(all.delta.est[s], 
-              get(delta.est[s]))
       
       
     }else{ #if beyond first year, we append previous summary to new summary
@@ -1374,8 +1322,6 @@ for(year in 1:n.years){
       assign(all.alpha.h.est[s], 
              rbind(get(all.alpha.h.est[s]), get(alpha.h.est[s])))
       
-      assign(all.delta.est[s], 
-              rbind(get(all.delta.est[s]), get(delta.est[s])))
       
     }
   }
