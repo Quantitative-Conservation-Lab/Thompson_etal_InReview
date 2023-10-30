@@ -200,8 +200,8 @@ for (i in 1:n.sites){
 sink()
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "hocc_datM_p1")
-res <- c('results/Multistate/hocc_datM_p1') 
+path <- here::here("results", "Multistate", "searcheffort05", "hocc80_datM_p1")
+res <- c('results/Multistate/searcheffort05/hocc80_datM_p1') 
 
 #### Data and parameters ####
 load("parameters.RData")
@@ -238,7 +238,7 @@ alpha.h <- alpha.hs[1] #difference in baseline detection between dat D and M
 
 TPM.48 <- TPM.48s[,,1] #TPM matrix for 48 week period
 
-search.hours <- search.hourss[2] #search effort
+search.hours <- search.hourss[1] #search effort
 
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
 n.resource <- 80 #total hours per week
@@ -1804,3 +1804,42 @@ for(s in 1:n.sims){
 
 
 mean(match.dat)
+
+#### Final States average state ####
+State.fins <- State[,4,n.years,]
+State.fins.df <- adply(State.fins, c(1,2))
+colnames(State.fins.df) <- c("site","sim", "state")
+
+ggplot(State.fins.df)+
+  geom_boxplot(mapping = aes(y = state, middle = mean(state)))
+
+summary(State.fins.df$state)
+
+#### site invasion ####
+State.fins.avg <- aggregate(state ~ site, State.fins.df, mean)
+
+head(State.fins.avg)
+
+ggplot(State.fins.avg, aes(x = site, y = 1, fill = state)) +
+  geom_tile()+
+  theme_classic()
+
+#### number of invaded sites ####
+invasion <- rep(NA, n.sims)
+
+for(s in 1:n.sims){
+  df <- filter(State.fins.df, sim == s)
+  invasion[s] <- sum(df$state == 1)
+}
+
+invasion.mean <- mean(invasion)
+
+
+
+#percent of river uninvaded after 10 years
+1- invasion.mean/40
+
+
+
+
+

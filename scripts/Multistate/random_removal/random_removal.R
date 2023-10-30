@@ -7,13 +7,15 @@ library(strex)
 library(plyr)
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "random_datM")
-res <- c('results/Multistate/random_datM') 
+path <- here::here("results", "Multistate", "searcheffort2","random40_datM")
+res <- c('results/Multistate/searcheffort2/random40_datM') 
+
+start.time <- Sys.time()
 
 #### Data and parameters ####
 load("parameters.RData")
 
-n.sims <-  20
+n.sims <- 20
 n.params <- 4
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
@@ -50,11 +52,10 @@ alpha.l <- c(alpha.ls[1], alpha.ls[3], alpha.ls[1], alpha.ls[3])  #difference in
 p.h0 <- c(p.h0s[1], p.h0s[3], p.h0s[1], p.h0s[3]) #base detection for high state
 p.h1 <- c(p.h1s[1], p.h1s[3], p.h1s[1], p.h1s[3]) #effect of effort
 alpha.h <- c(alpha.hs[1], alpha.hs[3], alpha.hs[1], alpha.hs[3]) #difference in baseline detection between dat D and M
-delta <- c(deltas[1], deltas[3], deltas[1], deltas[3]) #probability of observing the high state given the species
 
-search.hours <- search.hourss[2] #search effort
+search.hours <- search.hourss[3] #search effort
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
-n.resource <- 80 #total hours per week
+n.resource <- 40 #total hours per week
 
 #---- arrays ----#
 gamma <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims))
@@ -92,7 +93,7 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.params, n.sims, n.stat
 
 #### Random removal ####
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
-n.resource <- 80
+n.resource <- 40
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims)) 
 
 for(y in 1:n.years){
@@ -118,7 +119,7 @@ for(p in 1:n.params){
 
   P.datM[1,p,] <- c(1,0,0)
   P.datM[2,p,] <- c(1-pM.l[p], pM.l[p], 0)
-  P.datM[3,p,] <- c(1-pM.h[p], pM.h[p]*(1-delta[p]), pM.h[p]*delta[p])
+  P.datM[3,p,] <- c(1-pM.h[p], 0, pM.h[p])
   
 }
 
@@ -307,9 +308,9 @@ for(year in 1:n.years){
 
 #### Save True Data ####
 #results for each sim
-States.df <- adply(State, c(1,2,3,4))
+States.df <- adply(State, c(1,2,3,4,5))
 
-colnames(States.df) <- c("site", "week", "year", "sim", "state")              
+colnames(States.df) <- c("site", "week", "year", "param", "sim", "state")              
 
 file_name = paste(path, 'States_random.csv',sep = '/')
 write.csv(States.df,file_name)
@@ -322,9 +323,9 @@ file_name = paste(path, 'Mean.States_random.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
-yM.df <- adply(yM, c(1,2,3,4,5))
+yM.df <- adply(yM, c(1,2,3,4,5,6))
 
-colnames(yM.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
+colnames(yM.df) <- c("site", "occasion", "week", "year", "param", "sim", "observed.state")              
 
 file_name = paste(path, 'y.obs_random.csv',sep = '/')
 write.csv(yM.df,file_name)
@@ -349,29 +350,16 @@ sites.visit$rem.val <- 1
 sites.visit.param <- aggregate(rem.val ~ param + sim,
                                data = as.data.frame(sites.visit), FUN = sum)
 
-ggplot(sites.visit.param) + geom_bar(aes(x = param, y = rem.val), stat = "identity") +
-  facet_wrap(~sim)
+ggplot(sites.visit.param) + geom_bar(aes(x = param, y = rem.val), stat = "identity")
 
+#### TIMING ####
+end.time <- Sys.time()
+time.taken <- end.time - start.time
 
+file_name = paste(path, 'random_time.txt',sep = '/')
+write.table(time.taken,file_name)
 
-#visit remove
-sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
-
-sites.visit.rem<- aggregate(rem.val ~ week+ year + sim,
-                            data = as.data.frame(sites.visit.rem), FUN = sum)
-
-sites.visit.rem.avg <- aggregate(rem.val ~ week + year,
-                                 data = as.data.frame(sites.visit.rem), FUN = mean)
-
-
-colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
-
-sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
-
-file_name = paste(path, 'sites.visit_random.csv',sep = '/')
-write.csv(sites.df,file_name)
-
-#### Final States ####
+#### Final States average state ####
 State.fins <- State[,4,n.years,,]
 State.fins.df <- adply(State.fins, c(1,2,3))
 colnames(State.fins.df) <- c("site", "param", "sim", "state")
@@ -387,4 +375,36 @@ ggplot(State.fins.df)+
                fun=mean, colour="darkred", geom="point",
                shape=18, size=3, show.legend=FALSE) + 
   geom_text(data = means, aes(x = param, label = state, y = state + 0.08))
+
+
+#### site invasion ####
+State.fins.avg <- aggregate(state ~  param + site, State.fins.df, mean)
+
+head(State.fins.avg)
+
+# ggplot(State.fins.avg, aes(x = site, y = param, fill = state)) +
+#   geom_tile()+
+#   theme_classic()
+
+#### number of invaded sites ####
+invasion <- matrix(NA, nrow = n.params, ncol = n.sims)
+
+for(p in 1:n.params){
+  for(s in 1:n.sims){
+    df <- filter(State.fins.df, param == p, sim == s)
+    invasion[p,s] <- sum(df$state == 1)
+  }
+}
+
+invasion.mean <- rep(NA, n.params)
+
+for(p in 1:n.params){
+  invasion.mean[p] <- mean(invasion[p,])
+}
+
+
+#percent of river uninvaded after 10 years
+1- invasion.mean/40
+
+
 

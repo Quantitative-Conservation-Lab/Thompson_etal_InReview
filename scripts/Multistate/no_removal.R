@@ -13,7 +13,7 @@ res <- c('results/Multistate/noremoval')
 #### Data and parameters ####
 load("parameters.RData")
 
-n.sims <-  20
+n.sims <-  500
 n.params <- 4
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
@@ -231,3 +231,30 @@ ggplot(State.fins.df)+
                shape=18, size=3, show.legend=FALSE) + 
   geom_text(data = means, aes(x = param, label = state, y = state + 0.08))
 
+#### site invasion ####
+State.fins.avg <- aggregate(state ~  param + site, State.fins.df, mean)
+
+head(State.fins.avg)
+
+ggplot(State.fins.avg, aes(x = site, y = param, fill = state)) +
+  geom_tile()+
+  theme_classic()
+
+#### number of invaded sites ####
+invasion <- matrix(NA, nrow = n.params, ncol = n.sims)
+
+for(p in 1:n.params){
+  for(s in 1:n.sims){
+    df <- filter(State.fins.df, param == p, sim == s)
+    invasion[p,s] <- sum(df$state == 1)
+  }
+}
+
+invasion.mean <- rep(NA, n.params)
+
+for(p in 1:n.params){
+  invasion.mean[p] <- mean(invasion[p,])
+}
+
+#percent of river uninvaded after 10 years
+1- invasion.mean/40

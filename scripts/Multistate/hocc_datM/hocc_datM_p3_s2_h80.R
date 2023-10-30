@@ -200,8 +200,8 @@ for (i in 1:n.sites){
 sink()
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "searcheffort05", "hocc80_datM_p3")
-res <- c('results/Multistate/searcheffort05/hocc80_datM_p3') 
+path <- here::here("results", "Multistate", "searcheffort2", "hocc80_datM_p3")
+res <- c('results/Multistate/searcheffort2/hocc80_datM_p3') 
 
 #### Data and parameters ####
 load("parameters.RData")
@@ -238,7 +238,7 @@ p.h0 <- p.h0s[1] #base detection for high state
 p.h1 <- p.h1s[1] #effect of effort
 alpha.h <- alpha.hs[1] #difference in baseline detection between dat D and M
 
-search.hours <- search.hourss[1] #search effort
+search.hours <- search.hourss[3] #search effort
 
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
 n.resource <- 80 #total hours per week
