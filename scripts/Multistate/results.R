@@ -568,7 +568,7 @@ for(d in 1:3){
         for(s in 1:20){
           df <- filter(fin_res, effort == effort[e], hours == hour[h], sim == s,
                        param == as.factor(p), dr == drs[d])
-          invasion[d,e,h,p,s] <- 1- sum(df$state == 1)/40
+          invasion[d,e,h,p,s] <- 1- sum(df$state == 0)/40
         }
       }
     }
@@ -604,8 +604,9 @@ arrange(filter(means2, param == 4), val)
 ggplot(means2)+
   geom_point(mapping = aes(x = param, y = val, fill = dr, shape = effort, size = hours),alpha = 0.7)+
   scale_shape_manual(values = c(21 ,22,24)) +
+  ylim(0.48,0.62)+
   xlab("Parameter") +
-  ylab("Final percent invaded ")+
+  ylab("Final average % invaded ")+
   scale_fill_brewer(palette = 'Dark2', labels = c("Highest state", "Linear", "Random"))+
   guides(fill = guide_legend(title = "Search location", override.aes = list(shape=21)),
          shape = guide_legend(title = "Search effort (hours)"),
