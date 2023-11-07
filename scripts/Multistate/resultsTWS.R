@@ -525,27 +525,30 @@ results_df <- rbind(occ05_40_p1_df, occ05_40_p2_df, occ05_40_p3_df, occ05_40_p4_
 
 #### FINAL RESULTS ####
 fin_res <- results_df %>% filter(week == 4, year == 10)
-fin_res$state <- fin_res$state - 1
-means <- aggregate(state ~  effort + hours + param + dr, fin_res, mean)
-means$state <- round(means$state, 2)
+fin_res2 <- results_df %>% filter(hours == 40, dr == "hocc")
+
+fin_res2$state <- fin_res2$state - 1
+means <- aggregate(state ~  effort + hours + param + dr, fin_res2, mean)
+means$state <- round(means$state, 4)
 
 arrange(filter(means, param == 1), state)
 arrange(filter(means, param == 2), state)
 arrange(filter(means, param == 3), state)
 arrange(filter(means, param == 4), state)
 
-ggplot(means)+
-  geom_point(mapping = aes(x = effort, y = state, color = param, shape = hours), size = 4)+
-  scale_colour_brewer(palette = 'Paired')+ 
-  facet_wrap(~dr)
+# ggplot(means)+
+#   geom_point(mapping = aes(x = effort, y = state, color = param, shape = hours), size = 4)+
+#   scale_colour_brewer(palette = 'Paired')+ 
+#   facet_wrap(~dr)
 
 ggplot(means)+
-  geom_point(mapping = aes(x = param, y = state, fill = dr, shape = effort, size = hours),alpha = 0.7)+
+  geom_point(mapping = aes(x = param, y = state, fill = param, shape = effort),
+             size = 5, alpha = 0.7)+
   scale_shape_manual(values = c(21 ,22,24)) +
   xlab("Parameter") +
   ylab("Final average invasion state")+
-  scale_fill_brewer(palette = 'Dark2', labels = c("Highest state", "Linear", "Random"))+
-  guides(fill = guide_legend(title = "Search location", override.aes = list(shape=21)),
+  scale_fill_brewer(palette = 'Paired', labels = c(1,2,3,4))+
+  guides(fill = guide_legend(title = "Parameter", override.aes = list(shape=21)),
          shape = guide_legend(title = "Search effort (hours)"),
          size = guide_legend(title = "Budget (max hours/ week)"))+
   theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
@@ -553,23 +556,6 @@ ggplot(means)+
                      axis.text.x = element_text(size = 14),
                      axis.title.y = element_text(size = 16),
                      axis.line = element_line(colour = "black"))
-
-ggplot(means)+
-  geom_point(mapping = aes(x = param, y = state, fill = dr, shape = effort, size = hours),alpha = 0.7)+
-  scale_shape_manual(values = c(21 ,22,24)) +
-  xlab("Parameter") +
-  ylab("Final average invasion state")+
-  scale_fill_brewer(palette = 'Dark2', labels = c("Highest state", "Linear", "Random"))+
-  guides(fill = guide_legend(title = "Search location", override.aes = list(shape=21)),
-         shape = guide_legend(title = "Search effort (hours)"),
-         size = guide_legend(title = "Budget (max hours/ week)"))+
-  theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-                     panel.grid.minor = element_blank(), axis.title.x = element_text(size = 16),
-                     axis.text.x = element_text(size = 14),
-                     axis.title.y = element_text(size = 16),
-                     axis.line = element_line(colour = "black"))+
-  facet_wrap(~param, scales = "free")
-
 
 means_1 <- means %>% filter(param == 1) 
 
@@ -680,6 +666,8 @@ means2$dr <- replace(means2$dr, means2$dr==3, 'random')
 means2$effort <- as.factor(means2$effort)
 means2$hours <- as.factor(means2$hours)
 means2$dr <- as.factor(means2$dr)
+
+means2 <- filter(means2, dr == "hocc", hours == '40')
 
 arrange(filter(means2, param == 1), val)
 arrange(filter(means2, param == 2), val)

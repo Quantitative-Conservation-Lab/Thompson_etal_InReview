@@ -291,12 +291,9 @@ resource.total <- array(0, c(n.weeks, n.years, n.sims))
 logsearch.effort <- log(search.hours) #log search effort
 
 pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l) #low state detection probability (base detection + effect of effort)
-pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l)
-pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l)
 
-pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
 pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h) #high state detection probability (base detection + effect of effort)
-pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
+
 
 P.datM <- array(NA, dim = c(n.states, n.states))
 P.datM[1,] <- c(1,0,0)
