@@ -1,3 +1,7 @@
+library(tidyverse)
+library(ggplot2)
+library(LaplacesDemon)
+
 
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
@@ -16,8 +20,11 @@ eps.l1s <- c(0.9, 0.6, 0.3)  #effect of eradication at low state
 eps.h0s <- c(0.6, 0.4, 0.2)  #base eradication at high state
 eps.h1s <- c(0.6, 0.4, 0.2) #effect of eradication at high state
 
-phi.lhs <- c(0.2, 0.6, 0.8) #transition from low to high
-phi.hhs <- c(0.2, 0.6, 0.8) #transition from high to high
+phi0.lhs <- c(0.2, 0.6, 0.8) #transition from low to high
+phi0.hhs <- c(0.2, 0.6, 0.8) #transition from high to high
+
+phi1.lhs <- c(0.6, 0.4, 0.2) #transition from low to high
+phi1.hhs <- c(0.6, 0.4, 0.2) #transition from high to high
 
 TPM.48s <- array(NA, dim = c(n.states, n.states, 3))
 TPM.48s[1,,1] <- c(1,0,0)
