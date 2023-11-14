@@ -54,8 +54,13 @@ model{
   gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd) #precision parameter
   
   #State transition:
-  phi.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
-  phi.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
+  phi0.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
+  phi1.lh ~ dnorm(phi.lh1.mean, phi.lh1.tau) #effect of removal on transition
+  phi.lh1.tau <- 1/(phi.lh1.sd*phi.lh1.sd) #precision parameter
+  
+  phi0.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
+  phi1.hh ~ dnorm(phi.hh1.mean, phi.hh1.tau) #effect of removal on transition
+  phi.hh1.tau <- 1/(phi.hh1.sd*phi.hh1.sd) #precision parameter
   
   #Detection low state:
   p.l0 ~ dbeta(p.l0.a, p.l0.b)T(0.0001,0.9999) #base detection for low state
@@ -88,6 +93,9 @@ for (i in 1:n.sites){
     logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
+    logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
+    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[2]
+    
     #index = [current state, location, time, future state]
     #empty stay empty
     TPM[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
@@ -102,19 +110,19 @@ for (i in 1:n.sites){
     TPM[2,i,t,1] <- eps.l[i,t] #erradication probability
                                       
     #low abundance to low abundance
-    TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh) #erradication failure probability
+    TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh[i,t]) #erradication failure probability
     
     #low abundance to high abundance
-    TPM[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh)
+    TPM[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh[i,t])
     
     #high abundance to empty
     TPM[3,i,t,1] <- eps.h[i,t] #erradication probability
     
     #high abundance to low abundance
-    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh) #erradication failure probability
+    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh[i,t]) #erradication failure probability
     
     #high abundance to high abundance
-    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh)
+    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh[i,t])
     
     #--------------------------------------------------#
     # OBSERVATION PROBABILITIES (for multi state detection/nondetection data)
@@ -200,8 +208,8 @@ for (i in 1:n.sites){
 sink()
 
 #### Path Name ####
-path <- here::here("results", "Multistate", "searcheffort2", "hocc40_datM_p1")
-res <- c('results/Multistate/searcheffort2/hocc40_datM_p1') 
+path <- here::here("results", "Multistate", "searcheffort2", "hocc40_datM_p4")
+res <- c('results/Multistate/searcheffort2/hocc40_datM_p4') 
 
 #### Data and parameters ####
 load("parameters.RData")
@@ -215,26 +223,28 @@ n.states <- 3 #number of states
 
 ##### STATE VALUES ####
 
-gamma.0 <- gamma.0s[1] #intrinsic invasion probability
-gamma.1 <- gamma.1s[1] #effect of site characteristics
-gamma.2 <- gamma.2s[1] #effect of neighboring invasion state
+gamma.0 <- gamma.0s[3] #intrinsic invasion probability
+gamma.1 <- gamma.1s[3] #effect of site characteristics
+gamma.2 <- gamma.2s[3] #effect of neighboring invasion state
 
-eps.l0 <- eps.l0s[1] #base eradication at low state
-eps.l1 <- eps.l1s[1] #effect of eradication at low state
-eps.h0 <- eps.h0s[1] #base eradication at high state
-eps.h1 <- eps.h1s[1] #effect of eradication at high state
-phi.lh <- phi.lhs[1] #transition from low to high
-phi.hh <- phi.hhs[1] #transition from high to high
+eps.l0 <- eps.l0s[3] #base eradication at low state
+eps.l1 <- eps.l1s[3] #effect of eradication at low state
+eps.h0 <- eps.h0s[3] #base eradication at high state
+eps.h1 <- eps.h1s[3] #effect of eradication at high state
+phi0.lh <- phi0.lhs[3] #transition from low to high base
+phi1.lh <- phi1.lhs[3] #effect of removal on transition to low and high
+phi0.hh <- phi0.hhs[3] #transition from high to high base
+phi1.hh <- phi1.hhs[3] #effect of removal on transition to high and high
 
 ##### OBSERVATION VALUES ####
 
-p.l0 <- p.l0s[1] #base detection for low state
-p.l1 <- p.l1s[1] #effect of effort
-alpha.l <- alpha.ls[1] #difference in baseline detection between dat D and M
+p.l0 <- p.l0s[3] #base detection for low state
+p.l1 <- p.l1s[3] #effect of effort
+alpha.l <- alpha.ls[3] #difference in baseline detection between dat D and M
 
-p.h0 <- p.h0s[1] #base detection for high state
-p.h1 <- p.h1s[1] #effect of effort
-alpha.h <- alpha.hs[1] #difference in baseline detection between dat D and M
+p.h0 <- p.h0s[3] #base detection for high state
+p.h1 <- p.h1s[3] #effect of effort
+alpha.h <- alpha.hs[3] #difference in baseline detection between dat D and M
 
 TPM.48 <- TPM.48s[,,1] #TPM matrix for 48 week period
 
@@ -247,6 +257,9 @@ n.resource <- 40 #total hours per week
 gamma <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
 eps.l <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
 eps.h <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+phi.lh <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+phi.hh<- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+
 TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states)) 
 
 #---Habitat data---#
@@ -291,12 +304,9 @@ resource.total <- array(0, c(n.weeks, n.years, n.sims))
 logsearch.effort <- log(search.hours) #log search effort
 
 pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l) #low state detection probability (base detection + effect of effort)
-pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l)
-pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l)
 
-pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
 pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h) #high state detection probability (base detection + effect of effort)
-pM.h <- invlogit(p.h0 + p.h1*logsearch.effort + alpha.h)
+
 
 P.datM <- array(NA, dim = c(n.states, n.states))
 P.datM[1,] <- c(1,0,0)
@@ -329,8 +339,13 @@ gamma.2.sd <- array(NA, c(n.years, n.sims))
 
 phi.lh.a <- array(NA, c(n.years, n.sims))
 phi.lh.b <- array(NA, c(n.years, n.sims))
+phi.lh1.mean <- array(NA, c(n.years, n.sims))
+phi.lh1.sd <- array(NA, c(n.years, n.sims))
+
 phi.hh.a <- array(NA, c(n.years, n.sims))
 phi.hh.b <- array(NA, c(n.years, n.sims))
+phi.hh1.mean <- array(NA, c(n.years, n.sims))
+phi.hh1.sd <- array(NA, c(n.years, n.sims))
 
 p.l0.a <- array(NA, c(n.years, n.sims))
 p.l0.b <- array(NA, c(n.years, n.sims))
@@ -375,8 +390,10 @@ eps.h1.est <- rep(NA, n.sims)
 gamma.0.est <- rep(NA, n.sims)
 gamma.1.est <- rep(NA, n.sims)
 gamma.2.est <- rep(NA, n.sims)
-phi.lh.est <- rep(NA, n.sims)
-phi.hh.est <- rep(NA, n.sims)
+phi0.lh.est <- rep(NA, n.sims)
+phi1.lh.est <- rep(NA, n.sims)
+phi0.hh.est <- rep(NA, n.sims)
+phi1.hh.est <- rep(NA, n.sims)
 p.l0.est <- rep(NA, n.sims)
 p.l1.est <- rep(NA, n.sims)
 alpha.l.est <- rep(NA, n.sims)
@@ -392,8 +409,10 @@ all.eps.h1.est <- rep(NA, n.sims)
 all.gamma.0.est <- rep(NA, n.sims)
 all.gamma.1.est <- rep(NA, n.sims)
 all.gamma.2.est <- rep(NA, n.sims)
-all.phi.lh.est <- rep(NA, n.sims)
-all.phi.hh.est <- rep(NA, n.sims)
+all.phi0.lh.est <- rep(NA, n.sims)
+all.phi1.lh.est <- rep(NA, n.sims)
+all.phi0.hh.est <- rep(NA, n.sims)
+all.phi1.hh.est <- rep(NA, n.sims)
 all.p.l0.est <- rep(NA, n.sims)
 all.p.l1.est <- rep(NA, n.sims)
 all.alpha.l.est <- rep(NA, n.sims)
@@ -408,6 +427,9 @@ D.est <- array(NA, c(n.sites,n.sims))
 gamma.est <- array(NA, c(n.sites,n.sims))
 eps.l.est <- array(NA, c(n.sites,n.sims))
 eps.h.est <- array(NA, c(n.sites,n.sims))
+phi.lh.est <- array(NA, c(n.sites,n.sims))
+phi.hh.est <- array(NA, c(n.sites,n.sims))
+
 prev.state <- array(NA, c(n.sites, n.sims))
 States.mean.round <- array(NA, c(n.sites, n.years, n.sims))
 States.mean <- array(NA, c(n.sites, n.years, n.sims))
@@ -444,6 +466,8 @@ for(year in 1:n.years){
     gamma[,1,1,] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,1,1,]) #invasion (week 1 year 1)
     eps.l[,1,1,] <- invlogit(eps.l0) #eradication low (week 1 year 1)
     eps.h[,1,1,] <- invlogit(eps.h0) #eradication high (week 1 year 1)
+    phi.lh[,1,1,] <- invlogit(phi0.lh) #transiotion low to high
+    phi.hh[,1,1,] <- invlogit(phi1.lh) #transition high to high
     
     # TPM used for week 2
     TPM[1,1:n.sites,1,1,,1] <- 1-gamma[,1,1,] #empty to empty (week 1 year 1)
@@ -451,12 +475,12 @@ for(year in 1:n.years){
     TPM[1,1:n.sites,1,1,,3] <- 0 #empty to high (week 1 year 1)
     
     TPM[2,1:n.sites,1,1,,1] <- eps.l[,1,1,] #low to empty (week 1 year 1)
-    TPM[2,1:n.sites,1,1,,2] <- (1- eps.l[,1,1,])*(1-phi.lh) #low to low (week 1 year 1)
-    TPM[2,1:n.sites,1,1,,3] <- (1- eps.l[,1,1,])*(phi.lh) #low to high (week 1 year 1)
+    TPM[2,1:n.sites,1,1,,2] <- (1- eps.l[,1,1,])*(1-phi.lh[,1,1,]) #low to low (week 1 year 1)
+    TPM[2,1:n.sites,1,1,,3] <- (1- eps.l[,1,1,])*(phi.lh[,1,1,]) #low to high (week 1 year 1)
     
     TPM[3,1:n.sites,1,1,,1] <- eps.h[,1,1,] #high to empty (week 1 year 1)
-    TPM[3,1:n.sites,1,1,,2] <- (1- eps.h[,1,1,])*(1-phi.hh) #high to low (week 1 year 1)
-    TPM[3,1:n.sites,1,1,,3] <- (1- eps.h[,1,1,])*(phi.hh) #high to high (week 1 year 1)
+    TPM[3,1:n.sites,1,1,,2] <- (1- eps.h[,1,1,])*(1-phi.hh[,1,1,]) #high to low (week 1 year 1)
+    TPM[3,1:n.sites,1,1,,3] <- (1- eps.h[,1,1,])*(phi.hh[,1,1,]) #high to high (week 1 year 1)
     
   } #ends year = 1 loop
   
@@ -486,17 +510,22 @@ for(year in 1:n.years){
     eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec*removal.hours[2]) #low eradication 
     eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[3]) #high eradication
     
+    #transition rates
+    phi.lh[,week,year,s] <- invlogit(phi0.lh - phi1.lh*prev.rem.vec*removal.hours[2])
+    phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[3])
+    
+    
     TPM[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s] #empty to empty
     TPM[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s] #empty to low
     TPM[1,1:n.sites,week,year,s,3] <- 0 #empty to high
     
     TPM[2,1:n.sites,week,year,s,1] <- eps.l[,week,year,s] #low to empty (eradication)
-    TPM[2,1:n.sites,week,year,s,2] <- (1- eps.l[,week,year,s])*(1-phi.lh) #low to low (eradication failure)
-    TPM[2,1:n.sites,week,year,s,3] <- (1- eps.l[,week,year,s])*(phi.lh) #low to high 
+    TPM[2,1:n.sites,week,year,s,2] <- (1- eps.l[,week,year,s])*(1-phi.lh[,week,year,s]) #low to low (eradication failure)
+    TPM[2,1:n.sites,week,year,s,3] <- (1- eps.l[,week,year,s])*(phi.lh[,week,year,s]) #low to high 
     
     TPM[3,1:n.sites,week,year,s,1] <- eps.h[,week,year,s] #high to empty (eradication)
-    TPM[3,1:n.sites,week,year,s,2] <- (1- eps.h[,week,year,s])*(1-phi.hh) #high to low 
-    TPM[3,1:n.sites,week,year,s,3] <- (1- eps.h[,week,year,s])*(phi.hh) #high to high
+    TPM[3,1:n.sites,week,year,s,2] <- (1- eps.h[,week,year,s])*(1-phi.hh[,week,year,s]) #high to low 
+    TPM[3,1:n.sites,week,year,s,3] <- (1- eps.h[,week,year,s])*(phi.hh[,week,year,s]) #high to high
     
     } #ends s loop
   } #ends year > 1 loop
@@ -527,17 +556,21 @@ for(year in 1:n.years){
         eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec*removal.hours[2]) #low eradication
         eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[3]) #high eradication
         
+        #transition rates
+        phi.lh[,week,year,s] <- invlogit(phi0.lh - phi1.lh*prev.rem.vec*removal.hours[2])
+        phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[3])
+        
         TPM[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s] #empty to empty
         TPM[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s] #empty to low
         TPM[1,1:n.sites,week,year,s,3] <- 0 #empty to high
         
         TPM[2,1:n.sites,week,year,s,1] <- eps.l[,week,year,s] #low to empty (eradication)
-        TPM[2,1:n.sites,week,year,s,2] <- (1- eps.l[,week,year,s])*(1-phi.lh) #low to low (eradication failure)
-        TPM[2,1:n.sites,week,year,s,3] <- (1- eps.l[,week,year,s])*(phi.lh) #low to high
+        TPM[2,1:n.sites,week,year,s,2] <- (1- eps.l[,week,year,s])*(1-phi.lh[,week,year,s]) #low to low (eradication failure)
+        TPM[2,1:n.sites,week,year,s,3] <- (1- eps.l[,week,year,s])*(phi.lh[,week,year,s]) #low to high
         
         TPM[3,1:n.sites,week,year,s,1] <- eps.h[,week,year,s] #high to empty (eradication)
-        TPM[3,1:n.sites,week,year,s,2] <- (1- eps.h[,week,year,s])*(1-phi.hh) #high to low
-        TPM[3,1:n.sites,week,year,s,3] <- (1- eps.h[,week,year,s])*(phi.hh) #high to high
+        TPM[3,1:n.sites,week,year,s,2] <- (1- eps.h[,week,year,s])*(1-phi.hh[,week,year,s]) #high to low
+        TPM[3,1:n.sites,week,year,s,3] <- (1- eps.h[,week,year,s])*(phi.hh[,week,year,s]) #high to high
         
         #week: Identify the sites where removal will occur 
         n.pre.visit <- length(which(rem.vec[,week-1,year,s] >= 0)) #number of sites that were sampled last week
@@ -639,13 +672,21 @@ for(year in 1:n.years){
     
     
     # --- phi ---  transition rates -------------------------- #
-      #phi.lh = transition low to high (beta distribution)
+      #phi.lh = base transition low to high (beta distribution)
       phi.lh.a[year,] <- 1 #alpha shape
       phi.lh.b[year,] <- 1 #beta shape
+      
+      #effect of removal on transition from low to high
+      phi.lh1.mean[year,] <- 0 #mean
+      phi.lh1.sd[year,] <- 10 #sd
       
       #phi.hh = transition high to high (beta distribution)
       phi.hh.a[year,] <- 1 #alpha shape
       phi.hh.b[year,] <- 1 #beta shape
+      
+      #effect of removal on transition from high to high
+      phi.hh1.mean[year,] <- 0 #mean
+      phi.hh1.sd[year,] <- 10 #sd
    
     # --- p.l ---  detection low state ----------------------- #
       #p.l.0 = base detection low state (beta distribution)
@@ -741,33 +782,41 @@ for(year in 1:n.years){
     alpha.phi.lh[s] <- paste("alpha.phi.lh", s, sep = "_")
     #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
     assign(alpha.phi.lh[s],
-           (1 - get(phi.lh.est[s])$mean*(1 + get(phi.lh.est[s])$cv^2))/(get(phi.lh.est[s])$cv^2))
+           (1 - get(phi0.lh.est[s])$mean*(1 + get(phi0.lh.est[s])$cv^2))/(get(phi0.lh.est[s])$cv^2))
     
     #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
     beta.phi.lh[s]<- paste("beta.phi.lh", s, sep = "_")
     
     assign(beta.phi.lh[s],
-           get(alpha.phi.lh[s])*(1 - get(phi.lh.est[s])$mean)/get(phi.lh.est[s])$mean)
+           get(alpha.phi.lh[s])*(1 - get(phi0.lh.est[s])$mean)/get(phi0.lh.est[s])$mean)
     
     
     phi.lh.a[year,s] <- get(alpha.phi.lh[s]) #alpha shape
     phi.lh.b[year,s] <- get(beta.phi.lh[s]) #beta shape
     
+    #effect of removal on transition
+    phi.lh1.mean[year,s] <-  get(phi1.lh.est[s])$mean
+    phi.lh1.sd[year,] <- get(phi1.lh.est[s])$sd
+    
     #phi.hh = transition high to high (beta distribution)
     alpha.phi.hh[s] <- paste("alpha.phi.hh", s, sep = "_")
     #assigning alpha values for beta: alpha = (1-mean)*(1+cv^2)/cv^2
     assign(alpha.phi.hh[s],
-           (1 - get(phi.hh.est[s])$mean*(1 + get(phi.hh.est[s])$cv^2))/(get(phi.hh.est[s])$cv^2))
+           (1 - get(phi0.hh.est[s])$mean*(1 + get(phi0.hh.est[s])$cv^2))/(get(phi0.hh.est[s])$cv^2))
     
     #assigning beta values for beta: beta = (alpha)*(1-mean)/(mean)
     beta.phi.hh[s]<- paste("beta.phi.hh", s, sep = "_")
     
     assign(beta.phi.hh[s],
-           get(alpha.phi.hh[s])*(1 - get(phi.hh.est[s])$mean)/get(phi.hh.est[s])$mean)
+           get(alpha.phi.hh[s])*(1 - get(phi0.hh.est[s])$mean)/get(phi0.hh.est[s])$mean)
     
     
     phi.hh.a[year,s] <- get(alpha.phi.hh[s]) #alpha shape
     phi.hh.b[year,s] <- get(beta.phi.hh[s]) #beta shape
+    
+    #phi.hh1
+    phi.hh1.mean[year,s] <-  get(phi1.hh.est[s])$mean
+    phi.hh1.sd[year,] <- get(phi1.hh.est[s])$sd
     
     # --- p.l ---  detection low state ----------------------------- #
     #p.l.0 = base detection low state (beta distribution)
@@ -833,8 +882,8 @@ for(year in 1:n.years){
 
   #Parameters monitored
   parameters.to.save <- c("eps.l0", "eps.l1", "eps.h0", "eps.h1", "gamma.0", "gamma.1",
-                          "gamma.2", "phi.lh", "phi.hh", "p.l0", "p.l1", "p.h0", "p.h1", 
-                          "State.fin", "alpha.l", "alpha.h", "psi")
+                          "gamma.2", "phi0.lh", "phi1.lh", "phi0.hh", "phi1.hh", "phi.hh", 
+                          "p.l0", "p.l1", "p.h0", "p.h1", "State.fin", "alpha.l", "alpha.h", "psi")
   
   #settings
   n.burnin <- 10000
@@ -875,8 +924,12 @@ for(year in 1:n.years){
                          gamma.2.sd = gamma.2.sd[year,s],
                          phi.lh.a = phi.lh.a[year,s],
                          phi.lh.b = phi.lh.b[year,s],
+                         phi.lh1.mean = phi.lh1.mean[year,s],
+                         phi.lh1.sd = phi.lh1.sd[year,s],
                          phi.hh.a = phi.hh.a[year,s],
                          phi.hh.b = phi.hh.b[year,s],
+                         phi.hh1.mean = phi.hh1.mean[year,s],
+                         phi.hh1.sd = phi.hh1.sd[year,s],
                          p.l0.a = p.l0.a[year,s],
                          p.l0.b = p.l0.b[year,s],
                          p.l1.mean = p.l1.mean[year,s],
@@ -972,11 +1025,17 @@ for(year in 1:n.years){
      MCMCtrace(get(mcmcs[s]), params = 'gamma.2', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/gamma.2_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'phi.lh', type = 'both', ind = TRUE, pdf = TRUE,
-               open_pdf = FALSE, filename = paste0(res,'/densplots/phi.lh_sim_', s, '_year', year))
+     MCMCtrace(get(mcmcs[s]), params = 'phi0.lh', type = 'both', ind = TRUE, pdf = TRUE,
+               open_pdf = FALSE, filename = paste0(res,'/densplots/phi0.lh_sim_', s, '_year', year))
      
-     MCMCtrace(get(mcmcs[s]), params = 'phi.hh', type = 'both', ind = TRUE, pdf = TRUE,
-               open_pdf = FALSE, filename = paste0(res,'/densplots/phi.hh_sim_', s, '_year', year))
+     MCMCtrace(get(mcmcs[s]), params = 'phi1.lh', type = 'both', ind = TRUE, pdf = TRUE,
+               open_pdf = FALSE, filename = paste0(res,'/densplots/phi1.lh_sim_', s, '_year', year))
+     
+     MCMCtrace(get(mcmcs[s]), params = 'phi0.hh', type = 'both', ind = TRUE, pdf = TRUE,
+               open_pdf = FALSE, filename = paste0(res,'/densplots/phi0.hh_sim_', s, '_year', year))
+     
+     MCMCtrace(get(mcmcs[s]), params = 'phi1.hh', type = 'both', ind = TRUE, pdf = TRUE,
+               open_pdf = FALSE, filename = paste0(res,'/densplots/phi1.hh_sim_', s, '_year', year))
     
      MCMCtrace(get(mcmcs[s]), params = 'p.l0', type = 'both', ind = TRUE, pdf = TRUE,
                open_pdf = FALSE, filename = paste0(res,'/densplots/p.l0_sim_', s, '_year', year))
@@ -1079,23 +1138,29 @@ for(year in 1:n.years){
   # --- phi ---  transition rates --- #
   #phi.lh = transition low to high (beta distribution)
   for(s in 1:n.sims){
-    phi.lh.est[s]<- paste("phi.lh", s, sep = "_")
-    assign(phi.lh.est[s], filter(get(outputs[s]), grepl("phi.lh", param)))
+    phi0.lh.est[s]<- paste("phi0.lh", s, sep = "_")
+    assign(phi0.lh.est[s], filter(get(outputs[s]), grepl("phi0.lh", param)))
     
-    assign(phi.lh.est[s], 
-           cbind(get(phi.lh.est[s]), cv = get(phi.lh.est[s])$sd/get(phi.lh.est[s])$mean
+    assign(phi0.lh.est[s], 
+           cbind(get(phi0.lh.est[s]), cv = get(phi0.lh.est[s])$sd/get(phi0.lh.est[s])$mean
            ))  
+    
+    phi1.lh.est[s]<- paste("phi1.lh", s, sep = "_")
+    assign(phi1.lh.est[s], filter(get(outputs[s]), grepl("phi1.lh", param)))
   }
   
   #phi.hh = transition high to high (beta distribution)
-  for(s in 1:n.sims){
-    phi.hh.est[s]<- paste("phi.hh", s, sep = "_")
-    assign(phi.hh.est[s], filter(get(outputs[s]), grepl("phi.hh", param)))
-    
-    assign(phi.hh.est[s], 
-           cbind(get(phi.hh.est[s]), cv = get(phi.hh.est[s])$sd/get(phi.hh.est[s])$mean
-           ))  
-  }
+   for(s in 1:n.sims){
+     phi0.hh.est[s]<- paste("phi0.hh", s, sep = "_")
+     assign(phi0.hh.est[s], filter(get(outputs[s]), grepl("phi0.hh", param)))
+     
+     assign(phi0.hh.est[s], 
+            cbind(get(phi0.hh.est[s]), cv = get(phi0.hh.est[s])$sd/get(phi0.hh.est[s])$mean
+            ))  
+     
+     phi1.hh.est[s]<- paste("phi1.hh", s, sep = "_")
+     assign(phi1.hh.est[s], filter(get(outputs[s]), grepl("phi1.hh", param)))
+   }
   
   # --- p.l ---  detection low state --- #
   #p.l.0 = base detection low state (beta distribution)
@@ -1173,11 +1238,17 @@ for(year in 1:n.years){
     assign(gamma.2.est[s], 
            cbind(get(gamma.2.est[s]), year = year))
     
-    assign(phi.lh.est[s], 
-           cbind(get(phi.lh.est[s]), year = year))
+    assign(phi0.lh.est[s], 
+           cbind(get(phi0.lh.est[s]), year = year))
     
-    assign(phi.hh.est[s], 
-           cbind(get(phi.hh.est[s]), year = year))
+    assign(phi1.lh.est[s], 
+           cbind(get(phi1.lh.est[s]), year = year))
+    
+    assign(phi0.hh.est[s], 
+           cbind(get(phi0.hh.est[s]), year = year))
+    
+    assign(phi1.hh.est[s], 
+           cbind(get(phi1.hh.est[s]), year = year))
     
     assign(p.l0.est[s], 
            cbind(get(p.l0.est[s]), year = year))
@@ -1211,8 +1282,12 @@ for(year in 1:n.years){
     all.gamma.0.est[s]<- paste("gamma.0.allsummary", s, sep = "_")
     all.gamma.1.est[s]<- paste("gamma.1.allsummary", s, sep = "_")
     all.gamma.2.est[s]<- paste("gamma.2.allsummary", s, sep = "_")
-    all.phi.lh.est[s]<- paste("phi.lh.allsummary", s, sep = "_")
-    all.phi.hh.est[s]<- paste("phi.hh.allsummary", s, sep = "_")
+    
+    all.phi0.lh.est[s]<- paste("phi0.lh.allsummary", s, sep = "_")
+    all.phi1.lh.est[s]<- paste("phi1.lh.allsummary", s, sep = "_")
+    all.phi0.hh.est[s]<- paste("phi0.hh.allsummary", s, sep = "_")
+    all.phi1.hh.est[s]<- paste("phi1.hh.allsummary", s, sep = "_")
+    
     all.p.l0.est[s]<- paste("p.l0.allsummary", s, sep = "_")
     all.p.l1.est[s]<- paste("p.l1.allsummary", s, sep = "_")
     all.alpha.l.est[s]<- paste("alpha.l.allsummary", s, sep = "_")
@@ -1247,11 +1322,17 @@ for(year in 1:n.years){
       assign(all.gamma.2.est[s], 
              get(gamma.2.est[s]))
       
-      assign(all.phi.lh.est[s], 
-             get(phi.lh.est[s]))
+      assign(all.phi0.lh.est[s], 
+             get(phi0.lh.est[s]))
       
-      assign(all.phi.hh.est[s], 
-             get(phi.hh.est[s]))
+      assign(all.phi1.lh.est[s], 
+             get(phi1.lh.est[s]))
+      
+      assign(all.phi0.hh.est[s], 
+             get(phi0.hh.est[s]))
+      
+      assign(all.phi1.hh.est[s], 
+             get(phi1.hh.est[s]))
       
       assign(all.p.l0.est[s], 
              get(p.l0.est[s]))
@@ -1298,11 +1379,17 @@ for(year in 1:n.years){
       assign(all.gamma.2.est[s], 
              rbind(get(all.gamma.2.est[s]), get(gamma.2.est[s])))
     
-      assign(all.phi.lh.est[s], 
-             rbind(get(all.phi.lh.est[s]), get(phi.lh.est[s])))
+      assign(all.phi0.lh.est[s], 
+             rbind(get(all.phi0.lh.est[s]), get(phi0.lh.est[s])))
       
-      assign(all.phi.hh.est[s], 
-             rbind(get(all.phi.hh.est[s]), get(phi.hh.est[s])))
+      assign(all.phi1.lh.est[s], 
+             rbind(get(all.phi1.lh.est[s]), get(phi1.lh.est[s])))
+      
+      assign(all.phi0.hh.est[s], 
+             rbind(get(all.phi0.hh.est[s]), get(phi0.hh.est[s])))
+      
+      assign(all.phi1.hh.est[s], 
+             rbind(get(all.phi1.hh.est[s]), get(phi1.hh.est[s])))
       
       assign(all.p.l0.est[s], 
              rbind(get(all.p.l0.est[s]), get(p.l0.est[s])))
@@ -1374,16 +1461,19 @@ for(year in 1:n.years){
         gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
         eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
         eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3]) 
+        phi.lh.est[i,s] <- invlogit(get(phi0.lh.est[s]$mean) + get(phi1.lh.est[s]$mean)*rem.vec[i,4,s]*removal.hours[2])
+        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s]$mean) + get(phi1.hh.est[s]$mean)*rem.vec[i,4,s]*removal.hours[3])
+        
         
         TPM.est[1,i,s,1] <- 1-gamma.est[i,s]
         TPM.est[1,i,s,2] <- gamma.est[i,s]
         TPM.est[1,i,s,3] <- 0
         TPM.est[2,i,s,1] <- eps.l.est[i,s]
-        TPM.est[2,i,s,2] <- (1- eps.l.est[i,s])*(1-get(phi.lh.est[s])$mean)
-        TPM.est[2,i,s,3] <- (1- eps.l.est[i,s])*get(phi.lh.est[s])$mean
+        TPM.est[2,i,s,2] <- (1- eps.l.est[i,s])*(1-phi.lh.est[i,s])
+        TPM.est[2,i,s,3] <- (1- eps.l.est[i,s])*phi.lh.est[i,s] 
         TPM.est[3,i,s,1] <- eps.h.est[i,s]
-        TPM.est[3,i,s,2] <- (1- eps.h.est[i,s])*(1-get(phi.hh.est[s])$mean)
-        TPM.est[3,i,s,3] <- (1- eps.h.est[i,s])*get(phi.hh.est[s])$mean
+        TPM.est[3,i,s,2] <- (1- eps.h.est[i,s])*(1-phi.hh.est[i,s])
+        TPM.est[3,i,s,3] <- (1- eps.h.est[i,s])*phi.hh.est[i,s]
         
       }
       
@@ -1409,7 +1499,7 @@ for(year in 1:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-file_name = paste(path, 'e1_hocc_time.txt',sep = '/')
+file_name = paste(path, 'hocc_time.txt',sep = '/')
 write.table(time.taken,file_name)
 
 #### Save True Data ####
@@ -1418,14 +1508,14 @@ States.df <- adply(State, c(1,2,3,4))
 
 colnames(States.df) <- c("site", "week", "year", "sim", "state")              
 
-file_name = paste(path, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'States_hocc.csv',sep = '/')
 write.csv(States.df,file_name)
 
 #mean across simulations
 Mean.States.df <- aggregate(state ~ site+week+year,
                             data = as.data.frame(States.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States_hocc.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
@@ -1433,12 +1523,12 @@ yM.df <- adply(yM, c(1,2,3,4,5))
 
 colnames(yM.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
 
-file_name = paste(path, 'y.obs_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'y.obs_hocc.csv',sep = '/')
 write.csv(yM.df,file_name)
 
 
 rem.site.M.df <- yM.df %>% filter(observed.state > 1)
-file_name = paste(path, 'rem.site.M_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'rem.site.M_hocc.csv',sep = '/')
 write.csv(rem.site.M.df,file_name)
 
 #### sites visited ####
@@ -1475,14 +1565,14 @@ colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
 
 sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
 
-file_name = paste(path, 'sites.visit_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'sites.visit_hocc.csv',sep = '/')
 write.csv(sites.df,file_name)
 
 #### Estimated Data ####
 ##### Estimated States ####
 States.est.df <- States.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'States.est_hocc.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
@@ -1490,7 +1580,7 @@ write.csv(States.est.df,file_name)
 Mean.States.est.df <- aggregate(state ~ site+year,
                                 data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_hocc.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
 ##### Estimated parameters ####
@@ -1506,7 +1596,7 @@ for(s in 1:n.sims){
 
 eps.l0s.df <- do.call("rbind", eps.l0s)
 
-file_name = paste(path, 'eps.l0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.l0.est_hocc.csv',sep = '/')
 write.csv(eps.l0s.df,file_name)
 
 ## --- eps.l1 -----------------------------------------------#
@@ -1521,7 +1611,7 @@ for(s in 1:n.sims){
 
 eps.l1s.df <- do.call("rbind", eps.l1s)
 
-file_name = paste(path, 'eps.l1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.l1.est_hocc.csv',sep = '/')
 write.csv(eps.l1s.df,file_name)
 ## --- eps.h0 -----------------------------------------------#
 eps.h0s <- list()
@@ -1535,7 +1625,7 @@ for(s in 1:n.sims){
 
 eps.h0s.df <- do.call("rbind", eps.h0s)
 
-file_name = paste(path, 'eps.h0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.h0.est_hocc.csv',sep = '/')
 write.csv(eps.h0s.df,file_name)
 
 ## --- eps.h1 -----------------------------------------------#
@@ -1550,7 +1640,7 @@ for(s in 1:n.sims){
 
 eps.h1s.df <- do.call("rbind", eps.h1s)
 
-file_name = paste(path, 'eps.h1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'eps.h1.est_hocc.csv',sep = '/')
 write.csv(eps.h1s.df,file_name)
 
 ## --- gamma.0 -----------------------------------------------#
@@ -1565,7 +1655,7 @@ for(s in 1:n.sims){
 
 gamma.0s.df <- do.call("rbind", gamma.0s)
 
-file_name = paste(path, 'gamma.0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'gamma.0.est_hocc.csv',sep = '/')
 write.csv(gamma.0s.df,file_name)
 
 ## --- gamma.1 -----------------------------------------------#
@@ -1580,7 +1670,7 @@ for(s in 1:n.sims){
 
 gamma.1s.df <- do.call("rbind", gamma.1s)
 
-file_name = paste(path, 'gamma.1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'gamma.1.est_hocc.csv',sep = '/')
 write.csv(gamma.1s.df,file_name)
 
 ## --- gamma.2 -----------------------------------------------#
@@ -1595,38 +1685,58 @@ for(s in 1:n.sims){
 
 gamma.2s.df <- do.call("rbind", gamma.2s)
 
-file_name = paste(path, 'gamma.2.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'gamma.2.est_hocc.csv',sep = '/')
 write.csv(gamma.2s.df,file_name)
 
 ## --- phi.lh -----------------------------------------------#
-phi.lhs <- list()
+phi0.lhs <- list()
+phi1.lhs <- list()
 
 for(s in 1:n.sims){
-  assign(all.phi.lh.est[s], 
-         cbind(get(all.phi.lh.est[s]), sim = s))
+  assign(all.phi0.lh.est[s], 
+         cbind(get(all.phi0.lh.est[s]), sim = s))
   
-  phi.lhs[[s]] <- get(all.phi.lh.est[s])
+  phi0.lhs[[s]] <- get(all.phi0.lh.est[s])
+  
+  assign(all.phi1.lh.est[s], 
+         cbind(get(all.phi1.lh.est[s]), sim = s))
+  
+  phi1.lhs[[s]] <- get(all.phi1.lh.est[s])
 }
 
-phi.lhs.df <- do.call("rbind", phi.lhs)
+phi0.lhs.df <- do.call("rbind", phi0.lhs)
+phi1.lhs.df <- do.call("rbind", phi1.lhs)
 
-file_name = paste(path, 'phi.lh.est_e1_hocc.csv',sep = '/')
-write.csv(phi.lhs.df,file_name)
+file_name = paste(path, 'phi0.lh.est_hocc.csv',sep = '/')
+write.csv(phi0.lhs.df,file_name)
+
+file_name = paste(path, 'phi1.lh.est_hocc.csv',sep = '/')
+write.csv(phi1.lhs.df,file_name)
 
 ## --- phi.hh -----------------------------------------------#
-phi.hhs <- list()
+phi0.hhs <- list()
+phi1.hhs <- list()
 
 for(s in 1:n.sims){
-  assign(all.phi.hh.est[s], 
-         cbind(get(all.phi.hh.est[s]), sim = s))
+  assign(all.phi0.hh.est[s], 
+         cbind(get(all.phi0.hh.est[s]), sim = s))
   
-  phi.hhs[[s]] <- get(all.phi.hh.est[s])
+  phi0.hhs[[s]] <- get(all.phi0.hh.est[s])
+  
+  assign(all.phi1.hh.est[s], 
+         cbind(get(all.phi1.hh.est[s]), sim = s))
+  
+  phi1.hhs[[s]] <- get(all.phi1.hh.est[s])
 }
 
-phi.hhs.df <- do.call("rbind", phi.hhs)
+phi0.hhs.df <- do.call("rbind", phi0.hhs)
+phi1.hhs.df <- do.call("rbind", phi1.hhs)
 
-file_name = paste(path, 'phi.hh.est_e1_hocc.csv',sep = '/')
-write.csv(phi.hhs.df,file_name)
+file_name = paste(path, 'phi0.hh.est_hocc.csv',sep = '/')
+write.csv(phi0.hhs.df,file_name)
+
+file_name = paste(path, 'phi1.hh.est_hocc.csv',sep = '/')
+write.csv(phi1.hhs.df,file_name)
 
 ## --- p.l0 -----------------------------------------------#
 p.l0.s <- list()
@@ -1640,7 +1750,7 @@ for(s in 1:n.sims){
 
 p.l0.s.df <- do.call("rbind", p.l0.s)
 
-file_name = paste(path, 'p.l0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.l0.est_hocc.csv',sep = '/')
 write.csv(p.l0.s.df,file_name)
 
 ## --- p.l1 -----------------------------------------------#
@@ -1655,7 +1765,7 @@ for(s in 1:n.sims){
 
 p.l1.s.df <- do.call("rbind", p.l1.s)
 
-file_name = paste(path, 'p.l1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.l1.est_hocc.csv',sep = '/')
 write.csv(p.l1.s.df,file_name)
 
 ## --- p.h0 -----------------------------------------------#
@@ -1670,7 +1780,7 @@ for(s in 1:n.sims){
 
 p.h0.s.df <- do.call("rbind", p.h0.s)
 
-file_name = paste(path, 'p.h0.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.h0.est_hocc.csv',sep = '/')
 write.csv(p.h0.s.df,file_name)
 
 ## --- p.h1 -----------------------------------------------#
@@ -1685,11 +1795,11 @@ for(s in 1:n.sims){
 
 p.h1.s.df <- do.call("rbind", p.h1.s)
 
-file_name = paste(path, 'p.h1.est_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'p.h1.est_hocc.csv',sep = '/')
 write.csv(p.h1.s.df,file_name)
 
 ##### rhat vals ######
-file_name = paste(path, 'rhat.vals_e1_hocc.csv',sep = '/')
+file_name = paste(path, 'rhat.vals_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
 #### QUICK RESULTS ####

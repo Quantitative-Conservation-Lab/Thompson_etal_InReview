@@ -104,12 +104,12 @@ for(year in 1:n.years){
       TPM[1,1:n.sites,1,1,p,,3] <- 0 #empty to high (week 1 year 1)
       
       TPM[2,1:n.sites,1,1,p,,1] <- eps.l[,1,1,p,] #low to empty (week 1 year 1)
-      TPM[2,1:n.sites,1,1,p,,2] <- (1- eps.l[,1,1,p,])*(1-phi.lh[p]) #low to low (week 1 year 1)
-      TPM[2,1:n.sites,1,1,p,,3] <- (1- eps.l[,1,1,p,])*(phi.lh[p]) #low to high (week 1 year 1)
+      TPM[2,1:n.sites,1,1,p,,2] <- (1- eps.l[,1,1,p,])*(1-invlogit(phi.lh[p])) #low to low (week 1 year 1)
+      TPM[2,1:n.sites,1,1,p,,3] <- (1- eps.l[,1,1,p,])*(invlogit(phi.lh[p])) #low to high (week 1 year 1)
       
       TPM[3,1:n.sites,1,1,p,,1] <- eps.h[,1,1,p,] #high to empty (week 1 year 1)
-      TPM[3,1:n.sites,1,1,p,,2] <- (1- eps.h[,1,1,p,])*(1-phi.hh[p]) #high to low (week 1 year 1)
-      TPM[3,1:n.sites,1,1,p,,3] <- (1- eps.h[,1,1,p,])*(phi.hh[p]) #high to high (week 1 year 1)
+      TPM[3,1:n.sites,1,1,p,,2] <- (1- eps.h[,1,1,p,])*(1-invlogit(phi.hh[p])) #high to low (week 1 year 1)
+      TPM[3,1:n.sites,1,1,p,,3] <- (1- eps.h[,1,1,p,])*(invlogit(phi.hh[p])) #high to high (week 1 year 1)
       
     } #ends year = 1 loop
     
@@ -144,12 +144,12 @@ for(year in 1:n.years){
         TPM[1,1:n.sites,week,year,p,s,3] <- 0 #empty to high
         
         TPM[2,1:n.sites,week,year,p,s,1] <- eps.l[,week,year,p,s] #low to empty (eradication)
-        TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lh[p]) #low to low (eradication failure)
-        TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lh[p]) #low to high 
+        TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-invlogit(phi.lh[p])) #low to low (eradication failure)
+        TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(invlogit(phi.lh[p])) #low to high 
         
         TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (eradication)
-        TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[p]) #high to low 
-        TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[p]) #high to high
+        TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-invlogit(phi.hh[p])) #high to low 
+        TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(invlogit(phi.hh[p])) #high to high
         
       } #ends s loop
     } #ends year > 1 loop
@@ -182,12 +182,12 @@ for(year in 1:n.years){
           TPM[1,1:n.sites,week,year,p,s,3] <- 0 #empty to high
             
           TPM[2,1:n.sites,week,year,p,s,1] <- eps.l[,week,year,p,s] #low to empty (eradication)
-          TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lh[p]) #low to low (eradication failure)
-          TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lh[p]) #low to high
+          TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-invlogit(phi.lh[p])) #low to low (eradication failure)
+          TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(invlogit(phi.lh[p])) #low to high
             
           TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (eradication)
-          TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[p]) #high to low
-          TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[p]) #high to high
+          TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-invlogit(phi.hh[p])) #high to low
+          TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(invlogit(phi.hh[p])) #high to high
             
          
           
