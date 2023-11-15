@@ -94,7 +94,7 @@ for (i in 1:n.sites){
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
     logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
-    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[2]
+    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[3]
     
     #index = [current state, location, time, future state]
     #empty stay empty
