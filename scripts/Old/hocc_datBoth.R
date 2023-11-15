@@ -58,8 +58,13 @@ model{
   gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd) #precision parameter
   
   #State transition:
-  phi.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
-  phi.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
+  phi0.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
+  phi1.lh ~ dnorm(phi.lh1.mean, phi.lh1.tau) #effect of removal on transition
+  phi.lh1.tau <- 1/(phi.lh1.sd*phi.lh1.sd) #precision parameter
+  
+  phi0.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
+  phi1.hh ~ dnorm(phi.hh1.mean, phi.hh1.tau) #effect of removal on transition
+  phi.hh1.tau <- 1/(phi.hh1.sd*phi.hh1.sd) #precision parameter
   
   #Detection low state:
   p.l0 ~ dbeta(p.l0.a, p.l0.b)T(0.0001,0.9999) #base detection for low state
@@ -100,6 +105,9 @@ for (i in 1:n.sites){
     logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
+    logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
+    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[3]
+    
     #index = [current state, location, time, future state]
     #empty stay empty
     TPM[1,i,t,1] <- 1-gamma[i,t] #1-gamma = not invasion probability
@@ -114,19 +122,19 @@ for (i in 1:n.sites){
     TPM[2,i,t,1] <- eps.l[i,t] #erradication probability
                                       
     #low abundance to low abundance
-    TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh) #erradication failure probability
+    TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh[i,t]) #erradication failure probability
     
     #low abundance to high abundance
-    TPM[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh)
+    TPM[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh[i,t])
     
     #high abundance to empty
     TPM[3,i,t,1] <- eps.h[i,t] #erradication probability
     
     #high abundance to low abundance
-    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh) #erradication failure probability
+    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh[i,t]) #erradication failure probability
     
     #high abundance to high abundance
-    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh)
+    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh[i,t])
     
     
     #--------------------------------------------------#
@@ -191,7 +199,7 @@ for (i in 1:n.sites){
     
     State[i,1] ~ dcat(psi) #psi is written above in the priors
     
-    D[i,1] <- sum(State[neighbors[i,], 1])/2 #state of neighbors 
+    D[i,1] <- sum(State[neighbors[i,], 1])/n.neighbors[i] #state of neighbors 
   
     #----- State Model -----#
     
@@ -199,7 +207,7 @@ for (i in 1:n.sites){
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
       
-      D[i,t] <- sum(State[neighbors[i,], t])/2 #state of neighbors 
+      D[i,t] <- sum(State[neighbors[i,], t])/n.neighbors[i] #state of neighbors 
      
     } #t loop
 

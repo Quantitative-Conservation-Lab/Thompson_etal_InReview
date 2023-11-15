@@ -2,7 +2,6 @@ library(tidyverse)
 library(ggplot2)
 library(LaplacesDemon)
 
-
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
 
