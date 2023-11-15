@@ -240,9 +240,9 @@ res <- c('results/Multistate/searcheffort05/hocc40_datBoth_p1')
 #### Data and parameters ####
 load("parameters.RData")
 
-n.sims <-  2 #25 #100
+n.sims <-  20
 n.sites <- 40 #number of sites
-n.years <- 5 #10 #number of years
+n.years <- 10 #number of years
 n.weeks <- 4 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
