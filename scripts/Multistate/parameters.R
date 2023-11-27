@@ -55,7 +55,11 @@ save.image(file = "parameters.RData")
 
 #load("parameters.RData")
 #### DETECTION CURVES ####
-logsearch.efforts <- log(search.hourss) #log search effort
+
+search.hoursvals <- c(search.hourss,5) 
+#search.hoursvals <- c(0.25, 0.5, 1, 2, 4, 8, 16) 
+n <- length(search.hoursvals)
+logsearch.efforts <- log(search.hoursvals) #log search effort
 
 pM.l.lowd <- invlogit(p.l0s[1] + p.l1s[1]*logsearch.efforts + alpha.ls[1])
 pM.l.highd <- invlogit(p.l0s[3] + p.l1s[3]*logsearch.efforts + alpha.ls[3])
@@ -64,17 +68,17 @@ pM.h.lowd <- invlogit(p.h0s[1] + p.h1s[1]*logsearch.efforts + alpha.hs[1])
 pM.h.highd <- invlogit(p.h0s[3] + p.h1s[3]*logsearch.efforts + alpha.hs[3])
 
 det.df <- data.frame(detection = c(pM.l.lowd, pM.l.highd, pM.h.lowd, pM.h.highd),
-           val = c(rep(1,3), rep(2,3), rep(1,3), rep(2,3)),
-           state = c(rep(1,3), rep(1,3), rep(2,3), rep(2,3)),
-           effort = rep(c(0.5, 1, 2),4),
-           color = c(rep('low state, low detection',3),rep('low state, high detection',3),
-                         rep('high state, low detection',3), rep('high state, high detection',3)),
-           colorvals = c(rep('grey',3),rep('black',3),
-                     rep('red1',3), rep('red4',3))
+           val = c(rep(1,n), rep(2,n), rep(1,n), rep(2,n)),
+           state = c(rep(1,n), rep(1,n), rep(2,n), rep(2,n)),
+           effort = rep(search.hoursvals,4),
+           color = c(rep('low state, low detection',n),rep('low state, high detection',n),
+                         rep('high state, low detection',n), rep('high state, high detection',n)),
+           colorvals = c(rep('grey',n),rep('black',n),
+                     rep('red1',n), rep('red4',n))
            )
 
-colorvals <- c(rep('lightblue',3), rep('darkblue',3),
-              rep('lightgreen',3),rep('darkgreen',3)
+colorvals <- c(rep('lightblue',n), rep('darkblue',n),
+              rep('lightgreen',n),rep('darkgreen',n)
               )
 
 ggplot(det.df)+
