@@ -16,7 +16,6 @@ model{
 # 1 not detected
 # 2 low abundance
 # 3 high abundance
-#
 # -------------------------------------------------
 
 #### PRIORS ####
@@ -149,14 +148,6 @@ for (i in 1:n.sites){
       
     #-- Initial State: --# 
     
-    #MORE COMPLEX VERSION, not quite correct: 
-      #gamma.init[i] <- gamma.0 + gamma.1*site.char[i] #probability of being invaded initially
-      #l.init <- 1- eps.l0                             #probably of being low abundance if invaded
-      #h.init <- 1- eps.h0                             #probably of being high abundance if invaded
-      #psi[i,1] <- 1-gamma.init[i]                     #probability of being empty
-      #psi[i,2] <- gamma.init[i]*l.init                #probability of low abundance
-      #psi[i,3] <- gamma.init[i]*h.init                #probability of high abundance
-    
       State[i,1] ~ dcat(psi) #psi is written above in the priors
     
       D[i,1] <- sum(State[neighbors[i,], 1])/n.neighbors[i] #state of neighbors 
@@ -166,7 +157,7 @@ for (i in 1:n.sites){
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
       
-      #below is not correct because it does not lead to a true state: 
+      #State of neighbors
       D[i,t] <- sum(State[neighbors[i,], t])/n.neighbors[i] #state of neighbors 
        
      
