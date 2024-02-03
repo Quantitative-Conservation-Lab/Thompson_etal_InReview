@@ -63,7 +63,7 @@ model{
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
   
   #initial occupancy probabilities
-  psi[1:3] ~ ddirch(alpha) #alpha = rep(1,3)
+  psi[1:3] ~ ddirch(psi.init) #alpha = rep(1,3)
   
 #--------------------------------------------------#
 # STATE TRANSITION

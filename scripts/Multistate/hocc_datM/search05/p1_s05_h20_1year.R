@@ -5,12 +5,12 @@ library(MCMCvis)
 library(tidyverse)
 library(strex)
 library(plyr)
+library(RColorBrewer)
+library(readr)
 
 
 #Remove at downstream 5 locations but collect monitoring data
 #at next 5 downstream locations
-
-start.time <- Sys.time()
 
 #### JAGS model ####
 sink("Flower_multistate_datM.txt")
@@ -79,7 +79,7 @@ model{
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
   
   #initial occupancy probabilities
-  psi[1:3] ~ ddirch(alpha) #alpha = rep(1,3)
+  psi[1:3] ~ ddirch(psi.init) #alpha = rep(1,3)
   
 #--------------------------------------------------#
 # STATE TRANSITION
@@ -198,11 +198,17 @@ for (i in 1:n.sites){
 ", fill = TRUE)
 sink()
 
+#------------------------------------------------------------------------------#
+#### Path to save data ####
+path <- here::here("results", "test", "1year")
+res <- c('results/test/1year') #subset of path for plot save
+
+#------------------------------------------------------------------------------#
 
 #### Data and parameters ####
 load("parameters.RData")
 
-n.sims <-  2 #number of simulations
+n.sims <-  10 #number of simulations
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 4 #number of weeks
@@ -237,14 +243,10 @@ TPM.48 <- TPM.48s[,,1] #TPM matrix for 48 week period
 search.hours <- search.hourss[1] #search effort
 
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
-n.resource <- 40 #total hours per week
+n.resource <- 20 #total hours per week
 
 #---- arrays ----#
-gamma <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-eps.l <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-eps.h <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-phi.lh <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-phi.hh<- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+gamma <- eps.l <- eps.h <- phi.lh <- phi.hh <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
 
 TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states)) 
 
@@ -276,6 +278,7 @@ yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims))
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
 
 logsearch.effort <- log(search.hours) #log search effort
+max.spent <- 2*search.hours + removal.hours[3] #max resources you could spend at a single site
 
 pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l) #low state detection probability (base detection + effect of effort)
 
@@ -290,8 +293,130 @@ P.datM[3,] <- c(1-pM.h, 0, pM.h)
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) #removal sites array
 
 #### JAGS arrays ####
-#empty arrays are loaded with parameter data
+#### Empty jags arrays ####
+S.init <- array(NA, c(n.sites,n.years, n.sims))
+D.init <- array(NA, c(n.sites,n.years, n.sims))
 
+#priors:
+eps.l0.a <- array(NA, c(n.years, n.sims))
+eps.l0.b <- array(NA, c(n.years, n.sims))
+eps.l1.mean <- array(NA, c(n.years, n.sims))
+eps.l1.sd <- array(NA, c(n.years, n.sims))
+
+eps.h0.a <- array(NA, c(n.years, n.sims))
+eps.h0.b <- array(NA, c(n.years, n.sims))
+eps.h1.mean <- array(NA, c(n.years, n.sims))
+eps.h1.sd <- array(NA, c(n.years, n.sims))
+
+gamma.0.mean <- array(NA, c(n.years, n.sims))
+gamma.0.sd <- array(NA, c(n.years, n.sims))
+gamma.1.mean <- array(NA, c(n.years, n.sims))
+gamma.1.sd <- array(NA, c(n.years, n.sims))
+gamma.2.mean <- array(NA, c(n.years, n.sims))
+gamma.2.sd <- array(NA, c(n.years, n.sims))
+
+phi.lh.a <- array(NA, c(n.years, n.sims))
+phi.lh.b <- array(NA, c(n.years, n.sims))
+phi.lh1.mean <- array(NA, c(n.years, n.sims))
+phi.lh1.sd <- array(NA, c(n.years, n.sims))
+
+phi.hh.a <- array(NA, c(n.years, n.sims))
+phi.hh.b <- array(NA, c(n.years, n.sims))
+phi.hh1.mean <- array(NA, c(n.years, n.sims))
+phi.hh1.sd <- array(NA, c(n.years, n.sims))
+
+p.l0.a <- array(NA, c(n.years, n.sims))
+p.l0.b <- array(NA, c(n.years, n.sims))
+p.l1.mean <- array(NA, c(n.years, n.sims))
+p.l1.sd <- array(NA, c(n.years, n.sims))
+l.mean <- array(NA, c(n.years, n.sims))
+l.sd <- array(NA, c(n.years, n.sims))
+p.h0.a <- array(NA, c(n.years, n.sims))
+p.h0.b <- array(NA, c(n.years, n.sims))
+p.h1.mean <- array(NA, c(n.years, n.sims))
+p.h1.sd <- array(NA, c(n.years, n.sims))
+h.mean <- array(NA, c(n.years, n.sims))
+h.sd <- array(NA, c(n.years, n.sims))
+
+x <- list()
+rhat_vals <- array(NA, c(n.years, n.sims))
+sites <- list()
+my.data <- list()
+outs <- rep(NA,n.sims)
+outputsfull <- rep(NA, n.sims)
+outputs <- rep(NA, n.sims)
+mcmcs <- rep(NA, n.sims)
+
+alpha.eps.l0 <- rep(NA, n.sims)
+beta.eps.l0 <- rep(NA, n.sims)
+alpha.eps.h0 <- rep(NA, n.sims)
+beta.eps.h0 <- rep(NA, n.sims)
+alpha.phi.lh <- rep(NA, n.sims)
+beta.phi.lh <- rep(NA, n.sims)
+alpha.phi.hh <- rep(NA, n.sims)
+beta.phi.hh <- rep(NA, n.sims)
+alpha.p.l0 <- rep(NA, n.sims)
+beta.p.l0 <- rep(NA, n.sims)
+alpha.p.h0 <- rep(NA, n.sims)
+beta.p.h0 <- rep(NA, n.sims)
+
+State.est <- rep(NA, n.sims)
+eps.l0.est <- rep(NA, n.sims)
+eps.l1.est <- rep(NA, n.sims)
+eps.h0.est <- rep(NA, n.sims)
+eps.h1.est <- rep(NA, n.sims)
+gamma.0.est <- rep(NA, n.sims)
+gamma.1.est <- rep(NA, n.sims)
+gamma.2.est <- rep(NA, n.sims)
+phi0.lh.est <- rep(NA, n.sims)
+phi1.lh.est <- rep(NA, n.sims)
+phi0.hh.est <- rep(NA, n.sims)
+phi1.hh.est <- rep(NA, n.sims)
+p.l0.est <- rep(NA, n.sims)
+p.l1.est <- rep(NA, n.sims)
+alpha.l.est <- rep(NA, n.sims)
+p.h0.est <- rep(NA, n.sims)
+p.h1.est <- rep(NA, n.sims)
+alpha.h.est <- rep(NA, n.sims)
+
+all.State.est <- rep(NA, n.sims)
+all.eps.l0.est <- rep(NA, n.sims)
+all.eps.l1.est <- rep(NA, n.sims)
+all.eps.h0.est <- rep(NA, n.sims)
+all.eps.h1.est <- rep(NA, n.sims)
+all.gamma.0.est <- rep(NA, n.sims)
+all.gamma.1.est <- rep(NA, n.sims)
+all.gamma.2.est <- rep(NA, n.sims)
+all.phi0.lh.est <- rep(NA, n.sims)
+all.phi1.lh.est <- rep(NA, n.sims)
+all.phi0.hh.est <- rep(NA, n.sims)
+all.phi1.hh.est <- rep(NA, n.sims)
+all.p.l0.est <- rep(NA, n.sims)
+all.p.l1.est <- rep(NA, n.sims)
+all.alpha.l.est <- rep(NA, n.sims)
+all.p.h0.est <- rep(NA, n.sims)
+all.p.h1.est <- rep(NA, n.sims)
+all.alpha.h.est <- rep(NA, n.sims)
+
+initial.values <- list()
+
+TPM.est <- array(NA, c(n.states, n.sites,n.sims,n.states))
+D.est <- array(NA, c(n.sites,n.sims))
+gamma.est <- array(NA, c(n.sites,n.sims))
+eps.l.est <- array(NA, c(n.sites,n.sims))
+eps.h.est <- array(NA, c(n.sites,n.sims))
+phi.lh.est <- array(NA, c(n.sites,n.sims))
+phi.hh.est <- array(NA, c(n.sites,n.sims))
+
+prev.state <- array(NA, c(n.sites, n.sims))
+States.mean.round <- array(NA, c(n.sites, n.years, n.sims))
+States.mean <- array(NA, c(n.sites, n.years, n.sims))
+S.end <- array(NA, c(n.sites, n.sims))
+
+res.state <- list()
+res.params <- list()
+
+start.time <- Sys.time()
 ####################################################################################
 #### Run Adaptive Management ####
 
@@ -299,7 +424,6 @@ year <- 1
 
   #--------------------------------------------------------------------------------#
   #### 1. Simulate the truth ####
-  
   ### Steps: 
   #---1. Simulate the truth
   #---2. Simulate occupancy data collection (include removal data)
@@ -309,15 +433,17 @@ year <- 1
   week <- 1
   ###### Week 1 year 1 #####
   if(year == 1){
-    
+    #State[site,week,year,sim]
     State[,1,year,1:n.sims] <- State.init #first week state is from data
     
     for(s in 1:n.sims){
       for(i in 1:n.sites){
+        #D[site,week,year,sim]
         D[i,1,1,s] <- sum(State[neighbors[i,], 1,1,s])/n.neighbors[i] #state of neighbors
       }
     }
     
+    #[site,week,year,sim]
     gamma[,1,1,] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,1,1,]) #invasion (week 1 year 1)
     eps.l[,1,1,] <- invlogit(eps.l0) #eradication low (week 1 year 1)
     eps.h[,1,1,] <- invlogit(eps.h0) #eradication high (week 1 year 1)
@@ -325,6 +451,7 @@ year <- 1
     phi.hh[,1,1,] <- invlogit(phi1.lh) #transition high to high
     
     # TPM used for week 2
+    #[from state, site, week, year, sim, to state]
     TPM[1,1:n.sites,1,1,,1] <- 1-gamma[,1,1,] #empty to empty (week 1 year 1)
     TPM[1,1:n.sites,1,1,,2] <- gamma[,1,1,] #empty to low (week 1 year 1)
     TPM[1,1:n.sites,1,1,,3] <- 0 #empty to high (week 1 year 1)
@@ -393,7 +520,7 @@ year <- 1
       for(i in sites.rem.M[,week,year,s]){ #order of sites where removal occurs
         
         #A. while we still have resources to spend:
-        if(resource.total[week,year,s] < n.resource){
+        if(resource.total[week,year,s] < (n.resource- max.spent)){
           
           #1. first occasion occupancy data (1 = not detected, 2 = detected)
           yM[i,1,week, year, s] <- rcat(1, P.datM[State[i,week,year,s], ])
@@ -525,7 +652,7 @@ year <- 1
     
     ##### UNSURE ####
     # --- S.init and D.init ---  Initial states ------------ #
-    alpha <- rep(1,n.states) #initial state probability vector
+    psi.init <- rep(1,n.states) #initial state probability vector
   } 
   
   #--------------------------------------------------------------------------------#
@@ -537,11 +664,11 @@ year <- 1
   
   #Parameters monitored
   parameters.to.save <- c("eps.l0", "eps.l1", "eps.h0", "eps.h1", "gamma.0", "gamma.1",
-                          "gamma.2", "phi0.lh", "phi1.lh", "phi0.hh", "phi1.hh", "phi.hh", 
-                          "p.l0", "p.l1", "p.h0", "p.h1", "State.fin", "alpha.l", "alpha.h", "psi")
+                          "gamma.2", "phi0.lh", "phi1.lh", "phi0.hh", "phi1.hh",
+                          "p.l0", "p.l1", "p.h0", "p.h1", "alpha.l", "alpha.h", "psi", "State.fin")
   #settings
-  n.burnin <- 100
-  n.iter <- 1000 + n.burnin
+  n.burnin <- 1000
+  n.iter <- 10000 + n.burnin
   n.chains <- 3
   n.thin <- 1
   
@@ -556,7 +683,7 @@ year <- 1
       yM= yM[,,,year,s],
       site.char = site.char,
       logeffort = logsearch.effort,
-      alpha = alpha,
+      psi.init = psi.init,
       rem.vec = rem.vec.dat[,,s],
       removal.hours = removal.hours,
       n.neighbors = n.neighbors,
@@ -634,17 +761,25 @@ year <- 1
   
   ###### 3a. Save data from MCMC  #####
   for(s in 1:n.sims){ 
-    outputsfull[s]<- paste("outputfull", s, sep = "_")
-    assign(outputsfull[s], 
-           get(outs[s]))
     
     outputs[s]<- paste("output", s, sep = "_")
     assign(outputs[s], 
-           as.data.frame((get(outputsfull[s]))$summary))
+           as.data.frame((get(outs[s]))$summary))
     
     assign(outputs[s], 
            cbind(get(outputs[s]), param = rownames(get(outputs[s]))))
+    
+    assign(outputs[s], cbind(get(outputs[s]),
+                             sim = rep(s, length(get(outputs[s])[,1]))))
+    
   }
+  
+  cbind.res <- get(outputs[1])
+  
+  for(s in 2:n.sims){
+    cbind.res <- rbind(cbind.res, get(outputs[s]))
+  }
+  
   
   #Save mcmcs
   for(s in 1:n.sims){
@@ -652,377 +787,90 @@ year <- 1
     assign(mcmcs[s], get(outs[s])$samples)
   }
   
-
+  
 #################################################################################################
-#### TIMING ####
 end.time <- Sys.time()
 time.taken <- end.time - start.time
-
-#### Save True Data ####
-#results for each sim
-States.df <- adply(State, c(1,2,3,4))
-colnames(States.df) <- c("site", "week", "year", "sim", "state")              
-
-#mean across simulations
-Mean.States.df <- aggregate(state ~ site+week+year,
-                            data = as.data.frame(States.df), FUN = mean)
-
-#observation data -multi
-yM.df <- adply(yM, c(1,2,3,4,5))
-colnames(yM.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
-rem.site.M.df <- yM.df %>% filter(observed.state > 1)
-
-#### sites visited ####
-sites.visit <- adply(rem.vec, c(1,2,4,3))
-colnames(sites.visit) <- c("site", "week", "year", "sim", "rem.val")   
-sites.visit <- sites.visit %>% filter(!is.na(rem.val))
-
-#visit no remove
-sites.visit.norem <- sites.visit %>% filter(rem.val == 0)
-sites.visit.norem$rem.val <- 1
-sites.visit.norem <- aggregate(rem.val ~ week + year + sim,
-                               data = as.data.frame(sites.visit.norem), FUN = sum)
-
-
-sites.visit.norem.avg <- aggregate(rem.val ~ week+ year,
-                                   data = as.data.frame(sites.visit.norem), FUN = mean)
-
-colnames(sites.visit.norem.avg)[3] <- "num.visit.norem"
-
-#visit remove
-sites.visit.rem <- sites.visit %>% filter(rem.val == 1)
-
-sites.visit.rem<- aggregate(rem.val ~ week+ year + sim,
-                            data = as.data.frame(sites.visit.rem), FUN = sum)
-
-sites.visit.rem.avg <- aggregate(rem.val ~ week + year,
-                                 data = as.data.frame(sites.visit.rem), FUN = mean)
-
-
-colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
-
-sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
-
-#### Estimated Data ####
-##### Estimated States ####
-States.est.df <- States.mean.years %>% select(site,year,sim,state)
-
-#mean across simulations
-Mean.States.est.df <- aggregate(state ~ site+year,
-                                data = as.data.frame(States.est.df), FUN = mean)
-
-##### Estimated parameters ####
-## --- eps.l0 -----------------------------------------------#
-eps.l0s <- list()
-
-for(s in 1:n.sims){
-  assign(all.eps.l0.est[s], 
-         cbind(get(all.eps.l0.est[s]), sim = s))
   
-  eps.l0s[[s]] <- get(all.eps.l0.est[s])
+  #### Results ####
+  cbind.res.parameters <- cbind.res %>% filter(param %in% parameters.to.save)
+  
+  truth.params <- c(eps.l0, eps.l1, eps.h0, eps.h1, gamma.0, gamma.1, gamma.2, 
+                    phi0.lh, phi1.lh, phi0.hh, phi1.hh, p.l0, p.l1, p.h0, p.h1,
+                    alpha.l, alpha.h)
+  
+  cbind.res.parameters$truth <- rep(truth.params, n.sims)
+  colnames(cbind.res.parameters)[c(3,7)] <- c("low", "high")
+  res.params[[year]] <- cbind.res.parameters
+  
+  #State params
+  cbind.res.state<- cbind.res %>% filter(str_detect(param, '^S'))
+  
+  truth.state4 <- State[,4,year,1]
+  
+  for(s in 2:n.sims){
+    truth.state4 <- c(truth.state4, State[,4,year,s])
+  }
+  
+  
+  cbind.res.state$Segment <- as.numeric(gsub("\\D", "", cbind.res.state$param))
+  
+  cbind.res.state$truth <- truth.state4 
+  colnames(cbind.res.state)[c(3,7)] <- c("low", "high")
+  
+  cbind.res.state$nobs <- NA
+  Y.nobs <- yM[,,,year,]
+  Y.nobs[is.na(Y.nobs)] <- 0
+  Y.nobs[Y.nobs > 0] <- 1
+  
+  Y.num.site <- array(NA, c(n.sites, n.sims))
+  
+  for(i in 1:n.sites){
+    for(s in 1:n.sims){
+      Y.num.site[i,s] <- sum(Y.nobs[i,1:n.occs, 1:n.weeks,s])
+    }
+  }
+  
+  cbind.res.state$nobs <- c(Y.num.site)
+  
+  res.state[[year]] <- cbind.res.state
+  
+##### plots #####
+ggplot(res.params[[year]]) +
+  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
+  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
+  scale_color_brewer(palette = "Dark2")+
+  geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "black", shape = 22) +
+  facet_wrap(~param, scales = "free") +
+  xlab("Simulation")+ylab("State") + 
+  guides(color = guide_legend(title = "Simulation"))  
+
+ggplot(res.params[[year]]) +
+  geom_point(mapping = aes(x = param, y = Rhat, col = as.factor(sim)))+
+  geom_hline(yintercept = 1.1, color = 'red')
+
+##### Estimated State #####
+ggplot(res.state[[year]]) +
+  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(nobs)))+
+  scale_color_brewer(palette = "YlOrRd")+
+  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(nobs)), width = 0.5)+
+  geom_point(data=res.state[[year]], aes(x = sim, y = truth), color = "black", shape = 22) +
+  scale_x_continuous(breaks=seq(1,n.sims,1))+
+  facet_wrap(~Segment, scales = "free",labeller = label_both)  +
+  xlab("Simulation")+ylab("State") + 
+  guides(color = guide_legend(title = "Number of observations")) 
+
+#### Trace.plots ####
+for(s in 1:n.sims){
+  for(p in 1:length(unique(cbind.res.parameters$param))){
+    MCMCtrace(get(mcmcs[s]),
+              params = unique(cbind.res.parameters$param[p]),
+              type = 'both',
+              ind = TRUE,
+              pdf = TRUE,
+              open_pdf = FALSE,
+              filename = paste0(res,'/densplots/trace',unique(cbind.res.parameters$param[p]),'_sim', s, '_year', year))
+}
 }
 
-eps.l0s.df <- do.call("rbind", eps.l0s)
-
-## --- eps.l1 -----------------------------------------------#
-eps.l1s <- list()
-
-for(s in 1:n.sims){
-  assign(all.eps.l1.est[s], 
-         cbind(get(all.eps.l1.est[s]), sim = s))
   
-  eps.l1s[[s]] <- get(all.eps.l1.est[s])
-}
-
-eps.l1s.df <- do.call("rbind", eps.l1s)
-
-## --- eps.h0 -----------------------------------------------#
-eps.h0s <- list()
-
-for(s in 1:n.sims){
-  assign(all.eps.h0.est[s], 
-         cbind(get(all.eps.h0.est[s]), sim = s))
-  
-  eps.h0s[[s]] <- get(all.eps.h0.est[s])
-}
-
-eps.h0s.df <- do.call("rbind", eps.h0s)
-
-## --- eps.h1 -----------------------------------------------#
-eps.h1s <- list()
-
-for(s in 1:n.sims){
-  assign(all.eps.h1.est[s], 
-         cbind(get(all.eps.h1.est[s]), sim = s))
-  
-  eps.h1s[[s]] <- get(all.eps.h1.est[s])
-}
-
-eps.h1s.df <- do.call("rbind", eps.h1s)
-
-## --- gamma.0 -----------------------------------------------#
-gamma.0s <- list()
-
-for(s in 1:n.sims){
-  assign(all.gamma.0.est[s], 
-         cbind(get(all.gamma.0.est[s]), sim = s))
-  
-  gamma.0s[[s]] <- get(all.gamma.0.est[s])
-}
-
-gamma.0s.df <- do.call("rbind", gamma.0s)
-
-## --- gamma.1 -----------------------------------------------#
-gamma.1s <- list()
-
-for(s in 1:n.sims){
-  assign(all.gamma.1.est[s], 
-         cbind(get(all.gamma.1.est[s]), sim = s))
-  
-  gamma.1s[[s]] <- get(all.gamma.1.est[s])
-}
-
-gamma.1s.df <- do.call("rbind", gamma.1s)
-
-## --- gamma.2 -----------------------------------------------#
-gamma.2s <- list()
-
-for(s in 1:n.sims){
-  assign(all.gamma.2.est[s], 
-         cbind(get(all.gamma.2.est[s]), sim = s))
-  
-  gamma.2s[[s]] <- get(all.gamma.2.est[s])
-}
-
-gamma.2s.df <- do.call("rbind", gamma.2s)
-
-## --- phi.lh -----------------------------------------------#
-phi0.lhs <- list()
-phi1.lhs <- list()
-
-for(s in 1:n.sims){
-  assign(all.phi0.lh.est[s], 
-         cbind(get(all.phi0.lh.est[s]), sim = s))
-  
-  phi0.lhs[[s]] <- get(all.phi0.lh.est[s])
-  
-  assign(all.phi1.lh.est[s], 
-         cbind(get(all.phi1.lh.est[s]), sim = s))
-  
-  phi1.lhs[[s]] <- get(all.phi1.lh.est[s])
-}
-
-phi0.lhs.df <- do.call("rbind", phi0.lhs)
-phi1.lhs.df <- do.call("rbind", phi1.lhs)
-
-## --- phi.hh -----------------------------------------------#
-phi0.hhs <- list()
-phi1.hhs <- list()
-
-for(s in 1:n.sims){
-  assign(all.phi0.hh.est[s], 
-         cbind(get(all.phi0.hh.est[s]), sim = s))
-  
-  phi0.hhs[[s]] <- get(all.phi0.hh.est[s])
-  
-  assign(all.phi1.hh.est[s], 
-         cbind(get(all.phi1.hh.est[s]), sim = s))
-  
-  phi1.hhs[[s]] <- get(all.phi1.hh.est[s])
-}
-
-phi0.hhs.df <- do.call("rbind", phi0.hhs)
-phi1.hhs.df <- do.call("rbind", phi1.hhs)
-
-## --- p.l0 -----------------------------------------------#
-p.l0.s <- list()
-
-for(s in 1:n.sims){
-  assign(all.p.l0.est[s], 
-         cbind(get(all.p.l0.est[s]), sim = s))
-  
-  p.l0.s[[s]] <- get(all.p.l0.est[s])
-}
-
-p.l0.s.df <- do.call("rbind", p.l0.s)
-
-## --- p.l1 -----------------------------------------------#
-p.l1.s <- list()
-
-for(s in 1:n.sims){
-  assign(all.p.l1.est[s], 
-         cbind(get(all.p.l1.est[s]), sim = s))
-  
-  p.l1.s[[s]] <- get(all.p.l1.est[s])
-}
-
-p.l1.s.df <- do.call("rbind", p.l1.s)
-
-## --- p.h0 -----------------------------------------------#
-p.h0.s <- list()
-
-for(s in 1:n.sims){
-  assign(all.p.h0.est[s], 
-         cbind(get(all.p.h0.est[s]), sim = s))
-  
-  p.h0.s[[s]] <- get(all.p.h0.est[s])
-}
-
-p.h0.s.df <- do.call("rbind", p.h0.s)
-
-## --- p.h1 -----------------------------------------------#
-p.h1.s <- list()
-
-for(s in 1:n.sims){
-  assign(all.p.h1.est[s], 
-         cbind(get(all.p.h1.est[s]), sim = s))
-  
-  p.h1.s[[s]] <- get(all.p.h1.est[s])
-}
-
-p.h1.s.df <- do.call("rbind", p.h1.s)
-
-#### QUICK RESULTS ####
-Mean.States.df.fin <- Mean.States.df %>% filter(year == 11)
-Mean.States.df.fin$state #distribution
-
-mean(Mean.States.df.fin$state) #average final state
-
-#check number of sites visited for removal on average each week
-mean(sites.df$num.visit.norem)
-mean(sites.df$num.visit.rem)
-
-#correct results: true state
-match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-match.dat <- array(NA, c(n.weeks, n.years, n.sims))
-
-for(s in 1:n.sims){
-  for(year in 1:n.years){
-    for(week in 1:n.weeks){
-      State.M <- State[,week,year,s]
-      full.match <- (yM[,,week,year,s] == State.M)
-      full.match [,1] <- as.numeric(full.match [,1])
-      full.match [,2] <- as.numeric(full.match [,2])
-      full.match [is.na(full.match )] <- 3 #replace NA with 3
-      
-      
-      for(i in 1:n.sites){
-        
-        
-        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
-          match[i,week,year,s] <- 1
-        }
-        
-        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
-          match[i,week,year,s] <- 1
-        }
-        
-        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
-          match[i,week,year,s] <- 1
-        }
-        
-        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
-          match[i,week,year,s] <- 0
-        }
-        
-        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
-          match[i,week,year,s] <- NA #not visited
-        }
-        
-        
-      } #sites
-      
-      match2 <- discard(match[,week,year,s], is.na)
-      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
-      
-    } #weeks
-  } #year
-} #sims
-
-
-mean(match.dat)
-
-#correct results: detection/non-detection
-match <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-match.dat <- array(NA, c(n.weeks, n.years, n.sims))
-
-for(s in 1:n.sims){
-  for(year in 1:n.years){
-    for(week in 1:n.weeks){
-      State.D <- State[,week,year,s]
-      State.D[State.D == 3] <- 2
-      yM.2 <- yM[,,week,year,s]
-      yM.2[yM.2 == 3] <- 2
-      full.match <- (yM.2 == State.D)
-      full.match [,1] <- as.numeric(full.match [,1])
-      full.match [,2] <- as.numeric(full.match [,2])
-      full.match [is.na(full.match )] <- 3 #replace NA with 3
-      
-      
-      for(i in 1:n.sites){
-        
-        
-        if(full.match[i,1] == 1 & full.match[i,1] == 3){ #true match first try
-          match[i,week,year,s] <- 1
-        }
-        
-        if(full.match[i,1] == 1 & full.match[i,2] == 1){ #true match
-          match[i,week,year,s] <- 1
-        }
-        
-        if(full.match[i,1] == 0 & full.match[i,2] == 1){ #true match on the second try
-          match[i,week,year,s] <- 1
-        }
-        
-        if(full.match[i,1] == 0 & full.match[i,2] == 0){ #not correct
-          match[i,week,year,s] <- 0
-        }
-        
-        if(full.match[i,1] == 3 & full.match[i,2] == 3){ #true match on the second try
-          match[i,week,year,s] <- NA #not visited
-        }
-        
-        
-      } #sites
-      
-      match2 <- discard(match[,week,year,s], is.na)
-      match.dat[week,year,s] <- sum(match2 == 1)/ length(match2) 
-      
-    } #weeks
-  } #year
-} #sims
-
-mean(match.dat)
-
-#### Final States average state ####
-State.fins <- State[,4,n.years,]
-State.fins.df <- adply(State.fins, c(1,2))
-colnames(State.fins.df) <- c("site","sim", "state")
-
-ggplot(State.fins.df)+
-  geom_boxplot(mapping = aes(y = state, middle = mean(state)))
-
-summary(State.fins.df$state)
-
-#### site invasion ####
-State.fins.avg <- aggregate(state ~ site, State.fins.df, mean)
-
-head(State.fins.avg)
-
-ggplot(State.fins.avg, aes(x = site, y = 1, fill = state)) +
-  geom_tile()+
-  theme_classic()
-
-#### number of invaded sites ####
-invasion <- rep(NA, n.sims)
-
-for(s in 1:n.sims){
-  df <- filter(State.fins.df, sim == s)
-  invasion[s] <- sum(df$state == 1)
-}
-
-invasion.mean <- mean(invasion)
-
-
-#percent of river uninvaded after 10 years
-1- invasion.mean/n.sites
