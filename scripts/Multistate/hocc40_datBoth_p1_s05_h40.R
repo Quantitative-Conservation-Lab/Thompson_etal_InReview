@@ -658,7 +658,7 @@ for(year in 1:n.years){
             rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
             
             #Calculating resources used = resources already used + search hours + removal hours
-            resource.total[week,year,s] <- resource.total[week,year,s] + search.hours.M + removal.hours[State[i,week,year,s]]
+            resource.total[week,year,s] <- resource.total[week,year,s] + search.hours + removal.hours[State[i,week,year,s]]
             
           }else{
             #2b. If not seen the first occasion, we need to search again:
@@ -670,7 +670,7 @@ for(year in 1:n.years){
               rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
               
               #Calculating resources used = resources already used + 2*search hours + removal hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours.M + removal.hours[State[i,week,year,s]]
+              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours + removal.hours[State[i,week,year,s]]
             } 
             
             #2bi. If we do not detect flowering rush during the second occasion:
@@ -678,7 +678,7 @@ for(year in 1:n.years){
               rem.vec[i,week,year,s] <- 0 #notes removal did not occur
               
               #Calculating resources used = resources already used + 2*search hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours.M 
+              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours 
             } 
           }
           
