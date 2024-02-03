@@ -75,7 +75,7 @@ for (i in 1:n.sites){
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
     logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours[2] #erradication low state
     logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
-                                        # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
+                                        # rem.vec[i] = 0,1 if 0, then no removal
     
     logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
     logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[3]
@@ -88,7 +88,7 @@ for (i in 1:n.sites){
     TPM[1,i,t,2] <- gamma[i,t] #invasion probability
     
     #empty to high abundance
-    TPM[1,i,t,3] <- 0 #invasion probability
+    TPM[1,i,t,3] <- 0 
 
     #low abundance to empty
     TPM[2,i,t,1] <- eps.l[i,t] #erradication probability

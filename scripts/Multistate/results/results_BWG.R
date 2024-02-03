@@ -3,7 +3,7 @@ library(here)
 library(RColorBrewer)
 
 #### search effort 0.5 ####
-path <- here::here("results", "Multistate", "DatM", "searcheffort05")
+path <- here::here("results", "Multistate", "searcheffort05")
 
 ##### hocc #####
 #----- search effort = 0.5, hours = 40, dr = hocc, param = 1 -----#
@@ -42,42 +42,6 @@ occ05_40_p4_df$hours <- '40'
 occ05_40_p4_df$dr <- 'hocc'
 occ05_40_p4_df$param <- '4'
 
-#----- search effort = 0.5, hours = 80, dr = hocc, param = 1 -----#
-path2 <- paste(path,"/hocc80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ05_80_p1_df <- read.csv(file_name)[-1]
-occ05_80_p1_df$effort <- '0.5'
-occ05_80_p1_df$hours <- '80'
-occ05_80_p1_df$dr <- 'hocc'
-occ05_80_p1_df$param <- '1'
-
-#----- search effort = 0.5, hours = 80, dr = hocc, param = 2 -----#
-path2 <- paste(path,"/hocc80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ05_80_p2_df <- read.csv(file_name)[-1]
-occ05_80_p2_df$effort <- '0.5'
-occ05_80_p2_df$hours <- '80'
-occ05_80_p2_df$dr <- 'hocc'
-occ05_80_p2_df$param <- '2'
-
-#----- search effort = 0.5, hours = 80, dr = hocc, param = 3 -----#
-path2 <- paste(path,"/hocc80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ05_80_p3_df <- read.csv(file_name)[-1]
-occ05_80_p3_df$effort <- '0.5'
-occ05_80_p3_df$hours <- '80'
-occ05_80_p3_df$dr <- 'hocc'
-occ05_80_p3_df$param <- '3'
-
-#----- search effort = 0.5, hours = 80, dr = hocc, param = 4 -----#
-path2 <- paste(path,"/hocc80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ05_80_p4_df <- read.csv(file_name)[-1]
-occ05_80_p4_df$effort <- '0.5'
-occ05_80_p4_df$hours <- '80'
-occ05_80_p4_df$dr <- 'hocc'
-occ05_80_p4_df$param <- '4'
-
 ##### linear #####
 #----- search effort = 0.5, hours = 40, dr = linear, param = 1 -----#
 path2 <- paste(path,"/linear40_datM_p1",sep = "")
@@ -115,42 +79,6 @@ linear05_40_p4_df$hours <- '40'
 linear05_40_p4_df$dr <- 'linear'
 linear05_40_p4_df$param <- '4'
 
-#----- search effort = 0.5, hours = 80, dr = linear, param = 1 -----#
-path2 <- paste(path,"/linear80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear05_80_p1_df <- read.csv(file_name)[-1]
-linear05_80_p1_df$effort <- '0.5'
-linear05_80_p1_df$hours <- '80'
-linear05_80_p1_df$dr <- 'linear'
-linear05_80_p1_df$param <- '1'
-
-#----- search effort = 0.5, hours = 80, dr = linear, param = 2 -----#
-path2 <- paste(path,"/linear80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear05_80_p2_df <- read.csv(file_name)[-1]
-linear05_80_p2_df$effort <- '0.5'
-linear05_80_p2_df$hours <- '80'
-linear05_80_p2_df$dr <- 'linear'
-linear05_80_p2_df$param <- '2'
-
-#----- search effort = 0.5, hours = 80, dr = linear, param = 3 -----#
-path2 <- paste(path,"/linear80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear05_80_p3_df <- read.csv(file_name)[-1]
-linear05_80_p3_df$effort <- '0.5'
-linear05_80_p3_df$hours <- '80'
-linear05_80_p3_df$dr <- 'linear'
-linear05_80_p3_df$param <- '3'
-
-#----- search effort = 0.5, hours = 80, dr = linear, param = 4 -----#
-path2 <- paste(path,"/linear80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear05_80_p4_df <- read.csv(file_name)[-1]
-linear05_80_p4_df$effort <- '0.5'
-linear05_80_p4_df$hours <- '80'
-linear05_80_p4_df$dr <- 'linear'
-linear05_80_p4_df$param <- '4'
-
 ##### Random #####
 #----- search effort = 0.5, hours = 40, dr = random, params -----#
 path2 <- paste(path,"/random40_datM",sep = "")
@@ -161,22 +89,13 @@ random05_40_df$hours <- '40'
 random05_40_df$dr <- 'random'
 random05_40_df <- random05_40_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
 
-#----- search effort = 0.5, hours = 80, dr = random, params -----#
-path2 <- paste(path,"/random80_datM",sep = "")
-file_name = paste(path2, 'States_random.csv',sep = '/')
-random05_80_df <- read.csv(file_name)[-1]
-random05_80_df$effort <- '0.5'
-random05_80_df$hours <- '80'
-random05_80_df$dr <- 'random'
-random05_80_df <- random05_80_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
-
 #### search effort 1 ####
-path <- here::here("results", "Multistate", "DatM", "searcheffort1")
+path <- here::here("results", "Multistate", "searcheffort1")
 
 ##### hocc #####
 #----- search effort = 1, hours = 40, dr = hocc, param = 1 -----#
 path2 <- paste(path,"/hocc40_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ1_40_p1_df <- read.csv(file_name)[-1]
 occ1_40_p1_df$effort <- '1'
 occ1_40_p1_df$hours <- '40'
@@ -185,7 +104,7 @@ occ1_40_p1_df$param <- '1'
 
 #----- search effort = 1, hours = 40, dr = hocc, param = 2 -----#
 path2 <- paste(path,"/hocc40_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ1_40_p2_df <- read.csv(file_name)[-1]
 occ1_40_p2_df$effort <- '1'
 occ1_40_p2_df$hours <- '40'
@@ -194,7 +113,7 @@ occ1_40_p2_df$param <- '2'
 
 #----- search effort = 1, hours = 40, dr = hocc, param = 3 -----#
 path2 <- paste(path,"/hocc40_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ1_40_p3_df <- read.csv(file_name)[-1]
 occ1_40_p3_df$effort <- '1'
 occ1_40_p3_df$hours <- '40'
@@ -203,53 +122,17 @@ occ1_40_p3_df$param <- '3'
 
 #----- search effort = 1, hours = 40, dr = hocc, param = 4 -----#
 path2 <- paste(path,"/hocc40_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ1_40_p4_df <- read.csv(file_name)[-1]
 occ1_40_p4_df$effort <- '1'
 occ1_40_p4_df$hours <- '40'
 occ1_40_p4_df$dr <- 'hocc'
 occ1_40_p4_df$param <- '4'
 
-#----- search effort = 1, hours = 80, dr = hocc, param = 1 -----#
-path2 <- paste(path,"/hocc80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ1_80_p1_df <- read.csv(file_name)[-1]
-occ1_80_p1_df$effort <- '1'
-occ1_80_p1_df$hours <- '80'
-occ1_80_p1_df$dr <- 'hocc'
-occ1_80_p1_df$param <- '1'
-
-#----- search effort = 1, hours = 80, dr = hocc, param = 2 -----#
-path2 <- paste(path,"/hocc80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ1_80_p2_df <- read.csv(file_name)[-1]
-occ1_80_p2_df$effort <- '1'
-occ1_80_p2_df$hours <- '80'
-occ1_80_p2_df$dr <- 'hocc'
-occ1_80_p2_df$param <- '2'
-
-#----- search effort = 1, hours = 80, dr = hocc, param = 3 -----#
-path2 <- paste(path,"/hocc80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ1_80_p3_df <- read.csv(file_name)[-1]
-occ1_80_p3_df$effort <- '1'
-occ1_80_p3_df$hours <- '80'
-occ1_80_p3_df$dr <- 'hocc'
-occ1_80_p3_df$param <- '3'
-
-#----- search effort = 1, hours = 80, dr = hocc, param = 4 -----#
-path2 <- paste(path,"/hocc80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ1_80_p4_df <- read.csv(file_name)[-1]
-occ1_80_p4_df$effort <- '1'
-occ1_80_p4_df$hours <- '80'
-occ1_80_p4_df$dr <- 'hocc'
-occ1_80_p4_df$param <- '4'
-
 ##### linear #####
 #----- search effort = 1, hours = 40, dr = linear, param = 1 -----#
 path2 <- paste(path,"/linear40_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear1_40_p1_df <- read.csv(file_name)[-1]
 linear1_40_p1_df$effort <- '1'
 linear1_40_p1_df$hours <- '40'
@@ -258,7 +141,7 @@ linear1_40_p1_df$param <- '1'
 
 #----- search effort = 1, hours = 40, dr = linear, param = 2 -----#
 path2 <- paste(path,"/linear40_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear1_40_p2_df <- read.csv(file_name)[-1]
 linear1_40_p2_df$effort <- '1'
 linear1_40_p2_df$hours <- '40'
@@ -267,7 +150,7 @@ linear1_40_p2_df$param <- '2'
 
 #----- search effort = 1, hours = 40, dr = linear, param = 3 -----#
 path2 <- paste(path,"/linear40_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear1_40_p3_df <- read.csv(file_name)[-1]
 linear1_40_p3_df$effort <- '1'
 linear1_40_p3_df$hours <- '40'
@@ -276,48 +159,12 @@ linear1_40_p3_df$param <- '3'
 
 #----- search effort = 1, hours = 40, dr = linear, param = 4 -----#
 path2 <- paste(path,"/linear40_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear1_40_p4_df <- read.csv(file_name)[-1]
 linear1_40_p4_df$effort <- '1'
 linear1_40_p4_df$hours <- '40'
 linear1_40_p4_df$dr <- 'linear'
 linear1_40_p4_df$param <- '4'
-
-#----- search effort = 1, hours = 80, dr = linear, param = 1 -----#
-path2 <- paste(path,"/linear80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear1_80_p1_df <- read.csv(file_name)[-1]
-linear1_80_p1_df$effort <- '1'
-linear1_80_p1_df$hours <- '80'
-linear1_80_p1_df$dr <- 'linear'
-linear1_80_p1_df$param <- '1'
-
-#----- search effort = 1, hours = 80, dr = linear, param = 2 -----#
-path2 <- paste(path,"/linear80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear1_80_p2_df <- read.csv(file_name)[-1]
-linear1_80_p2_df$effort <- '1'
-linear1_80_p2_df$hours <- '80'
-linear1_80_p2_df$dr <- 'linear'
-linear1_80_p2_df$param <- '2'
-
-#----- search effort = 1, hours = 80, dr = linear, param = 3 -----#
-path2 <- paste(path,"/linear80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear1_80_p3_df <- read.csv(file_name)[-1]
-linear1_80_p3_df$effort <- '1'
-linear1_80_p3_df$hours <- '80'
-linear1_80_p3_df$dr <- 'linear'
-linear1_80_p3_df$param <- '3'
-
-#----- search effort = 1, hours = 80, dr = linear, param = 4 -----#
-path2 <- paste(path,"/linear80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear1_80_p4_df <- read.csv(file_name)[-1]
-linear1_80_p4_df$effort <- '1'
-linear1_80_p4_df$hours <- '80'
-linear1_80_p4_df$dr <- 'linear'
-linear1_80_p4_df$param <- '4'
 
 ##### Random #####
 #----- search effort = 1, hours = 40, dr = random, params -----#
@@ -329,22 +176,13 @@ random1_40_df$hours <- '40'
 random1_40_df$dr <- 'random'
 random1_40_df <- random1_40_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
 
-#----- search effort = 1, hours = 80, dr = random, params -----#
-path2 <- paste(path,"/random80_datM",sep = "")
-file_name = paste(path2, 'States_random.csv',sep = '/')
-random1_80_df <- read.csv(file_name)[-1]
-random1_80_df$effort <- '1'
-random1_80_df$hours <- '80'
-random1_80_df$dr <- 'random'
-random1_80_df <- random1_80_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
-
 #### search effort 2 ####
-path <- here::here("results", "Multistate", "DatM", "searcheffort2")
+path <- here::here("results", "Multistate", "searcheffort2")
 
 ##### hocc #####
 #----- search effort = 2, hours = 40, dr = hocc, param = 1 -----#
 path2 <- paste(path,"/hocc40_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ2_40_p1_df <- read.csv(file_name)[-1]
 occ2_40_p1_df$effort <- '2'
 occ2_40_p1_df$hours <- '40'
@@ -353,7 +191,7 @@ occ2_40_p1_df$param <- '1'
 
 #----- search effort = 2, hours = 40, dr = hocc, param = 2 -----#
 path2 <- paste(path,"/hocc40_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ2_40_p2_df <- read.csv(file_name)[-1]
 occ2_40_p2_df$effort <- '2'
 occ2_40_p2_df$hours <- '40'
@@ -362,7 +200,7 @@ occ2_40_p2_df$param <- '2'
 
 #----- search effort = 2, hours = 40, dr = hocc, param = 3 -----#
 path2 <- paste(path,"/hocc40_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ2_40_p3_df <- read.csv(file_name)[-1]
 occ2_40_p3_df$effort <- '2'
 occ2_40_p3_df$hours <- '40'
@@ -371,53 +209,17 @@ occ2_40_p3_df$param <- '3'
 
 #----- search effort = 2, hours = 40, dr = hocc, param = 4 -----#
 path2 <- paste(path,"/hocc40_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ2_40_p4_df <- read.csv(file_name)[-1]
 occ2_40_p4_df$effort <- '2'
 occ2_40_p4_df$hours <- '40'
 occ2_40_p4_df$dr <- 'hocc'
 occ2_40_p4_df$param <- '4'
 
-#----- search effort = 2, hours = 80, dr = hocc, param = 1 -----#
-path2 <- paste(path,"/hocc80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p1_df <- read.csv(file_name)[-1]
-occ2_80_p1_df$effort <- '2'
-occ2_80_p1_df$hours <- '80'
-occ2_80_p1_df$dr <- 'hocc'
-occ2_80_p1_df$param <- '1'
-
-#----- search effort = 2, hours = 80, dr = hocc, param = 2 -----#
-path2 <- paste(path,"/hocc80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p2_df <- read.csv(file_name)[-1]
-occ2_80_p2_df$effort <- '2'
-occ2_80_p2_df$hours <- '80'
-occ2_80_p2_df$dr <- 'hocc'
-occ2_80_p2_df$param <- '2'
-
-#----- search effort = 2, hours = 80, dr = hocc, param = 3 -----#
-path2 <- paste(path,"/hocc80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p3_df <- read.csv(file_name)[-1]
-occ2_80_p3_df$effort <- '2'
-occ2_80_p3_df$hours <- '80'
-occ2_80_p3_df$dr <- 'hocc'
-occ2_80_p3_df$param <- '3'
-
-#----- search effort = 2, hours = 80, dr = hocc, param = 4 -----#
-path2 <- paste(path,"/hocc80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p4_df <- read.csv(file_name)[-1]
-occ2_80_p4_df$effort <- '2'
-occ2_80_p4_df$hours <- '80'
-occ2_80_p4_df$dr <- 'hocc'
-occ2_80_p4_df$param <- '4'
-
 ##### linear #####
 #----- search effort = 2, hours = 40, dr = linear, param = 1 -----#
 path2 <- paste(path,"/linear40_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear2_40_p1_df <- read.csv(file_name)[-1]
 linear2_40_p1_df$effort <- '2'
 linear2_40_p1_df$hours <- '40'
@@ -426,7 +228,7 @@ linear2_40_p1_df$param <- '1'
 
 #----- search effort = 2, hours = 40, dr = linear, param = 2 -----#
 path2 <- paste(path,"/linear40_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear2_40_p2_df <- read.csv(file_name)[-1]
 linear2_40_p2_df$effort <- '2'
 linear2_40_p2_df$hours <- '40'
@@ -435,7 +237,7 @@ linear2_40_p2_df$param <- '2'
 
 #----- search effort = 2, hours = 40, dr = linear, param = 3 -----#
 path2 <- paste(path,"/linear40_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear2_40_p3_df <- read.csv(file_name)[-1]
 linear2_40_p3_df$effort <- '2'
 linear2_40_p3_df$hours <- '40'
@@ -444,48 +246,12 @@ linear2_40_p3_df$param <- '3'
 
 #----- search effort = 2, hours = 40, dr = linear, param = 4 -----#
 path2 <- paste(path,"/linear40_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
+file_name = paste(path2, 'States_linear.csv',sep = '/')
 linear2_40_p4_df <- read.csv(file_name)[-1]
 linear2_40_p4_df$effort <- '2'
 linear2_40_p4_df$hours <- '40'
 linear2_40_p4_df$dr <- 'linear'
 linear2_40_p4_df$param <- '4'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 1 -----#
-path2 <- paste(path,"/linear80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p1_df <- read.csv(file_name)[-1]
-linear2_80_p1_df$effort <- '2'
-linear2_80_p1_df$hours <- '80'
-linear2_80_p1_df$dr <- 'linear'
-linear2_80_p1_df$param <- '1'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 2 -----#
-path2 <- paste(path,"/linear80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p2_df <- read.csv(file_name)[-1]
-linear2_80_p2_df$effort <- '2'
-linear2_80_p2_df$hours <- '80'
-linear2_80_p2_df$dr <- 'linear'
-linear2_80_p2_df$param <- '2'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 3 -----#
-path2 <- paste(path,"/linear80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p3_df <- read.csv(file_name)[-1]
-linear2_80_p3_df$effort <- '2'
-linear2_80_p3_df$hours <- '80'
-linear2_80_p3_df$dr <- 'linear'
-linear2_80_p3_df$param <- '3'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 4 -----#
-path2 <- paste(path,"/linear80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p4_df <- read.csv(file_name)[-1]
-linear2_80_p4_df$effort <- '2'
-linear2_80_p4_df$hours <- '80'
-linear2_80_p4_df$dr <- 'linear'
-linear2_80_p4_df$param <- '4'
 
 ##### Random #####
 #----- search effort = 2, hours = 40, dr = random, params -----#
@@ -497,22 +263,13 @@ random2_40_df$hours <- '40'
 random2_40_df$dr <- 'random'
 random2_40_df <- random2_40_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
 
-#----- search effort = 2, hours = 80, dr = random, params -----#
-path2 <- paste(path,"/random80_datM",sep = "")
-file_name = paste(path2, 'States_random.csv',sep = '/')
-random2_80_df <- read.csv(file_name)[-1]
-random2_80_df$effort <- '2'
-random2_80_df$hours <- '80'
-random2_80_df$dr <- 'random'
-random2_80_df <- random2_80_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
-
 #### search effort 5 ####
-path <- here::here("results", "Multistate", "DatM", "searcheffort5")
+path <- here::here("results", "Multistate", "searcheffort5")
 
 ##### hocc #####
 #----- search effort = 5, hours = 40, dr = hocc, param = 1 -----#
 path2 <- paste(path,"/hocc40_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ5_40_p1_df <- read.csv(file_name)[-1]
 occ5_40_p1_df$effort <- '5'
 occ5_40_p1_df$hours <- '40'
@@ -521,7 +278,7 @@ occ5_40_p1_df$param <- '1'
 
 #----- search effort = 5, hours = 40, dr = hocc, param = 2 -----#
 path2 <- paste(path,"/hocc40_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ5_40_p2_df <- read.csv(file_name)[-1]
 occ5_40_p2_df$effort <- '5'
 occ5_40_p2_df$hours <- '40'
@@ -530,7 +287,7 @@ occ5_40_p2_df$param <- '2'
 
 #----- search effort = 5, hours = 40, dr = hocc, param = 3 -----#
 path2 <- paste(path,"/hocc40_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ5_40_p3_df <- read.csv(file_name)[-1]
 occ5_40_p3_df$effort <- '5'
 occ5_40_p3_df$hours <- '40'
@@ -539,161 +296,78 @@ occ5_40_p3_df$param <- '3'
 
 #----- search effort = 5, hours = 40, dr = hocc, param = 4 -----#
 path2 <- paste(path,"/hocc40_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
+file_name = paste(path2, 'States_hocc.csv',sep = '/')
 occ5_40_p4_df <- read.csv(file_name)[-1]
 occ5_40_p4_df$effort <- '5'
 occ5_40_p4_df$hours <- '40'
 occ5_40_p4_df$dr <- 'hocc'
 occ5_40_p4_df$param <- '4'
 
-#----- search effort = 2, hours = 80, dr = hocc, param = 1 -----#
-path2 <- paste(path,"/hocc80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p1_df <- read.csv(file_name)[-1]
-occ2_80_p1_df$effort <- '5'
-occ2_80_p1_df$hours <- '80'
-occ2_80_p1_df$dr <- 'hocc'
-occ2_80_p1_df$param <- '1'
-
-#----- search effort = 2, hours = 80, dr = hocc, param = 2 -----#
-path2 <- paste(path,"/hocc80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p2_df <- read.csv(file_name)[-1]
-occ2_80_p2_df$effort <- '2'
-occ2_80_p2_df$hours <- '80'
-occ2_80_p2_df$dr <- 'hocc'
-occ2_80_p2_df$param <- '2'
-
-#----- search effort = 2, hours = 80, dr = hocc, param = 3 -----#
-path2 <- paste(path,"/hocc80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p3_df <- read.csv(file_name)[-1]
-occ2_80_p3_df$effort <- '2'
-occ2_80_p3_df$hours <- '80'
-occ2_80_p3_df$dr <- 'hocc'
-occ2_80_p3_df$param <- '3'
-
-#----- search effort = 2, hours = 80, dr = hocc, param = 4 -----#
-path2 <- paste(path,"/hocc80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_hocc.csv',sep = '/')
-occ2_80_p4_df <- read.csv(file_name)[-1]
-occ2_80_p4_df$effort <- '2'
-occ2_80_p4_df$hours <- '80'
-occ2_80_p4_df$dr <- 'hocc'
-occ2_80_p4_df$param <- '4'
-
 ##### linear #####
-#----- search effort = 2, hours = 40, dr = linear, param = 1 -----#
+#----- search effort = 5, hours = 40, dr = linear, param = 1 -----#
 path2 <- paste(path,"/linear40_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_40_p1_df <- read.csv(file_name)[-1]
-linear2_40_p1_df$effort <- '2'
-linear2_40_p1_df$hours <- '40'
-linear2_40_p1_df$dr <- 'linear'
-linear2_40_p1_df$param <- '1'
+file_name = paste(path2, 'States_linear.csv',sep = '/')
+linear5_40_p1_df <- read.csv(file_name)[-1]
+linear5_40_p1_df$effort <- '5'
+linear5_40_p1_df$hours <- '40'
+linear5_40_p1_df$dr <- 'linear'
+linear5_40_p1_df$param <- '1'
 
-#----- search effort = 2, hours = 40, dr = linear, param = 2 -----#
+#----- search effort = 5, hours = 40, dr = linear, param = 2 -----#
 path2 <- paste(path,"/linear40_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_40_p2_df <- read.csv(file_name)[-1]
-linear2_40_p2_df$effort <- '2'
-linear2_40_p2_df$hours <- '40'
-linear2_40_p2_df$dr <- 'linear'
-linear2_40_p2_df$param <- '2'
+file_name = paste(path2, 'States_linear.csv',sep = '/')
+linear5_40_p2_df <- read.csv(file_name)[-1]
+linear5_40_p2_df$effort <- '5'
+linear5_40_p2_df$hours <- '40'
+linear5_40_p2_df$dr <- 'linear'
+linear5_40_p2_df$param <- '2'
 
-#----- search effort = 2, hours = 40, dr = linear, param = 3 -----#
+#----- search effort = 5, hours = 40, dr = linear, param = 3 -----#
 path2 <- paste(path,"/linear40_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_40_p3_df <- read.csv(file_name)[-1]
-linear2_40_p3_df$effort <- '2'
-linear2_40_p3_df$hours <- '40'
-linear2_40_p3_df$dr <- 'linear'
-linear2_40_p3_df$param <- '3'
+file_name = paste(path2, 'States_linear.csv',sep = '/')
+linear5_40_p3_df <- read.csv(file_name)[-1]
+linear5_40_p3_df$effort <- '5'
+linear5_40_p3_df$hours <- '40'
+linear5_40_p3_df$dr <- 'linear'
+linear5_40_p3_df$param <- '3'
 
-#----- search effort = 2, hours = 40, dr = linear, param = 4 -----#
+#----- search effort = 5, hours = 40, dr = linear, param = 4 -----#
 path2 <- paste(path,"/linear40_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_40_p4_df <- read.csv(file_name)[-1]
-linear2_40_p4_df$effort <- '2'
-linear2_40_p4_df$hours <- '40'
-linear2_40_p4_df$dr <- 'linear'
-linear2_40_p4_df$param <- '4'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 1 -----#
-path2 <- paste(path,"/linear80_datM_p1",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p1_df <- read.csv(file_name)[-1]
-linear2_80_p1_df$effort <- '2'
-linear2_80_p1_df$hours <- '80'
-linear2_80_p1_df$dr <- 'linear'
-linear2_80_p1_df$param <- '1'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 2 -----#
-path2 <- paste(path,"/linear80_datM_p2",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p2_df <- read.csv(file_name)[-1]
-linear2_80_p2_df$effort <- '2'
-linear2_80_p2_df$hours <- '80'
-linear2_80_p2_df$dr <- 'linear'
-linear2_80_p2_df$param <- '2'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 3 -----#
-path2 <- paste(path,"/linear80_datM_p3",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p3_df <- read.csv(file_name)[-1]
-linear2_80_p3_df$effort <- '2'
-linear2_80_p3_df$hours <- '80'
-linear2_80_p3_df$dr <- 'linear'
-linear2_80_p3_df$param <- '3'
-
-#----- search effort = 2, hours = 80, dr = linear, param = 4 -----#
-path2 <- paste(path,"/linear80_datM_p4",sep = "")
-file_name = paste(path2, 'States_e1_linear.csv',sep = '/')
-linear2_80_p4_df <- read.csv(file_name)[-1]
-linear2_80_p4_df$effort <- '2'
-linear2_80_p4_df$hours <- '80'
-linear2_80_p4_df$dr <- 'linear'
-linear2_80_p4_df$param <- '4'
+file_name = paste(path2, 'States_linear.csv',sep = '/')
+linear5_40_p4_df <- read.csv(file_name)[-1]
+linear5_40_p4_df$effort <- '5'
+linear5_40_p4_df$hours <- '40'
+linear5_40_p4_df$dr <- 'linear'
+linear5_40_p4_df$param <- '4'
 
 ##### Random #####
-#----- search effort = 2, hours = 40, dr = random, params -----#
+#----- search effort = 5, hours = 40, dr = random, params -----#
 path2 <- paste(path,"/random40_datM",sep = "")
 file_name = paste(path2, 'States_random.csv',sep = '/')
-random2_40_df <- read.csv(file_name)[-1]
-random2_40_df$effort <- '2'
-random2_40_df$hours <- '40'
-random2_40_df$dr <- 'random'
-random2_40_df <- random2_40_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
-
-#----- search effort = 2, hours = 80, dr = random, params -----#
-path2 <- paste(path,"/random80_datM",sep = "")
-file_name = paste(path2, 'States_random.csv',sep = '/')
-random2_80_df <- read.csv(file_name)[-1]
-random2_80_df$effort <- '2'
-random2_80_df$hours <- '80'
-random2_80_df$dr <- 'random'
-random2_80_df <- random2_80_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
+random5_40_df <- read.csv(file_name)[-1]
+random5_40_df$effort <- '5'
+random5_40_df$hours <- '40'
+random5_40_df$dr <- 'random'
+random5_40_df <- random5_40_df %>% select(site,week,year,sim,state,effort,hours,dr,param)
 
 #### COMBINE DATA ####
 results_df <- rbind(occ05_40_p1_df, occ05_40_p2_df, occ05_40_p3_df, occ05_40_p4_df,
-                    occ05_80_p1_df, occ05_80_p2_df, occ05_80_p3_df, occ05_80_p4_df,
                     linear05_40_p1_df, linear05_40_p2_df, linear05_40_p3_df, linear05_40_p4_df,
-                    linear05_80_p1_df, linear05_80_p2_df, linear05_80_p3_df, linear05_80_p4_df,
-                    random05_40_df,random05_80_df,
+                    random05_40_df,
                     occ1_40_p1_df, occ1_40_p2_df, occ1_40_p3_df, occ1_40_p4_df,
-                    occ1_80_p1_df, occ1_80_p2_df, occ1_80_p3_df, occ1_80_p4_df,
                     linear1_40_p1_df, linear1_40_p2_df, linear1_40_p3_df, linear1_40_p4_df,
-                    linear1_80_p1_df, linear1_80_p2_df, linear1_80_p3_df, linear1_80_p4_df,
-                    random1_40_df,random1_80_df,
+                    random1_40_df,
                     occ2_40_p1_df, occ2_40_p2_df, occ2_40_p3_df, occ2_40_p4_df,
-                    occ2_80_p1_df, occ2_80_p2_df, occ2_80_p3_df, occ2_80_p4_df,
                     linear2_40_p1_df, linear2_40_p2_df, linear2_40_p3_df, linear2_40_p4_df,
-                    linear2_80_p1_df, linear2_80_p2_df, linear2_80_p3_df, linear2_80_p4_df,
-                    random2_40_df,random2_80_df)
+                    random2_40_df,
+                    occ5_40_p1_df, occ5_40_p2_df, occ5_40_p3_df, occ5_40_p4_df,
+                    linear5_40_p1_df, linear5_40_p2_df, linear5_40_p3_df, linear5_40_p4_df,
+                    random5_40_df)
 
 #### FINAL RESULTS ####
 fin_res <- results_df %>% filter(week == 4, year == 10)
-fin_res2 <- results_df %>% filter(hours == 40, dr == "hocc" | dr == "linear")
+fin_res2 <- results_df %>% filter(hours == 40, dr == "hocc") #| dr == "linear")
+fin_res2 <- fin_res2 %>% filter(effort != 5)
 
 fin_res2$state <- fin_res2$state - 1
 means <- aggregate(state ~  effort + hours + param + dr, fin_res2, mean)
@@ -710,9 +384,9 @@ arrange(filter(means, param == 4), state)
 #   facet_wrap(~dr)
 
 ggplot(means)+
-  geom_point(mapping = aes(x = param, y = state, fill = dr, shape = effort),
+  geom_point(mapping = aes(x = param, y = state, fill = param, shape = effort),
              size = 5, alpha = 0.7)+
-  scale_shape_manual(values = c(21 ,22,24)) +
+  scale_shape_manual(values = c(21 ,22,24, 25)) +
   xlab("Parameter") +
   ylab("Final average invasion state")+
   scale_fill_brewer(palette = 'Paired')+
@@ -729,7 +403,7 @@ means_1 <- means %>% filter(param == 1)
 
 ggplot(means_1)+
   geom_point(mapping = aes(x = param, y = state, fill = dr, shape = effort, size = hours),alpha = 0.7)+
-  scale_shape_manual(values = c(21 ,22,24)) +
+  scale_shape_manual(values = c(21,22,24)) +
   xlab("") +
   ylab("")+
   scale_fill_brewer(palette = 'Dark2', labels = c("Highest state", "Linear", "Random"))+

@@ -91,10 +91,10 @@ for (i in 1:n.sites){
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
     logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours[2] #erradication low state
     logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
-                                        # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
+                                        # rem.vec[i] = 0,1 if 0, then no removal
     
     logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
-    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[2]
+    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[3]
     
     #index = [current state, location, time, future state]
     #empty stay empty
@@ -104,7 +104,7 @@ for (i in 1:n.sites){
     TPM[1,i,t,2] <- gamma[i,t] #invasion probability
     
     #empty to high abundance
-    TPM[1,i,t,3] <- 0 #invasion probability
+    TPM[1,i,t,3] <- 0 
 
     #low abundance to empty
     TPM[2,i,t,1] <- eps.l[i,t] #erradication probability
@@ -206,7 +206,6 @@ for (i in 1:n.sites){
 } #end model
 ", fill = TRUE)
 sink()
-
 #### Path Name ####
 path <- here::here("results", "Multistate", "searcheffort1", "linear40_datM_p4")
 res <- c('results/Multistate/searcheffort1/linear40_datM_p4') 
@@ -584,41 +583,28 @@ for(year in 1:n.years){
         #A. while we still have resources to spend:
         if(resource.total[week,year,s] < n.resource){
           
-          #1. first occasion occupancy data (1 = not detected, 2 = detected)
-          yM[i,1,week, year, s] <- rcat(1, P.datM[State[i,week,year,s], ])
+          #1. Collect occupancy data, 2 visitors (1 = not detected, 2 = detected low state, 3 = detected high state)
+          #Assuming observers have same detection rate:
+          yM[i,,week, year, s] <- rcat(2, P.datM[State[i,week,year,s], ])
           
-          #2. second occasion occupancy data
-          #2a. if seen in first occasion, do not search again and remove the rush
-          if(yM[i,1,week, year, s] > 1){ 
-            yM[i,2, week,year, s] <- NA #no occupancy data because we did not need to search again
+          #2. Determine whether we remove the species
+          #2a. if seen by at least one observer then we remove species
+          if(yM[i,1,week, year, s] > 1 | yM[i,2,week,year,s] > 1){ 
             rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
             
             #Calculating resources used = resources already used + search hours + removal hours
             resource.total[week,year,s] <- resource.total[week,year,s] + search.hours + removal.hours[State[i,week,year,s]]
             
-          }else{
-            #2b. If not seen the first occasion, we need to search again:
-            #Second occasion occupancy data
-            yM[i,2, week, year, s] <- rcat(1, P.datM[State[i,week,year,s], ])
+          }else{#2b. if not seen by any observer then we remove species
             
-            #2bi. If seen at the second occasion:
-            if(yM[i,2, week, year, s] > 1){ #if seen (state observed > 1) the second time
-              rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
-              
-              #Calculating resources used = resources already used + 2*search hours + removal hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours + removal.hours[State[i,week,year,s]]
-            } 
+            rem.vec[i,week,year,s] <- 0 #notes that removal occurred that week at that site
             
-            #2bi. If we do not detect flowering rush during the second occasion:
-            if(yM[i,2, week, year, s]==1){ #if not seen (state observed = 1)
-              rem.vec[i,week,year,s] <- 0 #notes removal did not occur
-              
-              #Calculating resources used = resources already used + 2*search hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours 
-            } 
+            #Calculating resources used = resources already used + search hours 
+            resource.total[week,year,s] <- resource.total[week,year,s] + search.hours 
           }
-        
-        #B. if we do not have any more resources to spend:
+          
+          
+          #B. if we do not have any more resources to spend:
         }else{
           yM[i,1:2, week, year, s] <- NA #no occupancy data
           rem.vec[i,week,year,s] <- NA #removal did not occur
@@ -1452,16 +1438,19 @@ for(year in 1:n.years){
         gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
         eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
         eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3]) 
+        phi.lh.est[i,s] <- invlogit(get(phi0.lh.est[s])$mean + get(phi1.lh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2])
+        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s])$mean + get(phi1.hh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3])
+        
         
         TPM.est[1,i,s,1] <- 1-gamma.est[i,s]
         TPM.est[1,i,s,2] <- gamma.est[i,s]
         TPM.est[1,i,s,3] <- 0
         TPM.est[2,i,s,1] <- eps.l.est[i,s]
-        TPM.est[2,i,s,2] <- (1- eps.l.est[i,s])*(1-get(phi.lh.est[s])$mean)
-        TPM.est[2,i,s,3] <- (1- eps.l.est[i,s])*get(phi.lh.est[s])$mean
+        TPM.est[2,i,s,2] <- (1- eps.l.est[i,s])*(1-phi.lh.est[i,s])
+        TPM.est[2,i,s,3] <- (1- eps.l.est[i,s])*phi.lh.est[i,s] 
         TPM.est[3,i,s,1] <- eps.h.est[i,s]
-        TPM.est[3,i,s,2] <- (1- eps.h.est[i,s])*(1-get(phi.hh.est[s])$mean)
-        TPM.est[3,i,s,3] <- (1- eps.h.est[i,s])*get(phi.hh.est[s])$mean
+        TPM.est[3,i,s,2] <- (1- eps.h.est[i,s])*(1-phi.hh.est[i,s])
+        TPM.est[3,i,s,3] <- (1- eps.h.est[i,s])*phi.hh.est[i,s]
         
       }
       

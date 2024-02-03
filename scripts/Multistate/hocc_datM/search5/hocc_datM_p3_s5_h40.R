@@ -206,14 +206,15 @@ for (i in 1:n.sites){
 } #end model
 ", fill = TRUE)
 sink()
+
 #### Path Name ####
-path <- here::here("results", "Multistate", "searcheffort1", "linear40_datM_p3")
-res <- c('results/Multistate/searcheffort1/linear40_datM_p3') 
+path <- here::here("results", "Multistate", "searcheffort2", "hocc40_datM_p3")
+res <- c('results/Multistate/searcheffort2/hocc40_datM_p3') 
 
 #### Data and parameters ####
 load("parameters.RData")
 
-n.sims <-  20
+n.sims <-  20 #number of simulations
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 4 #number of weeks
@@ -247,7 +248,7 @@ alpha.h <- alpha.hs[1] #difference in baseline detection between dat D and M
 
 TPM.48 <- TPM.48s[,,1] #TPM matrix for 48 week period
 
-search.hours <- search.hourss[2] #search effort
+search.hours <- search.hourss[3] #search effort
 
 removal.hours <- c(0, 2, 3) #it removal takes 2 hours if in low state and 3 hours if in high state
 n.resource <- 40 #total hours per week
@@ -292,7 +293,10 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+for(s in 1: n.sims){
+  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
+}
+
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -435,7 +439,6 @@ S.end <- array(NA, c(n.sites, n.sims))
 #### Run Adaptive Management ####
 
 year <- 1
-#n.years <- 2
 
 for(year in 1:n.years){
   #--------------------------------------------------------------------------------#
@@ -462,7 +465,7 @@ for(year in 1:n.years){
     gamma[,1,1,] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,1,1,]) #invasion (week 1 year 1)
     eps.l[,1,1,] <- invlogit(eps.l0) #eradication low (week 1 year 1)
     eps.h[,1,1,] <- invlogit(eps.h0) #eradication high (week 1 year 1)
-    phi.lh[,1,1,] <- invlogit(phi0.lh) #transiotion low to high
+    phi.lh[,1,1,] <- invlogit(phi0.lh) #transition low to high
     phi.hh[,1,1,] <- invlogit(phi1.lh) #transition high to high
     
     # TPM used for week 2
@@ -509,7 +512,6 @@ for(year in 1:n.years){
     #transition rates
     phi.lh[,week,year,s] <- invlogit(phi0.lh - phi1.lh*prev.rem.vec*removal.hours[2])
     phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[3])
-    
     
     TPM[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s] #empty to empty
     TPM[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s] #empty to low
@@ -603,8 +605,8 @@ for(year in 1:n.years){
             resource.total[week,year,s] <- resource.total[week,year,s] + search.hours 
           }
           
-          
-          #B. if we do not have any more resources to spend:
+
+        #B. if we do not have any more resources to spend:
         }else{
           yM[i,1:2, week, year, s] <- NA #no occupancy data
           rem.vec[i,week,year,s] <- NA #removal did not occur
@@ -867,7 +869,7 @@ for(year in 1:n.years){
   parameters.to.save <- c("eps.l0", "eps.l1", "eps.h0", "eps.h1", "gamma.0", "gamma.1",
                           "gamma.2", "phi0.lh", "phi1.lh", "phi0.hh", "phi1.hh", "phi.hh", 
                           "p.l0", "p.l1", "p.h0", "p.h1", "State.fin", "alpha.l", "alpha.h", "psi")
-  
+ ###### MCMC Settings ####
   #settings
   n.burnin <- 10000
   n.iter <- 100000 + n.burnin
@@ -1421,8 +1423,14 @@ for(year in 1:n.years){
   #--------------------------------------------------------------------------------#
   ###### 3b. Make decision  #####
   # this is based on estimated state after 4 weeks... not based on 48 week projection
-  if(year == n.years){
+  if(year < n.years){
+
+    #Removal locations: rank sites by state
+     for(s in 1:n.sims){
+      sites.rem.M[,1,year+1,s] <- order(States.mean[,year,s], decreasing = T)
+    }
     
+  }else{
     #during the final year, we project the final state
     for(s in 1:n.sims){
       
@@ -1476,7 +1484,7 @@ for(year in 1:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-file_name = paste(path, 'linear_time.txt',sep = '/')
+file_name = paste(path, 'hocc_time.txt',sep = '/')
 write.table(time.taken,file_name)
 
 #### Save True Data ####
@@ -1485,14 +1493,14 @@ States.df <- adply(State, c(1,2,3,4))
 
 colnames(States.df) <- c("site", "week", "year", "sim", "state")              
 
-file_name = paste(path, 'States_linear.csv',sep = '/')
+file_name = paste(path, 'States_hocc.csv',sep = '/')
 write.csv(States.df,file_name)
 
 #mean across simulations
 Mean.States.df <- aggregate(state ~ site+week+year,
                             data = as.data.frame(States.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States_linear.csv',sep = '/')
+file_name = paste(path, 'Mean.States_hocc.csv',sep = '/')
 write.csv(Mean.States.df ,file_name)
 
 #observation data -multi
@@ -1500,12 +1508,12 @@ yM.df <- adply(yM, c(1,2,3,4,5))
 
 colnames(yM.df) <- c("site", "occasion", "week", "year", "sim", "observed.state")              
 
-file_name = paste(path, 'y.obs_linear.csv',sep = '/')
+file_name = paste(path, 'y.obs_hocc.csv',sep = '/')
 write.csv(yM.df,file_name)
 
 
 rem.site.M.df <- yM.df %>% filter(observed.state > 1)
-file_name = paste(path, 'rem.site.M_linear.csv',sep = '/')
+file_name = paste(path, 'rem.site.M_hocc.csv',sep = '/')
 write.csv(rem.site.M.df,file_name)
 
 #### sites visited ####
@@ -1542,14 +1550,14 @@ colnames(sites.visit.rem.avg)[3] <- "num.visit.rem"
 
 sites.df <- cbind(sites.visit.norem.avg, num.visit.rem = sites.visit.rem.avg$num.visit.rem)
 
-file_name = paste(path, 'sites.visit_linear.csv',sep = '/')
+file_name = paste(path, 'sites.visit_hocc.csv',sep = '/')
 write.csv(sites.df,file_name)
 
 #### Estimated Data ####
 ##### Estimated States ####
 States.est.df <- States.mean.years %>% select(site,year,sim,state)
 
-file_name = paste(path, 'States.est_linear.csv',sep = '/')
+file_name = paste(path, 'States.est_hocc.csv',sep = '/')
 write.csv(States.est.df,file_name)
 
 
@@ -1557,7 +1565,7 @@ write.csv(States.est.df,file_name)
 Mean.States.est.df <- aggregate(state ~ site+year,
                                 data = as.data.frame(States.est.df), FUN = mean)
 
-file_name = paste(path, 'Mean.States.est_linear.csv',sep = '/')
+file_name = paste(path, 'Mean.States.est_hocc.csv',sep = '/')
 write.csv(Mean.States.est.df ,file_name)
 
 ##### Estimated parameters ####
@@ -1573,7 +1581,7 @@ for(s in 1:n.sims){
 
 eps.l0s.df <- do.call("rbind", eps.l0s)
 
-file_name = paste(path, 'eps.l0.est_linear.csv',sep = '/')
+file_name = paste(path, 'eps.l0.est_hocc.csv',sep = '/')
 write.csv(eps.l0s.df,file_name)
 
 ## --- eps.l1 -----------------------------------------------#
@@ -1588,7 +1596,7 @@ for(s in 1:n.sims){
 
 eps.l1s.df <- do.call("rbind", eps.l1s)
 
-file_name = paste(path, 'eps.l1.est_linear.csv',sep = '/')
+file_name = paste(path, 'eps.l1.est_hocc.csv',sep = '/')
 write.csv(eps.l1s.df,file_name)
 ## --- eps.h0 -----------------------------------------------#
 eps.h0s <- list()
@@ -1602,7 +1610,7 @@ for(s in 1:n.sims){
 
 eps.h0s.df <- do.call("rbind", eps.h0s)
 
-file_name = paste(path, 'eps.h0.est_linear.csv',sep = '/')
+file_name = paste(path, 'eps.h0.est_hocc.csv',sep = '/')
 write.csv(eps.h0s.df,file_name)
 
 ## --- eps.h1 -----------------------------------------------#
@@ -1617,7 +1625,7 @@ for(s in 1:n.sims){
 
 eps.h1s.df <- do.call("rbind", eps.h1s)
 
-file_name = paste(path, 'eps.h1.est_linear.csv',sep = '/')
+file_name = paste(path, 'eps.h1.est_hocc.csv',sep = '/')
 write.csv(eps.h1s.df,file_name)
 
 ## --- gamma.0 -----------------------------------------------#
@@ -1632,7 +1640,7 @@ for(s in 1:n.sims){
 
 gamma.0s.df <- do.call("rbind", gamma.0s)
 
-file_name = paste(path, 'gamma.0.est_linear.csv',sep = '/')
+file_name = paste(path, 'gamma.0.est_hocc.csv',sep = '/')
 write.csv(gamma.0s.df,file_name)
 
 ## --- gamma.1 -----------------------------------------------#
@@ -1647,7 +1655,7 @@ for(s in 1:n.sims){
 
 gamma.1s.df <- do.call("rbind", gamma.1s)
 
-file_name = paste(path, 'gamma.1.est_linear.csv',sep = '/')
+file_name = paste(path, 'gamma.1.est_hocc.csv',sep = '/')
 write.csv(gamma.1s.df,file_name)
 
 ## --- gamma.2 -----------------------------------------------#
@@ -1662,7 +1670,7 @@ for(s in 1:n.sims){
 
 gamma.2s.df <- do.call("rbind", gamma.2s)
 
-file_name = paste(path, 'gamma.2.est_linear.csv',sep = '/')
+file_name = paste(path, 'gamma.2.est_hocc.csv',sep = '/')
 write.csv(gamma.2s.df,file_name)
 
 ## --- phi.lh -----------------------------------------------#
@@ -1684,10 +1692,10 @@ for(s in 1:n.sims){
 phi0.lhs.df <- do.call("rbind", phi0.lhs)
 phi1.lhs.df <- do.call("rbind", phi1.lhs)
 
-file_name = paste(path, 'phi0.lh.est_linear.csv',sep = '/')
+file_name = paste(path, 'phi0.lh.est_hocc.csv',sep = '/')
 write.csv(phi0.lhs.df,file_name)
 
-file_name = paste(path, 'phi1.lh.est_linear.csv',sep = '/')
+file_name = paste(path, 'phi1.lh.est_hocc.csv',sep = '/')
 write.csv(phi1.lhs.df,file_name)
 
 ## --- phi.hh -----------------------------------------------#
@@ -1709,10 +1717,10 @@ for(s in 1:n.sims){
 phi0.hhs.df <- do.call("rbind", phi0.hhs)
 phi1.hhs.df <- do.call("rbind", phi1.hhs)
 
-file_name = paste(path, 'phi0.hh.est_linear.csv',sep = '/')
+file_name = paste(path, 'phi0.hh.est_hocc.csv',sep = '/')
 write.csv(phi0.hhs.df,file_name)
 
-file_name = paste(path, 'phi1.hh.est_linear.csv',sep = '/')
+file_name = paste(path, 'phi1.hh.est_hocc.csv',sep = '/')
 write.csv(phi1.hhs.df,file_name)
 
 ## --- p.l0 -----------------------------------------------#
@@ -1727,7 +1735,7 @@ for(s in 1:n.sims){
 
 p.l0.s.df <- do.call("rbind", p.l0.s)
 
-file_name = paste(path, 'p.l0.est_linear.csv',sep = '/')
+file_name = paste(path, 'p.l0.est_hocc.csv',sep = '/')
 write.csv(p.l0.s.df,file_name)
 
 ## --- p.l1 -----------------------------------------------#
@@ -1742,7 +1750,7 @@ for(s in 1:n.sims){
 
 p.l1.s.df <- do.call("rbind", p.l1.s)
 
-file_name = paste(path, 'p.l1.est_linear.csv',sep = '/')
+file_name = paste(path, 'p.l1.est_hocc.csv',sep = '/')
 write.csv(p.l1.s.df,file_name)
 
 ## --- p.h0 -----------------------------------------------#
@@ -1757,7 +1765,7 @@ for(s in 1:n.sims){
 
 p.h0.s.df <- do.call("rbind", p.h0.s)
 
-file_name = paste(path, 'p.h0.est_linear.csv',sep = '/')
+file_name = paste(path, 'p.h0.est_hocc.csv',sep = '/')
 write.csv(p.h0.s.df,file_name)
 
 ## --- p.h1 -----------------------------------------------#
@@ -1772,11 +1780,11 @@ for(s in 1:n.sims){
 
 p.h1.s.df <- do.call("rbind", p.h1.s)
 
-file_name = paste(path, 'p.h1.est_linear.csv',sep = '/')
+file_name = paste(path, 'p.h1.est_hocc.csv',sep = '/')
 write.csv(p.h1.s.df,file_name)
 
 ##### rhat vals ######
-file_name = paste(path, 'rhat.vals_linear.csv',sep = '/')
+file_name = paste(path, 'rhat.vals_hocc.csv',sep = '/')
 write.csv(rhat_vals,file_name)
 
 #### QUICK RESULTS ####
@@ -1920,7 +1928,6 @@ for(s in 1:n.sims){
 }
 
 invasion.mean <- mean(invasion)
-
 
 
 #percent of river uninvaded after 10 years

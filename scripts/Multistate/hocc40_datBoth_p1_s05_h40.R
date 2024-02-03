@@ -1583,8 +1583,8 @@ for(year in 1:n.years){
         gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
         eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
         eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3]) 
-        phi.lh.est[i,s] <- invlogit(get(phi0.lh.est[s]$mean) + get(phi1.lh.est[s]$mean)*rem.vec[i,4,s]*removal.hours[2])
-        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s]$mean) + get(phi1.hh.est[s]$mean)*rem.vec[i,4,s]*removal.hours[3])
+        phi.lh.est[i,s] <- invlogit(get(phi0.lh.est[s])$mean + get(phi1.lh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2])
+        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s])$mean + get(phi1.hh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3])
         
         
         TPM.est[1,i,s,1] <- 1-gamma.est[i,s]
