@@ -85,11 +85,11 @@ for (i in 1:n.sites){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
     logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours[2] #erradication low state
-    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[2] #erradication high state
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
     
     logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
-    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[3]
+    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[2]
     
     #index = [current state, location, time, future state]
     #empty stay empty
@@ -276,7 +276,7 @@ yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims))
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
 
 logsearch.effort <- log(search.hours) #log search effort
-max.spent <- 2*search.hours + removal.hours[3] #max resources you could spend at a single site
+max.spent <- 2*search.hours + removal.hours[2] #max resources you could spend at a single site
 
 pM.l <- invlogit(p.l0 + p.l1*logsearch.effort + alpha.l) #low state detection probability (base detection + effect of effort)
 
@@ -487,11 +487,11 @@ for(year in 1:n.years){
       
       # eradication probability = base + effect of previous removal (removal*removal hours)
       eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec*removal.hours[2]) #low eradication 
-      eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[3]) #high eradication
+      eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[2]) #high eradication
       
       #transition rates
       phi.lh[,week,year,s] <- invlogit(phi0.lh - phi1.lh*prev.rem.vec*removal.hours[2])
-      phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[3])
+      phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[2])
       
       TPM[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s] #empty to empty
       TPM[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s] #empty to low
@@ -531,11 +531,11 @@ for(year in 1:n.years){
         
         # eradication probability = base + effect of previous removal (removal*removal hours)
         eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec*removal.hours[2]) #low eradication
-        eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[3]) #high eradication
+        eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[2]) #high eradication
         
         #transition rates
         phi.lh[,week,year,s] <- invlogit(phi0.lh - phi1.lh*prev.rem.vec*removal.hours[2])
-        phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[3])
+        phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[2])
         
         TPM[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s] #empty to empty
         TPM[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s] #empty to low
@@ -574,7 +574,7 @@ for(year in 1:n.years){
             rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
             
             #Calculating resources used = resources already used + search hours + removal hours
-            resource.total[week,year,s] <- resource.total[week,year,s] + search.hours + removal.hours[State[i,week,year,s]]
+            resource.total[week,year,s] <- resource.total[week,year,s] + search.hours + removal.hours[2]
             
           }else{
             #2b. If not seen the first occasion, we need to search again:
@@ -586,7 +586,7 @@ for(year in 1:n.years){
               rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
               
               #Calculating resources used = resources already used + 2*search hours + removal hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours + removal.hours[State[i,week,year,s]]
+              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours + removal.hours[2] #removal.hours[State[i,week,year,s]]
             } 
             
             #2bi. If we do not detect flowering rush during the second occasion:
@@ -1396,9 +1396,9 @@ for(year in 1:n.years){
         
         gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
         eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
-        eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3]) 
+        eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
         phi.lh.est[i,s] <- invlogit(get(phi0.lh.est[s])$mean + get(phi1.lh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2])
-        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s])$mean + get(phi1.hh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[3])
+        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s])$mean + get(phi1.hh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2])
         
         
         TPM.est[1,i,s,1] <- 1-gamma.est[i,s]
