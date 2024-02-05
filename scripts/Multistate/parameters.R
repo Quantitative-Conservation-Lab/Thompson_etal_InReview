@@ -17,8 +17,8 @@ eps.h1s <- c(0.6, 0.4, 0.2) #effect of eradication at high state
 phi0.lhs <- c(0.2, 0.6, 0.8) #transition from low to high
 phi0.hhs <- c(0.2, 0.6, 0.8) #transition from high to high
 
-phi1.lhs <- c(0.6, 0.4, 0.2) #transition from low to high
-phi1.hhs <- c(0.6, 0.4, 0.2) #transition from high to high
+phi1.lhs <- c(0.6, 0.4, 0.2) #effect of removal on transition
+phi1.hhs <- c(0.6, 0.4, 0.2) #effect of removal on transition
 
 TPM.48s <- array(NA, dim = c(n.states, n.states, 3))
 TPM.48s[1,,1] <- c(1,0,0)
