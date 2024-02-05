@@ -839,7 +839,7 @@ time.taken <- end.time - start.time
 ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
   geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
-  scale_color_brewer(palette = "Dark2")+
+  #scale_color_brewer(palette = "Dark2")+
   geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "black", shape = 22) +
   facet_wrap(~param, scales = "free") +
   xlab("Simulation")+ylab("State") + 

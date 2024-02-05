@@ -5,6 +5,7 @@ library(MCMCvis)
 library(tidyverse)
 library(strex)
 library(plyr)
+library(viridis)
 
 
 #### JAGS model ####
@@ -1435,10 +1436,18 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 ##### Plots #####
+ggplot(res.params[[1]]) +
+  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
+  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
+  #scale_color_brewer(palette = "Dark2")+
+  geom_point(data=res.params[[1]], aes(x = sim, y = truth),color = "black", shape = 22) +
+  facet_wrap(~param, scales = "free") +
+  xlab("Simulation")+ylab("State") + 
+  guides(color = guide_legend(title = "Simulation"))    
+
 ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
   geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
-  scale_color_brewer(palette = "Dark2")+
   geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "black", shape = 22) +
   facet_wrap(~param, scales = "free") +
   xlab("Simulation")+ylab("State") + 
@@ -1448,12 +1457,105 @@ ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = param, y = Rhat, col = as.factor(sim)))+
   geom_hline(yintercept = 1.1, color = 'red')
 
+num.col <- length(unique(res.state[[year]]$nobs))+1
+
+my_colors <- RColorBrewer::brewer.pal(num.col + 1, "YlOrRd")[2:num.col]
+
 ggplot(res.state[[year]]) +
   geom_point(mapping = aes(x = sim, y = mean, col = as.factor(nobs)))+
-  scale_color_brewer(palette = "YlOrRd")+
+  scale_color_manual(values = my_colors)+
   geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(nobs)), width = 0.5)+
   geom_point(data=res.state[[year]], aes(x = sim, y = truth), color = "black", shape = 22) +
   scale_x_continuous(breaks=seq(1,n.sims,1))+
   facet_wrap(~Segment, scales = "free",labeller = label_both)  +
   xlab("Simulation")+ylab("State") + 
   guides(color = guide_legend(title = "Number of observations")) 
+
+time.taken
+
+
+#### Relative bias ####
+mean.state <- array(NA, c(n.years,n.sites,n.sims))
+true.state <- array(NA, c(n.years,n.sites,n.sims))
+rel.bias <- array(NA, c(n.years,n.sites,n.sims))
+
+for(year in 1:n.years){
+  for(s in 1:n.sims){
+    for(i in 1:n.sites){
+      mean.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(mean))
+      true.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(truth))
+      rel.bias[year,i,s] <- ((mean.state[year,i,s])-(true.state[year,i,s]))/(true.state[year,i,s])
+
+    }
+  }
+}
+
+mean(rel.bias[1,,], na.rm = T)
+mean(rel.bias[2,,], na.rm = T)
+mean(rel.bias[3,,], na.rm = T)
+mean(rel.bias[4,,], na.rm = T)
+mean(rel.bias[5,,], na.rm = T)
+mean(rel.bias[6,,], na.rm = T)
+mean(rel.bias[7,,], na.rm = T)
+
+
+#### CI coverage ####
+low.state <- array(NA, c(n.years,n.sites,n.sims))
+high.state <- array(NA, c(n.years,n.sites,n.sims))
+CI.cov <- array(NA, c(n.years,n.sites,n.sims))
+
+for(year in 1:n.years){
+  for(s in 1:n.sims){
+    for(i in 1:n.sites){
+      low.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(low))
+      high.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(high))
+      CI.cov[year,i,s] <- ifelse(low.state[year,i,s] <= true.state[year,i,s] & 
+                                   true.state[year,i,s] <= high.state[year,i,s], 1, 0)
+      
+    }
+  }
+}
+
+mean(CI.cov[1,,], na.rm = T)
+mean(CI.cov[2,,], na.rm = T)
+mean(CI.cov[3,,], na.rm = T)
+mean(CI.cov[4,,], na.rm = T)
+mean(CI.cov[5,,], na.rm = T)
+mean(CI.cov[6,,], na.rm = T)
+mean(CI.cov[7,,], na.rm = T)
+
+#### CI coverage -parameters ####
+n.params <- length(unique(res.params[[1]]$param))
+
+low.param <- array(NA, c(n.years,n.params,n.sims))
+high.param <- array(NA, c(n.years,n.params,n.sims))
+CI.param <- array(NA, c(n.years,n.params,n.sims))
+
+parms.list <- unique(res.params[[1]]$param)
+
+for(year in 1:n.years){
+  for(s in 1:n.sims){
+    for(p in 1:n.params){
+      low.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == parms.list[p] & sim == s) %>% select(low))
+      high.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == parms.list[p] & sim == s) %>% select(high))
+      CI.param[year,p,s] <- ifelse(low.param[year,p,s] <= truth.params[p] & 
+                                   truth.params[p] <= high.param[year,p,s], 1, 0)
+      
+    }
+  }
+}
+
+mean(CI.param[1,,], na.rm = T)
+mean(CI.param[2,,], na.rm = T)
+mean(CI.param[3,,], na.rm = T)
+mean(CI.param[4,,], na.rm = T)
+mean(CI.param[5,,], na.rm = T)
+mean(CI.param[6,,], na.rm = T)
+mean(CI.param[7,,], na.rm = T)
+
+#### final states ####
+mean(res.state[[1]]$mean)
+mean(res.state[[1]]$truth)
+
+mean(res.state[[year]]$mean)
+mean(res.state[[year]]$truth)
