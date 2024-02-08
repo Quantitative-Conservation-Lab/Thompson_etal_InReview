@@ -13,17 +13,17 @@ path <- here::here("results", "test", "allyears")
 res <- c('results/test/allyears') #subset of path for plot save
 
 #### Management Strategy ####
+load("parameters.RData")
 search.hours <- search.hourss[1] #search effort
 removal.hours <- removal.hourss[1] #removal hours
 n.resource <- 20 #total hours per week
 #rule = by highest estimated state
 
 logsearch.effort <- log(search.hours) #log search effort
-max.spent <- 2*search.hours + removal.hours[2] #max resources you could spend at a single site
+max.spent <- 2*search.hours + removal.hours #max resources you could spend at a single site
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
-load("parameters.RData")
 n.sims <-  10 #number of simulations per parameter set
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
@@ -180,6 +180,7 @@ for(year in 1:n.years){
   } #ends year = 1 loop
   
   ###### Week 1 year >1 #####
+  #### START HERE ####
   #for all years > 1 we need to project 48 weeks forward
   
   if(year > 1){
@@ -272,53 +273,53 @@ for(year in 1:n.years){
                                        sites.rem.M[,(week-1),year,p,s][1:n.pre.visit])
       } #week > 1
       
-      #### START HERE ####
+      
       ##### Observation process #######
       # Observation process: draw observation given current state
       
-      for(i in sites.rem.M[,week,year,s]){ #order of sites where removal occurs
+      for(i in sites.rem.M[,week,year,p,s]){ #order of sites where removal occurs
         
         #A. while we still have resources to spend:
-        if(resource.total[week,year,s] < (n.resource- max.spent)){
+        if(resource.total[week,year,p,s] < (n.resource- max.spent)){
           
           #1. first occasion occupancy data (1 = not detected, 2 = detected)
-          yM[i,1,week, year, s] <- rcat(1, P.datM[State[i,week,year,s], ])
+          yM[i,1,week, year,p, s] <- rcat(1, P.datM[State[i,week,year,p,s],p,])
           
           #2. second occasion occupancy data
           #2a. if seen in first occasion, do not search again and remove the rush
-          if(yM[i,1,week, year, s] > 1){ 
-            yM[i,2, week,year, s] <- NA #no occupancy data because we did not need to search again
-            rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
+          if(yM[i,1,week, year, p,s] > 1){ 
+            yM[i,2, week,year, p,s] <- NA #no occupancy data because we did not need to search again
+            rem.vec[i,week,year,p,s] <- 1 #notes that removal occurred that week at that site
             
             #Calculating resources used = resources already used + search hours + removal hours
-            resource.total[week,year,s] <- resource.total[week,year,s] + search.hours + removal.hours[2]
+            resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours + removal.hours
             
           }else{
             #2b. If not seen the first occasion, we need to search again:
             #Second occasion occupancy data
-            yM[i,2, week, year, s] <- rcat(1, P.datM[State[i,week,year,s], ])
+            yM[i,2, week, year, p,s] <- rcat(1, P.datM[State[i,week,year,p,s],p, ])
             
             #2bi. If seen at the second occasion:
-            if(yM[i,2, week, year, s] > 1){ #if seen (state observed > 1) the second time
-              rem.vec[i,week,year,s] <- 1 #notes that removal occurred that week at that site
+            if(yM[i,2, week, year, p,s] > 1){ #if seen (state observed > 1) the second time
+              rem.vec[i,week,year,p,s] <- 1 #notes that removal occurred that week at that site
               
-              #Calculating resources used = resources already used + 2*search hours + removal hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours + removal.hours[2] #removal.hours[State[i,week,year,s]]
+              #Calculating resources used = resources already used + search hours + removal hours
+              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours + removal.hours #removal.hours[State[i,week,year,s]]
             } 
             
             #2bi. If we do not detect flowering rush during the second occasion:
-            if(yM[i,2, week, year, s]==1){ #if not seen (state observed = 1)
-              rem.vec[i,week,year,s] <- 0 #notes removal did not occur
+            if(yM[i,2, week, year,p, s]==1){ #if not seen (state observed = 1)
+              rem.vec[i,week,year,p,s] <- 0 #notes removal did not occur
               
-              #Calculating resources used = resources already used + 2*search hours
-              resource.total[week,year,s] <- resource.total[week,year,s] + 2*search.hours 
+              #Calculating resources used = resources already used + search hours
+              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours 
             } 
           }
           
           #B. if we do not have any more resources to spend:
         }else{
-          yM[i,1:2, week, year, s] <- NA #no occupancy data
-          rem.vec[i,week,year,s] <- NA #removal did not occur
+          yM[i,1:2, week, year,p, s] <- NA #no occupancy data
+          rem.vec[i,week,year,p,s] <- NA #removal did not occur
         }
         
       } #ends site loop
