@@ -9,8 +9,8 @@ library(viridis)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "test", "allyears")
-res <- c('results/test/allyears') #subset of path for plot save
+path <- here::here("results", "test", "hoccdatM")
+res <- c('results/test/hoccdatM') #subset of path for plot save
 
 #### Management Strategy ####
 load("parameters.RData")
@@ -27,7 +27,7 @@ max.spent <- 2*search.hours + removal.hours #max resources you could spend at a 
 n.sims <-  10 #number of simulations per parameter set
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
-n.weeks <- 4 #number of weeks
+n.weeks <- 52 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
 
@@ -66,17 +66,6 @@ for(p in 1:n.params){
   delta[p] <- det6[[params[p,6]]]$delta
 }
 
-#### 48 week calculations ####
-TPM.dormant <- array(0, c(n.states, n.states, n.params))
-for(p in 1:n.params){
-  diag(TPM.dormant[,,p]) <- 1
-}
-
-n.dormant <- 32 #number of weeks where plants are dormant
-n.grow <- 48-n.dormant
-
-TPM.grow <- array(NA, c(n.states, n.states, n.grow, n.params))
-TPM.48 <- array(NA, c(n.states, n.states, n.params))
 
 #---- arrays ----#
 gamma <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
@@ -91,10 +80,10 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.params,n.sims, n.state
 # effect of habitat quality on occupancy
 site.char <- site.char
 State.init <- State.init
-State <- array(NA,c(n.sites, n.weeks, n.years+1, n.params,n.sims)) #state array
+State <- array(NA,c(n.sites, n.weeks, n.years, n.params,n.sims)) #state array
 
 #---Neighbor data---#
-D <- array(NA, c(n.sites, n.weeks, n.years+1, n.params,n.sims)) #neighbors array
+D <- array(NA, c(n.sites, n.weeks, n.years, n.params,n.sims)) #neighbors array
 num.neighbors <- 2 #one upstream, one downstream
 neighbors <- matrix(NA, nrow = n.sites, ncol = num.neighbors) #neighbors matrix, each row (site) identifies the neighbors for that site 
 neighbors[1,1] <- 2 #site 1 only has site 2 as its neighbor 
@@ -132,14 +121,12 @@ rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims)) #removal si
 start.time <- Sys.time()
 ####################################################################################
 #### Run Simulation ####
-
+p <- 16 
 year <- 1
 #n.years <- 2
 for(p in 1:n.params){
 for(year in 1:n.years){
   #--------------------------------------------------------------------------------#
-  #### 1. Simulate the truth ####
-  
   ### Steps: 
   #---1. Simulate the truth
   #---2. Simulate occupancy data collection (include removal data)
@@ -147,89 +134,46 @@ for(year in 1:n.years){
   
   ##### Week 1 State model only #####
   week <- 1
-  ###### Week 1 year 1 #####
+  
   if(year == 1){
-    
     State[,1,year,p, 1:n.sims] <- State.init #first week state is from data
-    
+  }else{
     for(s in 1:n.sims){
-      for(i in 1:n.sites){
-        D[i,1,1,p,s] <- sum(State[neighbors[i,], 1,1,p,s])/n.neighbors[i] #state of neighbors
+      for(i in 1:n.sites){ #State process: state given previous state and transition probability
+        State[i,1,year,p,s] <- rcat(1,TPM[State[i,52,year-1,p,s], i, 52, year-1, p,s,]) 
       }
     }
-    
-    gamma[,1,1,p,] <-invlogit(gamma0[p] + gamma1[p]*site.char + gamma2[p]*D[,1,1,p,]) #invasion (week 1 year 1)
-    eps.l[,1,1,p,] <- invlogit(eps0.l[p]) #eradication low (week 1 year 1)
-    eps.h[,1,1,p,] <- invlogit(eps0.h[p]) #eradication high (week 1 year 1)
-    phi.lh[,1,1,p,] <- invlogit(phi0.lh[p]) #transiotion low to high
-    phi.hh[,1,1,p,] <- invlogit(phi1.lh[p]) #transition high to high
-    
-    # TPM used for week 2
-    TPM[1,1:n.sites,1,1,p,,1] <- 1-gamma[,1,1,p,] #empty to empty (week 1 year 1)
-    TPM[1,1:n.sites,1,1,p,,2] <- gamma[,1,1,p,] #empty to low (week 1 year 1)
-    TPM[1,1:n.sites,1,1,p,,3] <- 0 #empty to high (week 1 year 1)
-    
-    TPM[2,1:n.sites,1,1,p,,1] <- eps.l[,1,1,p,] #low to empty (week 1 year 1)
-    TPM[2,1:n.sites,1,1,p,,2] <- (1- eps.l[,1,1,p,])*(1-phi.lh[,1,1,p,]) #low to low (week 1 year 1)
-    TPM[2,1:n.sites,1,1,p,,3] <- (1- eps.l[,1,1,p,])*(phi.lh[,1,1,p,]) #low to high (week 1 year 1)
-    
-    TPM[3,1:n.sites,1,1,p,,1] <- eps.h[,1,1,p,] #high to empty (week 1 year 1)
-    TPM[3,1:n.sites,1,1,p,,2] <- (1- eps.h[,1,1,p,])*(1-phi.hh[,1,1,p,]) #high to low (week 1 year 1)
-    TPM[3,1:n.sites,1,1,p,,3] <- (1- eps.h[,1,1,p,])*(phi.hh[,1,1,p,]) #high to high (week 1 year 1)
-    
-  } #ends year = 1 loop
+  }
   
-  ###### Week 1 year >1 #####
-  #### START HERE ####
-  #for all years > 1 we need to project 48 weeks forward
-  
-  if(year > 1){
-    for(s in 1:n.sims){
-      
-      
-      for(i in 1:n.sites){ #State process: state given previous state and transition probability
-        State[i,week,year,s] <- rcat(1,TPM.48[State[i,4,(year-1),s], ]) 
-      }
-      
-      for(i in 1:n.sites){
-        D[i,week,year,s] <- sum(State[neighbors[i,], week,year,s])/n.neighbors[i] #state of neighbors
-      }
-      
-      #--- Data for the TPM for the next week: week 2 ---#
-      #prev.rem.vec = vector of 0 and 1s indicating where removal previously occurred
-      prev.rem.vec <- replace(rem.vec[,4,(year-1),s], is.na(rem.vec[,4,(year-1),s]), 0) 
-      
-      #invasion probability =  base invasion + effect of site habitat + effect of neighbor being invaded
-      gamma[,week,year,s] <-invlogit(gamma.0 + gamma.1*site.char + gamma.2*D[,week,year,s]) 
-      
-      # eradication probability = base + effect of previous removal (removal*removal hours)
-      eps.l[,week,year,s] <- invlogit(eps.l0 + eps.l1*prev.rem.vec*removal.hours[2]) #low eradication 
-      eps.h[,week,year,s] <- invlogit(eps.h0 + eps.h1*prev.rem.vec*removal.hours[2]) #high eradication
-      
-      #transition rates
-      phi.lh[,week,year,s] <- invlogit(phi0.lh - phi1.lh*prev.rem.vec*removal.hours[2])
-      phi.hh[,week,year,s] <- invlogit(phi0.hh - phi1.hh*prev.rem.vec*removal.hours[2])
-      
-      TPM[1,1:n.sites,week,year,s,1] <- 1-gamma[,week,year,s] #empty to empty
-      TPM[1,1:n.sites,week,year,s,2] <- gamma[,week,year,s] #empty to low
-      TPM[1,1:n.sites,week,year,s,3] <- 0 #empty to high
-      
-      TPM[2,1:n.sites,week,year,s,1] <- eps.l[,week,year,s] #low to empty (eradication)
-      TPM[2,1:n.sites,week,year,s,2] <- (1- eps.l[,week,year,s])*(1-phi.lh[,week,year,s]) #low to low (eradication failure)
-      TPM[2,1:n.sites,week,year,s,3] <- (1- eps.l[,week,year,s])*(phi.lh[,week,year,s]) #low to high 
-      
-      TPM[3,1:n.sites,week,year,s,1] <- eps.h[,week,year,s] #high to empty (eradication)
-      TPM[3,1:n.sites,week,year,s,2] <- (1- eps.h[,week,year,s])*(1-phi.hh[,week,year,s]) #high to low 
-      TPM[3,1:n.sites,week,year,s,3] <- (1- eps.h[,week,year,s])*(phi.hh[,week,year,s]) #high to high
-      
-    } #ends s loop
-  } #ends year > 1 loop
-  
-  ##### Week 1+ State and Observation model #####
   for(s in 1:n.sims){
-    for(week in 1:n.weeks){
+    for(i in 1:n.sites){
+      D[i,1,year,p,s] <- sum(State[neighbors[i,], 1,year,p,s])/n.neighbors[i] #state of neighbors
+    }
+  }
+    
+  gamma[,1,year,p,] <-invlogit(gamma0[p] + gamma1[p]*site.char + gamma2[p]*D[,1,year,p,]) #invasion (week 1)
+  eps.l[,1,year,p,] <- invlogit(eps0.l[p]) #eradication low (week 1)
+  eps.h[,1,year,p,] <- invlogit(eps0.h[p]) #eradication high (week 1)
+  phi.lh[,1,year,p,] <- invlogit(phi0.lh[p]) #transiotion low to high
+  phi.hh[,1,year,p,] <- invlogit(phi0.hh[p]) #transition high to high
+    
+  # TPM used for week 2
+  TPM[1,1:n.sites,1,year,p,,1] <- 1-gamma[,1,year,p,] #empty to empty (week 1)
+  TPM[1,1:n.sites,1,year,p,,2] <- gamma[,1,year,p,] #empty to low (week 1)
+  TPM[1,1:n.sites,1,year,p,,3] <- 0 #empty to high (week 1)
+    
+  TPM[2,1:n.sites,1,year,p,,1] <- eps.l[,1,year,p,] #low to empty (week 1)
+  TPM[2,1:n.sites,1,year,p,,2] <- (1- eps.l[,1,year,p,])*(1-phi.lh[,1,year,p,]) #low to low (week 1)
+  TPM[2,1:n.sites,1,year,p,,3] <- (1- eps.l[,1,year,p,])*(phi.lh[,1,year,p,]) #low to high (week 1)
+    
+  TPM[3,1:n.sites,1,year,p,,1] <- eps.h[,1,year,p,] #high to empty (week 1)
+  TPM[3,1:n.sites,1,year,p,,2] <- (1- eps.h[,1,year,p,])*(1-phi.hh[,1,year,p,]) #high to low (week 1)
+  TPM[3,1:n.sites,1,year,p,,3] <- (1- eps.h[,1,year,p,])*(phi.hh[,1,year,p,]) #high to high (week 1)
+
+  ##### Week 1+ State #####
+  for(s in 1:n.sims){
+    for(week in 1:4){
       
-      ###### State process ######
       if(week > 1){
         for(i in 1:n.sites){ #State process: state given previous state and transition probability
           State[i,week,year,p,s] <- rcat(1,TPM[State[i,week-1,year,p,s], i, week-1, year, p,s,]) 
@@ -324,68 +268,89 @@ for(year in 1:n.years){
         
       } #ends site loop
     } #ends week loop
-  } #ends sims loop  
-  
-}  
-  
-  #--------------------------------------------------------------------------------#
-  ###### 3b. Make decision  #####
-  ##---- making the decision for next year: ----##
-  if(year < n.years){
     
-    #Removal locations: rank sites by state
-    for(s in 1:n.sims){
-      sites.rem.M[,1,year+1,s] <- order(States.mean[,year,s], decreasing = T)
+    ###### Weeks 5-52 #####
+    for(week in 5:12){
+    #Between weeks: we need to project 48 weeks forward
+      for(i in 1:n.sites){ #State process: state given previous state and transition probability
+        State[i,week,year,p,s] <- rcat(1,TPM[State[i,week-1,year,p,s], i, week-1, year, p,s,]) 
+      }
+      
+      for(i in 1:n.sites){ #state of neighbors
+        D[i,week,year,p,s] <- sum(State[neighbors[i,], week,year,p,s])/n.neighbors[i] #state of neighbors
+      }
+    
+      gamma[,week,year,p,s] <-invlogit(gamma0[p] + gamma1[p]*site.char + gamma2[p]*D[,week,year,p,s]) #invasion (week 1 year 1)
+      eps.l[,week,year,p,s] <- invlogit(eps0.l[p]) #eradication low (week 1 year 1)
+      eps.h[,week,year,p,s] <- invlogit(eps0.h[p]) #eradication high (week 1 year 1)
+      phi.lh[,week,year,p,s] <- invlogit(phi0.lh[p]) #transiotion low to high
+      phi.hh[,week,year,p,s] <- invlogit(phi0.hh[p]) #transition high to high
+      
+      # TPM used for next week
+      TPM[1,1:n.sites,week,year,p,s,1] <- 1-gamma[,week,year,p,s] #empty to empty (week 1 year 1)
+      TPM[1,1:n.sites,week,year,p,s,2] <- gamma[,week,year,p,s] #empty to low (week 1 year 1)
+      TPM[1,1:n.sites,week,year,p,s,3] <- 0 #empty to high (week 1 year 1)
+      
+      TPM[2,1:n.sites,week,year,p,s,1] <- eps.l[,week,year,p,s] #low to empty (week 1 year 1)
+      TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lh[,week,year,p,s]) #low to low (week 1 year 1)
+      TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lh[,week,year,p,s]) #low to high (week 1 year 1)
+      
+      TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (week 1 year 1)
+      TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[,week,year,p,s]) #high to low (week 1 year 1)
+      TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[,week,year,p,s]) #high to high (week 1 year 1)
+
     }
     
-  }else{
-    #during the final year, we project the final state
-    for(s in 1:n.sims){
-      
-      #simulating truth at the end
-      for(i in 1:n.sites){
-        State[i,1,year+1,s] <- rcat(1,TPM[State[i,4,year,s], i, 4, year, s,]) 
+    #Dormant period:
+    State[1:n.sites,13:44,year,p,s] <-  State[1:n.sites,12,year,p,s]
+    TPM[1,1:n.sites,44,year,p,s,] <- c(1,0,0) 
+    TPM[2,1:n.sites,44,year,p,s,] <- c(0,1,0) 
+    TPM[3,1:n.sites,44,year,p,s,] <- c(0,0,1) 
+
+    for(week in 45:52){
+      #Between weeks: we need to project 48 weeks forward
+      for(i in 1:n.sites){ #State process: state given previous state and transition probability
+        State[i,week,year,p,s] <- rcat(1,TPM[State[i,week-1,year,p,s], i, week-1, year, p,s,]) 
       }
       
-      #estimating final state via results from estimation model
-      for(i in 1:n.sites){
-        D.est[i,s] <- sum(States.mean.round[neighbors[i,],year,s])/2 #state of neighbors
-        
-        gamma.est[i,s] <-invlogit(get(gamma.0.est[s])$mean + get(gamma.1.est[s])$mean*site.char[i] + get(gamma.2.est[s])$mean*D.est[i,s]) 
-        eps.l.est[i,s] <- invlogit(get(eps.l0.est[s])$mean + get(eps.l1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
-        eps.h.est[i,s] <- invlogit(get(eps.h0.est[s])$mean + get(eps.h1.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2]) 
-        phi.lh.est[i,s] <- invlogit(get(phi0.lh.est[s])$mean + get(phi1.lh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2])
-        phi.hh.est[i,s] <- invlogit(get(phi0.hh.est[s])$mean + get(phi1.hh.est[s])$mean*rem.vec.dat[i,4,s]*removal.hours[2])
-        
-        
-        TPM.est[1,i,s,1] <- 1-gamma.est[i,s]
-        TPM.est[1,i,s,2] <- gamma.est[i,s]
-        TPM.est[1,i,s,3] <- 0
-        TPM.est[2,i,s,1] <- eps.l.est[i,s]
-        TPM.est[2,i,s,2] <- (1- eps.l.est[i,s])*(1-phi.lh.est[i,s])
-        TPM.est[2,i,s,3] <- (1- eps.l.est[i,s])*phi.lh.est[i,s] 
-        TPM.est[3,i,s,1] <- eps.h.est[i,s]
-        TPM.est[3,i,s,2] <- (1- eps.h.est[i,s])*(1-phi.hh.est[i,s])
-        TPM.est[3,i,s,3] <- (1- eps.h.est[i,s])*phi.hh.est[i,s]
-        
+      for(i in 1:n.sites){ #state of neighbors
+        D[i,week,year,p,s] <- sum(State[neighbors[i,], week,year,p,s])/n.neighbors[i] #state of neighbors
       }
       
-      for(i in 1:n.sites){
-        
-        #if we visited the site for observation data
-        if(!is.na(rem.vec[i,4,year,s])){ 
-          S.end[i,s] <- max(yM[i,,4,year,s], na.rm = T) 
-          
-        }else{
-          S.end[i,s] <- rcat(1,TPM.est[States.mean.round[i,year,s], i, s,]) 
-        }
-        
-      } #sites loop
+      gamma[,week,year,p,s] <-invlogit(gamma0[p] + gamma1[p]*site.char + gamma2[p]*D[,week,year,p,s]) #invasion (week 1 year 1)
+      eps.l[,week,year,p,s] <- invlogit(eps0.l[p]) #eradication low (week 1 year 1)
+      eps.h[,week,year,p,s] <- invlogit(eps0.h[p]) #eradication high (week 1 year 1)
+      phi.lh[,week,year,p,s] <- invlogit(phi0.lh[p]) #transiotion low to high
+      phi.hh[,week,year,p,s] <- invlogit(phi0.hh[p]) #transition high to high
       
-    } #sims loop
-  } #final year loop
+      # TPM used for next week
+      TPM[1,1:n.sites,week,year,p,s,1] <- 1-gamma[,week,year,p,s] #empty to empty (week 1 year 1)
+      TPM[1,1:n.sites,week,year,p,s,2] <- gamma[,week,year,p,s] #empty to low (week 1 year 1)
+      TPM[1,1:n.sites,week,year,p,s,3] <- 0 #empty to high (week 1 year 1)
+      
+      TPM[2,1:n.sites,week,year,p,s,1] <- eps.l[,week,year,p,s] #low to empty (week 1 year 1)
+      TPM[2,1:n.sites,week,year,p,s,2] <- (1- eps.l[,week,year,p,s])*(1-phi.lh[,week,year,p,s]) #low to low (week 1 year 1)
+      TPM[2,1:n.sites,week,year,p,s,3] <- (1- eps.l[,week,year,p,s])*(phi.lh[,week,year,p,s]) #low to high (week 1 year 1)
+      
+      TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (week 1 year 1)
+      TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[,week,year,p,s]) #high to low (week 1 year 1)
+      TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[,week,year,p,s]) #high to high (week 1 year 1)
+      
+    }
+    
+    #### Decision rule ####
+    if(year < (n.years)){
+      sites.rem.M[,1,year+1,p,s] <- order(State[,52,year,p,s], decreasing = T)
+    }
+
+    
+
+  } #ends sim loop
+    
   
-} #end adaptive management 
+} #year loop 
+} #parameter loop
+
 
 #################################################################################################
 #### TIMING ####
@@ -393,126 +358,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 ##### Plots #####
-ggplot(res.params[[1]]) +
-  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
-  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
-  #scale_color_brewer(palette = "Dark2")+
-  geom_point(data=res.params[[1]], aes(x = sim, y = truth),color = "black", shape = 22) +
-  facet_wrap(~param, scales = "free") +
-  xlab("Simulation")+ylab("State") + 
-  guides(color = guide_legend(title = "Simulation"))    
-
-ggplot(res.params[[year]]) +
-  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
-  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
-  geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "black", shape = 22) +
-  facet_wrap(~param, scales = "free") +
-  xlab("Simulation")+ylab("State") + 
-  guides(color = guide_legend(title = "Simulation"))  
-
-ggplot(res.params[[year]]) +
-  geom_point(mapping = aes(x = param, y = Rhat, col = as.factor(sim)))+
-  geom_hline(yintercept = 1.1, color = 'red')
-
-num.col <- length(unique(res.state[[year]]$nobs))+1
-
-my_colors <- RColorBrewer::brewer.pal(num.col + 1, "YlOrRd")[2:num.col]
-
-ggplot(res.state[[year]]) +
-  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(nobs)))+
-  scale_color_manual(values = my_colors)+
-  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(nobs)), width = 0.5)+
-  geom_point(data=res.state[[year]], aes(x = sim, y = truth), color = "black", shape = 22) +
-  scale_x_continuous(breaks=seq(1,n.sims,1))+
-  facet_wrap(~Segment, scales = "free",labeller = label_both)  +
-  xlab("Simulation")+ylab("State") + 
-  guides(color = guide_legend(title = "Number of observations")) 
-
-time.taken
-
-
-#### Relative bias ####
-mean.state <- array(NA, c(n.years,n.sites,n.sims))
-true.state <- array(NA, c(n.years,n.sites,n.sims))
-rel.bias <- array(NA, c(n.years,n.sites,n.sims))
-
-for(year in 1:n.years){
-  for(s in 1:n.sims){
-    for(i in 1:n.sites){
-      mean.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(mean))
-      true.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(truth))
-      rel.bias[year,i,s] <- ((mean.state[year,i,s])-(true.state[year,i,s]))/(true.state[year,i,s])
-
-    }
-  }
-}
-
-mean(rel.bias[1,,], na.rm = T)
-mean(rel.bias[2,,], na.rm = T)
-mean(rel.bias[3,,], na.rm = T)
-mean(rel.bias[4,,], na.rm = T)
-mean(rel.bias[5,,], na.rm = T)
-mean(rel.bias[6,,], na.rm = T)
-mean(rel.bias[7,,], na.rm = T)
-
-
-#### CI coverage ####
-low.state <- array(NA, c(n.years,n.sites,n.sims))
-high.state <- array(NA, c(n.years,n.sites,n.sims))
-CI.cov <- array(NA, c(n.years,n.sites,n.sims))
-
-for(year in 1:n.years){
-  for(s in 1:n.sims){
-    for(i in 1:n.sites){
-      low.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(low))
-      high.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(high))
-      CI.cov[year,i,s] <- ifelse(low.state[year,i,s] <= true.state[year,i,s] & 
-                                   true.state[year,i,s] <= high.state[year,i,s], 1, 0)
-      
-    }
-  }
-}
-
-mean(CI.cov[1,,], na.rm = T)
-mean(CI.cov[2,,], na.rm = T)
-mean(CI.cov[3,,], na.rm = T)
-mean(CI.cov[4,,], na.rm = T)
-mean(CI.cov[5,,], na.rm = T)
-mean(CI.cov[6,,], na.rm = T)
-mean(CI.cov[7,,], na.rm = T)
-
-#### CI coverage -parameters ####
-n.params <- length(unique(res.params[[1]]$param))
-
-low.param <- array(NA, c(n.years,n.params,n.sims))
-high.param <- array(NA, c(n.years,n.params,n.sims))
-CI.param <- array(NA, c(n.years,n.params,n.sims))
-
-parms.list <- unique(res.params[[1]]$param)
-
-for(year in 1:n.years){
-  for(s in 1:n.sims){
-    for(p in 1:n.params){
-      low.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == parms.list[p] & sim == s) %>% select(low))
-      high.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == parms.list[p] & sim == s) %>% select(high))
-      CI.param[year,p,s] <- ifelse(low.param[year,p,s] <= truth.params[p] & 
-                                   truth.params[p] <= high.param[year,p,s], 1, 0)
-      
-    }
-  }
-}
-
-mean(CI.param[1,,], na.rm = T)
-mean(CI.param[2,,], na.rm = T)
-mean(CI.param[3,,], na.rm = T)
-mean(CI.param[4,,], na.rm = T)
-mean(CI.param[5,,], na.rm = T)
-mean(CI.param[6,,], na.rm = T)
-mean(CI.param[7,,], na.rm = T)
-
-#### final states ####
-mean(res.state[[1]]$mean)
-mean(res.state[[1]]$truth)
-
-mean(res.state[[year]]$mean)
-mean(res.state[[year]]$truth)
+p <- 16 #worst case removal parameters
+p <- 49 #best case removal parameters
+sum(State[,1,1,p,] == 3)
+sum(State[,5,10,p,] == 3)
