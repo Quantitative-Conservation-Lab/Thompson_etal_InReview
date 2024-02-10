@@ -8,7 +8,7 @@ n.states <- 3 #number of states
 n.sites <- 40 
 
 #### 1. Baseline Colonization ####
-gamma.0s <- c(0.2, 0.5, 0.8) #intrinsic invasion probability
+gamma.0s <- c(0.2, 0.5, 0.8) #intrinsic invasion probability during between weeks
 low.colonization <- list(gamma.0 = gamma.0s[1])
 med.colonization <- list(gamma.0 = gamma.0s[2])
 high.colonization <- list(gamma.0 = gamma.0s[3])
@@ -16,7 +16,7 @@ high.colonization <- list(gamma.0 = gamma.0s[3])
 col1 <- list(low.colonization, med.colonization, high.colonization)
 
 #### 2. Effect of site on colonization ####
-gamma.1s <- c(0.1, 0.5, 2) #effect of site characteristics
+gamma.1s <- c(0.1, 0.5, 2) #effect of site characteristics during between weeks
 low.siteeffect <- list(gamma.1 = gamma.1s[1])
 med.siteeffect<- list(gamma.1 = gamma.1s[2])
 high.siteeffect <- list(gamma.1 = gamma.1s[3])
@@ -24,7 +24,7 @@ high.siteeffect <- list(gamma.1 = gamma.1s[3])
 ste2 <- list(low.siteeffect, med.siteeffect, high.siteeffect)
 
 #### 3. Effect of neighbor on colonization ####
-gamma.2s <- c(0.1,0.5,0.8) #effect of neighboring invasion state
+gamma.2s <- c(0.1,0.5,0.8) #effect of neighboring invasion state during between weeks
 low.neighbor <- list(gamma.2 = gamma.2s[1])
 med.neighbor <- list(gamma.2 = gamma.2s[2])
 high.neighbor <- list(gamma.2 = gamma.2s[3])
@@ -36,33 +36,37 @@ nbr3 <- list(low.neighbor, med.neighbor, high.neighbor)
 # invlogit(gamma.0s[3] + gamma.1s[3] + 2*gamma.2s[3])
 
 #### 4. Tendency to grow ####
-eps.l0s <- c(0.5, 0, -5) #base eradication at low state
-eps.h0s <- c(0.1, -2, -8)  #base eradication at high state
+phi0.hhs <- c(0, 1, 3) #transition from high to high during data weeks
+eps.l0s <- c(0, -1, -2) #base eradication at low state during data weeks
+eps.h0s <- c(-1, -2, -3)  #base eradication at high state during data weeks
 
-phi0.lhs <- c(-1, 0, 2) #transition from low to high
-phi0.hhs <- c(0, 1, 4) #transition from high to high
+phiB.lhs <- c(0.1, 0.5, 0.9) #transition from low to high during between weeks
+phiB.hhs <- c(0.1, 0.5, 0.9) #transition from low to high during between weeks
+epsB.l <- c(0.9, 0.5, 0.1) #eradication of low state during between weeks
+epsB.h <- c(0.7, 0.4, 0.1) #eradication of high state during between weeks
 
-(1- invlogit(eps.l0s[1]))*invlogit(phi0.lhs[1])
-(1- invlogit(eps.h0s[1]))*invlogit(phi0.hhs[1])
-(1- invlogit(eps.l0s[3]))*invlogit(phi0.lhs[3])
-(1- invlogit(eps.h0s[3]))*invlogit(phi0.hhs[3])
+low.grow <- list(phi0.hhs = phi0.hhs[1], eps.l0 = eps.l0s[1],eps.h0 = eps.h0s[1],
+                 phiB.lhs = phiB.lhs[1], phiB.hhs = phiB.hhs[1],epsB.l= epsB.l[1], epsB.h = epsB.h[1])
 
-low.grow <- list(eps.l0 = eps.l0s[1],eps.h0 = eps.h0s[1],phi0.lhs = phi0.lhs[1],phi0.hhs = phi0.hhs[1])
-med.grow <- list(eps.l0 = eps.l0s[2],eps.h0 = eps.h0s[2],phi0.lhs = phi0.lhs[2],phi0.hhs = phi0.hhs[2])
-high.grow <- list(eps.l0 = eps.l0s[3],eps.h0 = eps.h0s[3],phi0.lhs = phi0.lhs[3],phi0.hhs = phi0.hhs[3])
+med.grow <- list(phi0.hhs = phi0.hhs[2],eps.l0 = eps.l0s[2],eps.h0 = eps.h0s[2],
+                 phiB.lhs = phiB.lhs[2], phiB.hhs = phiB.hhs[2],epsB.l= epsB.l[2], epsB.h = epsB.h[2])
+
+high.grow <- list(phi0.hhs = phi0.hhs[3], eps.l0 = eps.l0s[3],eps.h0 = eps.h0s[3],
+                  phiB.lhs = phiB.lhs[3], phiB.hhs = phiB.hhs[3],epsB.l= epsB.l[3], epsB.h = epsB.h[3])
 
 gro4 <- list(low.grow, med.grow, high.grow)
 
+
+
+
 #### 5. Effect of removal #### 
-eps.l1s <- c(1.5, 1.7, 2)  #effect of eradication at low state
-eps.h1s <- c(6, 8, 10) #effect of eradication at high state
+eps.l1s <- c(1.25, 1.5, 2)  #effect of eradication at low state during data weeks
+eps.h1s <- c(1.1, 1.25, 1.5) #effect of eradication at high state during data weeks
+phi1.hhs <- c(1, 0.6, 0.3) #effect of removal on growth during data weeks
 
-phi1.lhs <- c(0.05, 0.1, 0.5) #effect of removal on growth
-phi1.hhs <- c(0.8, 0.5, 0.3) #effect of removal on growth
-
-low.removal <- list(eps.l1 = eps.l1s[1],eps.h1 = eps.h1s[1],phi1.lhs = phi1.lhs[1],phi1.hhs = phi1.hhs[1])
-med.removal <- list(eps.l1 = eps.l1s[2],eps.h1 = eps.h1s[2],phi1.lhs = phi1.lhs[2],phi1.hhs = phi1.hhs[2])
-high.removal <- list(eps.l1 = eps.l1s[3],eps.h1 = eps.h1s[3],phi1.lhs = phi1.lhs[3],phi1.hhs = phi1.hhs[3])
+low.removal <- list(eps.l1 = eps.l1s[1],eps.h1 = eps.h1s[1],phi1.hhs = phi1.hhs[1])
+med.removal <- list(eps.l1 = eps.l1s[2],eps.h1 = eps.h1s[2],phi1.hhs = phi1.hhs[2])
+high.removal <- list(eps.l1 = eps.l1s[3],eps.h1 = eps.h1s[3],phi1.hhs = phi1.hhs[3])
 
 rem5 <- list(low.removal, med.removal, high.removal)
 
@@ -70,17 +74,9 @@ rem5 <- list(low.removal, med.removal, high.removal)
 # invlogit(eps.l0s[2] + 2*eps.l1s[2])
 # invlogit(eps.l0s[3] + 2*eps.l1s[1]) #want low
 # 
-# invlogit(eps.h0s[1] + 1*eps.h1s[3])#want highest
-# invlogit(eps.h0s[2] + 1*eps.h1s[2])
-# invlogit(eps.h0s[3] + 1*eps.h1s[1])#want low
-# 
-# invlogit(phi0.lhs[1] - 2*phi1.lhs[3]) #want low
-# invlogit(phi0.lhs[2] - 2*phi1.lhs[2])
-# invlogit(phi0.lhs[3] - 2*phi1.lhs[1]) #want high
-# # 
-# invlogit(phi0.hhs[1] - 2*phi1.hhs[3]) #low
-# invlogit(phi0.hhs[2] - 2*phi1.hhs[2])
-# invlogit(phi0.hhs[3] - 2*phi1.hhs[1]) #high
+# invlogit(eps.h0s[1] + 2*eps.h1s[3])#want highest
+# invlogit(eps.h0s[2] + 2*eps.h1s[2])
+# invlogit(eps.h0s[3] + 2*eps.h1s[1])#want low
 
 
 #### 6. Detection Rates ####

@@ -159,7 +159,7 @@ for(i in 1:n.sites){
 }
 
 #### Save workspace ####
-save.image(file = "parameters.RData")
+save.image(file = "parametersweeks.RData")
 
 ####Plot####
 #Low values:
