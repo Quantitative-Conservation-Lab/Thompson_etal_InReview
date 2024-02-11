@@ -27,7 +27,7 @@ max.spent <- search.hours + removal.hours #max resources you could spend at a si
 n.sims <-  10 #number of simulations per parameter set
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
-n.weeks <- 52 #number of weeks
+n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
 
@@ -114,7 +114,7 @@ P.datM <- array(NA, dim = c(n.states, n.params, n.states))
 for(p in 1:n.params){
   P.datM[1,p,] <- c(1,0,0)
   P.datM[2,p,] <- c(0,1,0) #c(1-pM.l[p], pM.l[p], 0)
-  P.datM[3,p,] <- c(0,0,1)# c(1-pM.h[p], 0, pM.h[p])
+  P.datM[3,p,] <- c(0,0,1)# c(1-pM.h[p], pM.h[p]*1-delta[p], pM.h[p]*delta[p])
 }
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims)) #removal sites array

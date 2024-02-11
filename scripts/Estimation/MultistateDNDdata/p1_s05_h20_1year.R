@@ -13,7 +13,7 @@ library(readr)
 #at next 5 downstream locations
 
 #### JAGS model ####
-sink("Flower_multistate_datM.txt")
+sink("Flower_datM_est1.txt")
 cat("
 model{
 
