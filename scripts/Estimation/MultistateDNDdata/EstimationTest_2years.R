@@ -185,7 +185,7 @@ sink()
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "test", "2years")
+path <- here::here("results", "test", "2year")
 res <- c('results/test/2year') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
@@ -856,9 +856,9 @@ time.taken <- end.time - start.time
   #### Results ####
   cbind.res.parameters <- cbind.res %>% filter(param %in% parameters.to.save)
   
-  truth.params <- c(eps.l0, eps.l1, eps.h0, eps.h1, gamma.0, gamma.1, gamma.2, 
-                    phi0.lh, phi1.lh, phi0.hh, phi1.hh, p.l0, p.l1, p.h0, p.h1,
-                    alpha.l, alpha.h, delta)
+  truth.params <- c(eps0.l[p], eps1.l[p], eps0.h[p], eps1.h[p], phi0.hh[p], phi1.hh[p],
+                    gamma0[p], gamma1[p],gamma2[p],epsB.l[p], epsB.h[p], phiB.lh[p], phiB.hh[p],
+                    p0.l[p], p1.l[p], p0.h[p], p1.h[p], alpha.l[p],alpha.h[p], delta[p])
   
   cbind.res.parameters$truth <- rep(truth.params, n.sims)
   colnames(cbind.res.parameters)[c(3,7)] <- c("low", "high")
@@ -867,20 +867,19 @@ time.taken <- end.time - start.time
   #State params
   cbind.res.state<- cbind.res %>% filter(str_detect(param, '^S'))
   
-  truth.state4 <- State[,4,year,1]
+  truth.state <- State[,5,2,p,1]
   
   for(s in 2:n.sims){
-    truth.state4 <- c(truth.state4, State[,4,year,s])
+    truth.state <- c(truth.state, State[,5,2,p,s])
   }
-  
   
   cbind.res.state$Segment <- as.numeric(gsub("\\D", "", cbind.res.state$param))
   
-  cbind.res.state$truth <- truth.state4 
+  cbind.res.state$truth <- truth.state
   colnames(cbind.res.state)[c(3,7)] <- c("low", "high")
   
   cbind.res.state$nobs <- NA
-  Y.nobs <- yM[,,,year,]
+  Y.nobs <- yM[,,,2,p,]
   Y.nobs[is.na(Y.nobs)] <- 0
   Y.nobs[Y.nobs > 0] <- 1
   
@@ -897,23 +896,27 @@ time.taken <- end.time - start.time
   res.state[[year]] <- cbind.res.state
   
 ##### plots #####
-ggplot(res.params[[year]]) +
-  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
-  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
-  #scale_color_brewer(palette = "Dark2")+
-  geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "black", shape = 22) +
-  facet_wrap(~param, scales = "free") +
-  xlab("Simulation")+ylab("State") + 
-  guides(color = guide_legend(title = "Simulation"))  
+  ggplot(res.params[[1]]) +
+    geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
+    geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
+    #scale_color_brewer(palette = "Dark2")+
+    geom_point(data=res.params[[1]], aes(x = sim, y = truth),color = "black", shape = 22) +
+    facet_wrap(~param, scales = "free") +
+    xlab("Simulation")+ylab("State") + 
+    guides(color = guide_legend(title = "Simulation"))    
 
 ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = param, y = Rhat, col = as.factor(sim)))+
   geom_hline(yintercept = 1.1, color = 'red')
 
 ##### Estimated State #####
+num.col <- length(unique(res.state[[year]]$nobs))+1
+
+my_colors <- RColorBrewer::brewer.pal(num.col + 1, "YlOrRd")[2:num.col]
+
 ggplot(res.state[[year]]) +
   geom_point(mapping = aes(x = sim, y = mean, col = as.factor(nobs)))+
-  scale_color_brewer(palette = "YlOrRd")+
+  scale_color_manual(values = my_colors)+
   geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(nobs)), width = 0.5)+
   geom_point(data=res.state[[year]], aes(x = sim, y = truth), color = "black", shape = 22) +
   scale_x_continuous(breaks=seq(1,n.sims,1))+
