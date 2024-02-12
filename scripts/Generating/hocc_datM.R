@@ -130,7 +130,7 @@ p <- which(apply(params, 1, function(x) return(all(x == c(3,3,3,3,3,3))))) #bad 
 
 year <- 1
 #n.years <- 2
-#for(p in 1:n.params){
+for(p in 1:n.params){
 for(year in 1:n.years){
   #--------------------------------------------------------------------------------#
   ### Steps: 
@@ -293,7 +293,7 @@ for(year in 1:n.years){
     
   
 } #year loop 
-#} #parameter loop
+} #parameter loop
 
 #################################################################################################
 #### TIMING ####
