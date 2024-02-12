@@ -86,7 +86,7 @@ P.datM[3,3] <- pM.h*(delta) #High state and observed high
 # STATE TRANSITION
 
 #initial occupancy probability
-psi[1:3] ~ ddirch(psi.init) #alpha = rep(1,3)
+psi[1:3] ~ ddirch(alpha.init1) #alpha = rep(1,3)
 
 for (i in 1:n.sites){  
   # State transition probabilities (TPM): probability of S(t+1) given S(t)
@@ -256,11 +256,11 @@ P.datM[3,3] <- pM.h*(delta) #High state and observed high
 #-----------------------------------------------------------------------------#
 # STATE TRANSITION
 
-psi[1:3] ~ ddirch(c(1,1,1)) 
-
 for (i in 1:n.sites){  
 
-  StateB[i] ~ dcat(psi)
+  psi[i, 1:3] ~ ddirch(alpha.init[i,1:3]) #Initial state estimation
+
+  StateB[i] ~ dcat(psi[i,1:3]) #state week 1
   DB[i] <- sum(StateB[neighbors[i,]])/n.neighbors[i] #state of neighbors 
 
   logit(gamma[i]) <-gamma0 + gamma1*site.char[i] + gamma2*DB[i] #invasion probability 
