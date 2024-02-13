@@ -17,8 +17,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "test", "years")
-res <- c('results/test/years') #subset of path for plot save
+path <- here::here("results", "test", "years_few")
+res <- c('results/test/years_few') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters.RData")
@@ -32,7 +32,7 @@ max.spent <- search.hours + removal.hours #max resources you could spend at a si
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
-n.sims <-  10 #number of simulations per parameter set
+n.sims <-  5 #number of simulations per parameter set
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
@@ -739,8 +739,8 @@ for(year in 2:n.years){
   }
 
   #settings
-  n.burnin <- 5000
-  n.iter <- 50000 
+  n.burnin <- 500
+  n.iter <- 5000 
   n.chains <- n.chains
   n.thin <- 1
 
