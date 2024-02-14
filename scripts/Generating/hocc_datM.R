@@ -31,38 +31,38 @@ n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
 
-#### Loading parameters ####
 #if we have 3 layers use this (low, medium, high)
-params <- expand.grid(col = c(1,2,3),ste = c(1,2,3),nbr = c(1,2,3),gro = c(1,2,3),rem = c(1,2,3),det = c(1,2,3))
+params <- expand.grid(col1 = c(1,2,3),ste2 = c(1,2,3),nbr3 = c(1,2,3),gro4 = c(1,2,3),rem5 = c(1,2,3),det6 = c(1,2,3))
 
 #if we have 2 layers use this (low, high)
-#params <- expand.grid(col = c(1,3),ste = c(1,3),nbr = c(1,3),gro = c(1,3),rem = c(1,3),det = c(1,3))
+#params <- expand.grid(col1 = c(1,3),ste2 = c(1,3),nbr3 = c(1,3),gro4 = c(1,3),rem5 = c(1,3),det6 = c(1,3))
 n.params <- length(params$col)
-gamma0 <- gamma1 <- gamma2  <-  eps0.l <- eps0.h <- phi0.hh <-
-  eps1.l <- eps1.h <- phi1.lh <- phi1.hh <- p0.l <- p0.h <- p1.l <- p1.h <- 
-  alpha.l <- alpha.h <- delta <- epsB.l <-epsB.h <-  phiB.lh <- phiB.hh <- rep(NA, n.params)
+B0.gamma <- B1.gamma <- B2.gamma  <-  B0.eps.l <- B0.eps.h <- B0.phi.h <-
+  B1.eps.l <- B1.eps.h <- B1.phi.l <- B1.phi.h <- B0.p.l <- B0.p.h <- B1.p.l <- B1.p.h <- 
+  alpha.l <- alpha.h <- delta <- epsB.l <-epsB.h <-  phiB.l <- phiB.h <- g <- rep(NA, n.params)
 
 for(p in 1:n.params){
-  gamma0[p] <- col1[[params[p,1]]]$gamma.0
-  gamma1[p] <- ste2[[params[p,2]]]$gamma.1
-  gamma2[p] <- nbr3[[params[p,3]]]$gamma.2
+  B0.gamma[p] <- col1[[params[p,1]]]$B0.gamma
+  B1.gamma[p] <- ste2[[params[p,2]]]$B1.gamma
+  B2.gamma[p] <- nbr3[[params[p,3]]]$B2.gamma
   
-  eps0.l[p] <- gro4[[params[p,4]]]$eps.l0
-  eps0.h[p] <- gro4[[params[p,4]]]$eps.h0
-  phi0.hh[p] <- gro4[[params[p,4]]]$phi0.hhs
+  B0.eps.l[p] <- gro4[[params[p,4]]]$B0.eps.l
+  B0.eps.h[p] <- gro4[[params[p,4]]]$B0.eps.h
+  B0.phi.h[p] <- gro4[[params[p,4]]]$B0.phi.h
   epsB.l[p] <- gro4[[params[p,4]]]$epsB.l
   epsB.h[p] <- gro4[[params[p,4]]]$epsB.h
-  phiB.lh[p] <- gro4[[params[p,4]]]$phiB.lhs
-  phiB.hh[p] <- gro4[[params[p,4]]]$phiB.hhs
+  phiB.l[p] <- gro4[[params[p,4]]]$phiB.l
+  phiB.h[p] <- gro4[[params[p,4]]]$phiB.h
+  g[p] <- gro4[[params[p,4]]]$g
   
-  eps1.l[p] <- rem5[[params[p,5]]]$eps.l1
-  eps1.h[p] <- rem5[[params[p,5]]]$eps.h1
-  phi1.hh[p] <- rem5[[params[p,5]]]$phi1.hhs
+  B1.eps.l[p] <- rem5[[params[p,5]]]$B1.eps.l
+  B1.eps.h[p] <- rem5[[params[p,5]]]$B1.eps.h
+  B1.phi.h[p] <- rem5[[params[p,5]]]$B1.phi.h
   
-  p0.l[p] <- det6[[params[p,6]]]$p.l0
-  p0.h[p] <- det6[[params[p,6]]]$p.h0
-  p1.l[p] <- det6[[params[p,6]]]$p.l1
-  p1.h[p] <- det6[[params[p,6]]]$p.h1
+  B0.p.l[p] <- det6[[params[p,6]]]$B0.p.l
+  B0.p.h[p] <- det6[[params[p,6]]]$B0.p.h
+  B1.p.l[p] <- det6[[params[p,6]]]$B1.p.l
+  B1.p.h[p] <- det6[[params[p,6]]]$B1.p.h
   alpha.l[p] <- det6[[params[p,6]]]$alpha.l
   alpha.h[p] <- det6[[params[p,6]]]$alpha.h
   delta[p] <- det6[[params[p,6]]]$delta
@@ -72,8 +72,8 @@ for(p in 1:n.params){
 gamma <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
 eps.l <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
 eps.h <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
-phi.lh <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
-phi.hh<- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
+phi.l <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
+phi.h<- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
 
 TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.params,n.sims, n.states)) 
 
@@ -84,7 +84,7 @@ State.init <- State.init
 State <- array(NA,c(n.sites, n.weeks, n.years, n.params,n.sims)) #state array
 
 #---Neighbor data---#
-D <- array(NA, c(n.sites, n.weeks, n.years, n.params,n.sims)) #neighbors array
+N <- array(NA, c(n.sites, n.weeks, n.years, n.params,n.sims)) #neighbors array
 num.neighbors <- 2 #one upstream, one downstream
 neighbors <- matrix(NA, nrow = n.sites, ncol = num.neighbors) #neighbors matrix, each row (site) identifies the neighbors for that site 
 neighbors[1,1] <- 2 #site 1 only has site 2 as its neighbor 
@@ -107,8 +107,8 @@ yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years,n.params, n.sims))
 resource.total <- array(0, c(n.weeks, n.years, n.params,n.sims)) 
 
 #Detection probabilities
-pM.l <- invlogit(p0.l + p1.l*logsearch.effort + alpha.l) #low state detection 
-pM.h <- invlogit(p0.h + p1.h*logsearch.effort + alpha.h) #high state detection 
+pM.l <- invlogit(B0.p.l + B1.p.l*logsearch.effort + alpha.l) #low state detection 
+pM.h <- invlogit(B0.p.h + B1.p.h*logsearch.effort + alpha.h) #high state detection 
 
 P.datM <- array(NA, dim = c(n.states, n.params, n.states))
 for(p in 1:n.params){
@@ -130,7 +130,7 @@ p <- which(apply(params, 1, function(x) return(all(x == c(3,3,3,3,3,3))))) #bad 
 
 year <- 1
 #n.years <- 2
-for(p in 1:n.params){
+#for(p in 1:n.params){
 for(year in 1:n.years){
   #--------------------------------------------------------------------------------#
   ### Steps: 
@@ -155,9 +155,9 @@ for(year in 1:n.years){
     
   } #ends year > 1
   
-  eps.l[,1,year,p,] <- invlogit(eps0.l[p]) #eradication low 
-  eps.h[,1,year,p,] <- invlogit(eps0.h[p]) #eradication high
-  phi.hh[,1,year,p,] <- invlogit(phi0.hh[p]) #transition high to high
+  eps.l[,1,year,p,] <- invlogit(B0.eps.l[p]) #eradication low 
+  eps.h[,1,year,p,] <- invlogit(B0.eps.h[p]) #eradication high
+  phi.h[,1,year,p,] <- invlogit(B0.phi.h[p]) #transition high to high
   
   # TPM used for week 2
   TPM[1,1:n.sites,1,year,p,,1] <- 1 #empty to empty 
@@ -169,8 +169,8 @@ for(year in 1:n.years){
   TPM[2,1:n.sites,1,year,p,,3] <- 0 #low to high (week 1)
     
   TPM[3,1:n.sites,1,year,p,,1] <- eps.h[,1,year,p,] #high to empty (week 1)
-  TPM[3,1:n.sites,1,year,p,,2] <- (1- eps.h[,1,year,p,])*(1-phi.hh[,1,year,p,]) #high to low (week 1)
-  TPM[3,1:n.sites,1,year,p,,3] <- (1- eps.h[,1,year,p,])*(phi.hh[,1,year,p,]) #high to high (week 1)
+  TPM[3,1:n.sites,1,year,p,,2] <- (1- eps.h[,1,year,p,])*(1-phi.h[,1,year,p,]) #high to low (week 1)
+  TPM[3,1:n.sites,1,year,p,,3] <- (1- eps.h[,1,year,p,])*(phi.h[,1,year,p,]) #high to high (week 1)
 
   ##### Week 2-4 State #####
   for(s in 1:n.sims){
@@ -186,11 +186,11 @@ for(year in 1:n.years){
         prev.rem.vec <- replace(rem.vec[,week-1,year,p,s], is.na(rem.vec[,week-1,year,p,s]), 0)
         
         # eradication probability = base + effect of previous removal (removal*removal hours)
-        eps.l[,week,year,p,s] <- invlogit(eps0.l[p] + eps1.l[p]*prev.rem.vec*removal.hours) #low eradication
-        eps.h[,week,year,p,s] <- invlogit(eps0.h[p] + eps1.h[p]*prev.rem.vec*removal.hours) #high eradication
+        eps.l[,week,year,p,s] <- invlogit(B0.eps.l[p] + B1.eps.l[p]*prev.rem.vec*removal.hours) #low eradication
+        eps.h[,week,year,p,s] <- invlogit(B0.eps.h[p] + B1.eps.h[p]*prev.rem.vec*removal.hours) #high eradication
         
         #transition rates
-        phi.hh[,week,year,p,s] <- invlogit(phi0.hh[p] - phi1.hh[p]*prev.rem.vec*removal.hours)
+        phi.h[,week,year,p,s] <- invlogit(B0.phi.h[p] - B1.phi.h[p]*prev.rem.vec*removal.hours)
         
         TPM[1,1:n.sites,week,year,p,s,1] <- 1
         TPM[1,1:n.sites,week,year,p,s,2] <- 0
@@ -201,8 +201,8 @@ for(year in 1:n.years){
         TPM[2,1:n.sites,week,year,p,s,3] <- 0 
         
         TPM[3,1:n.sites,week,year,p,s,1] <- eps.h[,week,year,p,s] #high to empty (eradication)
-        TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.hh[,week,year,p,s]) #high to low
-        TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.hh[,week,year,p,s]) #high to high
+        TPM[3,1:n.sites,week,year,p,s,2] <- (1- eps.h[,week,year,p,s])*(1-phi.h[,week,year,p,s]) #high to low
+        TPM[3,1:n.sites,week,year,p,s,3] <- (1- eps.h[,week,year,p,s])*(phi.h[,week,year,p,s]) #high to high
         
         #week: Identify the sites where removal will occur 
         n.pre.visit <- length(which(rem.vec[,week-1,year,p,s] >= 0)) #number of sites that were sampled last week
@@ -270,30 +270,30 @@ for(year in 1:n.years){
     }
     
     for(i in 1:n.sites){ #state of neighbors
-      D[i,5,year,p,s] <- sum(State[neighbors[i,], 5,year,p,s])/n.neighbors[i] #state of neighbors
+      N[i,5,year,p,s] <- sum(State[neighbors[i,], 5,year,p,s])/n.neighbors[i] #state of neighbors
     }
     
-    gamma[,5,year,p,s] <-invlogit(gamma0[p] + gamma1[p]*site.char + gamma2[p]*D[,5,year,p,s]) #invasion 
+    gamma[,5,year,p,s] <-invlogit(B0.gamma[p] + B1.gamma[p]*site.char + B2.gamma[p]*N[,5,year,p,s]) #invasion 
       
     # TPM used for next week
     TPM[1,1:n.sites,5,year,p,s,1] <- 1-gamma[,5,year,p,s] #empty to empty 
-    TPM[1,1:n.sites,5,year,p,s,2] <- gamma[,5,year,p,s] #empty to low 
-    TPM[1,1:n.sites,5,year,p,s,3] <- 0 #empty to high 
+    TPM[1,1:n.sites,5,year,p,s,2] <- gamma[,5,year,p,s]*(1-g[p]) #empty to low 
+    TPM[1,1:n.sites,5,year,p,s,3] <- gamma[,5,year,p,s]*(g[p]) #empty to high 
       
     TPM[2,1:n.sites,5,year,p,s,1] <- epsB.l[p] #low to empty 
-    TPM[2,1:n.sites,5,year,p,s,2] <- (1- epsB.l[p])*(1-phiB.lh[p]) #low to low 
-    TPM[2,1:n.sites,5,year,p,s,3] <- (1- epsB.l[p])*(phiB.lh[p]) #low to high 
+    TPM[2,1:n.sites,5,year,p,s,2] <- (1- epsB.l[p])*(1-phiB.l[p]) #low to low 
+    TPM[2,1:n.sites,5,year,p,s,3] <- (1- epsB.l[p])*(phiB.l[p]) #low to high 
       
     TPM[3,1:n.sites,5,year,p,s,1] <- epsB.h[p] #high to empty 
-    TPM[3,1:n.sites,5,year,p,s,2] <- (1- epsB.h[p])*(1-phiB.hh[p]) #high to low
-    TPM[3,1:n.sites,5,year,p,s,3] <- (1- epsB.h[p])*(phiB.hh[p]) #high to high
+    TPM[3,1:n.sites,5,year,p,s,2] <- (1- epsB.h[p])*(1-phiB.h[p]) #high to low
+    TPM[3,1:n.sites,5,year,p,s,3] <- (1- epsB.h[p])*(phiB.h[p]) #high to high
     
     
   } #ends sim loop
     
   
 } #year loop 
-} #parameter loop
+#} #parameter loop
 
 #################################################################################################
 #### TIMING ####

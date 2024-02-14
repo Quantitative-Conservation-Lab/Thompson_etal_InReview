@@ -888,6 +888,43 @@ ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = param, y = Rhat, col = as.factor(sim)))+
   geom_hline(yintercept = 1.1, color = 'red')
 
+#### parameters through time ####
+res.params[[2]]$year <- 2
+res.params[[3]]$year <- 3
+res.params[[4]]$year <- 4
+res.params[[5]]$year <- 5
+res.params[[6]]$year <- 6
+res.params[[7]]$year <- 7
+res.params[[8]]$year <- 8
+res.params[[9]]$year <- 9
+res.params[[10]]$year <- 10
+
+res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
+                    res.params[[5]], res.params[[6]], res.params[[7]],
+                    res.params[[8]], res.params[[9]], res.params[[10]])
+
+
+res.par.df2 <- res.par.df %>% select(mean, sim,  year, param)
+
+truth.params <- c(eps0.l[p], eps1.l[p], eps0.h[p], eps1.h[p], phi0.hh[p], phi1.hh[p],
+                  gamma0[p], gamma1[p],gamma2[p],epsB.l[p], epsB.h[p], phiB.lh[p], phiB.hh[p],
+                  p0.l[p], p1.l[p], p0.h[p], p1.h[p], alpha.l[p],alpha.h[p], delta[p])
+
+truth.params.df <- data.frame(param = parms.list, truth = truth.params)
+truth.params.df <- truth.params.df %>% arrange(param)
+
+res.par.df.summary <- aggregate(mean ~ year + param,
+                               data = as.data.frame(res.par.df2), FUN = mean)
+
+truth.vals <- rep(truth.params.df$truth, each = 9)
+
+res.par.df.summary$truth <- truth.vals
+
+ggplot(res.par.df.summary) + 
+  geom_point(aes(x = year, y = mean)) +
+  geom_line(aes(x = year, y = truth))+
+  facet_wrap(~param, scales = "free")
+
 ##### Estimated State #####
 num.col <- length(unique(res.state[[year]]$nobs))+1
 

@@ -12,57 +12,60 @@ model{
 # 3 high abundance
 # -------------------------------------------------
 #--------------- State parameters for data weeks: ---------------#
-#Erradication:
-eps0.l ~ dnorm(eps0.l.mean, eps0.l.tau) #eradication when at low state
-eps0.l.tau <- 1/(eps0.l.sd * eps0.l.sd) #precision parameter
-eps1.l ~ dnorm(eps1.l.mean, eps1.l.tau) #effect of eradication 
-eps1.l.tau <- 1/(eps1.l.sd * eps1.l.sd) #precision parameter
+B0.eps.l ~ dnorm(B0.eps.l.mean, B0.eps.l.tau) #eradication when at low state
+B0.eps.l.tau <- 1/(B0.eps.l.sd * B0.eps.l.sd) #precision parameter
+B1.eps.l ~ dnorm(B1.eps.l.mean, B1.eps.l.tau) #effect of eradication 
+B1.eps.l.tau <- 1/(B1.eps.l.sd * B1.eps.l.sd) #precision parameter
   
-eps0.h ~ dnorm(eps0.h.mean, eps0.h.tau) #eradication when at high state
-eps0.h.tau <- 1/(eps0.h.sd * eps0.h.sd) #precision parameter
-eps1.h ~ dnorm(eps1.h.mean, eps1.h.tau) #effect of eradication 
-eps1.h.tau <- 1/(eps1.h.sd * eps1.h.sd) #precision parameter
+B0.eps.h ~ dnorm(B0.eps.h.mean, B0.eps.h.tau) #eradication when at high state
+B0.eps.h.tau <- 1/(B0.eps.h.sd * B0.eps.h.sd) #precision parameter
+B1.eps.h ~ dnorm(B1.eps.h.mean, B1.eps.h.tau) #effect of eradication 
+B1.eps.h.tau <- 1/(B1.eps.h.sd * B1.eps.h.sd) #precision parameter
   
 #State transition:
-phi0.hh ~ dnorm(phi0.hh.mean, phi0.hh.tau) #transition from high to high
-phi0.hh.tau <- 1/(phi0.hh.sd * phi0.hh.sd) #precision parameter
-phi1.hh ~ dnorm(phi1.hh.mean, phi1.hh.tau) #effect of removal on transition
-phi1.hh.tau <- 1/(phi1.hh.sd*phi1.hh.sd) #precision parameter
+B0.phi.h ~ dnorm(B0.phi.h.mean, B0.phi.h.tau) #transition from high to high
+B0.phi.h.tau <- 1/(B0.phi.h.sd * B0.phi.h.sd) #precision parameter
+B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau) #effect of removal on transition
+B1.phi.h.tau <- 1/(B1.phi.h.sd*B1.phi.h.sd) #precision parameter
   
 #--------------- State parametes for between weeks: ---------------#
 #Invasion:
-gamma0 ~dnorm(gamma0.mean,gamma0.tau) #intrinsic invasion probability
-gamma0.tau <- 1/(gamma0.sd*gamma0.sd) #precision parameter
-gamma1 ~dnorm(gamma1.mean, gamma1.tau) #effect of site characteristics on invasion probability
-gamma1.tau <- 1/(gamma1.sd*gamma1.sd) #precision parameter
-gamma2 ~dnorm(gamma2.mean, gamma2.tau) #effect of Neighboring invasion state
-gamma2.tau <- 1/(gamma2.sd*gamma2.sd) #precision parameter
+B0.gamma ~dnorm(B0.gamma.mean,B0.gamma.tau) #intrinsic invasion probability
+B0.gamma.tau <- 1/(B0.gamma.sd*B0.gamma.sd) #precision parameter
+B1.gamma ~dnorm(B1.gamma.mean, B1.gamma.tau) #effect of site characteristics on invasion probability
+B1.gamma.tau <- 1/(B1.gamma.sd*B1.gamma.sd) #precision parameter
+B2.gamma ~dnorm(B2.gamma.mean, B2.gamma.tau) #effect of Neighboring invasion state
+B2.gamma.tau <- 1/(B2.gamma.sd*B2.gamma.sd) #precision parameter
+  
+g~dbeta(g.a, g.b)T(0.0001,0.9999) #Given colonization, probability of becoming high state  
   
 #Erradication:
 epsB.l ~ dbeta(epsB.l.a,epsB.l.b)T(0.0001,0.9999) #eradication when at low state
 epsB.h ~ dbeta(epsB.h.a,epsB.h.b)T(0.0001,0.9999) #eradication when at low state
   
 #State transition:
-phiB.lh ~ dbeta(phiB.lh.a, phiB.lh.b)T(0.0001,0.9999) #transition from low to high
-phiB.hh ~ dbeta(phiB.hh.a, phiB.hh.b)T(0.0001,0.9999) #transition from low to high
-  
+phiB.l ~ dbeta(phiB.l.a, phiB.l.b)T(0.0001,0.9999) #staying low state
+phiB.h ~ dbeta(phiB.h.a, phiB.h.b)T(0.0001,0.9999) #staying high state
+
 #--------------- Detection parameters: ---------------#
 #Detection low state:
-p0.l ~ dbeta(p0.l.a, p0.l.b)T(0.0001,0.9999) #base detection for low state
-p1.l ~ dnorm(p1.l.mean, p1.l.tau) #effect of effort 
-p1.l.tau <- 1/(p1.l.sd * p1.l.sd) #precision parameter
+B0.p.l ~ dnorm(B0.p.l.mean, B0.p.l.tau) #base detection for low state
+B0.p.l.tau <- 1/(B0.p.l.sd * B0.p.l.sd) #precision parameter
+B1.p.l ~ dnorm(B1.p.l.mean, B1.p.l.tau) #effect of effort 
+B1.p.l.tau <- 1/(B1.p.l.sd * B1.p.l.sd) #precision parameter
 alpha.l ~ dnorm(l.mean,l.tau) #difference in baseline detection between dat D and M
 l.tau <- 1/(l.sd * l.sd) #precision
   
 #Detection high state:
-p0.h ~ dbeta(p0.h.a, p0.h.b)T(0.0001,0.9999) #base detection for high state
-p1.h ~ dnorm(p1.h.mean, p1.h.tau) #effect of effort 
-p1.h.tau <- 1/(p1.h.sd * p1.h.sd) #precision parameter
+B0.p.h ~ dnorm(B0.p.h.mean, B0.p.h.tau) #base detection for high state
+B0.p.h.tau <- 1/(B0.p.h.sd * B0.p.h.sd) #precision parameter
+B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau) #effect of effort 
+B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
 alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
 h.tau <- 1/(h.sd * h.sd) #precision
 
-logit(pM.l) <- p0.l + p1.l*logeffort + alpha.l #detection low state
-logit(pM.h) <- p0.h + p1.h*logeffort + alpha.h #detection high state
+logit(pM.l) <- B0.p.l + B1.p.l*logeffort + alpha.l #detection low state
+logit(pM.h) <- B0.p.h + B1.p.h*logeffort + alpha.h #detection high state
   
 delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
   
@@ -84,33 +87,35 @@ P.datM[3,3] <- pM.h*(delta) #High state and observed high
 
 for (i in 1:n.sites){  
 
-  psi[i, 1:3] ~ ddirch(alpha.init[i,1:3]) #Initial state estimation
+  #psi[i, 1:3] ~ ddirch(alpha.init[i,1:3]) #Initial state estimation
+  #StateB[i] ~ dcat(psi[i,1:3]) 
+  
+  StateB[i] ~ dcat(alpha.init[i,1:3]) 
+  
+  NB[i] <- sum(StateB[neighbors[i,]])/n.neighbors[i] #state of neighbors 
 
-  StateB[i] ~ dcat(psi[i,1:3]) #state week 1
-  DB[i] <- sum(StateB[neighbors[i,]])/n.neighbors[i] #state of neighbors 
-
-  logit(gamma[i]) <-gamma0 + gamma1*site.char[i] + gamma2*DB[i] #invasion probability 
+  logit(gamma[i]) <-B0.gamma + B1.gamma*site.char[i] + B2.gamma*NB[i] #invasion probability 
       
   #Between week calculation (for initial state estimation)
   TPMB[1,i,1] <-  1- gamma[i] #empty to empty
-  TPMB[1,i,2] <-  gamma[i] #empty to low
-  TPMB[1,i,3] <-  0 #empty to high
+  TPMB[1,i,2] <-  gamma[i]*(1-g) #empty to low
+  TPMB[1,i,3] <-  gamma[i]*(g) #empty to high
 
   TPMB[2,i,1] <- epsB.l #low to empty
-  TPMB[2,i,2] <- (1-epsB.l)*(1-phiB.lh) #low to low
-  TPMB[2,i,3] <-  (1-epsB.l)*(phiB.lh) #low to high
+  TPMB[2,i,2] <- (1-epsB.l)*(phiB.l) #low to low
+  TPMB[2,i,3] <-  (1-epsB.l)*(1-phiB.l) #low to high
     
   TPMB[3,i,1] <-  epsB.h #high to empty
-  TPMB[3,i,2] <-  (1-epsB.h)*(1-phiB.hh) #high to low
-  TPMB[3,i,3] <-  (1-epsB.h)*(phiB.hh) #high to high
+  TPMB[3,i,2] <-  (1-epsB.h)*(1-phiB.h) #high to low
+  TPMB[3,i,3] <-  (1-epsB.h)*(phiB.h) #high to high
 
   # State transition probabilities (TPM): probability of S(t+1) given S(t)
   for (t in 1:4){
     
-    logit(eps.l[i,t]) <- eps0.l + eps1.l*rem.vec[i,t]*removal.hours #erradication low state, rem.vec = indicator of removal
-    logit(eps.h[i,t]) <- eps0.h + eps1.h*rem.vec[i,t]*removal.hours #erradication high state
+    logit(eps.l[i,t]) <- B0.eps.l + B1.eps.l*rem.vec[i,t]*removal.hours #erradication low state, rem.vec = indicator of removal
+    logit(eps.h[i,t]) <- B0.eps.h + B1.eps.h*rem.vec[i,t]*removal.hours #erradication high state
     
-    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours
+    logit(phi.h[i,t]) <- B0.phi.h - B1.phi.h*rem.vec[i,t]*removal.hours
     
     #State transition matrix: TPM[current state, location, time, future state]
     TPM[1,i,t,1] <- 1 #empty to empty
@@ -119,11 +124,11 @@ for (i in 1:n.sites){
 
     TPM[2,i,t,1] <- eps.l[i,t] #low to empty
     TPM[2,i,t,2] <- (1- eps.l[i,t]) #low to low
-    TPM[2,i,t,3] <- (1- eps.l[i,t]) #low to high
+    TPM[2,i,t,3] <- 0 #low to high
     
     TPM[3,i,t,1] <- eps.h[i,t] #high to empty
-    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh[i,t]) #high to low
-    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh[i,t]) #high to high
+    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.h[i,t]) #high to low
+    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.h[i,t]) #high to high
     
   } #t
 } #i
@@ -133,7 +138,7 @@ for (i in 1:n.sites){
 #### Likelihood ####
 for (i in 1:n.sites){
 
-  #-- Initial State[i,week,year]: --# 
+  #-- Initial State[i,week]: --# 
   State[i,1] ~ dcat(TPMB[StateB[i], i, ]) #psi is written above in the priors
     
   #-- State Model: --#

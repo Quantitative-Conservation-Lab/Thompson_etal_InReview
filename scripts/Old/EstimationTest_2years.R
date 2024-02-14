@@ -727,14 +727,15 @@ time.taken <- end.time - start.time
   res.state[[year]] <- cbind.res.state
   
 ##### plots #####
-  ggplot(res.params[[1]]) +
+  ggplot(res.params[[2]]) +
     geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
     geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
     #scale_color_brewer(palette = "Dark2")+
-    geom_point(data=res.params[[1]], aes(x = sim, y = truth),color = "black", shape = 22) +
+    geom_point(data=res.params[[2]], aes(x = sim, y = truth),color = "black", shape = 22) +
     facet_wrap(~param, scales = "free") +
     xlab("Simulation")+ylab("State") + 
-    guides(color = guide_legend(title = "Simulation"))    
+    theme(legend.position="none")
+  #  guides(color = guide_legend(title = "Simulation"))    
 
 ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = param, y = Rhat, col = as.factor(sim)))+
@@ -756,17 +757,17 @@ ggplot(res.state[[year]]) +
   guides(color = guide_legend(title = "Number of observations")) 
 
 #### Trace.plots ####
-for(s in 1:n.sims){
-  for(p in 1:length(unique(cbind.res.parameters$param))){
-    MCMCtrace(get(mcmcs[s]),
-              params = unique(cbind.res.parameters$param[p]),
-              type = 'both',
-              ind = TRUE,
-              pdf = TRUE,
-              open_pdf = FALSE,
-              filename = paste0(res,'/densplots/trace',unique(cbind.res.parameters$param[p]),'_sim', s, '_year', year))
-}
-}
+# for(s in 1:n.sims){
+#   for(par in 1:length(unique(cbind.res.parameters$param))){
+#     MCMCtrace(get(mcmcs[s]),
+#               params = unique(cbind.res.parameters$param[par]),
+#               type = 'both',
+#               ind = TRUE,
+#               pdf = TRUE,
+#               open_pdf = FALSE,
+#               filename = paste0(res,'/densplots/trace',unique(cbind.res.parameters$param[par]),'_sim', s, '_year', year))
+# }
+# }
 
 
 #### Relative bias ####
@@ -774,7 +775,7 @@ mean.state <- array(NA, c(n.years,n.sites,n.sims))
 true.state <- array(NA, c(n.years,n.sites,n.sims))
 rel.bias <- array(NA, c(n.years,n.sites,n.sims))
 
-for(year in 1:1){
+for(year in 2:2){
   for(s in 1:n.sims){
     for(i in 1:n.sites){
       mean.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(mean))
@@ -785,14 +786,14 @@ for(year in 1:1){
   }
 }
 
-mean(rel.bias[1,,], na.rm = T)
+mean(rel.bias[2,,], na.rm = T)
 
 #### CI coverage ####
 low.state <- array(NA, c(n.years,n.sites,n.sims))
 high.state <- array(NA, c(n.years,n.sites,n.sims))
 CI.cov <- array(NA, c(n.years,n.sites,n.sims))
 
-for(year in 1:1){
+for(year in 2:2){
   for(s in 1:n.sims){
     for(i in 1:n.sites){
       low.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(low))
@@ -804,18 +805,18 @@ for(year in 1:1){
   }
 }
 
-mean(CI.cov[1,,], na.rm = T)
+mean(CI.cov[2,,], na.rm = T)
 
 #### CI coverage -parameters ####
-n.params <- length(unique(res.params[[1]]$param))
+n.params <- length(unique(res.params[[2]]$param))
 
 low.param <- array(NA, c(n.years,n.params,n.sims))
 high.param <- array(NA, c(n.years,n.params,n.sims))
 CI.param <- array(NA, c(n.years,n.params,n.sims))
 
-parms.list <- unique(res.params[[1]]$param)
+parms.list <- unique(res.params[[2]]$param)
 
-for(year in 1:1){
+for(year in 2:2){
   for(s in 1:n.sims){
     for(p in 1:n.params){
       low.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == parms.list[p] & sim == s) %>% select(low))
@@ -827,11 +828,9 @@ for(year in 1:1){
   }
 }
 
-mean(CI.param[1,,], na.rm = T)
+mean(CI.param[2,,], na.rm = T)
 
-#### final states ####
-mean(res.state[[1]]$mean)
-mean(res.state[[1]]$truth)
+
 
 
   
