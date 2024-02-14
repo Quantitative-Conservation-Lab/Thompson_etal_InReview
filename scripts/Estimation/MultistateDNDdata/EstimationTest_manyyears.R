@@ -439,7 +439,6 @@ for(year in 2:n.years){
     phiB.h.a[year,] <- 1
     phiB.h.b[year,] <- 1
     
-    
     # --- g --- Given colonization, probability of becoming high state -- #
     g.a[year,] <- 1
     g.b[year,] <- 1
