@@ -356,7 +356,7 @@ for(year in 2:n.years){
     }
     
     for(i in 1:n.sites){ #state of neighbors
-      N[i,5,y,p,s] <- sum(State[neighbors[i,], 5,y,p,s])/n.neighbors[i] #state of neighbors
+      N[i,5,y,p,s] <- (sum(State[neighbors[i,], 5,y,p,s])-2)/n.neighbors[i] #state of neighbors
     }
     
     gamma[,5,y,p,s] <-invlogit(B0.gamma[p] + B1.gamma[p]*site.char + B2.gamma[p]*N[,5,y,p,s]) #invasion 

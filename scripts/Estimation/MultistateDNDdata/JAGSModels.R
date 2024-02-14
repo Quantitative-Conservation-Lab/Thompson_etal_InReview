@@ -165,7 +165,7 @@ for (i in 1:n.sites){
     State.fin[i] <- State[i,n.weeks,2] #state after 5 weeks
     
     #State of neighbors for between weeks TPM
-    N[i,5,1] <- sum(State[neighbors[i,], 5,1])/n.neighbors[i] #state of neighbors 
+    N[i,5,1] <- (sum(State[neighbors[i,], 5,1]) - 2)/n.neighbors[i] #state of neighbors 
     
   } #i
 
@@ -270,7 +270,7 @@ for (i in 1:n.sites){
   
   StateB[i] ~ dcat(alpha.init[i,1:3]) 
   
-  NB[i] <- sum(StateB[neighbors[i,]])/n.neighbors[i] #state of neighbors 
+  NB[i] <- (sum(StateB[neighbors[i,]])-2)/n.neighbors[i] #state of neighbors (subtract 2 so if neigbor sites are both 1, neighbor effect = 0)
 
   logit(gamma[i]) <-B0.gamma + B1.gamma*site.char[i] + B2.gamma*NB[i] #invasion probability 
       

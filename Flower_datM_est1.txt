@@ -162,7 +162,7 @@ for (i in 1:n.sites){
     State.fin[i] <- State[i,n.weeks,2] #state after 5 weeks
     
     #State of neighbors for between weeks TPM
-    N[i,5,1] <- sum(State[neighbors[i,], 5,1])/n.neighbors[i] #state of neighbors 
+    N[i,5,1] <- (sum(State[neighbors[i,], 5,1]) - 2)/n.neighbors[i] #state of neighbors 
     
   } #i
 
