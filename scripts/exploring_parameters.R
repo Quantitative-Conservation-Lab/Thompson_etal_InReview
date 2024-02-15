@@ -5,6 +5,7 @@ library(plyr)
 library(tidyr)
 library(RColorBrewer)
 library(fabricatr)
+library(plotly)
 
 rem.hours <- seq(0,6)
 search.hours <- seq(0,3)
@@ -12,6 +13,7 @@ neighbors <- seq(0,4)
 n.rem <- length(rem.hours)
 n.search <- length(search.hours)
 n.neighbors <- length(neighbors)
+
 #### eps.l ####
 B0.eps.ls <- seq(-1,2, by = 0.25) #potential B0s
 B1.eps.ls <- seq(0,2, by = 0.25) #potential B1s (min = 0 because want to show removal has a greater effect than no removal)
@@ -160,66 +162,36 @@ B0.gammas <- seq(-2,2, by = 0.25)
 B1.gammas <- seq(-2,2, by = 0.25) 
 B2.gammas <- seq(-2,2, by = 0.25)
 
-gamma.combine <- expand.grid(B0 = B0.gammas,B1 = B1.gammas,B2 = B2.gammas) #combinations of B0s and B1s
+gamma.combine <- expand.grid(B0 = B0.gammas, B1 = B1.gammas, B2 = B2.gammas) #combinations of B0s and B1s
 n.gamma <- length(gamma.combine$B0)
 gamma.array <- array(NA, c(n.gamma, n.neighbors))
 
-for(p in 1:n.ph){
-  for(n in 1:n.search){
+for(p in 1:n.gamma){
+  for(n in 1:n.neighbors){
     gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.min + gamma.combine$B2[p]*neighbors[n])
   }
 }
 
-gamma.df <- adply(ph.array, c(1,2))
+gamma.df <- adply(gamma.array, c(1,2))
 colnames(gamma.df) <- c("p", "neighbor", "gamma")
-gamma.df$neighbor <- as.numeric(gamma.df$neighbor) - 1
+gamma.df$B0 <- rep(gamma.combine$B0, n.neighbors)
+gamma.df$B1 <- rep(gamma.combine$B1, n.neighbors)
+gamma.df$B2 <- rep(gamma.combine$B2, n.neighbors)
 
-#### gamma -mean site.char ####
-#invasion probability
-load("parameters.RData")
-site.mean <- mean(site.char)
-
-B0.gammas <- seq(-2,2, by = 0.25) 
-B1.gammas <- seq(-2,2, by = 0.25) 
-B2.gammas <- seq(-2,2, by = 0.25)
-
-gamma.combine <- expand.grid(B0 = B0.gammas,B1 = B1.gammas,B2 = B2.gammas) #combinations of B0s and B1s
-n.gamma <- length(gamma.combine$B0)
-gamma.array <- array(NA, c(n.gamma, n.neighbors))
-
-for(p in 1:n.ph){
-  for(n in 1:n.search){
-    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.mean + gamma.combine$B2[p]*neighbors[n])
-  }
-}
-
-gamma.df <- adply(ph.array, c(1,2))
-colnames(gamma.df) <- c("p", "neighbor", "gamma")
-gamma.df$neighbor <- as.numeric(gamma.df$neighbor) - 1
-
-#### gamma -mean site.char ####
-#invasion probability
-load("parameters.RData")
-site.max <- max(site.char)
-
-B0.gammas <- seq(-2,2, by = 0.25) 
-B1.gammas <- seq(-2,2, by = 0.25) 
-B2.gammas <- seq(-2,2, by = 0.25)
-
-gamma.combine <- expand.grid(B0 = B0.gammas,B1 = B1.gammas,B2 = B2.gammas) #combinations of B0s and B1s
-n.gamma <- length(gamma.combine$B0)
-gamma.array <- array(NA, c(n.gamma, n.neighbors))
-
-for(p in 1:n.ph){
-  for(n in 1:n.search){
-    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.max + gamma.combine$B2[p]*neighbors[n])
-  }
-}
-
-gamma.df <- adply(ph.array, c(1,2))
-colnames(gamma.df) <- c("p", "neighbor", "gamma")
-gamma.df$neighbor <- as.numeric(gamma.df$neighbor) - 1
-
+# gamma.df.0 <- filter(gamma.df, neighbor == 0)
+# 
+# fig <- plot_ly(gamma.df, x = ~B0, y = ~B1, z = ~B2,
+#                marker = list(color = ~gamma, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
+# fig <- fig %>% add_markers()
+# fig <- fig %>% layout(title = ("Gamma = invlogit(B0 + B1*site.cov + B2*neighbor.cov)
+#                                *Results when site.cov and 
+#                                neighbor.cov are minimum possible value "),
+#   
+#   
+#   scene = list(xaxis = list(title = 'B0'),
+#                                    yaxis = list(title = 'B1'),
+#                                    zaxis = list(title = 'B2')))
+# fig
 
 # ##### 3d heat map ####
 # # generate data, random + linear trend in x + linear trend in y
@@ -319,3 +291,51 @@ gamma.df$neighbor <- as.numeric(gamma.df$neighbor) - 1
 # text(label.pos$x, label.pos$y, labels=labels, adj=c(1, NA), srt=0, cex=0.6) 
 # 
 # 
+
+#### gamma -mean site.char ####
+#invasion probability
+site.mean <- mean(site.char)
+
+B0.gammas <- seq(-2,2, by = 0.25) 
+B1.gammas <- seq(-2,2, by = 0.25) 
+B2.gammas <- seq(-2,2, by = 0.25)
+
+gamma.combine <- expand.grid(B0 = B0.gammas, B1 = B1.gammas, B2 = B2.gammas) #combinations of B0s and B1s
+n.gamma <- length(gamma.combine$B0)
+gamma.array <- array(NA, c(n.gamma, n.neighbors))
+
+for(p in 1:n.gamma){
+  for(n in 1:n.neighbors){
+    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.mean + gamma.combine$B2[p]*neighbors[n])
+  }
+}
+
+gamma.df <- adply(gamma.array, c(1,2))
+colnames(gamma.df) <- c("p", "neighbor", "gamma")
+gamma.df$B0 <- rep(gamma.combine$B0, n.neighbors)
+gamma.df$B1 <- rep(gamma.combine$B1, n.neighbors)
+gamma.df$B2 <- rep(gamma.combine$B2, n.neighbors)
+
+#### gamma -max site.char ####
+#invasion probability
+site.max <- max(site.char)
+
+B0.gammas <- seq(-2,2, by = 0.25) 
+B1.gammas <- seq(-2,2, by = 0.25) 
+B2.gammas <- seq(-2,2, by = 0.25)
+
+gamma.combine <- expand.grid(B0 = B0.gammas, B1 = B1.gammas, B2 = B2.gammas) #combinations of B0s and B1s
+n.gamma <- length(gamma.combine$B0)
+gamma.array <- array(NA, c(n.gamma, n.neighbors))
+
+for(p in 1:n.gamma){
+  for(n in 1:n.neighbors){
+    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.max + gamma.combine$B2[p]*neighbors[n])
+  }
+}
+
+gamma.df <- adply(gamma.array, c(1,2))
+colnames(gamma.df) <- c("p", "neighbor", "gamma")
+gamma.df$B0 <- rep(gamma.combine$B0, n.neighbors)
+gamma.df$B1 <- rep(gamma.combine$B1, n.neighbors)
+gamma.df$B2 <- rep(gamma.combine$B2, n.neighbors)
