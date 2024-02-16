@@ -18,7 +18,7 @@ load("parameters.RData")
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
-n.sims <-  10 #number of simulations per parameter set
+n.sims <-  20 #number of simulations per parameter set
 n.sites <- 40 #number of sites
 n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
@@ -196,57 +196,24 @@ for(year in 1:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-##### Plots #####
-sum(State[,1,1,p,] == 3)
-sum(State[,5,10,p,] == 3)
+#### True State ####
+p <- which(apply(params, 1, function(x) return(all(x == c(3,3,3,3,3,3))))) #bad invasion but good management
 
-#average state across parameters
-summary(State[,5,10,,])
+S.dat <- adply(State[1:n.sites,1:5,1:n.years, p, 1:n.sims], c(1,2,3,4))
+colnames(S.dat) <- c("site", "week", "year", "sim", "state")
+S.dat$site <- as.numeric(S.dat$site)
+S.dat$week <- as.numeric(S.dat$week)
+S.dat$year <- as.numeric(S.dat$year)
+S.dat$sim <- as.numeric(S.dat$sim)
+S.dat$state <- as.numeric(S.dat$state)
+S.dat$alt <- 'nocontrol'
 
-mean.state <- array(NA, c(n.params, n.sims))
+#### SAVE CSVs ####
+#1. S.dat
+file_name = paste(path, 'S_truthdat.csv',sep = '/')
+write.csv(S.dat,file_name)
 
-for(p in 1:n.params){
-  for(s in 1:n.sims){
-    mean.state[p,s] <- mean(State[,5,10,p,s])
-  }
-}
+#2 time.taken
+file_name = paste(path, 'time.txt',sep = '/')
+write.table(time.taken,file_name)
 
-mean.df <- adply(mean.state, c(1,2))
-mean.df$type <- 'mean'
-
-#number of 3 states
-state.3 <- array(NA, c(n.params, n.sims))
-
-for(p in 1:n.params){
-  for(s in 1:n.sims){
-    state.3[p,s] <- sum(State[,5,10,p,s] == 3)
-  }
-}
-
-s3.df <- adply(state.3, c(1,2))
-s3.df$type <- 'state3'
-
-#number of 1 states
-state.1 <- array(NA, c(n.params, n.sims))
-
-for(p in 1:n.params){
-  for(s in 1:n.sims){
-    state.1[p,s] <- sum(State[,5,10,p,s] == 1)
-  }
-}
-
-s1.df <- adply(state.1, c(1,2))
-s1.df$type <- 'state1'
-
-state.summary <- rbind(mean.df, s3.df, s1.df)
-colnames(state.summary)[1:3] <- c("param", "simulation", "value")
-
-state.summary <- aggregate(value ~ param + type,
-                           data = as.data.frame(state.summary), FUN = mean)
-
-ggplot(state.summary)+
-  geom_point(aes(x = param, y = value, color = type))
-
-
-ggplot(state.summary)+
-  geom_boxplot(aes(x = type, y = value, color = type))

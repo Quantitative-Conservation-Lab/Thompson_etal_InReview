@@ -20,7 +20,7 @@ n.resource <- 20 #total hours per week
 #rule = by highest estimated state
 
 logsearch.effort <- log(search.hours) #log search effort
-max.spent <- search.hours + removal.hours #max resources you could spend at a single site
+max.spent <- removal.hours #max resources you could spend at a single site
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -106,6 +106,9 @@ for(s in 1: n.sims){
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years,n.params, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.params,n.sims)) 
 
+d.traveled <- array(NA, c(n.weeks, n.years,n.params, n.sims))
+visit <- array(NA, c(n.sites, n.weeks, n.years,n.params, n.sims))
+
 #Detection probabilities
 pM.l <- invlogit(B0.p.l + B1.p.l*logsearch.effort + alpha.l) #low state detection 
 pM.h <- invlogit(B0.p.h + B1.p.h*logsearch.effort + alpha.h) #high state detection 
@@ -118,8 +121,6 @@ for(p in 1:n.params){
 }
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years, n.params, n.sims)) #removal sites array
-
-
 start.time <- Sys.time()
 ####################################################################################
 #### Run Simulation ####
@@ -230,7 +231,7 @@ for(year in 1:n.years){
             rem.vec[i,week,year,p,s] <- 1 #notes that removal occurred that week at that site
             
             #Calculating resources used = resources already used + search hours + removal hours
-            resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours + removal.hours
+            resource.total[week,year,p,s] <- resource.total[week,year,p,s] + removal.hours
             
           }else{
             #2b. If not seen the first occasion, we need to search again:
@@ -242,7 +243,7 @@ for(year in 1:n.years){
               rem.vec[i,week,year,p,s] <- 1 #notes that removal occurred that week at that site
               
               #Calculating resources used = resources already used + search hours + removal hours
-              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours + removal.hours #removal.hours[State[i,week,year,s]]
+              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + removal.hours
             } 
             
             #2bi. If we do not detect flowering rush during the second occasion:
@@ -250,7 +251,7 @@ for(year in 1:n.years){
               rem.vec[i,week,year,p,s] <- 0 #notes removal did not occur
               
               #Calculating resources used = resources already used + search hours
-              resource.total[week,year,p,s] <- resource.total[week,year,p,s] + search.hours 
+              resource.total[week,year,p,s] <- resource.total[week,year,p,s]
             } 
           }
           
@@ -261,6 +262,31 @@ for(year in 1:n.years){
         }
         
       } #ends site loop
+      
+      #Calculating distance traveled: 
+      #if we visit all sites:
+      if(sum(is.na(rem.vec[,week,year,p,s])) == 0){
+        v <- sites.rem.M[,week,year,p,s] #vector 
+        index.na <- n.sites+1
+      }else{
+        #first location we do not go to that week:
+        first.na <- intersect(sites.rem.M[,week,year,p,s], which(is.na(rem.vec[,week,year,p,s])))[1]
+        index.na <- which(first.na == sites.rem.M[,week,year,p,s])
+        v <- sites.rem.M[1:(index.na-1),week,year,p,s] #vector 
+      }
+      
+      l.v <- length(v) #length of visited sites vector
+      
+      #Vector of sites we visited
+      visit[1:l.v, week, year,p,s] <- sites.rem.M[1:(index.na-1),week,year,p,s]
+      
+      #Calculating stepwise distance traveled
+      d.traveled[week,year,p,s] <- abs(visit[1, week, year,p,s] - visit[2, week, year,p,s])
+                 
+      for(si in 2:(l.v-1)){
+        d.traveled[week,year,p,s] <- d.traveled[week,year,p,s] + 
+          abs(visit[si, week, year,p,s] - visit[si+1, week, year,p,s])
+      }
     } #ends week loop
     
     ###### Week 5 #####
@@ -352,3 +378,5 @@ ggplot(state.summary)+
 ggplot(state.summary)+
   geom_boxplot(aes(x = type, y = value, color = type))
 
+
+mean(d.traveled[,,p,])
