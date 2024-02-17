@@ -1042,20 +1042,21 @@ bias.state.df$sim <- as.numeric(bias.state.df$sim)
 bias.state.df <- bias.state.df %>% filter(year > 1)
 
 #### Relative bias- param ####
+p.list <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(param)))
+n.params <- length(p.list)
+
 mean.param <- array(NA, c(n.years,n.params, n.sims))
 true.param <- array(NA, c(n.years,n.params, n.sims))
 param.bias <- array(NA, c(n.years,n.params, n.sims))
 
-p.list <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(param)))
-
 for(year in 2:n.years){
-  for(p in 1:n.params){
-    for(s in 1:n.sims){
-      mean.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(sim == s, param == p.list[p]) %>% select(mean))
-      true.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(sim == s, param == p.list[p]) %>% select(truth))
-      param.bias[year,p,s] <- ((mean.param[year,p,s])-(true.param[year,p,s]))/(true.param[year,p,s])
-      
-    }
+  for(par in 1:n.params){
+    # for(s in 1:n.sims){
+    mean.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
+    true.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
+    param.bias[year,par,] <- ((mean.param[year,par,])-(true.param[year,par,]))/(true.param[year,par,])
+    
+    #}
   }
 }
 
@@ -1073,9 +1074,10 @@ CI.state <- array(NA, c(n.years,n.sites,n.sims))
 
 for(year in 2:n.years){
   for(s in 1:n.sims){
+    low.state[year,,s] <- c(t((res.state[[year]] %>% filter(sim == s) %>% select(low))))
+    high.state[year,,s] <- c(t(res.state[[year]] %>% filter(sim == s) %>% select(high)))
+    
     for(i in 1:n.sites){
-      low.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(low))
-      high.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(high))
       CI.state[year,i,s] <- ifelse(low.state[year,i,s] <= true.state[year,i,s] & 
                                      true.state[year,i,s] <= high.state[year,i,s], 1, 0)
       
@@ -1098,9 +1100,9 @@ CI.param <- array(NA, c(n.years,n.params,n.sims))
 
 for(year in 2:n.years){
   for(s in 1:n.sims){
+    low.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(low)))
+    high.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(high)))
     for(p in 1:n.params){
-      low.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == p.list[p] & sim == s) %>% select(low))
-      high.param[year,p,s] <- as.numeric(res.params[[year]] %>% filter(param == p.list[p] & sim == s) %>% select(high))
       CI.param[year,p,s] <- ifelse(low.param[year,p,s] <= truth.params[p] & 
                                      truth.params[p] <= high.param[year,p,s], 1, 0)
       
