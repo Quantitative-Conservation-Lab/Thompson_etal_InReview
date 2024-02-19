@@ -1,6 +1,7 @@
 library(tidyverse)
 library(here)
 library(plyr)
+library(data.table)
 
 path <- here::here("results", "test")
 
@@ -37,7 +38,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a1 <- fread(file_name)
 est_params_a1 <- data.frame(est_params_a1)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a1 <- fread(file_name)
 bias_state_a1 <- data.frame(bias_state_a1)[-1]
 
@@ -80,7 +81,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a2 <- fread(file_name)
 est_params_a2 <- data.frame(est_params_a2)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a2 <- fread(file_name)
 bias_state_a2 <- data.frame(bias_state_a2)[-1]
 
@@ -123,7 +124,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a3 <- fread(file_name)
 est_params_a3 <- data.frame(est_params_a3)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a3 <- fread(file_name)
 bias_state_a3 <- data.frame(bias_state_a3)[-1]
 
@@ -166,7 +167,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a4 <- fread(file_name)
 est_params_a4 <- data.frame(est_params_a4)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a4 <- fread(file_name)
 bias_state_a4 <- data.frame(bias_state_a4)[-1]
 
@@ -209,7 +210,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a5 <- fread(file_name)
 est_params_a5 <- data.frame(est_params_a5)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a5 <- fread(file_name)
 bias_state_a5 <- data.frame(bias_state_a5)[-1]
 
@@ -253,7 +254,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a6 <- fread(file_name)
 est_params_a6 <- data.frame(est_params_a6)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a6 <- fread(file_name)
 bias_state_a6 <- data.frame(bias_state_a6)[-1]
 
@@ -297,7 +298,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a7 <- fread(file_name)
 est_params_a7 <- data.frame(est_params_a7)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a7 <- fread(file_name)
 bias_state_a7 <- data.frame(bias_state_a7)[-1]
 
@@ -341,7 +342,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a8 <- fread(file_name)
 est_params_a8 <- data.frame(est_params_a8)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a8 <- fread(file_name)
 bias_state_a8 <- data.frame(bias_state_a8)[-1]
 
@@ -384,7 +385,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a9 <- fread(file_name)
 est_params_a9 <- data.frame(est_params_a9)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a9 <- fread(file_name)
 bias_state_a9 <- data.frame(bias_state_a9)[-1]
 
@@ -428,7 +429,7 @@ file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a10 <- fread(file_name)
 est_params_a10 <- data.frame(est_params_a10)[-1]
 
-file_name = paste(path, path2,'bias_state.csv',sep = '/')
+file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a10 <- fread(file_name)
 bias_state_a10 <- data.frame(bias_state_a10)[-1]
 
@@ -480,9 +481,14 @@ CI_state <- rbind(CI_state_a1, CI_state_a2, CI_state_a3,CI_state_a4,CI_state_a5,
 CI_param <- rbind(CI_param_a1, CI_param_a2, CI_param_a3,CI_param_a4,CI_param_a5,
                     CI_param_a6, CI_param_a7,CI_param_a8,CI_param_a9,CI_param_a10)
 
+dist_travel_generating <- dist_travel_generating %>% select("week", "year", "sim", "distance", "alt")
+colnames(dist_travel_generating)[5] <- 'a'
 
 dist_travel <- rbind(dist_travel_generating, dist_travel_a1, dist_travel_a2, dist_travel_a3,dist_travel_a4,
                      dist_travel_a5, dist_travel_a6, dist_travel_a7,dist_travel_a8,dist_travel_a9, dist_travel_a10)
+
+site_visit_generating <- site_visit_generating %>% select("site" , "week", "year", "sim", "visit", "alt")
+colnames(site_visit_generating)[6] <- 'a'
 
 site_visit <- rbind(site_visit_generating, site_visit_a1, site_visit_a2, site_visit_a3,site_visit_a4,
                      site_visit_a5, site_visit_a6, site_visit_a7,site_visit_a8,site_visit_a9, site_visit_a10)
@@ -491,13 +497,19 @@ site_visit <- rbind(site_visit_generating, site_visit_a1, site_visit_a2, site_vi
 yM_dat <- rbind(yM_dat_a1, yM_dat_a2, yM_dat_a3,yM_dat_a4,yM_dat_a5,
                   yM_dat_a6, yM_dat_a7,yM_dat_a8,yM_dat_a9,yM_dat_a10)
 
+colnames(S_truthdat_nocontrol)[6] <- 'a'
+colnames(S_truthdat_generating)[6] <- 'a'
+
 S_truthdat <- rbind(S_truthdat_nocontrol, S_truthdat_generating, S_truthdat_a1, S_truthdat_a2, S_truthdat_a3,S_truthdat_a4,
                     S_truthdat_a5, S_truthdat_a6, S_truthdat_a7,S_truthdat_a8,S_truthdat_a9, S_truthdat_a10)
 
 
 #### Plots ####
-##### Estimated states ####
-ggplot(est_state)
+##### Estimated final state ####
+est_state_final <- est_state %>% filter(year == 10)
+ 
+ggplot(est_state_final) + 
+  geom_boxplot(aes(x = a, y = mean, group = a))
 
 ##### Estimated params ####
 ggplot(est_param)
@@ -525,7 +537,6 @@ ggplot(yM_dat)
 
 ##### True State ####
 ggplot(S_truthdat)
-
 
 ##### True State vs est state ####
 ggplot(S_truthdat)
