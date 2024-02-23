@@ -286,10 +286,12 @@ for(year in 1:n.years){
       
       #Calculating stepwise distance traveled
       d.traveled[week,year,p,s,a] <- abs(visit[1, week, year,p,s,a] - visit[2, week, year,p,s,a])
-                 
-      for(si in 2:(l.v-1)){
-        d.traveled[week,year,p,s,a] <- d.traveled[week,year,p,s,a] + 
-          abs(visit[si, week, year,p,s,a] - visit[si+1, week, year,p,s,a])
+      
+      if(l.v > 2){
+        for(si in 2:(l.v-1)){
+          d.traveled[week,year,p,s,a] <- d.traveled[week,year,p,s,a] + 
+            abs(visit[si, week, year,p,s,a] - visit[si+1, week, year,p,s,a])
+        }
       }
     } #ends week loop
     
