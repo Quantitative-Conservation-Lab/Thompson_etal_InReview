@@ -375,12 +375,12 @@ for(year in 2:n.years){
       
       #Calculating stepwise distance traveled
       d.traveled[week,y,p,s] <- abs(visit[1, week, y,p,s] - visit[2, week, y,p,s])
-      
+      if(l.v > 2){
       for(si in 2:(l.v-1)){
         d.traveled[week,y,p,s] <- d.traveled[week,y,p,s] + 
           abs(visit[si, week, y,p,s] - visit[si+1, week, y,p,s])
       }
-      
+      }
       
       
     } #ends week loop
