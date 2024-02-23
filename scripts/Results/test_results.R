@@ -20,6 +20,8 @@ file_name = paste(path, path2,'dist_travel.csv',sep = '/')
 dist_travel_generating <- fread(file_name)
 dist_travel_generating <- data.frame(dist_travel_generating)[-1]
 
+
+
 file_name = paste(path, path2,'site_visit.csv',sep = '/')
 site_visit_generating <- fread(file_name)
 site_visit_generating <- data.frame(site_visit_generating)[-1]
@@ -34,22 +36,18 @@ path2 <- "years_1"
 file_name = paste(path, path2,'states.csv',sep = '/')
 est_states_a1 <- fread(file_name)
 est_states_a1 <- data.frame(est_states_a1)[-1]
-est_states_a1$a <- 1
 
 file_name = paste(path, path2,'params.csv',sep = '/')
 est_params_a1 <- fread(file_name)
 est_params_a1 <- data.frame(est_params_a1)[-1]
-est_params_a1$a <- 1
 
 file_name = paste(path, path2,'bias_states.csv',sep = '/')
 bias_state_a1 <- fread(file_name)
 bias_state_a1 <- data.frame(bias_state_a1)[-1]
-bias_state_a1$a <- 1
 
 file_name = paste(path, path2,'bias_param.csv',sep = '/')
 bias_param_a1 <- fread(file_name)
 bias_param_a1 <- data.frame(bias_param_a1)[-1]
-bias_param_a1$a <- 1
 
 file_name = paste(path, path2,'CI_state.csv',sep = '/')
 CI_state_a1 <- fread(file_name)
@@ -58,28 +56,23 @@ CI_state_a1 <- data.frame(CI_state_a1)[-1]
 file_name = paste(path, path2,'CI_param.csv',sep = '/')
 CI_param_a1 <- fread(file_name)
 CI_param_a1 <- data.frame(CI_param_a1)[-1]
-CI_param_a1$a <- 1
 
 
 file_name = paste(path, path2,'dist_travel.csv',sep = '/')
 dist_travel_a1 <- fread(file_name)
 dist_travel_a1 <- data.frame(dist_travel_a1)[-1]
-dist_travel_a1$a <- 1
 
 file_name = paste(path, path2,'site_visit.csv',sep = '/')
 site_visit_a1 <- fread(file_name)
 site_visit_a1 <- data.frame(site_visit_a1)[-1]
-site_visit_a1$a <- 1
 
 file_name = paste(path, path2,'yM_dat.csv',sep = '/')
 yM_dat_a1 <- fread(file_name)
 yM_dat_a1 <- data.frame(yM_dat_a1)[-1]
-yM_dat_a1$a <- 1
 
 file_name = paste(path, path2,'S_truthdat.csv',sep = '/')
 S_truthdat_a1 <- fread(file_name)
 S_truthdat_a1 <- data.frame(S_truthdat_a1)[-1]
-S_truthdat_a1$a <- 1
 
 
 #---- est 2  ----#
@@ -507,8 +500,8 @@ site_visit <- rbind(site_visit_a1, site_visit_a2, site_visit_a3,site_visit_a4,
 yM_dat <- rbind(yM_dat_a1, yM_dat_a2, yM_dat_a3,yM_dat_a4,yM_dat_a5,
                   yM_dat_a6, yM_dat_a7,yM_dat_a8,yM_dat_a9,yM_dat_a10)
 
-colnames(S_truthdat_nocontrol)[6] <- 'a'
-colnames(S_truthdat_generating)[6] <- 'a'
+colnames(S_truthdat_nocontrol)[5] <- 'a'
+colnames(S_truthdat_generating)[5] <- 'a'
 
 S_truthdat_nocontrol$type <- 'truth'
 S_truthdat_generating$type <- 'truth'
@@ -544,6 +537,7 @@ bias_state$a <- as.factor(bias_state$a)
 
 ggplot(bias_state) + 
   geom_boxplot(aes(x = a, y = rel.bias, group = a, col = a))+
+  geom_hline(yintercept = 0, color = 'red')+
   scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
   xlab("Search + Removal Alternative")+ ylab("State Relative Bias")+
   labs(title = "State relative bias for each alternative ")
@@ -596,7 +590,7 @@ param.bias1 <- param.bias_sub %>% filter( a == '1')
 ggplot(param.bias1) + 
   geom_boxplot(aes(x = year, y = rel.bias, group = year))+
   geom_hline(yintercept = 0, color = 'red')+
-  scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
   xlab("Alternative")+ ylab("Relative Bias for Estimating Parameter")+
   facet_wrap(~param2)
 
@@ -618,7 +612,7 @@ CI_state$a <- as.factor(CI_state$a)
 
 ggplot(CI_state) + 
   geom_boxplot(aes(x = a, y = CI.coverage, group = a, col = a))+
-  scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
   xlab("Search + Removal Alternative")+ ylab("CI coverage Estimating State")+
   labs(title = "Estimated final average state across sites and simulations")
 
@@ -629,7 +623,7 @@ CI_param$a <- as.factor(CI_param$a)
 
 ggplot(CI_param) + 
   geom_boxplot(aes(x = a, y = CI.coverage, group = a, col = a))+
-  scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
   xlab("Search + Removal Alternative")+ ylab("CI coverage Estimating State")+
   labs(title = "Estimated final average state across sites and simulations")+
   facet_wrap(~param)
@@ -642,39 +636,157 @@ est_state_final$a <- as.factor(est_state_final$a)
 
 ggplot(est_state_final) + 
   geom_boxplot(aes(x = a, y = mean, group = a, col = a))+
-  scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
   xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
   labs(title = "Average estimated final state across sites and simulations")
+
+
+
+est_state_final_means <-  aggregate(mean ~  a ,
+                                    data = as.data.frame(est_state_final), FUN = mean)
+
+est_state_final_low <-  aggregate(low ~ a ,
+                                    data = as.data.frame(est_state_final), FUN = min) #or mean?
+
+est_state_final_high <-  aggregate(high ~ a ,
+                                  data = as.data.frame(est_state_final), FUN = max) #or mean?
+
+
+est_state_final2 <- cbind(est_state_final_means, low = est_state_final_low$low, 
+                          high = est_state_final_high$high)
+
+ggplot(est_state_final2) + 
+  geom_point(aes(x = a, y = mean, group = a, col = a), size = 2)+
+  geom_errorbar(aes(x = a, ymin = low, ymax = high, col = a), width=.2)+
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Average estimated final state across sites and simulations")
+
 
 ##### Distance traveled ####
 dist_travel$a <- as.factor(dist_travel$a) 
 
 ggplot(dist_travel) + 
   geom_boxplot(aes(x = a, y = distance, group = a, col = a))+
-  scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
   xlab("Search + Removal Alternative")+ ylab("Distance traveled")+
   labs(title = "Distance traveled each week")
 
 
 ##### True State ####
-S_truthdat_final <- S_truthdat %>% filter(year == 10)
+S_truthdat_final <- S_truthdat %>% filter(year == 10 & week == 5)
 S_truthdat_final$a <- as.factor(S_truthdat_final$a) 
-
 
 S_truthdat_final2 <- aggregate(state ~ site + a + type,
                                data = as.data.frame(S_truthdat_final), FUN = mean)
 
-
 ggplot(S_truthdat_final2) +
   geom_boxplot(aes(x = a, y = state, group = a, col = a))+
-  scale_color_manual(name = "hrs spent searching and removing at a site)", labels = alt.hours, values = colors) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Final average true state across sites and simulations")
+
+#### True State vs est state #####
+S_truthdat_final_means <-  aggregate(state ~  a ,
+                                    data = as.data.frame(S_truthdat_final), FUN = mean)
+
+colnames(S_truthdat_final_means)[2] <- "mean"
+
+S_truthdat_final_low <- aggregate(state ~  a , 
+                              data = as.data.frame(S_truthdat), 
+                              function(x) quantile(x, probs = 0.025))
+
+S_truthdat_final_high <- aggregate(state ~  a , 
+                                  data = as.data.frame(S_truthdat), 
+                                  function(x) quantile(x, probs = 0.975))
+
+S_truthdat_final2 <- cbind(S_truthdat_final_means, low = S_truthdat_final_low$state, 
+                          high = S_truthdat_final_high$state)
+
+S_truthdat_final2$type <- 'generating'
+S_truthdat_final2$a2 <- as.numeric(S_truthdat_final2$a)
+est_state_final2$type <- 'estimation'
+est_state_final2$a2 <- as.numeric(est_state_final2$a) + 0.2
+
+gen_v_est <- rbind(S_truthdat_final2, est_state_final2)
+gen_v_est$a <- as.numeric(gen_v_est$a)
+
+
+ggplot(gen_v_est) + 
+  geom_errorbar(aes(x = a2, ymin = low, ymax = high, col = as.factor(a),
+                    group = interaction(as.factor(a),type)), width=.2)+
+ geom_point(aes(x = a2, y = mean, group = as.factor(a), 
+                col = as.factor(a), shape = type),size = 2)+
+  scale_color_manual(name = "Hours spent searching and removing at a site", 
+                     labels = alt.hours, values = colors) +
+  scale_x_continuous(breaks=seq(1,10,1))+
   xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
   labs(title = "Average estimated final state across sites and simulations")
 
-##### True State vs est state ####
-ggplot(S_truthdat)
+#### Generating #####
+S_generating_fin  <- S_truthdat_generating  %>% filter(year == 10 & week == 5)
+
+S_generating_final2 <- aggregate(state ~ site + a + type,
+                               data = as.data.frame(S_generating_fin), FUN = mean)
+
+S_generating_final2$a <- as.factor(S_generating_final2$a)
+
+ggplot(S_generating_final2) +
+  geom_boxplot(aes(x = a, y = state, group = a, col = a))+
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Final average true state across sites and simulations")
 
 
-#### State through time ####
+#### Generating vs true state vs estimation #####
+S_generating_final_means <-  aggregate(state ~  a ,
+                                     data = as.data.frame(S_generating_fin), FUN = mean)
 
-S_truthdat_generating$type <- 'truth'
+colnames(S_generating_final_means)[2] <- "mean"
+
+S_generating_final_low <- aggregate(state ~  a , 
+                                  data = as.data.frame(S_generating_fin), 
+                                  function(x) quantile(x, probs = 0.025))
+
+S_generating_final_high <- aggregate(state ~  a , 
+                                   data = as.data.frame(S_generating_fin), 
+                                   function(x) quantile(x, probs = 0.975))
+
+
+S_generating_final2 <- cbind(S_generating_final_means, low = S_generating_final_low$state, 
+                           high = S_generating_final_high$state)
+
+S_generating_final2$type <- 'truly generating'
+
+
+S_generating_final2$a2 <- as.numeric(S_generating_final2$a) + 0.4
+
+gen_v_est_trulygen <- rbind(gen_v_est, S_generating_final2)
+gen_v_est_trulygen$a <- as.numeric(gen_v_est_trulygen$a)
+
+
+ggplot(gen_v_est_trulygen) + 
+  geom_errorbar(aes(x = a2, ymin = low, ymax = high, col = as.factor(a),
+                    group = interaction(as.factor(a),type)), width=.2)+
+  geom_point(aes(x = a2, y = mean, group = as.factor(a), 
+                 col = as.factor(a), shape = type),size = 2)+
+  scale_color_manual(name = "Hours spent searching and removing at a site", 
+                     labels = alt.hours, values = colors) +
+  scale_x_continuous(breaks=seq(1,10,1))+
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Average estimated final state across sites and simulations")
+
+
+#### True State through time #####
+S_truthdat_time <- aggregate(state ~  week + year + a + type,
+                             data = as.data.frame(S_truthdat), FUN = mean)
+
+S_truthdat_time$a <- as.factor(S_truthdat_time$a) 
+
+S_truthdat_time$time <- S_truthdat_time$week +  12*(S_truthdat_time$year - 1)
+
+ggplot(S_truthdat_time) +
+  geom_line(aes(x = time, y = state, col = a)) +
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
+  xlab("Time")+ ylab("Average estimated state") +
+  labs(title = "True state through time") + facet_wrap(~a)
