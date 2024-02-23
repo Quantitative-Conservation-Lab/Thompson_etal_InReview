@@ -500,7 +500,7 @@ site_visit <- rbind(site_visit_a1, site_visit_a2, site_visit_a3,site_visit_a4,
 yM_dat <- rbind(yM_dat_a1, yM_dat_a2, yM_dat_a3,yM_dat_a4,yM_dat_a5,
                   yM_dat_a6, yM_dat_a7,yM_dat_a8,yM_dat_a9,yM_dat_a10)
 
-colnames(S_truthdat_nocontrol)[5] <- 'a'
+colnames(S_truthdat_nocontrol)[6] <- 'a'
 colnames(S_truthdat_generating)[5] <- 'a'
 
 S_truthdat_nocontrol$type <- 'truth'
@@ -641,6 +641,17 @@ ggplot(est_state_final) +
   labs(title = "Average estimated final state across sites and simulations")
 
 
+nocontrol_final <- S_truthdat_nocontrol %>% filter(week == 5 & year == 10)
+nocontrol_final_means <-  aggregate(state ~  site + a,
+                                    data = as.data.frame(nocontrol_final), FUN = mean)
+
+
+ggplot(nocontrol_final_means) +
+  geom_boxplot(aes(x = a, y = state, group = a, col = a))+
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Final average true state across sites and simulations")
+
 
 est_state_final_means <-  aggregate(mean ~  a ,
                                     data = as.data.frame(est_state_final), FUN = mean)
@@ -662,6 +673,34 @@ ggplot(est_state_final2) +
   xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
   labs(title = "Average estimated final state across sites and simulations")
 
+###### Add no control ####
+nocontrol_final_means2 <-  aggregate(state ~  a ,
+                                    data = as.data.frame(nocontrol_final_means), FUN = mean)
+
+nocontrol_final_low <-  aggregate(state ~ a ,
+                                  data = as.data.frame(nocontrol_final_means), FUN = min) #or mean?
+
+nocontrol_final_high <-  aggregate(state ~ a ,
+                                   data = as.data.frame(nocontrol_final_means), FUN = max) #or mean?
+
+
+nocontrol_final2 <- cbind(nocontrol_final_means2, low = nocontrol_final_low$state, 
+                          high = nocontrol_final_high$state)
+
+
+colnames(nocontrol_final2)[2] <- 'mean'
+
+state_final2 <- rbind(est_state_final2, nocontrol_final2 )
+
+colors2 <- c(colors, "black")
+alt.hours2 <- c(alt.hours, "No management")
+
+ggplot(state_final2) + 
+  geom_point(aes(x = a, y = mean, group = a, col = a), size = 2)+
+  geom_errorbar(aes(x = a, ymin = low, ymax = high, col = a), width=.2)+
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours2, values = colors2) +
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Average estimated final state across sites and simulations")
 
 ##### Distance traveled ####
 dist_travel$a <- as.factor(dist_travel$a) 
@@ -683,6 +722,21 @@ S_truthdat_final2 <- aggregate(state ~ site + a + type,
 ggplot(S_truthdat_final2) +
   geom_boxplot(aes(x = a, y = state, group = a, col = a))+
   scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours, values = colors) +
+  xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
+  labs(title = "Final average true state across sites and simulations")
+
+###### Add no control ######
+nocontrol_final_means$a <- 'No management'
+nocontrol_final_means$type <- 'nocontrol'
+
+S_truthdat_final2b <- rbind(S_truthdat_final2, nocontrol_final_means)
+
+colors2 <- c(colors, "black")
+alt.hours2 <- c(alt.hours, "No management")
+
+ggplot(S_truthdat_final2b) +
+  geom_boxplot(aes(x = a, y = state, group = a, col = a))+
+  scale_color_manual(name = "Hours spent searching and removing at a site", labels = alt.hours2, values = colors2) +
   xlab("Search + Removal Alternative")+ ylab("Average estimated final state") +
   labs(title = "Final average true state across sites and simulations")
 
