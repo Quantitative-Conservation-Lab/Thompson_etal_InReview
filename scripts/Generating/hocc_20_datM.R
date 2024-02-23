@@ -335,11 +335,12 @@ time.taken <- end.time - start.time
 p <- which(apply(params, 1, function(x) return(all(x == c(3,3,3,3,3,3))))) #bad invasion but good management
 
 dist.travel <- adply(d.traveled[1:4,1:n.years, p, 1:n.sims,1:n.a], c(1,2,3,4))
-colnames(dist.travel) <- c("week", "year", "sim", "distance", "alt")
+colnames(dist.travel) <- c("week", "year", "sim", "alt", "distance")
 dist.travel$week <- as.numeric(dist.travel$week)
 dist.travel$year <- as.numeric(dist.travel$year)
 dist.travel$sim <- as.numeric(dist.travel$sim)
 dist.travel$alt <- as.numeric(dist.travel$alt)
+dist.travel$distance <- as.numeric(dist.travel$distance)
 
 #### Sites visited ####
 site.visit <- adply(rem.vec[1:n.sites, 1:4,1:n.years, p, 1:n.sims, 1:n.a], c(1,2,3,4,5))
@@ -365,7 +366,7 @@ site.visit$visit[site.visit$visit == 3] <- 0
 
 #### True State ####
 S.dat <- adply(State[1:n.sites,1:5,1:n.years, p, 1:n.sims, 1:n.a], c(1,2,3,4,5))
-colnames(S.dat) <- c("site", "week", "year", "sim", "state", "alt")
+colnames(S.dat) <- c("site", "week", "year", "sim", "alt", "state")
 S.dat$site <- as.numeric(S.dat$site)
 S.dat$week <- as.numeric(S.dat$week)
 S.dat$year <- as.numeric(S.dat$year)
