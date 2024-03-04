@@ -9,12 +9,12 @@ library(viridis)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "test", "generating")
-res <- c('results/test/generating') #subset of path for plot save
+path <- here::here("results", "test_40", "generating")
+res <- c('results/test_40/generating') #subset of path for plot save
 
 #### Management Strategy ####
 load("parameters.RData")
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 
 hours <- expand.grid(s = c(0.5, 1, 2, 3), r =  c(1,2,3,4))
 hours <- hours %>% filter(s < r)

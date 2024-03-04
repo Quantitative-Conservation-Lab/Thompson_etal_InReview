@@ -17,8 +17,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "test", "years_10")
-res <- c('results/test/years_10') #subset of path for plot save
+path <- here::here("results", "test", "years_1")
+res <- c('results/test/years_1') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters.RData")
@@ -29,7 +29,7 @@ hours <- expand.grid(s = c(0.5, 1, 2, 3), r =  c(1,2,3,4))
 hours <- hours %>% filter(s < r)
 
 ### Fix with each a ###
-hours <- hours[10,]
+hours <- hours[1,]
 search.hours <- hours$s
 logsearch.effort <- log(search.hours) #log search effort
 removal.hours <- hours$r
@@ -376,11 +376,12 @@ for(year in 2:n.years){
       #Calculating stepwise distance traveled
       d.traveled[week,y,p,s] <- abs(visit[1, week, y,p,s] - visit[2, week, y,p,s])
       
+      if(l.v > 2){
       for(si in 2:(l.v-1)){
         d.traveled[week,y,p,s] <- d.traveled[week,y,p,s] + 
           abs(visit[si, week, y,p,s] - visit[si+1, week, y,p,s])
       }
-      
+      }
       
       
     } #ends week loop
@@ -896,14 +897,15 @@ for(year in 2:n.years){
 #################################################################################################
 end.time <- Sys.time()
 time.taken <- end.time - start.time
+
 ##### plots #####
-ggplot(res.params[[2]]) +
-  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
-  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
-  geom_point(data=res.params[[2]], aes(x = sim, y = truth),color = "black", shape = 22) +
-  facet_wrap(~param, scales = "free") +
-  xlab("Simulation")+ylab("State") + 
-  guides(color = guide_legend(title = "Simulation"))   
+  ggplot(res.params[[2]]) +
+    geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
+    geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(sim)))+
+    geom_point(data=res.params[[2]], aes(x = sim, y = truth),color = "black", shape = 22) +
+    facet_wrap(~param, scales = "free") +
+    xlab("Simulation")+ylab("State") + 
+    guides(color = guide_legend(title = "Simulation"))   
 
 ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = sim, y = mean, col = as.factor(sim)))+
@@ -972,12 +974,12 @@ y1.prior.mean <- c(0,0,0,0,0,
 y1.prior.low <- c(-2.6,-2.6,-2.6,-2.6,-2.6,
                   -2.6,-2.6,-2.6,-2.6,-2.6,
                   -2.6,-2.6,-2.6,-2.6,-2.6,
-                  .1,.1,.1,.1,.1,.1)
+                   .1,.1,.1,.1,.1,.1)
 
 y1.prior.high <- c(2.6,2.6,2.6,2.6,2.6,
-                   2.6,2.6,2.6,2.6,2.6,
-                   2.6,2.6,2.6,2.6,2.6,
-                   .9,.9,.9,.9,.9,.9)
+                  2.6,2.6,2.6,2.6,2.6,
+                  2.6,2.6,2.6,2.6,2.6,
+                  .9,.9,.9,.9,.9,.9)
 
 res.par.df.summary <- res.par.df.summary %>% arrange(year)
 
@@ -1166,7 +1168,7 @@ S.dat$sim <- as.numeric(S.dat$sim)
 S.dat$state <- as.numeric(S.dat$state)
 
 #### SAVE CSVS ####
-a <- 10
+a <- 1
 #1. parameters
 res.par.df$a <- a
 file_name = paste(path, 'params.csv',sep = '/')

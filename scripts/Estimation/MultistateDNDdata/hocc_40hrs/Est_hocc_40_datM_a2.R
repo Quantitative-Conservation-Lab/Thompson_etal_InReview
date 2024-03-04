@@ -17,19 +17,19 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "test", "years_6")
-res <- c('results/test/years_6') #subset of path for plot save
+path <- here::here("results", "test_40", "years_2")
+res <- c('results/test_40/years_2') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters.RData")
 #rule = by highest estimated state
 
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 hours <- expand.grid(s = c(0.5, 1, 2, 3), r =  c(1,2,3,4))
 hours <- hours %>% filter(s < r)
 
 ### Fix with each a ###
-hours <- hours[6,]
+hours <- hours[2,]
 search.hours <- hours$s
 logsearch.effort <- log(search.hours) #log search effort
 removal.hours <- hours$r
@@ -375,12 +375,12 @@ for(year in 2:n.years){
       
       #Calculating stepwise distance traveled
       d.traveled[week,y,p,s] <- abs(visit[1, week, y,p,s] - visit[2, week, y,p,s])
-      
+      if(l.v > 2){
       for(si in 2:(l.v-1)){
         d.traveled[week,y,p,s] <- d.traveled[week,y,p,s] + 
           abs(visit[si, week, y,p,s] - visit[si+1, week, y,p,s])
       }
-      
+      }
       
       
     } #ends week loop
@@ -1167,7 +1167,7 @@ S.dat$sim <- as.numeric(S.dat$sim)
 S.dat$state <- as.numeric(S.dat$state)
 
 #### SAVE CSVS ####
-a <- 6
+a <- 2
 #1. parameters
 res.par.df$a <- a
 file_name = paste(path, 'params.csv',sep = '/')
