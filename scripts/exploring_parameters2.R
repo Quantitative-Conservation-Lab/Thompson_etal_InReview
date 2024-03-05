@@ -24,7 +24,9 @@ B0.gamma <- B1.gamma <- B2.gamma <- seq(-2,2,by = 0.1)
 invasion.parms <- expand.grid(B0 = B0.gamma, B1 = B1.gamma, B2 = B2.gamma,
                               site.cov = site.cov, neighbors = neighbors)
 
-invasion <- invlogit(invasion.parms$B0 + invasion.parms$B1*invasion.parms$site.cov + invasion.parms$B2*invasion.parms$neighbors)
+invasion <- invlogit(invasion.parms$B0 + 
+                       invasion.parms$B1*invasion.parms$site.cov +
+                       invasion.parms$B2*invasion.parms$neighbors)
 
 summary(invasion)
 boxplot(invasion)
