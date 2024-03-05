@@ -59,24 +59,8 @@ B0.p.h ~ dnorm(B0.p.h.mean, B0.p.h.tau) #base detection for high state
 B0.p.h.tau <- 1/(B0.p.h.sd * B0.p.h.sd) #precision parameter
 B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau) #effect of effort 
 B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
-
-logit(pM.l) <- B0.p.l + B1.p.l*logeffort #detection low state
-logit(pM.h) <- B0.p.h + B1.p.h*logeffort #detection high state
   
 delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
-  
-#Detection matrix:
-P.datM[1,1] <- 1 #Empty and not observed  
-P.datM[1,2] <- 0 #Empty and observed low 
-P.datM[1,3] <- 0 #Empty and observed high
-
-P.datM[2,1] <- 1-pM.l #Low state and not observed
-P.datM[2,2] <- pM.l #Low state and observed low
-P.datM[2,3] <- 0 #Low state and observed high
-
-P.datM[3,1] <- 1-pM.h #High state and not observed
-P.datM[3,2] <- pM.h*(1-delta) #High state and observed low
-P.datM[3,3] <- pM.h*(delta) #High state and observed high  
   
 #-----------------------------------------------------------------------------#
 # STATE TRANSITION
@@ -108,10 +92,10 @@ for (i in 1:n.sites){
   # State transition probabilities (TPM): probability of S(t+1) given S(t)
   for (t in 1:4){
     
-    logit(eps.l[i,t]) <- B0.eps.l + B1.eps.l*rem.vec[i,t]*removal.hours #erradication low state, rem.vec = indicator of removal
-    logit(eps.h[i,t]) <- B0.eps.h + B1.eps.h*rem.vec[i,t]*removal.hours #erradication high state
+    logit(eps.l[i,t]) <- B0.eps.l + B1.eps.l*rem.vec[i,t]*hours[2,i,t] #erradication low state, rem.vec = indicator of removal
+    logit(eps.h[i,t]) <- B0.eps.h + B1.eps.h*rem.vec[i,t]*hours[2,i,t] #erradication high state
     
-    logit(phi.h[i,t]) <- B0.phi.h - B1.phi.h*rem.vec[i,t]*removal.hours
+    logit(phi.h[i,t]) <- B0.phi.h - B1.phi.h*rem.vec[i,t]*hours[2,i,t]
     
     #State transition matrix: TPM[current state, location, time, future state]
     TPM[1,i,t,1] <- 1 #empty to empty
@@ -125,6 +109,23 @@ for (i in 1:n.sites){
     TPM[3,i,t,1] <- eps.h[i,t] #high to empty
     TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.h[i,t]) #high to low
     TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.h[i,t]) #high to high
+    
+    #Detection matrix:
+    logit(pM.l[i,t]) <- B0.p.l + B1.p.l*log(hours[1,i,t]) #detection low state
+    logit(pM.h[i,t]) <- B0.p.h + B1.p.h*log(hours[1,i,t])  #detection high state
+      
+    P.datM[1,i,t,1] <- 1 #Empty and not observed  
+    P.datM[1,i,t,2] <- 0 #Empty and observed low 
+    P.datM[1,i,t,3] <- 0 #Empty and observed high
+
+    P.datM[2,i,t,1] <- 1-pM.l[i,t] #Low state and not observed
+    P.datM[2,i,t,2] <- pM.l[i,t] #Low state and observed low
+    P.datM[2,i,t,3] <- 0 #Low state and observed high
+      
+    P.datM[3,i,t,1] <- 1-pM.h[i,t] #High state and not observed
+    P.datM[3,i,t,2] <- pM.h[i,t]*(1-delta) #High state and observed low
+    P.datM[3,i,t,3] <- pM.h[i,t]*(delta) #High state and observed high 
+    
     
   } #t
 } #i
@@ -145,9 +146,9 @@ for (i in 1:n.sites){
 
   #----- Observation Model -----#
   for(j in 1:n.occs){
-    for(t in 1:n.weeks){
+    for(t in 1:4){
       # Observation process: draw observation given current state
-      yM[i,j,t] ~ dcat(P.datM[State[i,t],]) 
+      yM[i,j,t] ~ dcat(P.datM[State[i,t],i,t,]) 
     } #t
   } #j
     
