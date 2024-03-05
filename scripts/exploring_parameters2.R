@@ -17,11 +17,9 @@ n.rem <- length(rem.hours)
 n.search <- length(search.hours)
 n.neighbors <- length(neighbors)
 
-
-
-#### INVASION ####
+#### Invasion ####
 site.cov <- c(0,0.5,1)
-B0.gamma <- B1.gamma <- B2.gamma <- c(-2,0,2)
+B0.gamma <- B1.gamma <- B2.gamma <- seq(-2,2,by = 0.1)
 
 invasion.parms <- expand.grid(B0 = B0.gamma, B1 = B1.gamma, B2 = B2.gamma,
                               site.cov = site.cov, neighbors = neighbors)
@@ -32,17 +30,17 @@ summary(invasion)
 boxplot(invasion)
 
 #### Staying in high state ####
-B0.phih <- B1.phih <- c(-1,0,1)
+B0.phih <- B1.phih <- seq(-1,1,by = 0.1)
 
 phih.parms <- expand.grid(B0 = B0.phih, B1 = B1.phih, rem = rem.hours)
 
-phih <- invlogit(phih.parms$B0 + phih.parms$B1*phih.parms$rem)
+phih <- invlogit(phih.parms$B0 - phih.parms$B1*phih.parms$rem)
 
 summary(phih)
 boxplot(phih)
 
 #### eradication low state ####
-B0.epsl <- B1.epsl <- c(-1,0,1)
+B0.epsl <- B1.epsl <- seq(-1,1,by = 0.1)
 
 epsl.parms <- expand.grid(B0 = B0.epsl, B1 = B1.epsl, rem = rem.hours)
 
@@ -52,7 +50,7 @@ summary(epsl)
 boxplot(epsl)
 
 #### eradication high state ####
-B0.epsh <- B1.epsh <- c(-1,0,1)
+B0.epsh <- B1.epsh <- seq(-1,1,by = 0.1)
 
 epsh.parms <- expand.grid(B0 = B0.epsh, B1 = B1.epsh, rem = rem.hours)
 
@@ -62,7 +60,7 @@ summary(epsh)
 boxplot(epsh)
 
 #### Detection low state ####
-B0.pl <- B1.pl <- c(-2,0,2)
+B0.pl <- B1.pl <- seq(-2,2,by = 0.1)
 
 pl.parms <- expand.grid(B0 = B0.pl, B1 = B1.pl, log.search = log.search)
 
@@ -72,7 +70,7 @@ summary(pl)
 boxplot(pl)
 
 #### Detection high state ####
-B0.ph <- B1.ph <- c(-2,0,2)
+B0.ph <- B1.ph <- seq(-2,2,by = 0.1)
 
 ph.parms <- expand.grid(B0 = B0.ph, B1 = B1.ph, log.search = log.search)
 
