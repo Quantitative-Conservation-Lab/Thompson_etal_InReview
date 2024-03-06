@@ -31,9 +31,9 @@ high.neighbor <- list(B2.gamma = B2.gammas[3])
 
 nbr3 <- list(low.neighbor, med.neighbor, high.neighbor)
 
-# invlogit(B0.gammas[1] + B1.gammas[1] + 2*B2.gammas[1])
+invlogit(B0.gammas[1] + B1.gammas[1] + 2*B2.gammas[1])
 # invlogit(B0.gammas[2] + B1.gammas[2] + 2*B2.gammas[2])
-# invlogit(B0.gammas[3] + B1.gammas[3] + 2*B2.gammas[3])
+invlogit(B0.gammas[3] + B1.gammas[3] + 2*B2.gammas[3])
 
 #### 4. Tendency to grow ####
 B0.phi.hs <- c(0, 0.5, 1) #transition from high to high during data weeks
