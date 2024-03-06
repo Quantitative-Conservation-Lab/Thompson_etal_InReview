@@ -115,7 +115,6 @@ beta_in_beta_moment <- function(alpha, means){ #beta = (alpha)*(1-mean)/(mean)
   return(beta)
 }
 
-
 g.a <- alpha_in_beta_moment(0.2,0.1)
 g.b <- beta_in_beta_moment(g.a, 0.2)
 g <- rbeta(100,g.a,g.b)
@@ -144,6 +143,7 @@ summary(epsB.h)
 #### Detection low state ####
 B0.pl <- rnorm(100,0,1)
 B1.pl <- rnorm(100,0,1)
+B1.pl[B1.pl < 0] <- 0
 
 pl.parms <- expand.grid(B0 = B0.pl, B1 = B1.pl, log.search = log.search)
 
@@ -155,6 +155,7 @@ boxplot(pl)
 #### Detection high state ####
 B0.ph <- rnorm(100,0,1)
 B1.ph <- rnorm(100,0,1)
+B1.ph[B1.ph < 0] <- 0
 
 ph.parms <- expand.grid(B0 = B0.ph, B1 = B1.ph, log.search = log.search)
 
@@ -163,4 +164,9 @@ ph <- invlogit(ph.parms$B0 + ph.parms$B1*ph.parms$log.search)
 summary(ph)
 boxplot(ph)
 
+#### Correctly observing high state if invaded ####
+delta <- rbeta(100,1,1)
+summary(delta) 
+
 save.image(file = "parameters_data.RData")
+

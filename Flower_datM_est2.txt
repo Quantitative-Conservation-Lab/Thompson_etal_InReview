@@ -14,18 +14,18 @@ model{
 #--------------- State parameters for data weeks: ---------------#
 B0.eps.l ~ dnorm(B0.eps.l.mean, B0.eps.l.tau) #eradication when at low state
 B0.eps.l.tau <- 1/(B0.eps.l.sd * B0.eps.l.sd) #precision parameter
-B1.eps.l ~ dnorm(B1.eps.l.mean, B1.eps.l.tau) #effect of eradication 
+B1.eps.l ~ dnorm(B1.eps.l.mean, B1.eps.l.tau)T(0,) #effect of eradication 
 B1.eps.l.tau <- 1/(B1.eps.l.sd * B1.eps.l.sd) #precision parameter
   
 B0.eps.h ~ dnorm(B0.eps.h.mean, B0.eps.h.tau) #eradication when at high state
 B0.eps.h.tau <- 1/(B0.eps.h.sd * B0.eps.h.sd) #precision parameter
-B1.eps.h ~ dnorm(B1.eps.h.mean, B1.eps.h.tau) #effect of eradication 
+B1.eps.h ~ dnorm(B1.eps.h.mean, B1.eps.h.tau)T(0,) #effect of eradication 
 B1.eps.h.tau <- 1/(B1.eps.h.sd * B1.eps.h.sd) #precision parameter
   
 #State transition:
 B0.phi.h ~ dnorm(B0.phi.h.mean, B0.phi.h.tau) #transition from high to high
 B0.phi.h.tau <- 1/(B0.phi.h.sd * B0.phi.h.sd) #precision parameter
-B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau) #effect of removal on transition
+B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau)T(0,) #effect of removal on transition
 B1.phi.h.tau <- 1/(B1.phi.h.sd*B1.phi.h.sd) #precision parameter
   
 #--------------- State parametes for between weeks: ---------------#
@@ -51,13 +51,13 @@ phiB.h ~ dbeta(phiB.h.a, phiB.h.b)T(0.0001,0.9999) #staying high state
 #Detection low state:
 B0.p.l ~ dnorm(B0.p.l.mean, B0.p.l.tau) #base detection for low state
 B0.p.l.tau <- 1/(B0.p.l.sd * B0.p.l.sd) #precision parameter
-B1.p.l ~ dnorm(B1.p.l.mean, B1.p.l.tau) #effect of effort 
+B1.p.l ~ dnorm(B1.p.l.mean, B1.p.l.tau)T(0,) #effect of effort 
 B1.p.l.tau <- 1/(B1.p.l.sd * B1.p.l.sd) #precision parameter
   
 #Detection high state:
 B0.p.h ~ dnorm(B0.p.h.mean, B0.p.h.tau) #base detection for high state
 B0.p.h.tau <- 1/(B0.p.h.sd * B0.p.h.sd) #precision parameter
-B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau) #effect of effort 
+B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau)T(0,) #effect of effort 
 B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
 
 logit(pM.l) <- B0.p.l + B1.p.l*logeffort #detection low state
