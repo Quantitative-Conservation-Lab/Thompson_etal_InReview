@@ -16,8 +16,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "hstate", "S5_R5_20")
-res <- c('results/hstate/S5_R5_20') #subset of path for plot save
+path <- here::here("results", "hstate_both", "S5_R5_20")
+res <- c('results/hstate_both/S5_R5_20') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -133,10 +133,11 @@ resource.total <- array(0, c(n.weeks, n.years, n.sims))
 d.traveled <- array(NA, c(n.weeks, n.years, n.sims))
 visit <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
 
+yD <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
+
 #Detection probabilities
 pM.l <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
 pM.h <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
-
 P.datM <- array(NA, dim = c(n.states, n.sites, n.weeks, n.years, n.sims, n.states))
 
 
@@ -155,9 +156,41 @@ for(w in 1:n.weeks){
   }
 }
 
+#### Dat D detection ####
+pD.l <- rep(NA, n.sims)
+pD.h <- rep(NA, n.sims)
+P.datD <- array(NA, dim = c(n.states, n.sims, 2))
+logeffort.D <- log(1) #assume they are spending 1 hour at each spot
+
+alpha.l <- rnorm(n.sims, 0, 0.5)
+alpha.h <- rnorm(n.sims, 0, 0.5)
+
+alpha.ls <- data.frame(param = 'alpha.l', truth = alpha.l, sim = seq(1:n.sims))
+alpha.hs <- data.frame(param = 'alpha.h', truth = alpha.h, sim = seq(1:n.sims))
+
+truth.params <- rbind(alpha.ls, alpha.hs, truth.params)
+
+for(i in 1:n.sims){
+  while(alpha.l[i] > 0){
+    alpha.l[i] <- rnorm(1, 0, 0.5)
+  }
+  
+  while(alpha.h[i] > 0){
+    alpha.h[i] <- rnorm(1, 0, 0.5)
+  }
+  
+}
+  
+for(s in 1:n.sims){
+  pD.l[s] <- invlogit(B0.pl[s] + B1.pl[s]*logeffort.D + alpha.l[s])
+  pD.h[s] <- invlogit(B0.ph[s] + B1.ph[s]*logeffort.D + alpha.h[s])
+  
+  P.datD[1,s,] <- c(1,0)
+  P.datD[2,s,] <- c(1-pD.l[s],pD.l[s])
+  P.datD[3,s,] <- c(1-pD.h[s],pD.h[s])
+}
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
-start.time <- Sys.time()
 
 #### JAGS arrays ####
 S.init <- array(NA, c(n.sites,n.years, n.sims))
@@ -201,15 +234,15 @@ B0.p.l.mean <- array(NA, c(n.years, n.sims))
 B0.p.l.sd <- array(NA, c(n.years, n.sims))
 B1.p.l.mean <- array(NA, c(n.years, n.sims))
 B1.p.l.sd <- array(NA, c(n.years, n.sims))
-l.mean <- array(NA, c(n.years, n.sims))
-l.sd <- array(NA, c(n.years, n.sims))
+alpha.l.mean <- array(NA, c(n.years, n.sims))
+alpha.l.sd <- array(NA, c(n.years, n.sims))
 
 B0.p.h.mean <- array(NA, c(n.years, n.sims))
 B0.p.h.sd <- array(NA, c(n.years, n.sims))
 B1.p.h.mean <- array(NA, c(n.years, n.sims))
 B1.p.h.sd <- array(NA, c(n.years, n.sims))
-h.mean <- array(NA, c(n.years, n.sims))
-h.sd <- array(NA, c(n.years, n.sims))
+alpha.h.mean <- array(NA, c(n.years, n.sims))
+alpha.h.sd <- array(NA, c(n.years, n.sims))
 delta.a <- array(NA, c(n.years, n.sims))
 delta.b <-  array(NA, c(n.years, n.sims))
 
@@ -341,6 +374,11 @@ for(year in 2:n.years){
         
         ##### Observation process #######
         # Observation process: draw observation given current state
+        for(i in 1:n.sites){
+          yD[i,1,week, y,s] <- rcat(1, P.datD[State[i,week,y,s],s,])
+          yD[i,2,week, y,s] <- rcat(1, P.datD[State[i,week,y,s],s,])
+        }
+        
         
         for(h in 1:n.sites){ #order of sites where removal occurs
           i <- sites.rem.M[h,week,y,s]
@@ -549,6 +587,12 @@ for(year in 2:n.years){
     delta.a[year,] <- 1
     delta.b[year,] <- 1
     
+    #--alpha ----#
+    alpha.l.mean[year,] <- 0
+    alpha.l.sd[year,] <- 0.5
+    alpha.h.mean[year,] <- 0
+    alpha.h.sd[year,] <- 0.5
+    
     # --- S.init and D.init ---  Initial states ------------ #
     alpha.init1 <- rep(1,n.states) #initial state probability vector
     
@@ -654,6 +698,14 @@ for(year in 2:n.years){
       delta.a[year,s] <- (delta.mean^2 - delta.mean^3 - (delta.mean*delta.sd^2) )/ (delta.sd^2)
       delta.b[year,s] <- (delta.a[year,s]*(1-delta.mean))/ (delta.mean)
       
+      
+      # --- alpha.l  #  
+      alpha.l.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.l')) %>% select(mean)))
+      alpha.l.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.l')) %>% select(sd)))
+      
+      alpha.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.h')) %>% select(mean)))
+      alpha.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.h')) %>% select(sd)))
+      
       # --- S.init and D.init ---  Initial states ------------ #
       
       for(i in 1:n.sites){
@@ -687,13 +739,17 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,1:2,s],
+        yD = yD[,,,1:2,s],
         site.char = site.char,
         hours = hours.dat[,1:n.sites,1:n.weeks, 1:2, s],
         rem.vec = rem.vec.dat[,,,s],
         n.neighbors = n.neighbors,
+        logeffort.D = logeffort.D, 
         
         #priors
         alpha.init1 = alpha.init1,
+        alpha.l.mean = alpha.l.mean[year,s],alpha.l.sd = alpha.l.sd[year,s],
+        alpha.h.mean = alpha.h.mean[year,s],alpha.h.sd = alpha.h.sd[year,s],
         
         B0.eps.l.mean =  B0.eps.l.mean[year,s], B0.eps.l.sd =  B0.eps.l.sd[year,s], B1.eps.l.mean =  B1.eps.l.mean[year,s],
         B1.eps.l.sd =  B1.eps.l.sd[year,s], B0.eps.h.mean =  B0.eps.h.mean[year,s], B0.eps.h.sd =  B0.eps.h.sd[year,s],
@@ -729,7 +785,7 @@ for(year in 2:n.years){
       initial.values[[s]] <- function()list(State = State.start[,,,s])
     }
     
-    file.name <- "Flower_datM_est1_explore.txt"
+    file.name <- "Flower_datB_est1_explore.txt"
     
   }
   
@@ -745,13 +801,17 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,year,s],
+        yD = yD[,,,1:2,s],
         site.char = site.char,
         rem.vec = rem.vec.dat[,,s],
         hours = hours.dat[,1:n.sites,1:n.weeks, year, s],
         n.neighbors = n.neighbors,
+        logeffort.D = logeffort.D, 
         
         #priors
         alpha.init = alpha.init[year,,,s],
+        alpha.l.mean = alpha.l.mean[year,s],alpha.l.sd = alpha.l.sd[year,s],
+        alpha.h.mean = alpha.h.mean[year,s],alpha.h.sd = alpha.h.sd[year,s],
         
         B0.eps.l.mean =  B0.eps.l.mean[year,s], B0.eps.l.sd =  B0.eps.l.sd[year,s], B1.eps.l.mean =  B1.eps.l.mean[year,s],
         B1.eps.l.sd =  B1.eps.l.sd[year,s], B0.eps.h.mean =  B0.eps.h.mean[year,s], B0.eps.h.sd =  B0.eps.h.sd[year,s],
@@ -788,7 +848,7 @@ for(year in 2:n.years){
       initial.values[[s]] <- function()list(State = State.start[,,s] , StateB = State.start[,1,s])
     }
     
-    file.name <- "Flower_datM_est2_explore.txt"
+    file.name <- "Flower_datB_est2_explore.txt"
   }
   
   ##### DATA for > last explore #######
@@ -803,14 +863,18 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,year,s],
+        yD= yD[,,,year,s],
         site.char = site.char,
         logeffort = logsearch.effort[s],
         rem.vec = rem.vec.dat[,,s],
         removal.hours = removal.hours[s],
         n.neighbors = n.neighbors,
+        logeffort.D = logeffort.D,
         
         #priors
         alpha.init = alpha.init[year,,,s],
+        alpha.l.mean = alpha.l.mean[year,s],alpha.l.sd = alpha.l.sd[year,s],
+        alpha.h.mean = alpha.h.mean[year,s],alpha.h.sd = alpha.h.sd[year,s],
         
         B0.eps.l.mean =  B0.eps.l.mean[year,s], B0.eps.l.sd =  B0.eps.l.sd[year,s], B1.eps.l.mean =  B1.eps.l.mean[year,s],
         B1.eps.l.sd =  B1.eps.l.sd[year,s], B0.eps.h.mean =  B0.eps.h.mean[year,s], B0.eps.h.sd =  B0.eps.h.sd[year,s],
@@ -847,7 +911,7 @@ for(year in 2:n.years){
       initial.values[[s]] <- function()list(State = State.start[,,s] , StateB = State.start[,1,s])
     }
     
-    file.name <- "Flower_datM_est2.txt"
+    file.name <- "Flower_datB_est2.txt"
     
   }
   
@@ -855,11 +919,12 @@ for(year in 2:n.years){
   parameters.to.save <- c("B0.eps.l", "B1.eps.l", "B0.eps.h", "B1.eps.h", 
                           "B0.phi.h", "B1.phi.h","B0.gamma", "B1.gamma","B2.gamma",
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
-                          "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
+                          "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
                           "delta", "State.fin")
   
-  n.burnin <- 1000
-  n.iter <- 10000 
+  #### FIX ####
+  n.burnin <- 10#00
+  n.iter <- 100#00 
   n.chains <- n.chains
   n.thin <- 1
   
