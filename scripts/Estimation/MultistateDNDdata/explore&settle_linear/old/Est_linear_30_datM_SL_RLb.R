@@ -16,13 +16,13 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle_linear", "SL_RL_30b")
+res <- c('results/explore_settle_linear/SL_RL_30b') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 30 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -120,11 +120,9 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
+#### Removal Locations ####
+sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -963,16 +961,7 @@ for(year in 2:n.years){
   
   
   ###### 3b. Make Decision #####
-  S.decision <- array(NA, c(n.sites, n.years, n.sims))
-  
-  if(year < n.years){
-    for(s in 1:n.sims){
-      #Removal locations: rank sites by state
-      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
-      
-    }
-  }
+  #remove linear - assigned prior to simulation
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
@@ -989,12 +978,12 @@ for(year in 2:n.years){
       
     }
     
-    logsearch.effort.L <- (logit(0.8) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
-    logsearch.effort.H <- (logit(0.8) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
+    logsearch.effort.L <- (logit(0.5) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
+    logsearch.effort.H <- (logit(0.5) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
     
-    removal.L <- (logit(0.8) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
+    removal.L <- (logit(0.5) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
     removal.L <- removal.L[removal.L > 0]
-    removal.H <-(logit(0.8) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
+    removal.H <-(logit(0.5) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
     removal.H <- removal.H[removal.H > 0]
     
     for(s in 1:n.sims){

@@ -8,6 +8,7 @@ library(plyr)
 library(RColorBrewer)
 library(readr)
 
+
 #Remove at downstream 5 locations but collect monitoring data
 #at next 5 downstream locations
 
@@ -16,13 +17,13 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle", "SL_RL_30")
+res <- c('results/explore_settle/SL_RL_30') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 30 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -989,12 +990,12 @@ for(year in 2:n.years){
       
     }
     
-    logsearch.effort.L <- (logit(0.8) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
-    logsearch.effort.H <- (logit(0.8) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
+    logsearch.effort.L <- (logit(0.5) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
+    logsearch.effort.H <- (logit(0.5) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
     
-    removal.L <- (logit(0.8) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
+    removal.L <- (logit(0.5) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
     removal.L <- removal.L[removal.L > 0]
-    removal.H <-(logit(0.8) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
+    removal.H <-(logit(0.5) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
     removal.H <- removal.H[removal.H > 0]
     
     for(s in 1:n.sims){

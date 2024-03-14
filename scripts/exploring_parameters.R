@@ -6,336 +6,194 @@ library(tidyr)
 library(RColorBrewer)
 library(fabricatr)
 library(plotly)
+library(LaplacesDemon)
 
-rem.hours <- seq(0,6)
-search.hours <- seq(0,3)
+####  DATA ###
+set.seed(03222021)#
+
+#---Habitat data---#
+# effect of habitat quality on occupancy
+n.sites <- 40
+n.states <- 3
+
+site.char <- runif(n.sites)
+
+#---Initial state data---#
+#Code that generated initial true state
+State.init <- rep(NA, n.sites)
+rate.init <- rep(NA, n.sites)
+occ.init <- rep(NA, n.sites)
+init.matrix <- array(NA, c(n.sites, n.states))
+for(i in 1:n.sites){
+  rate.init[i] <- mean(rbinom(100000,1,invlogit(1 + 1*site.char[i]))) #invasion rate
+  p.high <- 0.5 #say the probability of being in high state is 0.5
+  
+  occ.init[i] <- round(mean(rbern(100000,rate.init[i]))) #being invaded or not
+  
+  init.matrix[i,1] <- (1-rate.init[i])*occ.init[i] + (1-occ.init[i]) #empty
+  init.matrix[i,2] <- (rate.init[i])*occ.init[i]*(1-p.high) #low state
+  init.matrix[i,3] <- (rate.init[i])*occ.init[i]*(p.high) #high state
+  
+  State.init[i] <- rcat(1,init.matrix[i,1:3])
+}
+
+sum(State.init == 1)
+sum(State.init == 2)
+sum(State.init == 3)
+
+#-----------------------------------------------------------------------------#
+rem.hours <- seq(0,10)
+search.hours <- seq(0,10)
+log.search <- log(search.hours)
+log.search <- log.search[-1]
 neighbors <- seq(0,4)
 n.rem <- length(rem.hours)
 n.search <- length(search.hours)
 n.neighbors <- length(neighbors)
 
-#### eps.l ####
-B0.eps.ls <- seq(-1,2, by = 0.25) #potential B0s
-B1.eps.ls <- seq(0,2, by = 0.25) #potential B1s (min = 0 because want to show removal has a greater effect than no removal)
+#### Invasion ####
+site.cov <- site.char
+B0.gamma <- rnorm(100, 0, 0.5)
+B1.gamma <- rnorm(100, 1, 0.5)
+B2.gamma <- rnorm(100, 2, 0.5)
 
-epsl.combine <- expand.grid(B0 = B0.eps.ls,B1 = B1.eps.ls ) #combinations of B0s and B1s
-n.epsl <- length(epsl.combine$B0)
+invasion.parms <- expand.grid(B0 = B0.gamma, B1 = B1.gamma, B2 = B2.gamma,
+                              site.cov = site.cov, neighbors = neighbors)
 
-epsl.array <- array(NA, c(n.epsl, n.rem))
+invasion <- invlogit(invasion.parms$B0 + 
+                       invasion.parms$B1*invasion.parms$site.cov +
+                       invasion.parms$B2*invasion.parms$neighbors)
 
-for(p in 1:n.epsl){
-  for(r in 1:n.rem)
-    epsl.array[p,r] <- invlogit(epsl.combine$B0[p] + rem.hours[r]*epsl.combine$B1[p])
-}
+summary(invasion)
 
-epsl.df <- adply(epsl.array, c(1,2))
-colnames(epsl.df) <- c("p", "removal_hours", "eps.l")
-epsl.df$removal_hours <- as.numeric(epsl.df$removal_hours) - 1
-epsl.df$B0 <- rep(epsl.combine$B0, n.rem)
-epsl.df$B1 <- rep(epsl.combine$B1, n.rem)
+#### Staying in high state ####
+B0.phih <- rnorm(100, 2, 0.5)
+B1.phih <- rnorm(100, 1, 0.5)
 
-ggplot(epsl.df, aes(B0,B1, fill= eps.l)) + 
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_wrap(~ removal_hours, labeller = label_both)+ labs(title = "eps.l = invlogit(B0 + B1*removal_hours)")
-
-#### Unsure how to find the parameter sets ####
-#find 3 groups -low medium and high
-epsl.r2 <-  filter(epsl.df, removal_hours == 2)
-#getJenksBreaks(eps.r2$eps.l, 4)
-quantile(epsl.r2$eps.l, prob=c(0, .25,.5,.75, 1), type=1)
-
-#### eps.h ####
-B0.eps.hs <- seq(-2,1, by = 0.25) #potential B0s
-B1.eps.hs <- seq(0,2, by = 0.25) #potential B1s (min = 0 because want to show removal has a greater effect than no removal)
-
-epsh.combine <- expand.grid(B0 = B0.eps.hs,B1 = B1.eps.hs ) #combinations of B0s and B1s
-n.epsh <- length(epsh.combine$B0)
-epsh.array <- array(NA, c(n.epsh, n.rem))
-
-for(p in 1:n.epsh){
-  for(r in 1:n.rem)
-    epsh.array[p,r] <- invlogit(epsh.combine$B0[p] + rem.hours[r]*epsh.combine$B1[p])
-}
-
-epsh.df <- adply(epsh.array, c(1,2))
-colnames(epsh.df) <- c("p", "removal_hours", "eps.h")
-epsh.df$removal_hours <- as.numeric(epsh.df$removal_hours) - 1
-epsh.df$B0 <- rep(epsh.combine$B0, n.rem)
-epsh.df$B1 <- rep(epsh.combine$B1, n.rem)
-
-ggplot(epsh.df, aes(B0,B1, fill= eps.h)) + 
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_wrap(~ removal_hours, labeller = label_both)+ labs(title = "eps.h = invlogit(B0 + B1*removal_hours)")
-
-#### phi.h ####
-#probability of staying in the high state
-B0.phi.hs <- seq(-2,2, by = 0.25) #potential B0s
-B1.phi.hs <- seq(0,2, by = 0.25) #potential B1s (min = 0 because want to show removal has a greater effect than no removal)
-
-phih.combine <- expand.grid(B0 = B0.phi.hs,B1 = B1.phi.hs ) #combinations of B0s and B1s
-n.phih <- length(phih.combine$B0)
-phih.array <- array(NA, c(n.phih, n.rem))
-
-for(p in 1:n.phih){
-  for(r in 1:n.rem)
-    phih.array[p,r] <- invlogit(phih.combine$B0[p] - rem.hours[r]*phih.combine$B1[p])
-}
-
-phih.df <- adply(phih.array, c(1,2))
-colnames(phih.df) <- c("p", "removal_hours", "phi.h")
-phih.df$removal_hours <- as.numeric(phih.df$removal_hours) - 1
-phih.df$B0 <- rep(phih.combine$B0, n.rem)
-phih.df$B1 <- rep(phih.combine$B1, n.rem)
-
-ggplot(phih.df, aes(B0,B1, fill= phi.h)) + 
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_wrap(~ removal_hours, labeller = label_both)+ labs(title = "phi.h = invlogit(B0 - B1*removal_hours)")
-
-#### p.l ####
-#probability of detecting low
-B0.p.ls <- seq(-2,1, by = 0.25) #potential B0s
-B1.p.ls <- seq(0,2, by = 0.25) #potential B1s
-
-pl.combine <- expand.grid(B0 = B0.p.ls,B1 = B1.p.ls ) #combinations of B0s and B1s
-n.pl <- length(pl.combine$B0)
-pl.array <- array(NA, c(n.pl, n.search))
-
-for(p in 1:n.pl){
-  for(r in 1:n.search)
-    if(search.hours[r] == 0){
-      pl.array[p,r] <- invlogit(pl.combine$B0[p])
-    }else{
-      pl.array[p,r] <- invlogit(pl.combine$B0[p] + log(search.hours[r])*pl.combine$B1[p])
-    }
-  
-}
-
-pl.df <- adply(pl.array, c(1,2))
-colnames(pl.df) <- c("p", "search_hours", "p.h")
-pl.df$search_hours <- as.numeric(pl.df$search_hours) - 1
-pl.df$B0 <- rep(pl.combine$B0, n.search)
-pl.df$B1 <- rep(pl.combine$B1, n.search)
-
-ggplot(pl.df, aes(B0,B1, fill= p.h)) + 
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_wrap(~ search_hours, labeller = label_both)+ labs(title = "p.l = invlogit(B0 + B1*log(search_hours)")
-
-#### p.h ####
-#probability of detecting
-B0.p.hs <- seq(-1,2, by = 0.25) #potential B0s
-B1.p.hs <- seq(0,2, by = 0.25) #potential B1s
-
-ph.combine <- expand.grid(B0 = B0.p.hs,B1 = B1.p.hs ) #combinations of B0s and B1s
-n.ph <- length(ph.combine$B0)
-ph.array <- array(NA, c(n.ph, n.search))
-
-for(p in 1:n.ph){
-  for(r in 1:n.search)
-    if(search.hours[r] == 0){
-      ph.array[p,r] <- invlogit(ph.combine$B0[p])
-    }else{
-      ph.array[p,r] <- invlogit(ph.combine$B0[p] + log(search.hours[r])*ph.combine$B1[p])
-    }
-}
-
-ph.df <- adply(ph.array, c(1,2))
-colnames(ph.df) <- c("p", "search_hours", "p.h")
-ph.df$search_hours <- as.numeric(ph.df$search_hours) - 1
-ph.df$B0 <- rep(ph.combine$B0, n.search)
-ph.df$B1 <- rep(ph.combine$B1, n.search)
-
-ggplot(ph.df, aes(B0,B1, fill= p.h)) + 
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_wrap(~ search_hours, labeller = label_both)+ labs(title = "p.h = invlogit(B0 + B1*log(search_hours)")
-
-#### gamma -min site.char ####
-#invasion probability
-load("parameters.RData")
-site.min <- min(site.char)
-
-B0.gammas <- seq(-2,2, by = 0.25) 
-B1.gammas <- seq(-2,2, by = 0.25) 
-B2.gammas <- seq(-2,2, by = 0.25)
-
-gamma.combine <- expand.grid(B0 = B0.gammas, B1 = B1.gammas, B2 = B2.gammas) #combinations of B0s and B1s
-n.gamma <- length(gamma.combine$B0)
-gamma.array <- array(NA, c(n.gamma, n.neighbors))
-
-for(p in 1:n.gamma){
-  for(n in 1:n.neighbors){
-    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.min + gamma.combine$B2[p]*neighbors[n])
+for(i in 1:length(B1.phih)){
+  while(B1.phih[i] < 0 ){
+    B1.phih[i] <- rnorm(1, 1, 0.5)
   }
 }
 
-gamma.df <- adply(gamma.array, c(1,2))
-colnames(gamma.df) <- c("p", "neighbor", "gamma")
-gamma.df$B0 <- rep(gamma.combine$B0, n.neighbors)
-gamma.df$B1 <- rep(gamma.combine$B1, n.neighbors)
-gamma.df$B2 <- rep(gamma.combine$B2, n.neighbors)
+phih.parms <- expand.grid(B0 = B0.phih, B1 = B1.phih, rem = rem.hours)
 
-# gamma.df.0 <- filter(gamma.df, neighbor == 0)
-# 
-# fig <- plot_ly(gamma.df, x = ~B0, y = ~B1, z = ~B2,
-#                marker = list(color = ~gamma, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
-# fig <- fig %>% add_markers()
-# fig <- fig %>% layout(title = ("Gamma = invlogit(B0 + B1*site.cov + B2*neighbor.cov)
-#                                *Results when site.cov and 
-#                                neighbor.cov are minimum possible value "),
-#   
-#   
-#   scene = list(xaxis = list(title = 'B0'),
-#                                    yaxis = list(title = 'B1'),
-#                                    zaxis = list(title = 'B2')))
-# fig
+phih <- invlogit(phih.parms$B0 - phih.parms$B1*phih.parms$rem)
 
-# ##### 3d heat map ####
-# # generate data, random + linear trend in x + linear trend in y
-# data = matrix(data = runif(n = 100, min = 0, max = 1), nrow=10, ncol = 10, dimnames=list(paste0('x',1:10),paste0('y',1:10)))
-# data = sweep(x = data, MARGIN = 1, 10:1, FUN = '+')
-# data = sweep(x = data, MARGIN = 2, 1:10, FUN = '+')
-# 
-# # generate 'empty' persp plot
-# pmat = persp(x=c(0,10), y=c(0,10), z=matrix(c(0,.1,0,.1), nrow=2), 
-#              xlim=c(0,10), ylim=c(0,10), zlim=c(0,20), 
-#              xlab='x', ylab='y', zlab='z', 
-#              theta=60, phi=20, d=2, box=F) 
-# 
-# # define color ramp
-# my_cols = heat.colors(10)
-# 
-# # generate color matrix (values between 1 and 10, corresponding to 10 values my_cols
-# colmat = matrix(data = 1, ncol = 10, nrow = 10)
-# colmat[1,1:10] <- 5
-# colmat[5,2:4] <- 8
-# colmat[6,8] <- 3
-# 
-# # draw each bar: from left to right ...
-# for (i in 1:nrow(data)){
-#   
-#   # ... and back to front 
-#   for (j in ncol(data):1){
-#     
-#     xy = which(data == data[i,j], arr.ind=TRUE)
-#     
-#     # side facing y
-#     x = rep(xy[1],4)
-#     y = c(xy[2]-1,xy[2],xy[2],xy[2]-1)
-#     z = c(0,0,data[i,j],data[i,j])
-#     polygon(trans3d(x, y, z, pmat), col=my_cols[colmat[i,j]], border=1)
-#     
-#     #  side facing x
-#     x = c(xy[1]-1,xy[1],xy[1],xy[1]-1)
-#     y = rep(xy[2]-1,4)
-#     z = c(0,0,data[i,j],data[i,j])
-#     polygon(trans3d(x, y, z, pmat), col=my_cols[colmat[i,j]], border=1)
-#     
-#     # top side
-#     x = c(xy[1]-1,xy[1],xy[1],xy[1]-1)
-#     y = c(xy[2]-1,xy[2]-1,xy[2],xy[2])
-#     z = rep(data[i,j],4)
-#     polygon(trans3d(x, y, z, pmat), col=my_cols[colmat[i,j]], border=1)
-#     
-#   }
-# }
-# 
-# # define axis ranges etc
-# x.axis <- 1:ncol(data) - 0.5
-# min.x <- 0
-# max.x <- 10
-# y.axis <- 1:nrow(data) - 0.5 
-# min.y <- 0
-# max.y <- 10
-# z.axis <- seq(0, 10, by=10)
-# min.z <- 0
-# max.z <- 10
-# 
-# # add some distance between tick labels and the axis
-# xoffset = 1
-# yoffset = 0.5
-# zoffset = 0.5
-# ticklength = 0.2
-# 
-# # x axis ticks
-# tick.start <- trans3d(x.axis, min.y, min.z, pmat)
-# tick.end <- trans3d(x.axis, (min.y - ticklength), min.z, pmat)
-# segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
-# 
-# # y axis ticks
-# tick.start <- trans3d(max.x, y.axis, min.z, pmat)
-# tick.end <- trans3d(max.x + ticklength, y.axis, min.z, pmat)
-# segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
-# 
-# # z axis ticks
-# tick.start <- trans3d(min.x, min.y, z.axis, pmat)
-# tick.end <- trans3d(min.x, (min.y - ticklength), z.axis, pmat)
-# segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
-# 
-# # x labels
-# labels <- rownames(data)
-# label.pos <- trans3d(x.axis, (min.y - xoffset), min.z, pmat)
-# text(label.pos$x, label.pos$y, labels=labels, adj=c(0, NA), srt=0, cex=0.6)
-# 
-# # y labels
-# labels <- colnames(data)
-# label.pos <- trans3d((max.x + yoffset), y.axis, min.z, pmat)
-# text(label.pos$x, label.pos$y, labels=labels, adj=c(0, NA), srt=0, cex=0.6)
-# 
-# # z labels
-# labels <- as.character(z.axis)
-# label.pos <- trans3d(min.x, (min.y - zoffset), z.axis, pmat)
-# text(label.pos$x, label.pos$y, labels=labels, adj=c(1, NA), srt=0, cex=0.6) 
-# 
-# 
+summary(phih)
+boxplot(phih)
 
-#### gamma -mean site.char ####
-#invasion probability
-site.mean <- mean(site.char)
+#### Eradication low state ####
+B0.epsl <- rnorm(100, -2, 0.5)
+B1.epsl <- rnorm(100, 3, 0.5)
 
-B0.gammas <- seq(-2,2, by = 0.25) 
-B1.gammas <- seq(-2,2, by = 0.25) 
-B2.gammas <- seq(-2,2, by = 0.25)
 
-gamma.combine <- expand.grid(B0 = B0.gammas, B1 = B1.gammas, B2 = B2.gammas) #combinations of B0s and B1s
-n.gamma <- length(gamma.combine$B0)
-gamma.array <- array(NA, c(n.gamma, n.neighbors))
-
-for(p in 1:n.gamma){
-  for(n in 1:n.neighbors){
-    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.mean + gamma.combine$B2[p]*neighbors[n])
+for(i in 1:length(B1.epsl)){
+  while(B1.epsl[i] < 0 ){
+    B1.epsl[i] <- rnorm(1, 3, 0.5)
   }
 }
 
-gamma.df <- adply(gamma.array, c(1,2))
-colnames(gamma.df) <- c("p", "neighbor", "gamma")
-gamma.df$B0 <- rep(gamma.combine$B0, n.neighbors)
-gamma.df$B1 <- rep(gamma.combine$B1, n.neighbors)
-gamma.df$B2 <- rep(gamma.combine$B2, n.neighbors)
 
-#### gamma -max site.char ####
-#invasion probability
-site.max <- max(site.char)
+epsl.parms <- expand.grid(B0 = B0.epsl, B1 = B1.epsl, rem = rem.hours)
 
-B0.gammas <- seq(-2,2, by = 0.25) 
-B1.gammas <- seq(-2,2, by = 0.25) 
-B2.gammas <- seq(-2,2, by = 0.25)
+epsl <- invlogit(epsl.parms$B0 + epsl.parms$B1*epsl.parms$rem)
 
-gamma.combine <- expand.grid(B0 = B0.gammas, B1 = B1.gammas, B2 = B2.gammas) #combinations of B0s and B1s
-n.gamma <- length(gamma.combine$B0)
-gamma.array <- array(NA, c(n.gamma, n.neighbors))
+summary(epsl)
+boxplot(epsl)
 
-for(p in 1:n.gamma){
-  for(n in 1:n.neighbors){
-    gamma.array[p,n] <- invlogit(gamma.combine$B0[p] + gamma.combine$B1[p]*site.max + gamma.combine$B2[p]*neighbors[n])
+#### Eradication high state ####
+B0.epsh <- rnorm(100, -3, 0.5)
+B1.epsh <- rnorm(100, 2, 0.5)
+
+for(i in 1:length(B1.epsh)){
+  while(B1.epsh[i] < 0 ){
+    B1.epsh[i] <- rnorm(1, 2, 0.5)
   }
 }
 
-gamma.df <- adply(gamma.array, c(1,2))
-colnames(gamma.df) <- c("p", "neighbor", "gamma")
-gamma.df$B0 <- rep(gamma.combine$B0, n.neighbors)
-gamma.df$B1 <- rep(gamma.combine$B1, n.neighbors)
-gamma.df$B2 <- rep(gamma.combine$B2, n.neighbors)
+epsh.parms <- expand.grid(B0 = B0.epsh, B1 = B1.epsh, rem = rem.hours)
+
+epsh <- invlogit(epsh.parms$B0 + epsh.parms$B1*epsh.parms$rem)
+
+summary(epsh)
+boxplot(epsh)
+
+#### Between week parameters ####
+#Beta distribution
+alpha_in_beta_moment <- function(means, sd){
+  alpha <- (means^2 - means^3 -(means*sd^2))/sd^2
+  return(alpha)
+}
+
+beta_in_beta_moment <- function(alpha, means){ #beta = (alpha)*(1-mean)/(mean)
+  beta <- (alpha*(1-means))/means
+  return(beta)
+}
+
+g.a <- alpha_in_beta_moment(0.5,0.1)
+g.b <- beta_in_beta_moment(g.a, 0.5)
+g <- rbeta(100,g.a,g.b)
+summary(g)
+
+phiB.la <- 2
+phiB.lb <- 15
+phiB.l <- rbeta(100,phiB.la,phiB.lb)
+summary(phiB.l)
+
+phiB.ha <- alpha_in_beta_moment(0.7,0.1)
+phiB.hb <- beta_in_beta_moment(phiB.ha, 0.7)
+phiB.h <- rbeta(100,phiB.ha,phiB.hb)
+summary(phiB.h) 
+
+epsB.la <- 2
+epsB.lb <- 15
+epsB.l <- rbeta(100,epsB.la,epsB.lb)
+summary(epsB.l) 
+
+epsB.ha <- 1
+epsB.hb <- 20
+epsB.h <- rbeta(100,epsB.ha,epsB.hb)
+summary(epsB.h) 
+
+#### Detection low state ####
+B0.pl <- rnorm(100, 0, 0.5)
+B1.pl <- rnorm(100, 2, 0.5)
+
+for(i in 1:length(B1.pl)){
+  while(B1.pl[i] < 0 ){
+    B1.pl[i] <- rnorm(1, 2, 0.5)
+  }
+}
+
+pl.parms <- expand.grid(B0 = B0.pl, B1 = B1.pl, log.search = log.search)
+
+pl <- invlogit(pl.parms$B0 + pl.parms$B1*pl.parms$log.search)
+
+summary(pl)
+boxplot(pl)
+
+#### Detection high state ####
+B0.ph <- rnorm(100, 0, 0.5)
+B1.ph <- rnorm(100, 3, 0.5)
+
+for(i in 1:length(B1.ph)){
+  while(B1.ph[i] < 0 ){
+    B1.ph[i] <- rnorm(1, 3, 0.5)
+  }
+}
+
+ph.parms <- expand.grid(B0 = B0.ph, B1 = B1.ph, log.search = log.search)
+
+ph <- invlogit(ph.parms$B0 + ph.parms$B1*ph.parms$log.search)
+
+summary(ph)
+boxplot(ph)
+
+#### Correctly observing high state if invaded ####
+delta <- rbeta(100,1,1)
+summary(delta) 
+
+
+save.image(file = "parameters_data.RData")
+

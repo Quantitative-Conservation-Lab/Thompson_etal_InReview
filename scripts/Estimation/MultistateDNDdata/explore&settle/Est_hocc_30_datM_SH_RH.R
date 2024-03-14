@@ -16,13 +16,13 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle", "SH_RH_30")
+res <- c('results/explore_settle/SH_RH_30') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 30 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####

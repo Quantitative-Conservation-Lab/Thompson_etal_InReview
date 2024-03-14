@@ -16,13 +16,13 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle_linear", "SH_RH_30")
+res <- c('results/explore_settle_linear/SH_RH_30') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 30 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -120,11 +120,9 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
+#### Removal Locations ####
+sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -341,8 +339,8 @@ for(year in 2:n.years){
         ##### Observation process #######
         # Observation process: draw observation given current state
         
-        for(i in sites.rem.M[,week,y,s]){ #order of sites where removal occurs
-          which.site <- which(sites.rem.M[,week,y,s] == i)
+        for(h in 1:n.sites){ #order of sites where removal occurs
+          i <- sites.rem.M[h,week,y,s]
           
           #A. while we still have resources to spend:
           if(resource.total[week,y,s] < (n.resource- max.spent[i,week,y,s])){
@@ -361,7 +359,7 @@ for(year in 2:n.years){
                 resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s]
               }else{
                 resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s] + 
-                  0.1*abs(sites.rem.M[which.site,week,y,s]  -sites.rem.M[which.site-1,week,y,s]) #hours traveling 
+                  0.1*abs(sites.rem.M[h,week,y,s]  -sites.rem.M[h-1,week,y,s]) #hours traveling 
               }
               
             }else{
@@ -377,7 +375,7 @@ for(year in 2:n.years){
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s] 
                 }else{
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s] + 
-                    0.1*abs(sites.rem.M[which.site,week,y,s]  -sites.rem.M[which.site-1,week,y,s]) #hours traveling 
+                    0.1*abs(sites.rem.M[h,week,y,s]  -sites.rem.M[h-1,week,y,s]) #hours traveling 
                 } 
               }
               
@@ -387,10 +385,10 @@ for(year in 2:n.years){
                 
                 if(i == sites.rem.M[1,week,y,s]){
                   #Calculating resources used = resources already used + search hours
-                  resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s]
+                  resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] 
                 }else{
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + 
-                    0.1*abs(sites.rem.M[which.site,week,y,s]  -sites.rem.M[which.site-1,week,y,s]) #hours traveling 
+                    0.1*abs(sites.rem.M[h,week,y,s]  -sites.rem.M[h-1,week,y,s]) #hours traveling 
                 } 
                 
                 
@@ -471,81 +469,77 @@ for(year in 2:n.years){
   if(year == 2){
     # --- eps.l ---  eradication low state -------------------- #
     #B0.eps.l = base eradication at low state (beta distribution)
-    B0.eps.l.mean[year,] <-  1 #mean
-    B0.eps.l.sd[year,] <- 0.05 #sd
+    B0.eps.l.mean[year,] <-  -2 #mean
+    B0.eps.l.sd[year,] <- 0.5 #sd
     
     #B1.eps.l = effect of eradication at low state (normal distribution)
-    B1.eps.l.mean[year,] <- 0 #mean
-    B1.eps.l.sd[year,] <-  1 #sd
+    B1.eps.l.mean[year,] <- 3 #mean
+    B1.eps.l.sd[year,] <-  0.5 #sd
     
     # --- eps.h ---  eradication high state ------------------- #
     #B0.eps.h = base eradication at high state (beta distribution)
-    B0.eps.h.mean[year,] <- -2 #mean
-    B0.eps.h.sd[year,] <- 0.05 #sd
+    B0.eps.h.mean[year,] <- -3 #mean
+    B0.eps.h.sd[year,] <- 0.5 #sd
     
     #B1.eps.h = effect of eradication at high state (normal distribution)
-    B1.eps.h.mean[year,] <- 0 #mean
-    B1.eps.h.sd[year,] <-  1 #sd
+    B1.eps.h.mean[year,] <- 2 #mean
+    B1.eps.h.sd[year,] <-  0.5 #sd
     
     # --- phi ---  transition rates -------------------------- #
     #B0.phi.h = transition high to high (beta distribution)
     B0.phi.h.mean[year,] <- 2 #alpha shape
-    B0.phi.h.sd[year,] <- 0.05 #beta shape
+    B0.phi.h.sd[year,] <- 0.5 #beta shape
     
     #B1.phi.h of removal on transition from high to high
-    B1.phi.h.mean[year,] <- 0 #mean
-    B1.phi.h.sd[year,] <- 1 #sd
+    B1.phi.h.mean[year,] <- 1 #mean
+    B1.phi.h.sd[year,] <- 0.5 #sd
     
     # --- gamma ---  invasion: Between weeks ------------------- #  
     #B0.gamma = intrinsic invasion (normal distribution)
-    B0.gamma.mean[year,] <- 1 #mean
-    B0.gamma.sd[year, ] <- 0.05 #sd
+    B0.gamma.mean[year,] <- 0 #mean
+    B0.gamma.sd[year, ] <- 0.5 #sd
     
     #B1.gamma = effect of site characteristics (normal distribution)
     B1.gamma.mean[year,] <- 1 #mean
-    B1.gamma.sd[year,] <- 0.05 #sd
+    B1.gamma.sd[year,] <- 0.5 #sd
     
     #B2.gamma = effect of neighboring state (normal distribution)
     B2.gamma.mean[year,] <- 2 #mean
-    B2.gamma.sd[year,] <- 0.05 #sd
+    B2.gamma.sd[year,] <- 0.5 #sd
     
     # --- eps ---  eradication: Between weeks ---------------- # 
-    epsB.l.a[year,] <- 12
-    epsB.l.b[year,] <- 12
-    epsB.h.a[year,] <- 3.5
-    epsB.h.b[year,] <- 31.5
+    epsB.l.a[year,] <- 2
+    epsB.l.b[year,] <- 15
+    epsB.h.a[year,] <- 1
+    epsB.h.b[year,] <- 20
     
     # --- phi ---  transition rates: Between weeks ------------ #  
-    phiB.l.a[year,] <- 3
-    phiB.l.b[year,] <- 12
+    phiB.l.a[year,] <- 2
+    phiB.l.b[year,] <- 15
     phiB.h.a[year,] <- 14
     phiB.h.b[year,] <- 6
     
     # --- g --- Given colonization, probability of becoming high state -- #
-    g.a[year,] <- 3
+    g.a[year,] <- 12
     g.b[year,] <- 12
     
     # --- p.l ---  detection low state ----------------------- #
     #B0.p.l = base detection low state (normal distribution)
     B0.p.l.mean[year,] <- 0 
-    B0.p.l.sd[year,] <- 1
+    B0.p.l.sd[year,] <- 0.5
     
     #B1.p.l = effect of effort (normal distribution)
-    B1.p.l.mean[year,] <- 0 #mean
-    B1.p.l.sd[year,] <- 1 #sd
-    
-    # --- alpha.l --- difference in baseline detection btwn dat D and M -- #  
-    l.mean[year,] <- 0 #mean
-    l.sd[year,] <- 1 #sd
+    B1.p.l.mean[year,] <- 2 #mean
+    B1.p.l.sd[year,] <- 0.5 #sd
     
     # --- p.h ---  detection high state ---------------------- #
     #B0.p.h = base detection high state (beta distribution)
     B0.p.h.mean[year,] <- 0 #mean
-    B0.p.h.sd[year,] <- 1 #sd
+    B0.p.h.sd[year,] <- 0.5 #sd
     
     #B1.p.h = effect of effort (normal distribution)
-    B1.p.h.mean[year,] <- 0 #mean
-    B1.p.h.sd[year,] <- 1 #sd
+    B1.p.h.mean[year,] <- 3 #mean
+    B1.p.h.sd[year,] <- 0.5 #sd
     
     #---delta -- ability to perfectly detect high invasion state #
     #beta distribution
@@ -861,11 +855,12 @@ for(year in 2:n.years){
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
                           "delta", "State.fin")
   
-  #settings
+  #### FIX ####
   n.burnin <- 1000
   n.iter <- 10000 
   n.chains <- n.chains
   n.thin <- 1
+  
   
   ###### 2c. Run JAGS #####
   for(s in 1:n.sims){
@@ -963,16 +958,7 @@ for(year in 2:n.years){
   
   
   ###### 3b. Make Decision #####
-  S.decision <- array(NA, c(n.sites, n.years, n.sims))
-  
-  if(year < n.years){
-    for(s in 1:n.sims){
-      #Removal locations: rank sites by state
-      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
-      
-    }
-  }
+  #remove linear - assigned prior to simulation
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
@@ -982,29 +968,27 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
+      logsearch.effort.L[s] <- (logit(0.8) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.8) - B0.p.h.est[s])/(B1.p.h.est[s])
+      
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
       B0.eps.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.h' & sim == s) %>% select(mean))
       B1.eps.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.h' & sim == s) %>% select(mean)))
-      
-    }
+     
+      removal.L[s] <- (logit(0.8) - B0.eps.l.est[s])/(B1.eps.l.est[s])
+      removal.H[s] <- (logit(0.8) - B0.eps.h.est[s])/(B1.eps.h.est[s])
     
-    logsearch.effort.L <- (logit(0.8) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
-    logsearch.effort.H <- (logit(0.8) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
-    
-    removal.L <- (logit(0.8) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
-    removal.L <- removal.L[removal.L > 0]
-    removal.H <-(logit(0.8) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
-    removal.H <- removal.H[removal.H > 0]
-    
-    for(s in 1:n.sims){
-      logsearch.effort[s] <- mean(c(logsearch.effort.L,logsearch.effort.H))
-      removal.hours[s] <- mean(c(removal.L,removal.H))
+      logsearch.effort[s] <- mean(logsearch.effort.L[s], logsearch.effort.H[s])
+      removal.hours[s] <- mean(removal.L[s], removal.H[s])
       
-      hours.dat[1,,1:n.weeks,(last.explore+1):n.years,s] <- logsearch.effort[s]
-      hours.dat[2,,1:n.weeks,(last.explore+1):n.years,s] <- removal.hours[s]
+      hours.dat[1,,1:n.weeks,(last.explore+1):n.years,s] <- exp(logsearch.effort[s])
+      hours.dat[2,,1:n.weeks,(last.explore+1):n.years,s] <- removal.hours[s] 
       
-      max.spent[1:n.sites,1:n.weeks,(last.explore+1):n.years,s] <- min(n.resource, exp(logsearch.effort[s]) + removal.hours[s])
+      
+      max.spent[1:n.sites,1:n.weeks,(last.explore+1):n.years,s] <- min(n.resource, 
+                                                                       exp(logsearch.effort[s])
+                                                                       + mean(removal.L[s], removal.H[s]))
       
       
       pM.l[1,1,(last.explore+1),s] <- invlogit(B0.pl[s] + B1.pl[s]*logsearch.effort[s]) #low state detection 
@@ -1114,7 +1098,7 @@ res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
 
 res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
 
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 75)
+res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
 
 ggplot(res.par.df.summary.sub) + 
   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+

@@ -8,6 +8,7 @@ library(plyr)
 library(RColorBrewer)
 library(readr)
 
+
 #Remove at downstream 5 locations but collect monitoring data
 #at next 5 downstream locations
 
@@ -16,13 +17,13 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle", "SL_RL_30b")
+res <- c('results/explore_settle/SL_RL_30b') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 30 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -989,12 +990,12 @@ for(year in 2:n.years){
       
     }
     
-    logsearch.effort.L <- (logit(0.8) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
-    logsearch.effort.H <- (logit(0.8) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
+    logsearch.effort.L <- (logit(0.5) - unlist(B0.p.l.est))/unlist(B1.p.l.est)
+    logsearch.effort.H <- (logit(0.5) - unlist(B0.p.h.est))/unlist(B1.p.h.est)
     
-    removal.L <- (logit(0.8) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
+    removal.L <- (logit(0.5) - (unlist(B0.eps.l.est)))/((unlist(B1.eps.l.est)))
     removal.L <- removal.L[removal.L > 0]
-    removal.H <-(logit(0.8) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
+    removal.H <-(logit(0.5) - (unlist(B0.eps.h.est)))/((unlist(B1.eps.h.est)))
     removal.H <- removal.H[removal.H > 0]
     
     for(s in 1:n.sims){
@@ -1030,6 +1031,10 @@ for(year in 2:n.years){
 #################################################################################################
 end.time <- Sys.time()
 time.taken <- end.time - start.time
+
+file_name = paste(path, 'time.txt',sep = '/')
+write.table(time.taken,file_name)
+
 
 #### SAVE SOME data ####
 #1. parameters
@@ -1114,7 +1119,7 @@ res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
 
 res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
 
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 75)
+res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 5)
 
 ggplot(res.par.df.summary.sub) + 
   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+

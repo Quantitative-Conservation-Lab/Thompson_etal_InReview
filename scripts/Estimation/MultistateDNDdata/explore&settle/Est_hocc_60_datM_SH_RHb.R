@@ -16,8 +16,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle", "SH_RH_60b")
+res <- c('results/explore_settle/SH_RH_60b') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -1031,6 +1031,10 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
+file_name = paste(path, 'time.txt',sep = '/')
+write.table(time.taken,file_name)
+
+
 #### SAVE SOME data ####
 #1. parameters
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
@@ -1114,7 +1118,7 @@ res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
 
 res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
 
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 75)
+res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 5)
 
 ggplot(res.par.df.summary.sub) + 
   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+

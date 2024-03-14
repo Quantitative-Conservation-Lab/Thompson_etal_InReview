@@ -17,8 +17,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SL_RL")
-res <- c('results/explore_settle/SL_RL') #subset of path for plot save
+path <- here::here("results", "explore_settle", "SL_RL_60")
+res <- c('results/explore_settle/SL_RL_60') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -494,8 +494,8 @@ for(year in 2:n.years){
     B0.phi.h.sd[year,] <- 0.05 #beta shape
     
     #B1.phi.h of removal on transition from high to high
-    B1.phi.h.mean[year,] <- 1 #mean
-    B1.phi.h.sd[year,] <- 0.05 #sd
+    B1.phi.h.mean[year,] <- 0 #mean
+    B1.phi.h.sd[year,] <- 1 #sd
     
     # --- gamma ---  invasion: Between weeks ------------------- #  
     #B0.gamma = intrinsic invasion (normal distribution)
@@ -503,7 +503,7 @@ for(year in 2:n.years){
     B0.gamma.sd[year, ] <- 0.05 #sd
     
     #B1.gamma = effect of site characteristics (normal distribution)
-    B1.gamma.mean[year,] <- 2 #mean
+    B1.gamma.mean[year,] <- 1 #mean
     B1.gamma.sd[year,] <- 0.05 #sd
     
     #B2.gamma = effect of neighboring state (normal distribution)
@@ -519,8 +519,8 @@ for(year in 2:n.years){
     # --- phi ---  transition rates: Between weeks ------------ #  
     phiB.l.a[year,] <- 3
     phiB.l.b[year,] <- 12
-    phiB.h.a[year,] <- 4
-    phiB.h.b[year,] <- 16
+    phiB.h.a[year,] <- 14
+    phiB.h.b[year,] <- 6
     
     # --- g --- Given colonization, probability of becoming high state -- #
     g.a[year,] <- 3
@@ -1008,8 +1008,8 @@ for(year in 2:n.years){
       max.spent[1:n.sites,1:n.weeks,(last.explore+1):n.years,s] <- min(n.resource, exp(logsearch.effort[s]) + removal.hours[s])
       
       
-      pM.l[1,1,(last.explore+1),s] <- invlogit(B0.p.l[s] + B1.p.l[s]*logsearch.effort[s]) #low state detection 
-      pM.h[1,1,(last.explore+1),s]  <- invlogit(B0.p.h[s] + B1.p.h[s]*logsearch.effort[s]) #high state detection 
+      pM.l[1,1,(last.explore+1),s] <- invlogit(B0.pl[s] + B1.pl[s]*logsearch.effort[s]) #low state detection 
+      pM.h[1,1,(last.explore+1),s]  <- invlogit(B0.ph[s] + B1.ph[s]*logsearch.effort[s]) #high state detection 
       
       for(i in 1:n.sites){
         for(w in 1:n.weeks){
@@ -1032,8 +1032,13 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-#### SAVE SOME PARAMS ####
+#### SAVE SOME data ####
 #1. parameters
+res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
+                    res.params[[5]], res.params[[6]], res.params[[7]],
+                    res.params[[8]], res.params[[9]], res.params[[10]])
+
+max(res.par.df$Rhat)
 file_name = paste(path, 'params.csv',sep = '/')
 write.csv(res.par.df,file_name)
 
@@ -1047,11 +1052,19 @@ res.states.df <- rbind(res.state[[2]],res.state[[3]],
 file_name = paste(path, 'states.csv',sep = '/')
 write.csv(res.states.df,file_name)
 
+#3. true states
+S.dat <- as.data.frame.table(State)
+colnames(S.dat) <- c("site", "week", "year", "sim", "state")
+S.dat <-  as.data.frame(sapply(S.dat,as.numeric))
+
+file_name = paste(path, 'states_truth.csv',sep = '/')
+write.csv(S.dat,file_name)
+
 ##### plots #####
 ggplot(res.params[[2]]) +
   geom_point(mapping = aes(x = sim, y = mean))+
   geom_errorbar(aes(x = sim, ymin = low, ymax = high))+
-  geom_point(data=res.params[[2]], aes(x = sim, y = truth),color = "black", shape = 22) +
+  geom_point(data=res.params[[2]], aes(x = sim, y = truth),color = "red", shape = 22) +
   facet_wrap(~param, scales = "free") +
   xlab("Simulation")+ylab("State") + 
   guides(color = guide_legend(title = "Simulation"))   
@@ -1059,87 +1072,52 @@ ggplot(res.params[[2]]) +
 ggplot(res.params[[year]]) +
   geom_point(mapping = aes(x = sim, y = mean))+
   geom_errorbar(aes(x = sim, ymin = low, ymax = high))+
-  geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "black", shape = 22) +
+  geom_point(data=res.params[[year]], aes(x = sim, y = truth),color = "red", shape = 22) +
   facet_wrap(~param, scales = "free") +
   xlab("Simulation")+ylab("State") + 
   guides(color = guide_legend(title = "Simulation"))   
 
-ggplot(res.params[[year]]) +
-  geom_point(mapping = aes(x = param, y = Rhat))+
-  geom_hline(yintercept = 1.1, color = 'red')
-
 #### parameters through time ####
-res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
-                    res.params[[5]], res.params[[6]], res.params[[7]],
-                    res.params[[8]], res.params[[9]], res.params[[10]])
 
-max(res.par.df$Rhat)
+truth.paramslist <- list()
 
-res.par.df2 <- res.par.df %>% select(low, mean, high, sim,  year, param)
-res.par.df2 <- res.par.df2 %>% arrange(param)
-
-
-parms.list <- unique(res.par.df2$param)
-truth.params.df <- data.frame(param = parms.list, truth = truth.params)
-truth.params.df <- truth.params.df %>% arrange(param)
-
-mean.par <- array(NA, c(n.years- 1, length(parms.list)))
-low.par <- array(NA, c(n.years- 1, length(parms.list)))
-high.par <- array(NA, c(n.years- 1, length(parms.list)))
-
-for(y in 2:n.years){
-  for(par in 1:length(parms.list)){
-    vec1 <- c(t(res.par.df2 %>% filter(year == y, param == parms.list[par]) %>% select(low)))
-    vec2 <- c(t(res.par.df2 %>% filter(year == y, param == parms.list[par]) %>% select(mean)))
-    vec3 <- c(t(res.par.df2 %>% filter(year == y, param == parms.list[par]) %>% select(high)))
-    low.par[y-1,par] <- min(vec1)
-    mean.par[y-1,par] <- mean(vec2)
-    high.par[y-1,par] <- max(vec3)
-  }
+for(s in 1:n.sims){
+  truth.paramslist[[s]] <- truth.params %>% filter(sim == s)
+  truth.paramslist[[s]]$mean <- c(1,1,2,
+                                  2,0,1,0,-2,0, 
+                                  (3/15), (3/15), 14/30, 12/24, 3.5/35,
+                                  0,0,0,0,0.5)
+  
+  truth.paramslist[[s]]$low <- c(qnorm(0.025, 1, 0.05), qnorm(0.025, 1, 0.05), qnorm(0.025, 2, 0.05),
+                                 qnorm(0.025, 2, 0.05), 0, qnorm(0.025, 1, 0.05), 0, qnorm(0.025, -2, 0.05),0,
+                                 qbeta(0.025, 3, 12), qbeta(0.025, 3, 12),qbeta(0.025, 14, 6), qbeta(0.025, 12, 12),qbeta(0.025, 3.5,31.5),
+                                 qnorm(0.025, 0,1), 0, qnorm(0.025, 0,1),0, qbeta(0.025, 1,1))
+  
+  truth.paramslist[[s]]$high <- c(qnorm(0.975, 1, 0.05), qnorm(0.975, 1, 0.05), qnorm(0.975, 2, 0.05),
+                                  qnorm(0.975, 2, 0.05), 0, qnorm(0.975, 1, 0.05), 0, qnorm(0.975, -2, 0.05),0,
+                                  qbeta(0.975, 3, 12), qbeta(0.975, 3, 12),qbeta(0.975, 14, 6), qbeta(0.975, 12, 12),qbeta(0.975, 3.5,31.5),
+                                  qnorm(0.975, 0,1), 0, qnorm(0.975, 0,1),0, qbeta(0.975, 1,1))
+  
+  truth.paramslist[[s]]$year <- 1
+  truth.paramslist[[s]]<- truth.paramslist[[s]] %>% select(mean, low, high, param, sim, truth, year)
+  
+  
 }
 
-low.df <- adply(low.par, c(1,2))
-mean.df <- adply(mean.par, c(1,2))
-high.df <- adply(high.par, c(1,2))
+y1.priors <- truth.paramslist[[1]]
 
-res.par.df.summary <- data.frame(year = as.numeric(low.df$X1)+1,
-                                 par = low.df$X2, low = low.df$V1,
-                                 mean = mean.df$V1, high = high.df$V1)
+for(s in 2:n.sims){
+  y1.priors <- rbind(y1.priors,truth.paramslist[[2]] )
+}
 
-truth.vals <- rep(truth.params.df$truth, each = 9)
-res.par.df.summary$truth <- truth.vals
-res.par.df.summary$param <- rep(parms.list, each = 9)
-
-y1.prior.mean <- c(0,0,0,0,0,
-                   0,0,0,0,0,
-                   0,0,0,
-                   .5,.5,.5,.5,.5,.5)
-
-y1.prior.low <- c(-2.6,-2.6,-2.6,
-                  -2.6,-2.6,-2.6,-2.6,-2.6,
-                  -2.6,-2.6,-2.6,-2.6,-2.6,
-                  .1,.1,.1,.1,.1,.1)
-
-y1.prior.high <- c(2.6,2.6,2.6,2.6,2.6,
-                   2.6,2.6,2.6,
-                   2.6,2.6,2.6,2.6,2.6,
-                   .9,.9,.9,.9,.9,.9)
-
-res.par.df.summary <- res.par.df.summary %>% arrange(year)
-
-y1.priors <- data.frame(year = rep(1, 19),
-                        par = seq(1,19),
-                        low = y1.prior.low,
-                        mean = y1.prior.mean,
-                        high = y1.prior.high, 
-                        truth = truth.params.df$truth,
-                        param = truth.params.df$param)
-
+res.par.df.summary <- res.par.df %>% select(mean, low, high, param, sim, truth, year)
 res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
 
-ggplot(res.par.df.summary) + 
-  # geom_line(aes(x = year, y = low), color = 'grey70', size = 1) +
-  # geom_line(aes(x = year, y = high), color = 'grey70', size = 1) +
+res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
+
+res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 75)
+
+ggplot(res.par.df.summary.sub) + 
   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
   geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
   geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
@@ -1147,269 +1125,6 @@ ggplot(res.par.df.summary) +
   scale_x_continuous(breaks=c(1,5,10))+
   facet_wrap(~param, scales = "free")
 
-
-res.par.df.summary_sub <- res.par.df.summary %>% 
-  filter(param %in% c("B0.eps.h", "B1.eps.h", "B0.eps.l", "B1.eps.l",
-                      "B0.p.h", "B1.p.h", "B0.p.l","B1.p.l",
-                      "B0.phi.h", "B1.phi.h" ))
-
-ggplot(res.par.df.summary_sub) + 
-  # geom_line(aes(x = year, y = low), color = 'grey70', size = 1) +
-  # geom_line(aes(x = year, y = high), color = 'grey70', size = 1) +
-  geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
-  geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
-  geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
-  geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
-  scale_x_continuous(breaks=c(1,5,10))+
-  facet_wrap(~param, scales = "free", nrow = 2)
-
-##### Estimated State #####
-num.col <- length(unique(res.state[[year]]$nobs))+1
-
-my_colors <- RColorBrewer::brewer.pal(num.col + 1, "YlOrRd")[2:num.col]
-
-ggplot(res.state[[year]]) +
-  geom_point(mapping = aes(x = sim, y = mean, col = as.factor(nobs)))+
-  scale_color_manual(values = my_colors)+
-  geom_errorbar(aes(x = sim, ymin = low, ymax = high, col = as.factor(nobs)), width = 0.5)+
-  geom_point(data=res.state[[year]], aes(x = sim, y = truth), color = "black", shape = 22) +
-  scale_x_continuous(breaks=seq(1,n.sims,1))+
-  facet_wrap(~Segment, scales = "free",labeller = label_both)  +
-  xlab("Simulation")+ylab("State") + 
-  guides(color = guide_legend(title = "Number of observations")) 
-
-#### Relative bias- state ####
-mean.state <- array(NA, c(n.years,n.sites,n.sims))
-true.state <- array(NA, c(n.years,n.sites,n.sims))
-state.bias <- array(NA, c(n.years,n.sites,n.sims))
-
-for(year in 2:n.years){
-  for(s in 1:n.sims){
-    for(i in 1:n.sites){
-      mean.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(mean))
-      true.state[year,i,s] <- as.numeric(res.state[[year]] %>% filter(Segment == i & sim == s) %>% select(truth))
-      state.bias[year,i,s] <- ((mean.state[year,i,s])-(true.state[year,i,s]))/(true.state[year,i,s])
-      
-    }
-  }
-}
-
-bias.state.df <- adply(state.bias, c(1,2,3))
-colnames(bias.state.df) <- c("year", "site", "sim", "rel.bias") 
-bias.state.df$year <- as.numeric(bias.state.df$year)
-bias.state.df$site<- as.numeric(bias.state.df$site)
-bias.state.df$sim <- as.numeric(bias.state.df$sim)
-bias.state.df <- bias.state.df %>% filter(year > 1)
-
-#### Relative bias- param ####
-p.list <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(param)))
-n.params <- length(p.list)
-
-mean.param <- array(NA, c(n.years,n.params, n.sims))
-true.param <- array(NA, c(n.years,n.params, n.sims))
-param.bias <- array(NA, c(n.years,n.params, n.sims))
-
-for(year in 2:n.years){
-  for(par in 1:n.params){
-    # for(s in 1:n.sims){
-    mean.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
-    true.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(truth))))
-    param.bias[year,par,] <- ((mean.param[year,par,])-(true.param[year,par,]))/(true.param[year,par,])
-    
-    #}
-  }
-}
-
-# p.list <- c(t(res.par.df %>% filter(sim == s, year == 3) %>% select(param)))
-# n.params <- length(unique(res.par.df$param))
-# 
-# mean.param <- array(NA, c(n.years,n.params, n.sims))
-# true.param <- array(NA, c(n.years,n.params, n.sims))
-# param.bias <- array(NA, c(n.years,n.params, n.sims))
-# 
-# 
-# for(y in 2:n.years){
-#   for(par in 1:n.params){
-#     # for(s in 1:n.sims){
-#     mean.param[y,par,] <- c(t((res.par.df %>% filter(param == p.list[par], year == y) %>% select(mean))))
-#     true.param[y,par,] <- c(t((res.par.df %>% filter(param == p.list[par], year == y) %>% select(truth))))
-#     param.bias[y,par,] <- ((mean.param[y,par,])-(true.param[y,par,]))/(true.param[y,par,])
-# 
-#     #}
-#   }
-# }
-
-
-bias.param.df <- adply(param.bias, c(1,2,3))
-colnames(bias.param.df) <- c("year", "param", "sim", "rel.bias") 
-bias.param.df$year <- as.numeric(bias.param.df$year)
-bias.param.df$sim <- as.numeric(bias.param.df$sim)
-bias.param.df <- bias.param.df %>% filter(year > 1)
-bias.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
-
-ggplot(bias.param.df)+
-  geom_boxplot(aes(x = year, y = rel.bias, group = year))+facet_wrap(~param)+
-  geom_hline(yintercept = 0, color = 'red')+ ylab("relative bias") + scale_x_continuous(breaks = seq(1:10))
-
-bias.param.df_sub <- bias.param.df %>% 
-  filter(param %in% c("B0.eps.h", "B1.eps.h", "B0.eps.l", "B1.eps.l",
-                      "B0.p.h", "B1.p.h", "B0.p.l","B1.p.l",
-                      "B0.phi.h", "B1.phi.h" ))
-
-ggplot(bias.param.df_sub)+
-  geom_boxplot(aes(x = year, y = rel.bias, group = year))+facet_wrap(~param, nrow = 2)+
-  geom_hline(yintercept = 0, color = 'red')+ ylab("relative bias") + scale_x_continuous(breaks = seq(1:10))
-
-
-#### CI coverage- state ####
-low.state <- array(NA, c(n.years,n.sites,n.sims))
-high.state <- array(NA, c(n.years,n.sites,n.sims))
-CI.state <- array(NA, c(n.years,n.sites,n.sims))
-
-for(year in 2:n.years){
-  for(s in 1:n.sims){
-    low.state[year,,s] <- c(t((res.state[[year]] %>% filter(sim == s) %>% select(low))))
-    high.state[year,,s] <- c(t(res.state[[year]] %>% filter(sim == s) %>% select(high)))
-    
-    for(i in 1:n.sites){
-      CI.state[year,i,s] <- ifelse(low.state[year,i,s] <= true.state[year,i,s] & 
-                                     true.state[year,i,s] <= high.state[year,i,s], 1, 0)
-      
-    }
-  }
-}
-
-CI.state.df <- adply(CI.state, c(1,2,3))
-colnames(CI.state.df) <- c("year", "site", "sim", "CI.coverage") 
-CI.state.df$year <- as.numeric(CI.state.df$year)
-CI.state.df$site<- as.numeric(CI.state.df$site)
-CI.state.df$sim <- as.numeric(CI.state.df$sim)
-CI.state.df <- CI.state.df %>% filter(year > 1)
-
-#### CI coverage -parameters ####
-n.params <- length(unique(res.params[[2]]$param))
-low.param <- array(NA, c(n.years,n.params,n.sims))
-high.param <- array(NA, c(n.years,n.params,n.sims))
-CI.param <- array(NA, c(n.years,n.params,n.sims))
-
-for(year in 2:n.years){
-  for(s in 1:n.sims){
-    low.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(low)))
-    high.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(high)))
-    for(p in 1:n.params){
-      CI.param[year,p,s] <- ifelse(low.param[year,p,s] <= truth.params[p] & 
-                                     truth.params[p] <= high.param[year,p,s], 1, 0)
-      
-    }
-  }
-}
-
-CI.param.df <- adply(CI.param, c(1,2,3))
-colnames(CI.param.df) <- c("year", "param", "sim", "CI.coverage") 
-bias.param.df$year <- as.numeric(bias.param.df$year)
-bias.param.df$sim <- as.numeric(bias.param.df$sim)
-bias.param.df <- bias.param.df %>% filter(year > 1)
-bias.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
-
-#### Distance Traveled ####
-p <- which(apply(params, 1, function(x) return(all(x == c(3,3,3,3,3,3))))) #bad invasion but good management
-
-dist.travel <- adply(d.traveled[1:4,1:n.years, p, 1:n.sims], c(1,2,3))
-colnames(dist.travel) <- c("week", "year", "sim", "distance")
-dist.travel$week <- as.numeric(dist.travel$week)
-dist.travel$year <- as.numeric(dist.travel$year)
-dist.travel$sim <- as.numeric(dist.travel$sim)
-
-#### Sites visited ####
-site.visit <- adply(rem.vec[1:n.sites, 1:4,1:n.years, p, 1:n.sims], c(1,2,3,4))
-colnames(site.visit) <- c("site", "week", "year", "sim", "visit")
-site.visit$site <- as.numeric(site.visit$site)
-site.visit$week <- as.numeric(site.visit$week)
-site.visit$year <- as.numeric(site.visit$year)
-site.visit$sim <- as.numeric(site.visit$sim)
-
-#replace Nas with 3
-site.visit$visit[is.na(site.visit$visit)] <- 3
-site.visit$visit <- as.numeric(site.visit$visit)
-
-#replace 1s with 2 (means we visited and removed)
-site.visit$visit[site.visit$visit == 1] <- 2
-
-#replace 0s with 1 (means we visit but didnt remove
-site.visit$visit[site.visit$visit == 0] <- 1
-
-#replace 3s with 0 (means we did not visit)
-site.visit$visit[site.visit$visit == 3] <- 0
-
-#### Observation Data ####
-yM.dat <- adply(yM[1:n.sites,1:n.occs, 1:4,1:n.years, p, 1:n.sims], c(1,2,3,4,5))
-colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
-yM.dat$site <- as.numeric(yM.dat$site)
-yM.dat$occasion <- as.numeric(yM.dat$occasion)
-yM.dat$week <- as.numeric(yM.dat$week)
-yM.dat$year <- as.numeric(yM.dat$year)
-yM.dat$sim <- as.numeric(yM.dat$sim)
-yM.dat$observation <- as.numeric(yM.dat$observation)
-
-#### True State ####
-S.dat <- adply(State[1:n.sites,1:5,1:n.years, p, 1:n.sims], c(1,2,3,4))
-colnames(S.dat) <- c("site", "week", "year", "sim", "state")
-S.dat$site <- as.numeric(S.dat$site)
-S.dat$week <- as.numeric(S.dat$week)
-S.dat$year <- as.numeric(S.dat$year)
-S.dat$sim <- as.numeric(S.dat$sim)
-S.dat$state <- as.numeric(S.dat$state)
-
-S.dat.fin <- S.dat %>% filter(year == 10 & week == 5)
-
-ggplot(S.dat.fin) + 
-  geom_boxplot(aes (x = year, y = state))
-
-summary(S.dat.fin$state)
-
-
-#### SAVE CSVS ####
-
-#3. rel.bias.state
-bias.state.df$a <- a
-file_name = paste(path, 'bias_states.csv',sep = '/')
-write.csv(bias.state.df,file_name)
-
-#4. rel.bias.param
-bias.param.df$a <- a
-file_name = paste(path, 'bias_param.csv',sep = '/')
-write.csv(bias.param.df,file_name)
-
-#5. CI.state
-CI.state.df$a <- a
-file_name = paste(path, 'CI_state.csv',sep = '/')
-write.csv(CI.state.df,file_name)
-
-#6. CI.param
-CI.param.df$a <- a
-file_name = paste(path, 'CI_param.csv',sep = '/')
-write.csv(CI.param.df,file_name)
-
-#7. distance traveled
-dist.travel$a <- a
-file_name = paste(path, 'dist_travel.csv',sep = '/')
-write.csv(dist.travel,file_name)
-
-#8. sites visited
-site.visit$a <- a
-file_name = paste(path, 'site_visit.csv',sep = '/')
-write.csv(site.visit,file_name)
-
-#9. y.dat
-yM.dat$a <- a
-file_name = paste(path, 'yM_dat.csv',sep = '/')
-write.csv(yM.dat,file_name)
-
-#10. S.dat
-S.dat$a <- a
-file_name = paste(path, 'S_truthdat.csv',sep = '/')
-write.csv(S.dat,file_name)
-
-#11 time.taken
-file_name = paste(path, 'time.txt',sep = '/')
-write.table(time.taken,file_name)
+####
+file_name = paste(path, 'par_summary.csv',sep = '/')
+write.csv(res.par.df.summary,file_name)
