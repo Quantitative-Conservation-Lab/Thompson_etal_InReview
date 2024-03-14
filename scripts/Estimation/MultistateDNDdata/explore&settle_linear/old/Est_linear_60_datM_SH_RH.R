@@ -16,8 +16,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "explore_settle", "SH_RH_60")
-res <- c('results/explore_settle/SH_RH_60') #subset of path for plot save
+path <- here::here("results", "explore_settle_linear", "SH_RH_60")
+res <- c('results/explore_settle_linear/SH_RH_60') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -120,11 +120,9 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
+#### Removal Locations ####
+sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -963,16 +961,7 @@ for(year in 2:n.years){
   
   
   ###### 3b. Make Decision #####
-  S.decision <- array(NA, c(n.sites, n.years, n.sims))
-  
-  if(year < n.years){
-    for(s in 1:n.sims){
-      #Removal locations: rank sites by state
-      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
-      
-    }
-  }
+  #remove linear - assigned prior to simulation
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
