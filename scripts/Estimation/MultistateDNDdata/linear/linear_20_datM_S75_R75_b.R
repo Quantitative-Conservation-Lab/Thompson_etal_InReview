@@ -16,8 +16,8 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "linear", "S75_R75_20")
-res <- c('results/linear/S75_R75_20') #subset of path for plot save
+path <- here::here("results", "linear", "S75_R75_20_b")
+res <- c('results/linear/S75_R75_20_b') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -943,7 +943,7 @@ for(year in 2:n.years){
   res.state[[year]] <- cbind.res.state
   res.state[[year]]$year <- year
 
-  subsims <- sample(1:100,10, replace = F)
+  subsims <- sample(1:100,5, replace = F)
   
   for(subs in subsims){
     for(par in 1:length(unique(cbind.res.parameters$param))){
@@ -953,7 +953,8 @@ for(year in 2:n.years){
                 ind = TRUE,
                 pdf = TRUE,
                 open_pdf = FALSE,
-                filename = paste0(res,'/densplots/trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
+                wd = res,
+                filename = paste0('trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
     }
   }
 
