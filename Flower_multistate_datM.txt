@@ -16,7 +16,6 @@ model{
 # 1 not detected
 # 2 low abundance
 # 3 high abundance
-#
 # -------------------------------------------------
 
 #### PRIORS ####
@@ -38,8 +37,13 @@ model{
   gamma.2.tau <- 1/(gamma.2.sd*gamma.2.sd) #precision parameter
   
   #State transition:
-  phi.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
-  phi.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
+  phi0.lh ~ dbeta(phi.lh.a, phi.lh.b)T(0.0001,0.9999) #transition from low to high
+  phi1.lh ~ dnorm(phi.lh1.mean, phi.lh1.tau) #effect of removal on transition
+  phi.lh1.tau <- 1/(phi.lh1.sd*phi.lh1.sd) #precision parameter
+  
+  phi0.hh ~ dbeta(phi.hh.a, phi.hh.b)T(0.0001,0.9999) #transition from high to high
+  phi1.hh ~ dnorm(phi.hh1.mean, phi.hh1.tau) #effect of removal on transition
+  phi.hh1.tau <- 1/(phi.hh1.sd*phi.hh1.sd) #precision parameter
   
   #Detection low state:
   p.l0 ~ dbeta(p.l0.a, p.l0.b)T(0.0001,0.9999) #base detection for low state
@@ -55,13 +59,13 @@ model{
   alpha.h ~ dnorm(h.mean,h.tau) #difference in baseline detection between dat D and M
   h.tau <- 1/(h.sd * h.sd) #precision
 
-  delta ~ dbeta(delta.a, delta.b)T(0.0001,0.9999) #probability of observing the high state given species was detected and true state is high
-
   logit(pM.l) <- p.l0 + p.l1*logeffort + alpha.l #detection low state
   logit(pM.h) <- p.h0 + p.h1*logeffort + alpha.h #detection high state
   
+  delta ~dbeta(delta.a, delta.b) 
+  
   #initial occupancy probabilities
-  psi[1:3] ~ ddirch(alpha) #alpha = rep(1,3)
+  psi[1:3] ~ ddirch(psi.init) #alpha = rep(1,3)
   
 #--------------------------------------------------#
 # STATE TRANSITION
@@ -71,8 +75,11 @@ for (i in 1:n.sites){
   
     logit(gamma[i,t]) <-gamma.0 + gamma.1*site.char[i] + gamma.2*D[i,t] #invasion probability
     logit(eps.l[i,t]) <- eps.l0 + eps.l1*rem.vec[i,t]*removal.hours[2] #erradication low state
-    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[3] #erradication high state
+    logit(eps.h[i,t]) <- eps.h0 + eps.h1*rem.vec[i,t]*removal.hours[2] #erradication high state
                                         # rem.vec[i] = 0,1 if 0, then no removal and no erradiction
+    
+    logit(phi.lh[i,t]) <- phi0.lh - phi1.lh*rem.vec[i,t]*removal.hours[2]
+    logit(phi.hh[i,t]) <- phi0.hh - phi1.hh*rem.vec[i,t]*removal.hours[2]
     
     #index = [current state, location, time, future state]
     #empty stay empty
@@ -88,19 +95,19 @@ for (i in 1:n.sites){
     TPM[2,i,t,1] <- eps.l[i,t] #erradication probability
                                       
     #low abundance to low abundance
-    TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh) #erradication failure probability
+    TPM[2,i,t,2] <- (1- eps.l[i,t])*(1-phi.lh[i,t]) #erradication failure probability
     
     #low abundance to high abundance
-    TPM[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh)
+    TPM[2,i,t,3] <- (1- eps.l[i,t])*(phi.lh[i,t])
     
     #high abundance to empty
     TPM[3,i,t,1] <- eps.h[i,t] #erradication probability
     
     #high abundance to low abundance
-    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh) #erradication failure probability
+    TPM[3,i,t,2] <- (1- eps.h[i,t])*(1-phi.hh[i,t]) #erradication failure probability
     
     #high abundance to high abundance
-    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh)
+    TPM[3,i,t,3] <- (1- eps.h[i,t])*(phi.hh[i,t])
     
     #--------------------------------------------------#
     # OBSERVATION PROBABILITIES (for multi state detection/nondetection data)
@@ -129,10 +136,10 @@ for (i in 1:n.sites){
       P.datM[3,i,j,t,1] <- 1-pM.h #not detected probability high state
       
       #High state and observed low
-      P.datM[3,i,j,t,2] <- pM.h*(1-delta) 
+      P.datM[3,i,j,t,2] <- 0
       
       #High state and observed high
-      P.datM[3,i,j,t,3] <- pM.h*(delta) 
+      P.datM[3,i,j,t,3] <- pM.h
       
     } #j 
   } #t
@@ -143,25 +150,17 @@ for (i in 1:n.sites){
       
     #-- Initial State: --# 
     
-    #MORE COMPLEX VERSION, not quite correct: 
-      #gamma.init[i] <- gamma.0 + gamma.1*site.char[i] #probability of being invaded initially
-      #l.init <- 1- eps.l0                             #probably of being low abundance if invaded
-      #h.init <- 1- eps.h0                             #probably of being high abundance if invaded
-      #psi[i,1] <- 1-gamma.init[i]                     #probability of being empty
-      #psi[i,2] <- gamma.init[i]*l.init                #probability of low abundance
-      #psi[i,3] <- gamma.init[i]*h.init                #probability of high abundance
-    
       State[i,1] ~ dcat(psi) #psi is written above in the priors
     
-      D[i,1] <- sum(State[neighbors[i,], 1])/2 #state of neighbors 
+      D[i,1] <- sum(State[neighbors[i,], 1])/n.neighbors[i] #state of neighbors 
     
     #-- State Model: --#
     for (t in 2:n.weeks){ 
       # State process: state given previous state and transition probability
       State[i,t] ~ dcat(TPM[State[i,t-1], i, t-1, ]) 
       
-      #below is not correct because it does not lead to a true state: 
-      D[i,t] <- sum(State[neighbors[i,], t])/2 #state of neighbors 
+      #State of neighbors
+      D[i,t] <- sum(State[neighbors[i,], t])/n.neighbors[i] #state of neighbors 
        
      
     } #t loop
