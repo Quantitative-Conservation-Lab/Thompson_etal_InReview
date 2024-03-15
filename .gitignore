@@ -31,3 +31,4 @@ vignettes/*.pdf
 # Results folder
 /results
 parameters_data.RData
+parameters_data_b.RData
