@@ -8,38 +8,8 @@ library(fabricatr)
 library(plotly)
 library(LaplacesDemon)
 
-####  DATA ###
-#set.seed(03222021)#
-
-#---Habitat data---#
-# effect of habitat quality on occupancy
-n.sites <- 40
-n.states <- 3
-
-site.char <- runif(n.sites)
-
-#---Initial state data---#
-#Code that generated initial true state
-State.init <- rep(NA, n.sites)
-rate.init <- rep(NA, n.sites)
-occ.init <- rep(NA, n.sites)
-init.matrix <- array(NA, c(n.sites, n.states))
-for(i in 1:n.sites){
-  rate.init[i] <- mean(rbinom(100000,1,invlogit(1 + 1*site.char[i]))) #invasion rate
-  p.high <- 0.5 #say the probability of being in high state is 0.5
-  
-  occ.init[i] <- round(mean(rbern(100000,rate.init[i]))) #being invaded or not
-  
-  init.matrix[i,1] <- (1-rate.init[i])*occ.init[i] + (1-occ.init[i]) #empty
-  init.matrix[i,2] <- (rate.init[i])*occ.init[i]*(1-p.high) #low state
-  init.matrix[i,3] <- (rate.init[i])*occ.init[i]*(p.high) #high state
-  
-  State.init[i] <- rcat(1,init.matrix[i,1:3])
-}
-
-sum(State.init == 1)
-sum(State.init == 2)
-sum(State.init == 3)
+####  DATA ####
+set.seed(03222)#
 
 #-----------------------------------------------------------------------------#
 rem.hours <- seq(0,10)
@@ -70,8 +40,10 @@ summary(invasion)
 B0.phih <- rnorm(100, 2, 0.5)
 B1.phih <- rnorm(100, 1, 0.5)
 
+#B1.phi is negative!
+
 for(i in 1:length(B1.phih)){
-  while(B1.phih[i] < 0 ){
+  while(B1.phih[i] > 0 ){
     B1.phih[i] <- rnorm(1, 1, 0.5)
   }
 }
@@ -194,6 +166,21 @@ boxplot(ph)
 delta <- rbeta(100,1,1)
 summary(delta) 
 
+#### Difference between datm and datd ####
+alpha.l <- rnorm(100, 0, 0.5)
+alpha.h <- rnorm(100, 0, 0.5)
 
-save.image(file = "parameters_datab.RData")
+#alpha.l and alpha.h are negative
+for(i in 1:100){
+  while(alpha.l[i] > 0){
+    alpha.l[i] <- rnorm(1, 0, 0.5)
+  }
+  
+  while(alpha.h[i] > 0){
+    alpha.h[i] <- rnorm(1, 0, 0.5)
+  }
+  
+}
 
+
+save.image(file = "parameters_data_b.RData")

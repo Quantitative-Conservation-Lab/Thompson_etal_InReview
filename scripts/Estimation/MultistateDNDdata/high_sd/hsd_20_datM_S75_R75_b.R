@@ -16,11 +16,11 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "hstate", "S75_R75_20")
-res <- c('results/hstate/S75_R75_20') #subset of path for plot save
+path <- here::here("results", "hsd", "S75_R75_20")
+res <- c('results/hsd/S75_R75_20') #subset of path for plot save
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load("parameters_data_b.RData")
 #rule = by highest estimated state
 n.resource <- 20 #total hours per week
 
@@ -102,8 +102,12 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
-site.char <- site.char
-State.init <- State.init
+site.char <- read.csv( here::here('data', "site_char.csv"))
+site.char <- c(t(site.char$x))
+
+State.init <- read.csv( here::here('data', "state_init.csv"))
+State.init <- c(t(State.init$x))
+
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -963,12 +967,11 @@ for(year in 2:n.years){
   if(year < n.years){
     for(s in 1:n.sims){
       #Removal locations: rank sites by state
-      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
+      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(sd)))
       sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
       
     }
   }
-  
   
   
   ###### 3c. Update efforts #####
