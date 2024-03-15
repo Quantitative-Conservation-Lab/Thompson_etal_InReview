@@ -162,24 +162,11 @@ pD.h <- rep(NA, n.sims)
 P.datD <- array(NA, dim = c(n.states, n.sims, 2))
 logeffort.D <- log(1) #assume they are spending 1 hour at each spot
 
-alpha.l <- rnorm(n.sims, 0, 0.5)
-alpha.h <- rnorm(n.sims, 0, 0.5)
-
 alpha.ls <- data.frame(param = 'alpha.l', truth = alpha.l, sim = seq(1:n.sims))
 alpha.hs <- data.frame(param = 'alpha.h', truth = alpha.h, sim = seq(1:n.sims))
 
 truth.params <- rbind(alpha.ls, alpha.hs, truth.params)
 
-for(i in 1:n.sims){
-  while(alpha.l[i] > 0){
-    alpha.l[i] <- rnorm(1, 0, 0.5)
-  }
-  
-  while(alpha.h[i] > 0){
-    alpha.h[i] <- rnorm(1, 0, 0.5)
-  }
-  
-}
   
 for(s in 1:n.sims){
   pD.l[s] <- invlogit(B0.pl[s] + B1.pl[s]*logeffort.D + alpha.l[s])
@@ -350,7 +337,7 @@ for(year in 2:n.years){
           eps.h[,week,y,s] <- invlogit(B0.epsh[s] + B1.epsh[s]*prev.rem.vec*hours.dat[2,i,week,y,s]) #high eradication
           
           #transition rates
-          phi.h[,week,y,s] <- invlogit(B0.phih[s] - B1.phih[s]*prev.rem.vec*hours.dat[2,i,week,y,s])
+          phi.h[,week,y,s] <- invlogit(B0.phih[s] + B1.phih[s]*prev.rem.vec*hours.dat[2,i,week,y,s])
           
           TPM[1,1:n.sites,week,y,s,1] <- 1
           TPM[1,1:n.sites,week,y,s,2] <- 0
