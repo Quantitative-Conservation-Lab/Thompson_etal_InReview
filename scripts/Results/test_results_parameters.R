@@ -304,7 +304,7 @@ combine_tests <- rbind(SrL_RrL_30_sfin_avg,
 level_order <- c("SL_RL", "SM_RM", "SH_RH")
 
 ggplot(combine_tests)+
-  geom_jitter(aes(x = sim, y = state, color = run))+
+  geom_point(aes(x = sim, y = state, color = run))+
   geom_hline(aes(yintercept = means, color = 'mean'))+
   facet_grid(~factor(alt, levels = level_order)) +
   ylab("Average true state after 10 yrs")+
@@ -321,11 +321,52 @@ for(i in 1:length(combine_tests$run)){
   
 }
 
+combine_tests$score <- NA
+
 ggplot(combine_tests)+
   geom_point(aes(x = sim, y = bestalt, shape = run), size = 2)+
   scale_shape_manual(values = c(5, 20)) +
   ylab("Best Alternative")+
   xlab("Parameter Set")
+
+for(i in 1:length(combine_tests$score)){
+  df <- combine_tests %>% filter(sim == combine_tests$sim[i], 
+                                 alt == combine_tests$alt[i])
+  
+  combine_tests$score[i] <- ifelse(df$bestalt[1] == df$bestalt[2], 1, 0)
+  
+}
+
+sum(combine_tests$score)/ length(combine_tests$score)
+
+
+combine_testsa <- combine_tests %>% filter(run == 'a')
+sum(combine_testsa$bestalt == 1)
+sum(combine_testsa$bestalt == 2)
+sum(combine_testsa$bestalt == 3)
+
+combine_testsb <- combine_tests %>% filter(run == 'b')
+sum(combine_testsb$bestalt == 1)
+sum(combine_testsb$bestalt == 2)
+sum(combine_testsb$bestalt == 3)
+
+mat <- matrix(NA, nrow = 3, ncol = 2)
+
+mat[,1] <- c(sum(combine_testsa$bestalt == 1),
+             sum(combine_testsa$bestalt == 2),
+             sum(combine_testsa$bestalt == 3))
+
+mat[,2] <- c(sum(combine_testsb$bestalt == 1),
+             sum(combine_testsb$bestalt == 2),
+             sum(combine_testsb$bestalt == 3))
+
+colnames(mat) <- c('run a (first 100 parameter sets)', 'run b (second 100 parameter sets')
+rownames(mat) <- c('% alternative 1 is the best', '% alternative 2 is the best', '% alternative 3 is the best')
+
+mat <- mat/300
+
+
+
 
 
 ##### 60 hour budget #####
