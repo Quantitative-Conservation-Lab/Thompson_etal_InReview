@@ -801,7 +801,7 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,year,s],
-        yD = yD[,,,1:2,s],
+        yD = yD[,,,year,s],
         site.char = site.char,
         rem.vec = rem.vec.dat[,,s],
         hours = hours.dat[,1:n.sites,1:n.weeks, year, s],
