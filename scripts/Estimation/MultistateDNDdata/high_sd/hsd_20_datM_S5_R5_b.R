@@ -962,7 +962,6 @@ for(year in 2:n.years){
                 filename = paste0('trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
     }
   }
-  
 
   ###### 3b. Make Decision #####
   S.decision <- array(NA, c(n.sites, n.years, n.sims))

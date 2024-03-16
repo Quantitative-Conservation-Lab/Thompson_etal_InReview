@@ -16,9 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20_b'
+path <- 'E:\\Chapter3\\results\\hsd\\S75_R5_20_b'
 
-res <- 'E:/Chapter3/results/linear/S75_R5_20_b/densplots'
+res <- 'E:/Chapter3/results/hsd/S75_R5_20_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")

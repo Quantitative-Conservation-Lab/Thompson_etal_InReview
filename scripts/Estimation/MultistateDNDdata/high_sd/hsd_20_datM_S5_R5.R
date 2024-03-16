@@ -16,8 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "hsd", "S5_R5_20")
-res <- c('results/hsd/S5_R5_20') #subset of path for plot save
+path <- 'E:\\Chapter3\\results\\hsd\\S5_R5_20'
+
+res <- 'E:/Chapter3/results/hsd/S5_R5_20/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -943,7 +944,7 @@ for(year in 2:n.years){
   res.state[[year]] <- cbind.res.state
   res.state[[year]]$year <- year
 
-  subsims <- sample(1:100,10, replace = F)
+  subsims <- sample(1:100,5, replace = F)
   
   for(subs in subsims){
     for(par in 1:length(unique(cbind.res.parameters$param))){
@@ -953,9 +954,11 @@ for(year in 2:n.years){
                 ind = TRUE,
                 pdf = TRUE,
                 open_pdf = FALSE,
-                filename = paste0(res,'/densplots/trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
+                wd = res,
+                filename = paste0('trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
     }
   }
+  
 
   ###### 3b. Make Decision #####
   S.decision <- array(NA, c(n.sites, n.years, n.sims))

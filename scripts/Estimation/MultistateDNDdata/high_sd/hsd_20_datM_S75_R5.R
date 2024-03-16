@@ -946,7 +946,6 @@ for(year in 2:n.years){
 
   subsims <- sample(1:100,5, replace = F)
   
-  
   for(subs in subsims){
     for(par in 1:length(unique(cbind.res.parameters$param))){
       MCMCtrace(get(mcmcs[subs]),
@@ -959,6 +958,7 @@ for(year in 2:n.years){
                 filename = paste0('trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
     }
   }
+  
   
 
   ###### 3b. Make Decision #####
