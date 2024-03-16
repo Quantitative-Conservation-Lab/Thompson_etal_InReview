@@ -9,12 +9,11 @@ library(viridis)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "nocontrol_parameters")
-res <- c('results/nocontrol_parameters') #subset of path for plot save
+path <- 'E:\\Chapter3\\results\\noremoval\\noremoval_b'
 
 #### Management Strategy ####
 #No removal
-load("parameters_data.RData")
+load("parameters_data_b.RData")
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -185,15 +184,16 @@ for(year in 1:n.years){
 #### TIMING ####
 end.time <- Sys.time()
 time.taken <- end.time - start.time
+
 file_name = paste(path, 'time.txt',sep = '/')
 write.table(time.taken,file_name)
 
+#### TRUE STATE ####
 S.dat <- as.data.frame.table(State)
-colnames(S.dat) <- c("site", "week", "year", "sim", "state")
+colnames(S.dat) <- c("site", "week", "year", "sim","state")
 S.dat <-  as.data.frame(sapply(S.dat,as.numeric))
-
-s.fin <- S.dat %>% filter(week == 5 & year == 10)
-mean(s.fin$state)
+S.dat$sim <- S.dat$sim + 100
 
 file_name = paste(path, 'states_truth.csv',sep = '/')
 write.csv(S.dat,file_name)
+
