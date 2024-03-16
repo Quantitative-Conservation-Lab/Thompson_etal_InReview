@@ -16,8 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- here::here("results", "linear", "S75_R75_20_b")
-res <- c('results/linear/S75_R75_20_b') #subset of path for plot save
+path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
+
+res <- 'E:/Chapter3/results/linear/S75_R75_20_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -1018,6 +1019,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
+path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
 #1. parameters
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
