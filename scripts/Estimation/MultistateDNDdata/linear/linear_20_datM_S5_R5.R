@@ -854,9 +854,8 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
                           "delta", "State.fin")
-  ### FIX ####
-  n.burnin <- 2#000
-  n.iter <- 20#000 
+  n.burnin <- 2000
+  n.iter <- 20000 
   n.chains <- n.chains
   n.thin <- 1
   

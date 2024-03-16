@@ -60,8 +60,8 @@ B0.p.h.tau <- 1/(B0.p.h.sd * B0.p.h.sd) #precision parameter
 B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau)T(0,) #effect of effort 
 B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
   
-delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
-  
+delta ~dbeta(delta.a, delta.b)T(0.0001,0.9999)  #ability to correctly observe high state
+
 #-----------------------------------------------------------------------------#
 # STATE TRANSITION
 
