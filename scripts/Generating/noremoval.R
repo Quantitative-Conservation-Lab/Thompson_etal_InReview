@@ -8,9 +8,6 @@ library(plyr)
 library(viridis)
 
 #------------------------------------------------------------------------------#
-#### Path to save data ####
-path <- 'E:\\Chapter3\\results\\noremoval\\noremoval'
-
 #### Management Strategy ####
 #No removal
 load("parameters_data.RData")
@@ -181,6 +178,8 @@ for(year in 1:n.years){
 #} #parameter loop
 
 #################################################################################################
+#### Path to save data ####
+path <- 'E:\\Chapter3\\results\\noremoval\\noremoval'
 #### TIMING ####
 end.time <- Sys.time()
 time.taken <- end.time - start.time
@@ -196,3 +195,6 @@ S.dat <-  as.data.frame(sapply(S.dat,as.numeric))
 file_name = paste(path, 'states_truth.csv',sep = '/')
 write.csv(S.dat,file_name)
 
+#### QUICK TEST ####
+S.fin <- S.dat %>% filter(week == 5 & year == 10)
+mean(S.fin$state)
