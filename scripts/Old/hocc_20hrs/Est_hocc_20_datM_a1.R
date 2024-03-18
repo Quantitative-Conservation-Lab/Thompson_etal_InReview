@@ -1054,7 +1054,7 @@ for(year in 2:n.years){
   for(par in 1:n.params){
     # for(s in 1:n.sims){
     mean.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
-    true.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
+    true.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(truth))))
     param.bias[year,par,] <- ((mean.param[year,par,])-(true.param[year,par,]))/(true.param[year,par,])
     
     #}
