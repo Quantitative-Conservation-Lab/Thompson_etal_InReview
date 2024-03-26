@@ -179,7 +179,7 @@ for(year in 1:n.years){
 
 #################################################################################################
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\noremoval\\noremoval'
+path <- 'E:\\Chapter3\\results\\noremoval\\noremoval_b'
 
 #### TIMING ####
 end.time <- Sys.time()

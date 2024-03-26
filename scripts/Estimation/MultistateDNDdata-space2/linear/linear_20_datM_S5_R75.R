@@ -16,9 +16,10 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+#### Change name ####
+path <- 'E:\\Chapter3\\results-space2\\linear\\S5_R75_20'
 
-res <- 'E:/Chapter3/results/linear/S75_R5_20/densplots'
+res <- 'E:/Chapter3/results-space2/linear/S5_R75_20/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -104,7 +105,8 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 site.char <- site.char
-State.init <- State.init
+State.init <- rep(1,n.sites)
+State.init[17:24] <- c(2,2,3,3,3,3,2,2)
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -853,7 +855,6 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
                           "delta", "State.fin")
-  
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -967,16 +968,16 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.5) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.5) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
       B0.eps.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.h' & sim == s) %>% select(mean))
       B1.eps.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.h' & sim == s) %>% select(mean)))
      
-      removal.L[s] <- (logit(0.5) - B0.eps.l.est[s])/(B1.eps.l.est[s])
-      removal.H[s] <- (logit(0.5) - B0.eps.h.est[s])/(B1.eps.h.est[s])
+      removal.L[s] <- (logit(0.75) - B0.eps.l.est[s])/(B1.eps.l.est[s])
+      removal.H[s] <- (logit(0.75) - B0.eps.h.est[s])/(B1.eps.h.est[s])
     
       logsearch.effort[s] <- mean(logsearch.effort.L[s], logsearch.effort.H[s])
       removal.hours[s] <- mean(removal.L[s], removal.H[s])
@@ -1015,7 +1016,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:/Chapter3/results/linear/S75_R5_20'
+path <- 'E:\\Chapter3\\results-space2\\linear\\S5_R75_20'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
