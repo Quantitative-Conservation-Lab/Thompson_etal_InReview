@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\hstate\\S25_R5_20_b'
+path <- 'E:\\Chapter3\\results\\hstate\\S75_R5_60_b'
 
-res <- 'E:/Chapter3/results/hstate/S5_R25_20_b/densplots'
+res <- 'E:/Chapter3/results/hstate/S75_R5_60_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 60 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -1079,8 +1079,8 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.5) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.5) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
@@ -1127,7 +1127,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\hstate\\S25_R5_20_b'
+path <- 'E:\\Chapter3\\results\\hstate\\S75_R5_60_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
@@ -1365,7 +1365,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 site.visit$visit[site.visit$visit == 3] <- 0
 
 site.visit$sim <- site.visit$sim + 100
-file_name = paste(path, 'sites_visit.txt',sep = '/')
+file_name = paste(path, 'sites_visit',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1373,7 +1373,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 yM.dat$sim <- yM.dat$sim + 100
-file_name = paste(path, 'y_dat.txt',sep = '/')
+file_name = paste(path, 'y_dat',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####

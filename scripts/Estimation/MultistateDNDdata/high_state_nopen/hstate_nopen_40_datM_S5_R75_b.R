@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\hstate\\S25_R5_20_b'
+path <- 'E:\\Chapter3\\results\\hstate_nopenalty\\S5_R75_40_b'
 
-res <- 'E:/Chapter3/results/hstate/S5_R25_20_b/densplots'
+res <- 'E:/Chapter3/results/hstate_nopenalty/S5_R75_40_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -461,7 +461,7 @@ for(year in 2:n.years){
                 resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s]
               }else{
                 resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s] + 
-                  0.1*abs(sites.rem.M[h,week,y,s]  -sites.rem.M[h-1,week,y,s]) #hours traveling 
+                  0.1*1 #hours traveling 
               }
               
             }else{
@@ -477,7 +477,7 @@ for(year in 2:n.years){
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s] 
                 }else{
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + hours.dat[2,i,week,y,s] + 
-                    0.1*abs(sites.rem.M[h,week,y,s]  -sites.rem.M[h-1,week,y,s]) #hours traveling 
+                    0.1*1 #hours traveling 
                 } 
               }
               
@@ -490,7 +490,7 @@ for(year in 2:n.years){
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] 
                 }else{
                   resource.total[week,y,s] <- resource.total[week,y,s] + hours.dat[1,i,week,y,s] + 
-                    0.1*abs(sites.rem.M[h,week,y,s]  -sites.rem.M[h-1,week,y,s]) #hours traveling 
+                    0.1*1  #hours traveling 
                 } 
                 
                 
@@ -1087,8 +1087,8 @@ for(year in 2:n.years){
       B0.eps.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.h' & sim == s) %>% select(mean))
       B1.eps.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.h' & sim == s) %>% select(mean)))
      
-      removal.L[s] <- (logit(0.5) - B0.eps.l.est[s])/(B1.eps.l.est[s])
-      removal.H[s] <- (logit(0.5) - B0.eps.h.est[s])/(B1.eps.h.est[s])
+      removal.L[s] <- (logit(0.75) - B0.eps.l.est[s])/(B1.eps.l.est[s])
+      removal.H[s] <- (logit(0.75) - B0.eps.h.est[s])/(B1.eps.h.est[s])
     
       logsearch.effort[s] <- mean(logsearch.effort.L[s], logsearch.effort.H[s])
       removal.hours[s] <- mean(removal.L[s], removal.H[s])
@@ -1127,7 +1127,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\hstate\\S25_R5_20_b'
+path <- 'E:\\Chapter3\\results\\hstate_nopenalty\\S5_R75_40_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
@@ -1213,15 +1213,15 @@ res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
 
 res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
 
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
+res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 107)
 
-# ggplot(res.par.df.summary.sub) + 
-#   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
-#   geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
-#   geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
-#   geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
-#   scale_x_continuous(breaks=c(1,5,10))+
-#   facet_wrap(~param, scales = "free")
+ggplot(res.par.df.summary.sub) +
+  geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
+  geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
+  geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
+  geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
+  scale_x_continuous(breaks=c(1,5,10))+
+  facet_wrap(~param, scales = "free")
 
 ###### 4. Summary of parameters #####
 file_name = paste(path, 'par_summary.csv',sep = '/')
@@ -1365,7 +1365,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 site.visit$visit[site.visit$visit == 3] <- 0
 
 site.visit$sim <- site.visit$sim + 100
-file_name = paste(path, 'sites_visit.txt',sep = '/')
+file_name = paste(path, 'sites_visit',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1373,7 +1373,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 yM.dat$sim <- yM.dat$sim + 100
-file_name = paste(path, 'y_dat.txt',sep = '/')
+file_name = paste(path, 'y_dat',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####

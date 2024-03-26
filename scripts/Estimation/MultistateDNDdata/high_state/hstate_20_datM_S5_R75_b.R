@@ -23,7 +23,7 @@ res <- 'E:/Chapter3/results/hstate/S5_R75_20_b/densplots'
 #### Management Strategy ####
 load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 40 #total hours per week
+n.resource <- 20 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -1365,7 +1365,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 site.visit$visit[site.visit$visit == 3] <- 0
 
 site.visit$sim <- site.visit$sim + 100
-file_name = paste(path, 'sites_visit',sep = '/')
+file_name = paste(path, 'sites_visit.txt',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1373,7 +1373,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 yM.dat$sim <- yM.dat$sim + 100
-file_name = paste(path, 'y_dat',sep = '/')
+file_name = paste(path, 'y_dat.txt',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####
