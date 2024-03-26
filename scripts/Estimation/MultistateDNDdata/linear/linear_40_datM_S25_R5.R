@@ -16,14 +16,15 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+#### Change name ####
+path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
 
-res <- 'E:/Chapter3/results/linear/S75_R5_20/densplots'
+res <- 'E:/Chapter3/results/linear/S25_R5_40/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -853,7 +854,6 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
                           "delta", "State.fin")
-  
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -967,8 +967,8 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.25) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.25) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
@@ -1015,7 +1015,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:/Chapter3/results/linear/S75_R5_20'
+path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
@@ -1245,7 +1245,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-file_name = paste(path, 'sites_visit',sep = '/')
+file_name = paste(path, 'sites_visit.txt',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1253,7 +1253,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 
-file_name = paste(path, 'y_dat',sep = '/')
+file_name = paste(path, 'y_dat.txt',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####

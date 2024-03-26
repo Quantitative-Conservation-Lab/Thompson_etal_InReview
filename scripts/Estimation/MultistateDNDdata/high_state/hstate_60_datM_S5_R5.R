@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'E:\\Chapter3\\results\\hstate\\S5_R5_60'
 
-res <- 'E:/Chapter3/results/linear/S75_R5_20/densplots'
+res <- 'E:/Chapter3/results/hstate/S5_R5_60/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 60 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -121,8 +121,12 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### Removal Locations ####
-sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+#### First Removal Locations ####
+for(s in 1: n.sims){
+  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
+  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
+}
+
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -956,7 +960,17 @@ for(year in 2:n.years){
   }
 
   ###### 3b. Make Decision #####
-  #remove linear - assigned prior to simulation
+  S.decision <- array(NA, c(n.sites, n.years, n.sims))
+  
+  if(year < n.years){
+    for(s in 1:n.sims){
+      #Removal locations: rank sites by state
+      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
+      sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
+      
+    }
+  }
+  
   
   
   ###### 3c. Update efforts #####
@@ -967,8 +981,8 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.5) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.5) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
@@ -1015,7 +1029,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:/Chapter3/results/linear/S75_R5_20'
+path <- 'E:\\Chapter3\\results\\hstate\\S5_R5_60'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

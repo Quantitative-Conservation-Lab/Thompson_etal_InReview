@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60'
 
-res <- 'E:/Chapter3/results/linear/S75_R5_20/densplots'
+res <- 'E:/Chapter3/results/linear/S75_R5_60/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 60 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -1015,7 +1015,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:/Chapter3/results/linear/S75_R5_20'
+path <- 'E:/Chapter3/results/linear/S75_R5_60'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
