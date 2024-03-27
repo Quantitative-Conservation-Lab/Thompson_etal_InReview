@@ -16,9 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results-space2\\hstate\\S75_R75_20_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 
-res <- 'E:/Chapter3/results-space2/hstate/S75_R75_20_b/densplots'
+res <- 'E:/Chapter3/results/epicenter/S5_R75_20_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -104,8 +104,7 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 site.char <- site.char
-State.init <- rep(1,n.sites)
-State.init[17:24] <- c(2,2,3,3,3,3,2,2)
+State.init <- State.init
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -251,6 +250,17 @@ removal.H <- rep(NA, n.sims)
 removal.hours <- rep(NA, n.sims)
 
 start.time <- Sys.time()
+
+#### distance matrix ####
+dist.mat <- matrix(NA, nrow = n.sites, ncol = n.sites)
+
+for(i in 1:n.sites){
+  for(h in 1:n.sites){
+    dist.mat[i,h] <- abs(i-h)
+  }
+}
+
+
 ####################################################################################
 #### Simulations ####
 sim.start <- c(NA, 1, seq(3, n.years)) 
@@ -962,17 +972,19 @@ for(year in 2:n.years){
 
   ###### 3b. Make Decision #####
   S.decision <- array(NA, c(n.sites, n.years, n.sims))
+  center <- rep(NA, n.sims)
   
   if(year < n.years){
     for(s in 1:n.sims){
       #Removal locations: rank sites by state
       S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
+      
+      center[s] <- order(S.decision[,year,s], decreasing = T)[1]
+      
+      sites.rem.M[,1,year+1,s] <- order(dist.mat[,center[s]], decreasing = F)
       
     }
   }
-  
-  
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
@@ -982,8 +994,8 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.5) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.5) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
@@ -1030,7 +1042,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results-space2\\hstate\\S75_R75_20_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
@@ -1260,7 +1272,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-file_name = paste(path, 'sites_visit.txt',sep = '/')
+file_name = paste(path, 'sites_visit',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1268,7 +1280,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 
-file_name = paste(path, 'y_dat.txt',sep = '/')
+file_name = paste(path, 'y_dat',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####
