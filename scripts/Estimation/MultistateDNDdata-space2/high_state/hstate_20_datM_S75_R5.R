@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results-space2\\hstate\\S75_R5_20'
 
-res <- 'E:/Chapter3/results-space/hstate2/S75_R5_20/densplots'
+res <- 'E:/Chapter3/results-space2/hstate/S75_R5_20/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
