@@ -1015,7 +1015,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-res <- 'E:/Chapter3/results/linear/S75_R5_20/densplots'
+path <- 'E:/Chapter3/results/linear/S75_R5_20'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

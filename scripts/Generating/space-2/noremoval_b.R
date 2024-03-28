@@ -67,7 +67,8 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 site.char <- site.char
-State.init <- State.init
+State.init <- rep(1,n.sites)
+State.init[17:24] <- c(2,2,3,3,3,3,2,2)
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -179,7 +180,7 @@ for(year in 1:n.years){
 
 #################################################################################################
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\noremoval\\noremoval_b'
+path <- 'E:\\Chapter3\\results-space2\\noremoval\\noremoval_b'
 
 #### TIMING ####
 end.time <- Sys.time()
