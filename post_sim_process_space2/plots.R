@@ -10,11 +10,10 @@ library(ggrepel)
 
 
 #### NO REMOVAL ####
-ncpath <- 'E:\\Chapter3\\results\\noremoval'
+ncpath <- 'E:\\Chapter3\\results_space2\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
-
 nc.val <- mean(noremoval$state) -1 
 
 noremoval$inv <- noremoval$state
@@ -23,7 +22,7 @@ noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
 
 #### States Fin truth ####
-path <- 'E:\\Chapter3\\results'
+path <- 'E:\\Chapter3\\results_space2'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
@@ -55,17 +54,17 @@ finstate_truth %>%
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
   scale_x_discrete(breaks = c(#"epicenter0.50.75",
-                              "hstate0.750.5",
-                              "linear0.750.5"),
-                   labels=c(
-                    # "epicenter0.50.75" = "Epicenter",
-                     "hstate0.750.5" = "High state",
-                     "linear0.750.5" = "Linear"))+
-
+    "hstate0.750.5",
+    "linear0.750.5"),
+    labels=c(
+      # "epicenter0.50.75" = "Epicenter",
+      "hstate0.750.5" = "High state",
+      "linear0.750.5" = "Linear"))+
+  
   scale_fill_manual(name = "Management rates",
                     values = colors) +
-scale_color_manual(name = "Location",
-                  values = colors2) +
+  scale_color_manual(name = "Location",
+                     values = colors2) +
   
   xlab("Site prioritization")+
   ylab("Average final invasion state")+
@@ -118,8 +117,8 @@ fininv_truth$inv[fininv_truth$inv <= 2 ] <- 0
 fininv_truth$inv[fininv_truth$inv > 2 ] <- 1
 
 fininv_truth <- aggregate(inv ~ sim + location + detection + eradication + budget + rates, 
-                            data = as.data.frame(fininv_truth), 
-                            FUN = mean)
+                          data = as.data.frame(fininv_truth), 
+                          FUN = mean)
 
 fininv_truth <- fininv_truth %>% filter(detection < 1 & detection > 0)
 
@@ -197,42 +196,40 @@ dist$rates <- paste0('p = ', dist$detection, ', e = ', dist$eradication)
 dist <- dist %>% filter(detection < 1 & detection > 0)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
+colors <- c(cols[1:2], "grey90", "grey30")
 
 dist$loc2 <- paste0(dist$location, dist$detection, dist$eradication)
 
 dist %>% 
-  ggplot(aes(x = loc2, y = distance, fill = rates, color = location,
+  ggplot(aes(x = loc2, y = distance, fill = rates, 
              group = interaction(location, rates)))+
   geom_boxplot() +
+  # geom_hline(yintercept = nc.inv, linetype = 2) + 
   stat_summary(fun.y = mean, geom = "errorbar",
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(#"epicenter0.50.75",
-    "hstate0.750.5",
-    "linear0.750.5"),
-    labels=c(
-      # "epicenter0.50.75" = "Epicenter",
-      "hstate0.750.5" = "High state",
-      "linear0.750.5" = "Linear"))+
-  
-  scale_fill_manual(name = "Management rates",
-                    values = colors) +
-  scale_color_manual(name = "Location",
+  scale_x_discrete(breaks = c(
+                              "hstate0.750.5",
+                              "linear0.750.5"), 
+                   labels=c(
+                     
+                     "hstate0.750.5" = "High invasion",
+                     "linear0.750.5" = "Linear"))+
+  scale_color_manual(name = "Site prioritization",
                      values = colors2) +
   xlab("Site prioritization")+
   ylab("Distance traveled")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        #strip.text.x = element_blank(),
+        strip.text.x = element_blank(),
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~budget, nrow = 3, labeller = label_both)
+  facet_wrap(~budget, nrow = 3)
 
 #### Bias state ####
 file_name = paste(path, 'bais_states.csv',sep = '/')
@@ -293,7 +290,7 @@ colors <- cols
 bias_state$loc2 <- paste0(bias_state$location, bias_state$detection, bias_state$eradication)
 
 bias_state_years <- bias_state %>%
-  group_by(location, year, rates, budget) %>%
+  group_by(location, year, rates) %>%
   summarise(mean_b = mean(rel.bias),
             lower = quantile(rel.bias, 0.1),
             upper = quantile(rel.bias, 0.9))
@@ -302,10 +299,10 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
   geom_point()+
   geom_errorbar()+
   geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~location + budget)+
+  facet_wrap(~location )+
   scale_x_continuous(breaks = c(2,4,6,8)) +
   scale_color_manual(name = "Management rates",
-                    values = colors) +
+                     values = colors) +
   ylab("State RMSE")
 
 #### Bias params ####
@@ -331,12 +328,12 @@ bias_param %>%
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
   scale_x_discrete(breaks = c(
-                              "hstate0.750.5",
-                              "linear0.750.5"), 
-                   labels=c(
-                     
-                     "hstate0.750.5" = "High invasion",
-                     "linear0.750.5" = "Linear"))+
+    "hstate0.750.5",
+    "linear0.750.5"), 
+    labels=c(
+      
+      "hstate0.750.5" = "High invasion",
+      "linear0.750.5" = "Linear"))+
   
   scale_fill_manual(name = "Management rates",
                     values = colors) +
@@ -485,7 +482,6 @@ ggplot(param_epicenter_20, aes(x = year, y = mean_b, ymin = lower, ymax = upper,
   scale_color_manual(name = "Management rates",
                      values = "darkgreen") +
   ylab("RMSE")
-
 #### Param summary ####
 file_name = paste(path, 'params.csv',sep = '/')
 params<- fread(file_name)
