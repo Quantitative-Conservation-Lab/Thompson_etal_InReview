@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
 
-res <- 'E:/Chapter3/results/linear/S25_R5_60_b/densplots'
+res <- 'E:/Chapter3/results/epicenter/S75_R75_20/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data_b.RData")
+load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 20 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -103,12 +103,8 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
-site.char <- read.csv( here::here('data', "site_char.csv"))
-site.char <- c(t(site.char$x))
-
-State.init <- read.csv( here::here('data', "state_init.csv"))
-State.init <- c(t(State.init$x))
-
+site.char <- site.char
+State.init <- State.init
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -125,8 +121,12 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### Removal Locations ####
-sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+#### First Removal Locations ####
+for(s in 1: n.sims){
+  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
+  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
+}
+
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -250,6 +250,17 @@ removal.H <- rep(NA, n.sims)
 removal.hours <- rep(NA, n.sims)
 
 start.time <- Sys.time()
+
+#### distance matrix ####
+dist.mat <- matrix(NA, nrow = n.sites, ncol = n.sites)
+
+for(i in 1:n.sites){
+  for(h in 1:n.sites){
+    dist.mat[i,h] <- abs(i-h)
+  }
+}
+
+
 ####################################################################################
 #### Simulations ####
 sim.start <- c(NA, 1, seq(3, n.years)) 
@@ -958,11 +969,22 @@ for(year in 2:n.years){
                 filename = paste0('trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
     }
   }
-  
 
   ###### 3b. Make Decision #####
-  #remove linear - assigned prior to simulation
+  S.decision <- array(NA, c(n.sites, n.years, n.sims))
+  center <- rep(NA, n.sims)
   
+  if(year < n.years){
+    for(s in 1:n.sims){
+      #Removal locations: rank sites by state
+      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
+      
+      center[s] <- order(S.decision[,year,s], decreasing = T)[1]
+      
+      sites.rem.M[,1,year+1,s] <- order(dist.mat[,center[s]], decreasing = F)
+      
+    }
+  }
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
@@ -972,16 +994,16 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.25) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.25) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
       B0.eps.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.h' & sim == s) %>% select(mean))
       B1.eps.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.h' & sim == s) %>% select(mean)))
      
-      removal.L[s] <- (logit(0.5) - B0.eps.l.est[s])/(B1.eps.l.est[s])
-      removal.H[s] <- (logit(0.5) - B0.eps.h.est[s])/(B1.eps.h.est[s])
+      removal.L[s] <- (logit(0.75) - B0.eps.l.est[s])/(B1.eps.l.est[s])
+      removal.H[s] <- (logit(0.75) - B0.eps.h.est[s])/(B1.eps.h.est[s])
     
       logsearch.effort[s] <- mean(logsearch.effort.L[s], logsearch.effort.H[s])
       removal.hours[s] <- mean(removal.L[s], removal.H[s])
@@ -1020,15 +1042,13 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
-
+path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
                     res.params[[8]], res.params[[9]], res.params[[10]])
 
-sum(res.par.df$Rhat > 1.1)/ length(res.par.df$mean)
-res.par.df$sim <- res.par.df$sim + 100
+max(res.par.df$Rhat)
 file_name = paste(path, 'params.csv',sep = '/')
 write.csv(res.par.df,file_name)
 
@@ -1039,7 +1059,6 @@ res.states.df <- rbind(res.state[[2]],res.state[[3]],
                        res.state[[8]],res.state[[9]],
                        res.state[[10]])
 
-res.states.df$sim <- res.states.df$sim + 100
 file_name = paste(path, 'states.csv',sep = '/')
 write.csv(res.states.df,file_name)
 
@@ -1048,7 +1067,6 @@ S.dat <- as.data.frame.table(State)
 colnames(S.dat) <- c("site", "week", "year", "sim", "state")
 S.dat <-  as.data.frame(sapply(S.dat,as.numeric))
 
-S.dat$sim <- S.dat$sim + 100
 file_name = paste(path, 'states_truth.csv',sep = '/')
 write.csv(S.dat,file_name)
 
@@ -1109,17 +1127,16 @@ res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1
 
 res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
 
-# ggplot(res.par.df.summary.sub) + 
-#   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
-#   geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
-#   geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
-#   geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
-#   scale_x_continuous(breaks=c(1,5,10))+
-#   facet_wrap(~param, scales = "free")
+ggplot(res.par.df.summary.sub) + 
+  geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
+  geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
+  geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
+  geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
+  scale_x_continuous(breaks=c(1,5,10))+
+  facet_wrap(~param, scales = "free")
 
 ###### 4. Summary of parameters #####
 file_name = paste(path, 'par_summary.csv',sep = '/')
-res.par.df.summary$sim <- res.par.df.summary$sim + 100
 write.csv(res.par.df.summary,file_name)
 
 
@@ -1142,7 +1159,7 @@ bias.state.df$year <- as.numeric(bias.state.df$year)
 bias.state.df$site<- as.numeric(bias.state.df$site)
 bias.state.df$sim <- as.numeric(bias.state.df$sim)
 bias.state.df <- bias.state.df %>% filter(year > 1)
-bias.state.df$sim <- bias.state.df$sim + 100
+
 file_name = paste(path, 'bias_states.csv',sep = '/')
 write.csv(bias.state.df,file_name)
 
@@ -1168,7 +1185,6 @@ bias.param.df$year <- as.numeric(bias.param.df$year)
 bias.param.df$sim <- as.numeric(bias.param.df$sim)
 bias.param.df <- bias.param.df %>% filter(year > 1)
 bias.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
-bias.param.df$sim <- bias.param.df$sim + 100
 
 file_name = paste(path, 'bias_params.csv',sep = '/')
 write.csv(bias.param.df,file_name)
@@ -1196,7 +1212,7 @@ CI.state.df$year <- as.numeric(CI.state.df$year)
 CI.state.df$site<- as.numeric(CI.state.df$site)
 CI.state.df$sim <- as.numeric(CI.state.df$sim)
 CI.state.df <- CI.state.df %>% filter(year > 1)
-CI.state.df$sim <- CI.state.df$sim + 100
+
 file_name = paste(path, 'CI_state.csv',sep = '/')
 write.csv(CI.state.df,file_name)
 
@@ -1226,7 +1242,6 @@ CI.param.df$year <- as.numeric(CI.param.df$year)
 CI.param.df$sim <- as.numeric(CI.param.df$sim)
 CI.param.df <- CI.param.df %>% filter(year > 1)
 CI.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
-CI.param.df$sim  <- CI.param.df$sim  + 100
 
 file_name = paste(path, 'CI_param.csv',sep = '/')
 write.csv(CI.param.df,file_name)
@@ -1235,7 +1250,6 @@ write.csv(CI.param.df,file_name)
 dist.travel <- as.data.frame.table(d.traveled)
 colnames(dist.travel) <- c("week", "year", "sim", "distance")
 dist.travel <-  as.data.frame(sapply(dist.travel,as.numeric))
-dist.travel$sim <- dist.travel$sim + 100
 
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 write.csv(dist.travel,file_name)
@@ -1258,16 +1272,15 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-site.visit$sim <- site.visit$sim + 100
-file_name = paste(path, 'sites_visit.txt',sep = '/')
+file_name = paste(path, 'sites_visit',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
 yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
-yM.dat$sim <- yM.dat$sim + 100
-file_name = paste(path, 'y_dat.txt',sep = '/')
+
+file_name = paste(path, 'y_dat',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####
