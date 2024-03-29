@@ -519,7 +519,7 @@ total_visit$rates <- paste0('p = ', total_visit$detection, ', e = ', total_visit
 total_visit <- total_visit %>% filter(detection < 1 & detection > 0)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- c(cols[1:2], "grey90", "grey30")
+colors <- cols
 
 total_visit$loc2 <- paste0(total_visit$location, total_visit$detection, total_visit$eradication)
 
