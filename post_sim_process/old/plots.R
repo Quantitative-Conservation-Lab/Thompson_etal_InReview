@@ -22,6 +22,7 @@ noremoval$inv[noremoval$inv <= 2 ] <- 0
 noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
 
+
 #### States Fin truth ####
 path <- 'E:\\Chapter3\\results'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
@@ -39,14 +40,12 @@ finstate_truth <- aggregate(state ~ sim + location + detection + eradication + b
 finstate_truth <- finstate_truth %>% filter(detection < 1 & detection > 0)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
-
-colors2 <- c('orange', 'purple', 'black')
+colors <- c(cols[1:2], "grey90", "grey30")
 
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 
 finstate_truth %>% 
-  ggplot(aes(x = loc2, y = state, fill = rates, color = location,
+  ggplot(aes(x = loc2, y = state, fill = rates, 
              group = interaction(location, rates)))+
   geom_boxplot() +
   geom_hline(yintercept = nc.val, linetype = 2) + 
@@ -54,31 +53,29 @@ finstate_truth %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(#"epicenter0.50.75",
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
-                              "linear0.750.5"),
+                              "linear0.750.5"), 
                    labels=c(
-                    # "epicenter0.50.75" = "Epicenter",
-                     "hstate0.750.5" = "High state",
+                     "hsd0.750.5" = "High uncertainty",
+                     "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
-
+  
   scale_fill_manual(name = "Management rates",
                     values = colors) +
-scale_color_manual(name = "Location",
-                  values = colors2) +
   
   xlab("Site prioritization")+
   ylab("Average final invasion state")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        #strip.text.x = element_blank(),
+        strip.text.x = element_blank(),
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~budget, nrow = 3, labeller = label_both)
+  facet_wrap(~budget, nrow = 3)
 
 detach(package:plyr)
 
@@ -124,12 +121,12 @@ fininv_truth <- aggregate(inv ~ sim + location + detection + eradication + budge
 fininv_truth <- fininv_truth %>% filter(detection < 1 & detection > 0)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
+colors <- c(cols[1:2], "grey90", "grey30")
 
 fininv_truth$loc2 <- paste0(fininv_truth$location, fininv_truth$detection, fininv_truth$eradication)
 
 fininv_truth %>% 
-  ggplot(aes(x = loc2, y = inv, fill = rates, color =location,
+  ggplot(aes(x = loc2, y = inv, fill = rates, 
              group = interaction(location, rates)))+
   geom_boxplot() +
   geom_hline(yintercept = nc.inv, linetype = 2) + 
@@ -137,30 +134,29 @@ fininv_truth %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(#"epicenter0.50.75",
-    "hstate0.750.5",
-    "linear0.750.5"),
-    labels=c(
-      # "epicenter0.50.75" = "Epicenter",
-      "hstate0.750.5" = "High state",
-      "linear0.750.5" = "Linear"))+
+  scale_x_discrete(breaks = c("hsd0.750.5",
+                              "hstate0.750.5",
+                              "linear0.750.5"), 
+                   labels=c(
+                     "hsd0.750.5" = "High uncertainty",
+                     "hstate0.750.5" = "High invasion",
+                     "linear0.750.5" = "Linear"))+
   
   scale_fill_manual(name = "Management rates",
                     values = colors) +
-  scale_color_manual(name = "Location",
-                     values = colors2) +
+  
   xlab("Site prioritization")+
   ylab("Average % invaded")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        #strip.text.x = element_blank(),
+        strip.text.x = element_blank(),
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~budget, nrow = 3, labeller = label_both)
+  facet_wrap(~budget, nrow = 3)
 
 budget20_contain <- fininv_truth %>% 
   filter(budget == 20) %>% 
@@ -197,42 +193,40 @@ dist$rates <- paste0('p = ', dist$detection, ', e = ', dist$eradication)
 dist <- dist %>% filter(detection < 1 & detection > 0)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
+colors <- c(cols[1:2], "grey90", "grey30")
 
 dist$loc2 <- paste0(dist$location, dist$detection, dist$eradication)
 
 dist %>% 
-  ggplot(aes(x = loc2, y = distance, fill = rates, color = location,
+  ggplot(aes(x = loc2, y = distance, fill = rates, 
              group = interaction(location, rates)))+
   geom_boxplot() +
+  # geom_hline(yintercept = nc.inv, linetype = 2) + 
   stat_summary(fun.y = mean, geom = "errorbar",
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(#"epicenter0.50.75",
-    "hstate0.750.5",
-    "linear0.750.5"),
-    labels=c(
-      # "epicenter0.50.75" = "Epicenter",
-      "hstate0.750.5" = "High state",
-      "linear0.750.5" = "Linear"))+
-  
-  scale_fill_manual(name = "Management rates",
-                    values = colors) +
-  scale_color_manual(name = "Location",
+  scale_x_discrete(breaks = c("hsd0.750.5",
+                              "hstate0.750.5",
+                              "linear0.750.5"), 
+                   labels=c(
+                     "hsd0.750.5" = "High uncertainty",
+                     "hstate0.750.5" = "High invasion",
+                     "linear0.750.5" = "Linear"))+
+  scale_color_manual(name = "Site prioritization",
                      values = colors2) +
   xlab("Site prioritization")+
   ylab("Distance traveled")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        #strip.text.x = element_blank(),
+        strip.text.x = element_blank(),
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~budget, nrow = 3, labeller = label_both)
+  facet_wrap(~budget, nrow = 3)
 
 #### Bias state ####
 file_name = paste(path, 'bais_states.csv',sep = '/')
@@ -242,12 +236,12 @@ bias_state <- data.frame(bias_state)
 bias_state$rates <- paste0('p = ', bias_state$detection, ', e = ', bias_state$eradication)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
+colors <- c(cols[1:2], "grey90", "grey30")
 
 bias_state$loc2 <- paste0(bias_state$location, bias_state$detection, bias_state$eradication)
 
 bias_state %>% 
-  ggplot(aes(x = loc2, y = rel.bias, fill = rates,color = location, 
+  ggplot(aes(x = loc2, y = rel.bias, fill = rates, 
              group = interaction(location, rates)))+
   geom_boxplot() +
   geom_hline(yintercept = 0, linetype = 2) + 
@@ -255,30 +249,28 @@ bias_state %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(#"epicenter0.50.75",
-    "hstate0.750.5",
-    "linear0.750.5"),
-    labels=c(
-      # "epicenter0.50.75" = "Epicenter",
-      "hstate0.750.5" = "High state",
-      "linear0.750.5" = "Linear"))+
+  scale_x_discrete(breaks = c("hsd0.750.5",
+                              "hstate0.750.5",
+                              "linear0.750.5"), 
+                   labels=c(
+                     "hsd0.750.5" = "High uncertainty",
+                     "hstate0.750.5" = "High invasion",
+                     "linear0.750.5" = "Linear"))+
   
   scale_fill_manual(name = "Management rates",
                     values = colors) +
-  scale_color_manual(name = "Location",
-                     values = colors2) +
   xlab("Site prioritization")+
-  ylab("State RMSE")+
+  ylab("State relative bias")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        #strip.text.x = element_blank(),
+        strip.text.x = element_blank(),
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~budget, nrow = 3, labeller = label_both)
+  facet_wrap(~budget, nrow = 3)
 
 ##### Bias state through time ####
 file_name = paste(path, 'bais_states.csv',sep = '/')
@@ -288,25 +280,30 @@ bias_state <- data.frame(bias_state)
 bias_state$rates <- paste0('p = ', bias_state$detection, ', e = ', bias_state$eradication)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
+colors <- c(cols[1:2], "grey90", "grey30")
 
 bias_state$loc2 <- paste0(bias_state$location, bias_state$detection, bias_state$eradication)
 
-bias_state_years <- bias_state %>%
-  group_by(location, year, rates, budget) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
+bias_state %>% 
+  ggplot(aes(x = year, y = rel.bias, fill = rates, 
+             group = interaction(location, rates, year)))+
+  geom_boxplot(outlier.shape = NA) +
   geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~location + budget)+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
+  scale_fill_manual(name = "Management rates",
                     values = colors) +
-  ylab("State RMSE")
+  xlab("Year")+
+  ylab("State relative bias")+
+  theme_bw() +  
+  scale_x_continuous(breaks = c(2,4,6,8,10))+
+  theme(strip.background=element_rect(colour="white",
+                                      fill="white"),
+        strip.text.x = element_blank(),
+        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(hjust = 1))+
+  facet_wrap(~budget + location, nrow = 3)
+
 
 #### Bias params ####
 file_name = paste(path, 'bias_params.csv',sep = '/')
@@ -316,7 +313,7 @@ bias_param <- data.frame(bias_param)
 bias_param$rates <- paste0('p = ', bias_param$detection, ', e = ', bias_param$eradication)
 
 cols <- brewer.pal(6, "Paired") 
-colors <- cols
+colors <- c(cols[1:2], "grey90", "grey30")
 
 bias_param$loc2 <- paste0(bias_param$location, bias_param$detection, bias_param$eradication)
 
@@ -330,11 +327,11 @@ bias_param %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
                               "linear0.750.5"), 
                    labels=c(
-                     
+                     "hsd0.750.5" = "High uncertainty",
                      "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
@@ -353,160 +350,37 @@ bias_param %>%
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~budget, nrow = 3)
 
-#### Params -hstate ####
+bias_param1 <- bias_param %>% filter(param == "B0.eps.l")
 
-bias_param_hstate <- bias_param %>% filter(location == "hstate")
-
-param_hstate_20 <- bias_param_hstate %>%
-  filter(budget == 20 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_hstate_20, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
+bias_param1 %>% 
+  ggplot(aes(x = year, y = rel.bias, fill = rates, 
+             group = interaction(location, rates, year)))+
+  geom_boxplot(outlier.shape = NA) +
+  ylim(c(-2,2))+
   geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = colors) +
-  ylab("RMSE")
+  stat_summary(fun.y = mean, geom = "errorbar",
+               aes(ymax = after_stat(y), ymin = after_stat(y),
+                   group = interaction(location, rates)),
+               width = .75, color = "red", linewidth = 1)+ 
+  scale_fill_manual(name = "Management rates",
+                    values = colors) +
+  xlab("Site prioritization")+
+  ylab("State relative bias")+
+  theme_bw() +   
+  theme(strip.background=element_rect(colour="white",
+                                      fill="white"),
+        strip.text.x = element_blank(),
+        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(hjust = 1))+
+  facet_wrap(~budget + location + param, nrow = 3)
 
-param_hstate_40 <- bias_param_hstate %>%
-  filter(budget == 40 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_hstate_40, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = colors) +
-  ylab("RMSE")
-
-param_hstate_60 <- bias_param_hstate %>%
-  filter(budget == 60 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_hstate_60, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = colors) +
-  ylab("RMSE")
-
-#### Params -linear ####
-
-bias_param_linear <- bias_param %>% filter(location == "linear")
-
-param_linear_20 <- bias_param_linear %>%
-  filter(budget == 20 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_linear_20, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = colors) +
-  ylab("RMSE")
-
-param_linear_40 <- bias_param_linear %>%
-  filter(budget == 40 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_linear_40, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = colors) +
-  ylab("RMSE")
-
-param_linear_60 <- bias_param_linear %>%
-  filter(budget == 60 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_linear_60, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = colors) +
-  ylab("RMSE")
-
-
-#### Params - epicenter ####
-#### Params -linear ####
-
-bias_param_epicenter <- bias_param %>% filter(location == "epicenter")
-
-param_epicenter_20 <- bias_param_epicenter %>%
-  filter(budget == 20 & (rel.bias > -10 & rel.bias < 10)) %>% 
-  group_by(param, budget, year, rates) %>%
-  summarise(mean_b = mean(rel.bias),
-            lower = quantile(rel.bias, 0.1),
-            upper = quantile(rel.bias, 0.9))
-
-ggplot(param_epicenter_20, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  facet_wrap(~param, scales = 'free')+
-  scale_x_continuous(breaks = c(2,4,6,8)) +
-  scale_color_manual(name = "Management rates",
-                     values = "darkgreen") +
-  ylab("RMSE")
 
 #### Param summary ####
-file_name = paste(path, 'params.csv',sep = '/')
-params<- fread(file_name)
-params <- data.frame(params)
-
-unique(params$param)
-unique(bias_param$param)
-
-params_b1phihh <- params %>% 
-  filter(param == 'B1.phi.h' & year == 8 
-         & budget == 20 & 
-           sim == 2 &
-           location == 'hstate' &
-           detection == 0.5 & eradication == 0.5)
-
-
-bias_b1phihh <- bias_param %>% 
-  filter(param == 'B1.phi.h' & year == 8 
-         & budget == 20 & 
-           location == 'hstate' &
-           detection == 0.5 & eradication == 0.5)
+file_name = paste(path, 'param_summary.csv',sep = '/')
+paramsum <- fread(file_name)
+paramsum <- data.frame(paramsum)
 
 #### Sites Visit ####
 ##### total visit ####
@@ -532,11 +406,11 @@ total_visit %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
                               "linear0.750.5"), 
                    labels=c(
-                     
+                     "hsd0.750.5" = "High uncertainty",
                      "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
@@ -581,11 +455,11 @@ total_rem %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
                               "linear0.750.5"), 
                    labels=c(
-                     
+                     "hsd0.750.5" = "High uncertainty",
                      "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
@@ -630,11 +504,11 @@ VOI_suppress %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
                               "linear0.750.5"), 
                    labels=c(
-                     
+                     "hsd0.750.5" = "High uncertainty",
                      "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
@@ -678,11 +552,11 @@ VOI_contain %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
                               "linear0.750.5"), 
                    labels=c(
-                     
+                     "hsd0.750.5" = "High uncertainty",
                      "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
@@ -727,11 +601,11 @@ finstate %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "red", linewidth = 1)+ 
-  scale_x_discrete(breaks = c(
+  scale_x_discrete(breaks = c("hsd0.750.5",
                               "hstate0.750.5",
                               "linear0.750.5"), 
                    labels=c(
-                    
+                     "hsd0.750.5" = "High uncertainty",
                      "hstate0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   

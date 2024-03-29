@@ -1030,7 +1030,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\resultse-space2\\hstat\\S75_R75_20'
+path <- 'E:\\Chapter3\\results-space2\\hstate\\S75_R75_20'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
