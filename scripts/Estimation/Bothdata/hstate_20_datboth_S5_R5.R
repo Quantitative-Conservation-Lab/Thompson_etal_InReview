@@ -276,7 +276,7 @@ sim.end <- c(NA, c(seq(2, n.years)))
 
 #year <- 2
 
-for(year in 2:n.years){
+for(year in 2:3){
   
   for(y in sim.start[year]:sim.end[year]){
     #### 1. Simulation ####

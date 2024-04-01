@@ -29,7 +29,7 @@ B1.eps.h.tau <- 1/(B1.eps.h.sd * B1.eps.h.sd) #precision parameter
 #State transition:
 B0.phi.h ~ dnorm(B0.phi.h.mean, B0.phi.h.tau) #transition from high to high
 B0.phi.h.tau <- 1/(B0.phi.h.sd * B0.phi.h.sd) #precision parameter
-B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau)T(0,) #effect of removal on transition
+B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau)T(,0) #effect of removal on transition
 B1.phi.h.tau <- 1/(B1.phi.h.sd*B1.phi.h.sd) #precision parameter
   
 #--------------- State parametes for between weeks: ---------------#
@@ -64,6 +64,8 @@ B0.p.h.tau <- 1/(B0.p.h.sd * B0.p.h.sd) #precision parameter
 B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau)T(0,) #effect of effort 
 B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
 
+delta ~dbeta(delta.a, delta.b)T(0.0001,0.9999)  #ability to correctly observe high state
+
 #difference between detection/nondetection data and multistate data
 alpha.l ~ dnorm(alpha.l.mean, alpha.l.sd)T(,0)
 alpha.h ~ dnorm(alpha.h.mean, alpha.h.sd)T(,0)
@@ -78,8 +80,7 @@ P.datD[2,1] <- 1-pD.l #low state and not detected
 P.datD[2,2] <- pD.l #low state and detected
 P.datD[3,1] <- 1-pD.h #high state and not detected
 P.datD[3,2] <- pD.h #high state and detected
-  
-delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
+
   
 #-----------------------------------------------------------------------------#
 # STATE TRANSITION
@@ -114,7 +115,7 @@ for (i in 1:n.sites){
     logit(eps.l[i,t]) <- B0.eps.l + B1.eps.l*rem.vec[i,t]*hours[2,i,t] #erradication low state, rem.vec = indicator of removal
     logit(eps.h[i,t]) <- B0.eps.h + B1.eps.h*rem.vec[i,t]*hours[2,i,t] #erradication high state
     
-    logit(phi.h[i,t]) <- B0.phi.h - B1.phi.h*rem.vec[i,t]*hours[2,i,t]
+    logit(phi.h[i,t]) <- B0.phi.h + B1.phi.h*rem.vec[i,t]*hours[2,i,t]
     
     #State transition matrix: TPM[current state, location, time, future state]
     TPM[1,i,t,1] <- 1 #empty to empty

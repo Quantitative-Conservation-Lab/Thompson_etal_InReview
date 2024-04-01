@@ -16,14 +16,15 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+#### Change name ####
+path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R75_40_b'
 
-res <- 'E:/Chapter3/results_datboth/budget20/linear_S5_R75_20/densplots'
+res <- 'E:/Chapter3/results-space2/linear/S25_R75_40_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -104,7 +105,8 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 site.char <- site.char
-State.init <- State.init
+State.init <- rep(1,n.sites)
+State.init[17:24] <- c(2,2,3,3,3,3,2,2)
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -121,10 +123,8 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### First Removal Locations ####
+#### Removal Locations ####
 sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
-
-
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -132,11 +132,10 @@ resource.total <- array(0, c(n.weeks, n.years, n.sims))
 d.traveled <- array(NA, c(n.weeks, n.years, n.sims))
 visit <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
 
-yD <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
-
 #Detection probabilities
 pM.l <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
 pM.h <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
+
 P.datM <- array(NA, dim = c(n.states, n.sites, n.weeks, n.years, n.sims, n.states))
 
 
@@ -155,39 +154,9 @@ for(w in 1:n.weeks){
   }
 }
 
-#### Dat D detection ####
-pD.l <- rep(NA, n.sims)
-pD.h <- rep(NA, n.sims)
-P.datD <- array(NA, dim = c(n.states, n.sims, 2))
-logeffort.D <- log(1) #assume they are spending 1 hour at each spot
-
-alpha.ls <- data.frame(param = 'alpha.l', truth = alpha.l, sim = seq(1:n.sims))
-alpha.hs <- data.frame(param = 'alpha.h', truth = alpha.h, sim = seq(1:n.sims))
-
-truth.params <- rbind(alpha.ls, alpha.hs, truth.params)
-
-#Locations:
-vols.locs <- 8
-#site.vols <- array(NA, c(vols.locs, n.weeks, n.years))
-
-# for(y in 1:n.years){
-#   site.vols[,1:n.weeks,y] <- sample(1:n.sites, vols.locs, replace = FALSE)
-# }
-# 
-# 
-# saveRDS(site.vols, file = "site_vols.rds")
-site.vols <- readRDS("site_vols.rds")
-
-for(s in 1:n.sims){
-  pD.l[s] <- invlogit(B0.pl[s] + B1.pl[s]*logeffort.D + alpha.l[s])
-  pD.h[s] <- invlogit(B0.ph[s] + B1.ph[s]*logeffort.D + alpha.h[s])
-  
-  P.datD[1,s,] <- c(1,0)
-  P.datD[2,s,] <- c(1-pD.l[s],pD.l[s])
-  P.datD[3,s,] <- c(1-pD.h[s],pD.h[s])
-}
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
+start.time <- Sys.time()
 
 #### JAGS arrays ####
 S.init <- array(NA, c(n.sites,n.years, n.sims))
@@ -231,15 +200,15 @@ B0.p.l.mean <- array(NA, c(n.years, n.sims))
 B0.p.l.sd <- array(NA, c(n.years, n.sims))
 B1.p.l.mean <- array(NA, c(n.years, n.sims))
 B1.p.l.sd <- array(NA, c(n.years, n.sims))
-alpha.l.mean <- array(NA, c(n.years, n.sims))
-alpha.l.sd <- array(NA, c(n.years, n.sims))
+l.mean <- array(NA, c(n.years, n.sims))
+l.sd <- array(NA, c(n.years, n.sims))
 
 B0.p.h.mean <- array(NA, c(n.years, n.sims))
 B0.p.h.sd <- array(NA, c(n.years, n.sims))
 B1.p.h.mean <- array(NA, c(n.years, n.sims))
 B1.p.h.sd <- array(NA, c(n.years, n.sims))
-alpha.h.mean <- array(NA, c(n.years, n.sims))
-alpha.h.sd <- array(NA, c(n.years, n.sims))
+h.mean <- array(NA, c(n.years, n.sims))
+h.sd <- array(NA, c(n.years, n.sims))
 delta.a <- array(NA, c(n.years, n.sims))
 delta.b <-  array(NA, c(n.years, n.sims))
 
@@ -371,10 +340,6 @@ for(year in 2:n.years){
         
         ##### Observation process #######
         # Observation process: draw observation given current state
-        for(i in site.vols[,week,y]){
-          yD[i,1,week, y,s] <- rcat(1, P.datD[State[i,week,y,s],s,])
-          yD[i,2,week, y,s] <- rcat(1, P.datD[State[i,week,y,s],s,])
-        }
         
         for(h in 1:n.sites){ #order of sites where removal occurs
           i <- sites.rem.M[h,week,y,s]
@@ -583,127 +548,112 @@ for(year in 2:n.years){
     delta.a[year,] <- 1
     delta.b[year,] <- 1
     
-    #--alpha ----#
-    alpha.l.mean[year,] <- 0
-    alpha.l.sd[year,] <- 0.5
-    alpha.h.mean[year,] <- 0
-    alpha.h.sd[year,] <- 0.5
-    
     # --- S.init and D.init ---  Initial states ------------ #
     alpha.init1 <- rep(1,n.states) #initial state probability vector
     
   } else{
     ###### 2+ Estimation priors #####
+    # --- eps.l ---  eradication low state -------------------- #
+    #B0.eps.l = base eradication at low state 
+    B0.eps.l.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param, '^B0.eps.l')) %>% select(mean)))
+    B0.eps.l.sd[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param, '^B0.eps.l')) %>% select(sd)))
+    
+    #B1.eps.l = effect of eradication at low state 
+    B1.eps.l.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.eps.l')) %>% select(mean)))
+    B1.eps.l.sd[year,] <-  c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.eps.l')) %>% select(sd)))
+    
+    # --- eps.h ---  eradication high state ------------------- #
+    #B0.eps.h = base eradication at high state 
+    B0.eps.h.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B0.eps.h')) %>% select(mean)))
+    B0.eps.h.sd[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B0.eps.h')) %>% select(sd)))
+    
+    #B1.eps.h = effect of eradication at high state 
+    B1.eps.h.mean[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B1.eps.h')) %>% select(mean)))
+    B1.eps.h.sd[year,] <-  c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B1.eps.h')) %>% select(sd)))
+    
+    # --- phi ---  transition rates -------------------------- #
+    #phi.h = transition high to high 
+    B0.phi.h.mean[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B0.phi.h')) %>% select(mean)))
+    B0.phi.h.sd[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B0.phi.h')) %>% select(sd)))
+    
+    #effect of removal on transition from high to high
+    B1.phi.h.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.phi.h')) %>% select(mean)))
+    B1.phi.h.sd[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.phi.h')) %>% select(sd)))
+    
+    # --- gamma ---  invasion: Between weeks ------------------- #  
+    #B0.gamma = intrinsic invasion 
+    B0.gamma.mean[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B0.gamma')) %>% select(mean)))
+    B0.gamma.sd[year, ] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B0.gamma')) %>% select(sd)))
+    
+    #B1.gamma = effect of site characteristics 
+    B1.gamma.mean[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B1.gamma')) %>% select(mean)))
+    B1.gamma.sd[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B1.gamma')) %>% select(sd)))
+    
+    #B2.gamma= effect of neighboring state 
+    B2.gamma.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B2.gamma')) %>% select(mean)))
+    B2.gamma.sd[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B2.gamma')) %>% select(sd)))
+    
+    # --- eps ---  eradication: Between weeks ---------------- # 
+    epsBl.mean <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^epsB.l')) %>% select(mean)))
+    epsBl.sd <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^epsB.l')) %>% select(sd)))
+    
+    epsB.l.a[year,] <- (epsBl.mean^2 - epsBl.mean^3 - (epsBl.mean*epsBl.sd^2) )/ (epsBl.sd^2)
+    epsB.l.b[year,] <- (epsB.l.a[year,s]*(1-epsBl.mean))/ (epsBl.mean)
+    
+    epsBh.mean <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^epsB.h')) %>% select(mean)))
+    epsBh.sd <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^epsB.h')) %>% select(sd)))
+    
+    epsB.h.a[year,] <- (epsBh.mean^2 - epsBh.mean^3 - (epsBh.mean*epsBh.sd^2) )/ (epsBh.sd^2)
+    epsB.h.b[year,] <- (epsB.h.a[year,s]*(1-epsBh.mean))/ (epsBh.mean)
+    
+    # --- phi ---  transition rates: Between weeks ------------ #  
+    phiBl.mean <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^phiB.l')) %>% select(mean)))
+    phiBl.sd <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^phiB.l')) %>% select(sd)))
+    
+    phiB.l.a[year,] <- (phiBl.mean^2 - phiBl.mean^3 - (phiBl.mean*phiBl.sd^2) )/ (phiBl.sd^2)
+    phiB.l.b[year,] <- (phiB.l.a[year,s]*(1-phiBl.mean))/ (phiBl.mean)
+    
+    phiBh.mean <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^phiB.h')) %>% select(mean)))
+    phiBh.sd <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^phiB.h')) %>% select(sd)))
+    
+    phiB.h.a[year,] <- (phiBh.mean^2 - phiBh.mean^3 - (phiBh.mean*phiBh.sd^2) )/ (phiBh.sd^2)
+    phiB.h.b[year,] <- (phiB.h.a[year,]*(1-phiBh.mean))/ (phiBh.mean)
+    
+    # --- g --- Given colonization, probability of becoming high state -- #
+    g.mean <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^g')) %>% select(mean)))
+    g.sd <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^g')) %>% select(sd)))
+    
+    g.a[year,] <- (g.mean^2 - g.mean^3 - (g.mean*g.sd^2) )/ (g.sd^2)
+    g.b[year,] <- (g.a[year,s]*(1-g.mean))/ (g.mean)
+    
+    # --- p.l ---  detection low state ----------------------- #
+    #B0.p.l = base detection low state (beta distribution)
+    B0.p.l.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B0.p.l')) %>% select(mean)))
+    B0.p.l.sd[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B0.p.l')) %>% select(sd)))
+    
+    #B1.p.l = effect of effort (normal distribution)
+    B1.p.l.mean[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B1.p.l')) %>% select(mean)))
+    B1.p.l.sd[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.p.l')) %>% select(sd)))
+    
+    # --- p.h ---  detection high state ---------------------- #
+    #B0.p.h = base detection high state (beta distribution)
+    B0.p.h.mean[year,] <- c(t(res.params[[year-1]] %>% filter( str_detect(param,  '^B0.p.h')) %>% select(mean)))
+    B0.p.h.sd[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B0.p.h')) %>% select(sd)))
+    
+    #B1.p.h = effect of effort (normal distribution)
+    B1.p.h.mean[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.p.h')) %>% select(mean)))
+    B1.p.h.sd[year,] <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^B1.p.h')) %>% select(sd)))
+    
+    #---delta -- ability to perfectly detect high invasion state #
+    #beta distribution
+    delta.mean <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^delta')) %>% select(mean)))
+    delta.sd <- c(t(res.params[[year-1]] %>% filter(str_detect(param,  '^delta')) %>% select(sd)))
+    
+    delta.a[year,] <- (delta.mean^2 - delta.mean^3 - (delta.mean*delta.sd^2) )/ (delta.sd^2)
+    delta.b[year,] <- (delta.a[year,s]*(1-delta.mean))/ (delta.mean)
+    
+    # --- S.init and D.init ---  Initial states ------------ #
     for(s in 1:n.sims){
-      # --- eps.l ---  eradication low state -------------------- #
-      #B0.eps.l = base eradication at low state 
-      B0.eps.l.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param, '^B0.eps.l')) %>% select(mean)))
-      B0.eps.l.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param, '^B0.eps.l')) %>% select(sd)))
-      
-      #B1.eps.l = effect of eradication at low state 
-      B1.eps.l.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.eps.l')) %>% select(mean)))
-      B1.eps.l.sd[year,s] <-  c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.eps.l')) %>% select(sd)))
-      
-      # --- eps.h ---  eradication high state ------------------- #
-      #B0.eps.h = base eradication at high state 
-      B0.eps.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.eps.h')) %>% select(mean)))
-      B0.eps.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.eps.h')) %>% select(sd)))
-      
-      #B1.eps.h = effect of eradication at high state 
-      B1.eps.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.eps.h')) %>% select(mean)))
-      B1.eps.h.sd[year,s] <-  c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.eps.h')) %>% select(sd)))
-      
-      # --- phi ---  transition rates -------------------------- #
-      #phi.h = transition high to high 
-      B0.phi.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.phi.h')) %>% select(mean)))
-      B0.phi.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.phi.h')) %>% select(sd)))
-      
-      #effect of removal on transition from high to high
-      B1.phi.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.phi.h')) %>% select(mean)))
-      B1.phi.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.phi.h')) %>% select(sd)))
-      
-      # --- gamma ---  invasion: Between weeks ------------------- #  
-      #B0.gamma = intrinsic invasion 
-      B0.gamma.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.gamma')) %>% select(mean)))
-      B0.gamma.sd[year, s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.gamma')) %>% select(sd)))
-      
-      #B1.gamma = effect of site characteristics 
-      B1.gamma.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.gamma')) %>% select(mean)))
-      B1.gamma.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.gamma')) %>% select(sd)))
-      
-      #B2.gamma= effect of neighboring state 
-      B2.gamma.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B2.gamma')) %>% select(mean)))
-      B2.gamma.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B2.gamma')) %>% select(sd)))
-      
-      # --- eps ---  eradication: Between weeks ---------------- # 
-      epsBl.mean <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^epsB.l')) %>% select(mean)))
-      epsBl.sd <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^epsB.l')) %>% select(sd)))
-      
-      epsB.l.a[year,s] <- (epsBl.mean^2 - epsBl.mean^3 - (epsBl.mean*epsBl.sd^2) )/ (epsBl.sd^2)
-      epsB.l.b[year,s] <- (epsB.l.a[year,s]*(1-epsBl.mean))/ (epsBl.mean)
-      
-      epsBh.mean <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^epsB.h')) %>% select(mean)))
-      epsBh.sd <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^epsB.h')) %>% select(sd)))
-      
-      epsB.h.a[year,s] <- (epsBh.mean^2 - epsBh.mean^3 - (epsBh.mean*epsBh.sd^2) )/ (epsBh.sd^2)
-      epsB.h.b[year,s] <- (epsB.h.a[year,s]*(1-epsBh.mean))/ (epsBh.mean)
-      
-      # --- phi ---  transition rates: Between weeks ------------ #  
-      phiBl.mean <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^phiB.l')) %>% select(mean)))
-      phiBl.sd <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^phiB.l')) %>% select(sd)))
-      
-      phiB.l.a[year,s] <- (phiBl.mean^2 - phiBl.mean^3 - (phiBl.mean*phiBl.sd^2) )/ (phiBl.sd^2)
-      phiB.l.b[year,s] <- (phiB.l.a[year,s]*(1-phiBl.mean))/ (phiBl.mean)
-      
-      phiBh.mean <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^phiB.h')) %>% select(mean)))
-      phiBh.sd <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^phiB.h')) %>% select(sd)))
-      
-      phiB.h.a[year,s] <- (phiBh.mean^2 - phiBh.mean^3 - (phiBh.mean*phiBh.sd^2) )/ (phiBh.sd^2)
-      phiB.h.b[year,s] <- (phiB.h.a[year,s]*(1-phiBh.mean))/ (phiBh.mean)
-      
-      # --- g --- Given colonization, probability of becoming high state -- #
-      g.mean <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^g')) %>% select(mean)))
-      g.sd <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^g')) %>% select(sd)))
-      
-      g.a[year,] <- (g.mean^2 - g.mean^3 - (g.mean*g.sd^2) )/ (g.sd^2)
-      g.b[year,] <- (g.a[year,s]*(1-g.mean))/ (g.mean)
-      
-      # --- p.l ---  detection low state ----------------------- #
-      #B0.p.l = base detection low state (beta distribution)
-      B0.p.l.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.p.l')) %>% select(mean)))
-      B0.p.l.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.p.l')) %>% select(sd)))
-      
-      #B1.p.l = effect of effort (normal distribution)
-      B1.p.l.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.p.l')) %>% select(mean)))
-      B1.p.l.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.p.l')) %>% select(sd)))
-      
-      # --- p.h ---  detection high state ---------------------- #
-      #B0.p.h = base detection high state (beta distribution)
-      B0.p.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.p.h')) %>% select(mean)))
-      B0.p.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B0.p.h')) %>% select(sd)))
-      
-      #B1.p.h = effect of effort (normal distribution)
-      B1.p.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.p.h')) %>% select(mean)))
-      B1.p.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^B1.p.h')) %>% select(sd)))
-      
-      #---delta -- ability to perfectly detect high invasion state #
-      #beta distribution
-      delta.mean <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^delta')) %>% select(mean)))
-      delta.sd <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^delta')) %>% select(sd)))
-      
-      delta.a[year,s] <- (delta.mean^2 - delta.mean^3 - (delta.mean*delta.sd^2) )/ (delta.sd^2)
-      delta.b[year,s] <- (delta.a[year,s]*(1-delta.mean))/ (delta.mean)
-      
-      
-      # --- alpha #  
-      alpha.l.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.l')) %>% select(mean)))
-      alpha.l.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.l')) %>% select(sd)))
-      
-      alpha.h.mean[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.h')) %>% select(mean)))
-      alpha.h.sd[year,s] <- c(t(res.params[[year-1]] %>% filter(sim == s & str_detect(param,  '^alpha.h')) %>% select(sd)))
-      
-      # --- S.init and D.init ---  Initial states ------------ #
-      
       for(i in 1:n.sites){
         for(c in 1:n.chains){
           v <- which(grepl("^State", names(get(mcmcs[s])[[c]][1,])))[1] #find which index of mcmc output is state
@@ -711,10 +661,10 @@ for(year in 2:n.years){
           chain[c,i,2] <- sum(get(mcmcs[s])[[c]][,(v-1)+i] == 2)
           chain[c,i,3] <- sum(get(mcmcs[s])[[c]][,(v-1)+i] == 3)
         }
-        alpha.init[year,i,1,s] <- sum(chain[,i,1]) / ((length(get(mcmcs[s])[[1]][,1]))*n.chains)
-        alpha.init[year,i,2,s] <- sum(chain[,i,2]) / ((length(get(mcmcs[s])[[1]][,1]))*n.chains)
-        alpha.init[year,i,3,s] <- sum(chain[,i,3]) / ((length(get(mcmcs[s])[[1]][,1]))*n.chains)
       }
+      alpha.init[year,,1,s] <- sum(chain[,,1]) / ((length(get(mcmcs[s])[[1]][,1]))*n.chains)
+      alpha.init[year,,2,s] <- sum(chain[,,2]) / ((length(get(mcmcs[s])[[1]][,1]))*n.chains)
+      alpha.init[year,,3,s] <- sum(chain[,,3]) / ((length(get(mcmcs[s])[[1]][,1]))*n.chains)
       
       
     } #ends s loop
@@ -735,17 +685,13 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,1:2,s],
-        yD = yD[,,,1:2,s],
         site.char = site.char,
         hours = hours.dat[,1:n.sites,1:n.weeks, 1:2, s],
         rem.vec = rem.vec.dat[,,,s],
         n.neighbors = n.neighbors,
-        logeffort.D = logeffort.D, 
         
         #priors
         alpha.init1 = alpha.init1,
-        alpha.l.mean = alpha.l.mean[year,s],alpha.l.sd = alpha.l.sd[year,s],
-        alpha.h.mean = alpha.h.mean[year,s],alpha.h.sd = alpha.h.sd[year,s],
         
         B0.eps.l.mean =  B0.eps.l.mean[year,s], B0.eps.l.sd =  B0.eps.l.sd[year,s], B1.eps.l.mean =  B1.eps.l.mean[year,s],
         B1.eps.l.sd =  B1.eps.l.sd[year,s], B0.eps.h.mean =  B0.eps.h.mean[year,s], B0.eps.h.sd =  B0.eps.h.sd[year,s],
@@ -781,7 +727,7 @@ for(year in 2:n.years){
       initial.values[[s]] <- function()list(State = State.start[,,,s])
     }
     
-    file.name <- "Flower_datB_est1_explore.txt"
+    file.name <- "Flower_datM_est1_explore.txt"
     
   }
   
@@ -797,17 +743,13 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,year,s],
-        yD = yD[,,,year,s],
         site.char = site.char,
         rem.vec = rem.vec.dat[,,s],
         hours = hours.dat[,1:n.sites,1:n.weeks, year, s],
         n.neighbors = n.neighbors,
-        logeffort.D = logeffort.D, 
         
         #priors
         alpha.init = alpha.init[year,,,s],
-        alpha.l.mean = alpha.l.mean[year,s],alpha.l.sd = alpha.l.sd[year,s],
-        alpha.h.mean = alpha.h.mean[year,s],alpha.h.sd = alpha.h.sd[year,s],
         
         B0.eps.l.mean =  B0.eps.l.mean[year,s], B0.eps.l.sd =  B0.eps.l.sd[year,s], B1.eps.l.mean =  B1.eps.l.mean[year,s],
         B1.eps.l.sd =  B1.eps.l.sd[year,s], B0.eps.h.mean =  B0.eps.h.mean[year,s], B0.eps.h.sd =  B0.eps.h.sd[year,s],
@@ -844,7 +786,7 @@ for(year in 2:n.years){
       initial.values[[s]] <- function()list(State = State.start[,,s] , StateB = State.start[,1,s])
     }
     
-    file.name <- "Flower_datB_est2_explore.txt"
+    file.name <- "Flower_datM_est2_explore.txt"
   }
   
   ##### DATA for > last explore #######
@@ -859,18 +801,14 @@ for(year in 2:n.years){
         
         #data
         yM= yM[,,,year,s],
-        yD= yD[,,,year,s],
         site.char = site.char,
         logeffort = logsearch.effort[s],
         rem.vec = rem.vec.dat[,,s],
         removal.hours = removal.hours[s],
         n.neighbors = n.neighbors,
-        logeffort.D = logeffort.D,
         
         #priors
         alpha.init = alpha.init[year,,,s],
-        alpha.l.mean = alpha.l.mean[year,s],alpha.l.sd = alpha.l.sd[year,s],
-        alpha.h.mean = alpha.h.mean[year,s],alpha.h.sd = alpha.h.sd[year,s],
         
         B0.eps.l.mean =  B0.eps.l.mean[year,s], B0.eps.l.sd =  B0.eps.l.sd[year,s], B1.eps.l.mean =  B1.eps.l.mean[year,s],
         B1.eps.l.sd =  B1.eps.l.sd[year,s], B0.eps.h.mean =  B0.eps.h.mean[year,s], B0.eps.h.sd =  B0.eps.h.sd[year,s],
@@ -907,7 +845,7 @@ for(year in 2:n.years){
       initial.values[[s]] <- function()list(State = State.start[,,s] , StateB = State.start[,1,s])
     }
     
-    file.name <- "Flower_datB_est2.txt"
+    file.name <- "Flower_datM_est2.txt"
     
   }
   
@@ -915,9 +853,8 @@ for(year in 2:n.years){
   parameters.to.save <- c("B0.eps.l", "B1.eps.l", "B0.eps.h", "B1.eps.h", 
                           "B0.phi.h", "B1.phi.h","B0.gamma", "B1.gamma","B2.gamma",
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
-                          "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
+                          "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
                           "delta", "State.fin")
-  
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -1003,7 +940,7 @@ for(year in 2:n.years){
   
   res.state[[year]] <- cbind.res.state
   res.state[[year]]$year <- year
-  
+
   subsims <- sample(1:100,5, replace = F)
   
   for(subs in subsims){
@@ -1018,9 +955,10 @@ for(year in 2:n.years){
                 filename = paste0('trace',unique(cbind.res.parameters$param[par]),'_sim', subs, '_year', year))
     }
   }
-  
+
   ###### 3b. Make Decision #####
-  #Linear locations
+  #remove linear - assigned prior to simulation
+  
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
@@ -1030,8 +968,8 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.5) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.5) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.25) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.25) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
@@ -1077,9 +1015,8 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-#### Save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
-
+#### SAVE SOME data ####
+path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R75_40_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
@@ -1130,19 +1067,17 @@ truth.paramslist <- list()
 
 for(s in 1:n.sims){
   truth.paramslist[[s]] <- truth.params %>% filter(sim == s)
-  truth.paramslist[[s]]$mean <- c(0,0,1,1,2,
+  truth.paramslist[[s]]$mean <- c(1,1,2,
                                   2,0,1,0,-2,0, 
                                   (3/15), (3/15), 14/30, 12/24, 3.5/35,
                                   0,0,0,0,0.5)
   
-  truth.paramslist[[s]]$low <- c(qnorm(0.025, 0, 0.5),qnorm(0.025, 0, 0.5),
-                                 qnorm(0.025, 1, 0.05), qnorm(0.025, 1, 0.05), qnorm(0.025, 2, 0.05),
+  truth.paramslist[[s]]$low <- c(qnorm(0.025, 1, 0.05), qnorm(0.025, 1, 0.05), qnorm(0.025, 2, 0.05),
                                  qnorm(0.025, 2, 0.05), 0, qnorm(0.025, 1, 0.05), 0, qnorm(0.025, -2, 0.05),0,
                                  qbeta(0.025, 3, 12), qbeta(0.025, 3, 12),qbeta(0.025, 14, 6), qbeta(0.025, 12, 12),qbeta(0.025, 3.5,31.5),
                                  qnorm(0.025, 0,1), 0, qnorm(0.025, 0,1),0, qbeta(0.025, 1,1))
   
-  truth.paramslist[[s]]$high <- c(qnorm(0.975, 0, 0.5),qnorm(0.975, 0, 0.5),
-                                  qnorm(0.975, 1, 0.05), qnorm(0.975, 1, 0.05), qnorm(0.975, 2, 0.05),
+  truth.paramslist[[s]]$high <- c(qnorm(0.975, 1, 0.05), qnorm(0.975, 1, 0.05), qnorm(0.975, 2, 0.05),
                                   qnorm(0.975, 2, 0.05), 0, qnorm(0.975, 1, 0.05), 0, qnorm(0.975, -2, 0.05),0,
                                   qbeta(0.975, 3, 12), qbeta(0.975, 3, 12),qbeta(0.975, 14, 6), qbeta(0.975, 12, 12),qbeta(0.975, 3.5,31.5),
                                   qnorm(0.975, 0,1), 0, qnorm(0.975, 0,1),0, qbeta(0.975, 1,1))
@@ -1318,13 +1253,6 @@ write.csv(site.visit,file_name)
 yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
-
-file_name = paste(path, 'y_dat.txt',sep = '/')
-write.csv(yM.dat,file_name)
-
-yD.dat <- as.data.frame.table(yD)
-colnames(yD.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
-yD.dat <-  as.data.frame(sapply(yD.dat,as.numeric))
 
 file_name = paste(path, 'y_dat.txt',sep = '/')
 write.csv(yM.dat,file_name)
