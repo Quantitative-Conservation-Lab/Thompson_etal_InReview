@@ -132,12 +132,12 @@ state_S75_R75_20b$eradication <- 0.75
 state_S75_R75_20b$budget <- 20
 
 #--- Combine states ---#
-state_20 <- rbind(#state_S25_R5_20,state_S25_R5_20b,
-                  #state_S25_R75_20,state_S25_R75_20b,
-                  #state_S5_R5_20,state_S5_R5_20b,
-                  state_S5_R75_20,state_S5_R75_20b) #,
-                 # state_S75_R5_20,state_S75_R5_20b,
-                  #state_S75_R75_20,state_S5_R75_20b)
+state_20 <- rbind(state_S25_R5_20,state_S25_R5_20b,
+                  state_S25_R75_20,state_S25_R75_20b,
+                  state_S5_R5_20,state_S5_R5_20b,
+                  state_S5_R75_20,state_S5_R75_20b,
+                 state_S75_R5_20,state_S75_R5_20b,
+                  state_S75_R75_20,state_S5_R75_20b)
 
 #-- Budget = 40 --#
 #--- S25_R5_40 ---#
@@ -411,7 +411,7 @@ state_60 <- rbind(state_S25_R5_60,state_S25_R5_60b,
                   state_S75_R75_60,state_S5_R75_60b)
 
 #-- Combine states --#
-states <- rbind(state_20) #, state_40, state_60 )
+states <- rbind(state_20, state_40, state_60 )
 
 #### States truth ####
 #-- Budget = 20 --#
