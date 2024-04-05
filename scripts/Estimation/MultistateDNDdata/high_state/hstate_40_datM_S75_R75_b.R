@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\hstate\\S75_R75_40_b'
 
-res <- 'E:/Chapter3/results/hstate/S75_R75_40_b/densplots'
+res <- 'E:/Chapter3/densplots/results/hstate/S75_R75_40_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -33,18 +33,20 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
 
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
+# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
+# 
+# for(y in 1:last.explore){
+#   for(w in 1:n.weeks){
+#     hours.dat[1,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#     hours.dat[2,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#   }
+# }
+# saveRDS(hours.dat, file = "hours_dat.rds")
+hours.dat <- readRDS("hours_dat.rds")
+
+max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -201,8 +203,12 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
-site.char <- site.char
-State.init <- State.init
+site.char <- read.csv( here::here('data', "site_char.csv"))
+site.char <- c(t(site.char$x))
+
+State.init <- read.csv( here::here('data', "state_init.csv"))
+State.init <- c(t(State.init$x))
+
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -220,11 +226,7 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
 #### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
-
+sites.rem.M <- readRDS("remM_sites.rds")
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
