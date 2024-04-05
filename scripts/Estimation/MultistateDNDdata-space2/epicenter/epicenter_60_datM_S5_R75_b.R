@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_40_b'
+path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_60_b'
 
-res <- 'E:/Chapter3/results-space2/epicenter/S5_R75_40_b/densplots'
+res <- 'E:/Chapter3/results-space2/epicenter/S5_R75_60_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 40 #total hours per week
+n.resource <- 60 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -107,8 +107,6 @@ site.char <- site.char
 State.init <- rep(1,n.sites)
 State.init[17:24] <- c(2,2,3,3,3,3,2,2)
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
-
-
 
 #---Neighbor data---#
 N <- array(NA, c(n.sites, n.weeks, n.years,n.sims)) #neighbors array
@@ -1045,7 +1043,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_40_b'
+path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_60_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

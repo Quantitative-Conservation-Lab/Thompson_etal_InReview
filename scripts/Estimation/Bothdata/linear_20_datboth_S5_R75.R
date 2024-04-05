@@ -16,9 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
 
-res <- 'E:/Chapter3/results_datboth/budget20/linear_S5_R75_20/densplots'
+res <- 'E:/Chapter3/results_both/budget20/linear_S5_R75_20/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -915,10 +915,9 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
                           "delta", "State.fin")
-  
-  #### FIX ####
-  n.burnin <- 10#00
-  n.iter <- 100#00 
+
+  n.burnin <- 2000
+  n.iter <- 20000 
   n.chains <- n.chains
   n.thin <- 1
   
@@ -1076,7 +1075,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
