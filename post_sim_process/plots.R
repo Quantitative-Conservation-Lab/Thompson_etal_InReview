@@ -10,7 +10,7 @@ library(ggrepel)
 
 
 #### NO REMOVAL ####
-ncpath <- 'E:\\Chapter3\\results\\noremoval'
+ncpath <- 'D:\\Chapter3\\results\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
@@ -23,7 +23,7 @@ noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
 
 #### States Fin truth ####
-path <- 'E:\\Chapter3\\results'
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
@@ -84,7 +84,7 @@ scale_color_manual(name = "Priotization",
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
-detach(package:plyr)
+detach(packagD:plyr)
 
 budget20_suppress <- finstate_truth %>% 
   filter(Budget == 20) %>% 
@@ -169,7 +169,7 @@ fininv_truth %>%
   facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
 budget20_contain <- fininv_truth %>% 
-  filter(budget == 20) %>% 
+  filter(Budget == 20) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(inv),
             max_c = max(inv),
@@ -177,7 +177,7 @@ budget20_contain <- fininv_truth %>%
             upper = quantile(inv, 0.9))
 
 budget40_contain  <- fininv_truth %>% 
-  filter(budget == 40) %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(inv),
             max_c = max(inv),
@@ -185,13 +185,12 @@ budget40_contain  <- fininv_truth %>%
             upper = quantile(inv, 0.9))
 
 budget60_contain <- fininv_truth %>% 
-  filter(budget == 60) %>% 
+  filter(Budget == 60) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(inv),
             max_c = max(inv),
             lower = quantile(inv, 0.1),
             upper = quantile(inv, 0.9))
-
 
 #### Bias state ####
 file_name = paste(path, 'bais_states.csv',sep = '/')
@@ -290,11 +289,16 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
 
 #---- SUBSET ----#
 
-bias_state_yearssub <- bias_state_years %>% filter(rates == "p = 0.75, e = 0.5" | rates == "p = 0.25, e = 0.5")
+bias_state_yearssub <- bias_state_years %>% filter(rates == "p = 0.75, e = 0.5" |
+                                                     rates == "p = 0.5, e = 0.75" |
+                                                     rates == "p = 0.25, e = 0.75" )
+
+bias_state_yearssub$Prioritization[bias_state_yearssub$Prioritization == 'epicenter'] <- 'Epicenter'
+bias_state_yearssub$Prioritization[bias_state_yearssub$Prioritization == 'hstate'] <- 'High Invasion'
+bias_state_yearssub$Prioritization[bias_state_yearssub$Prioritization == 'linear'] <- 'Linear'
 
 
-
-colors_sub <- colors[c(1,4)]
+colors_sub <- colors[c(2,4,5)]
 
 ggplot(bias_state_yearssub, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
@@ -322,9 +326,6 @@ bias_param <- fread(file_name)
 bias_param <- data.frame(bias_param)
 
 bias_param$rates <- paste0('p = ', bias_param$detection, ', e = ', bias_param$eradication)
-
-cols <- brewer.pal(6, "Paired") 
-colors <- cols
 
 bias_param$loc2 <- paste0(bias_param$location, bias_param$detection, bias_param$eradication)
 
@@ -384,7 +385,12 @@ ggplot(bias_param_detect_years,
 
 #----- SUBSET ----#
 
-bias_param_detect_yearssub <- bias_param_detect_years %>% filter(rates == "p = 0.5, e = 0.75" | rates == "p = 0.25, e = 0.5")
+bias_param_detect_yearssub <- bias_param_detect_years %>% filter(rates == "p = 0.5, e = 0.75" |
+                                                                   rates == "p = 0.5, e = 0.5" |
+                                                                   rates == "p = 0.75, e = 0.5" |
+                                                                   rates == "p = 0.25, e = 0.5")
+
+colors_sub_p <- colors[c(1,3,4,5)]
 
 ggplot(bias_param_detect_yearssub, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
@@ -393,7 +399,7 @@ ggplot(bias_param_detect_yearssub,
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8, 10)) +
   scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                     values = colors_sub) +
+                     values = colors_sub_p) +
   ylab(paste0('p parameters relative bias'))+
   xlab("Year")+
   theme_bw() +   
@@ -461,7 +467,9 @@ ggplot(bias_param_eps_years,
 
 #----- SUBSET ----#
 
-bias_param_eps_yearssub <- bias_param_eps_years %>% filter(rates == "p = 0.5, e = 0.75" | rates == "p = 0.25, e = 0.5")
+bias_param_eps_yearssub <- bias_param_eps_years %>% filter(rates == "p = 0.5, e = 0.75" | rates == "p = 0.75, e = 0.75")
+
+colors_sub_eps <- colors[c(4,6)]
 
 ggplot(bias_param_eps_yearssub, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
@@ -470,7 +478,7 @@ ggplot(bias_param_eps_yearssub,
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8, 10)) +
   scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                     values = colors_sub) +
+                     values = colors_sub_eps) +
   ylab(paste0('\u03F5 parameters relative bias'))+
   xlab("Year")+
   theme_bw() +   
