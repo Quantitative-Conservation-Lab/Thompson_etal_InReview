@@ -16,9 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget20\\epicenter_S5_R75_20'
 
-res <- 'E:/Chapter3/results_both/budget20/linear_S5_R75_20/densplots'
+res <- 'E:/Chapter3/results_datboth/budget20/epicenter_S5_R75_20/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -122,7 +122,10 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
 #### First Removal Locations ####
-sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
+for(s in 1: n.sims){
+  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
+  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
+}
 
 
 
@@ -168,15 +171,8 @@ truth.params <- rbind(alpha.ls, alpha.hs, truth.params)
 
 #Locations:
 vols.locs <- 8
-#site.vols <- array(NA, c(vols.locs, n.weeks, n.years))
 
-# for(y in 1:n.years){
-#   site.vols[,1:n.weeks,y] <- sample(1:n.sites, vols.locs, replace = FALSE)
-# }
-# 
-# 
-# saveRDS(site.vols, file = "site_vols.rds")
-site.vols <- readRDS("site_vols.rds")
+site.vols  <- readRDS("site_vols.rds")
 
 for(s in 1:n.sims){
   pD.l[s] <- invlogit(B0.pl[s] + B1.pl[s]*logeffort.D + alpha.l[s])
@@ -279,6 +275,16 @@ removal.H <- rep(NA, n.sims)
 removal.hours <- rep(NA, n.sims)
 
 start.time <- Sys.time()
+
+#### distance matrix ####
+dist.mat <- matrix(NA, nrow = n.sites, ncol = n.sites)
+
+for(i in 1:n.sites){
+  for(h in 1:n.sites){
+    dist.mat[i,h] <- abs(i-h)
+  }
+}
+
 ####################################################################################
 #### Simulations ####
 sim.start <- c(NA, 1, seq(3, n.years)) 
@@ -917,11 +923,7 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
                           "delta", "State.fin")
-<<<<<<< HEAD
-
-=======
   
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -1024,7 +1026,20 @@ for(year in 2:n.years){
   }
   
   ###### 3b. Make Decision #####
-  #Linear locations
+  S.decision <- array(NA, c(n.sites, n.years, n.sims))
+  center <- rep(NA, n.sims)
+  
+  if(year < n.years){
+    for(s in 1:n.sims){
+      #Removal locations: rank sites by state
+      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
+      
+      center[s] <- order(S.decision[,year,s], decreasing = T)[1]
+      
+      sites.rem.M[,1,year+1,s] <- order(dist.mat[,center[s]], decreasing = F)
+      
+    }
+  }
   
   ###### 3c. Update efforts #####
   if(year == last.explore){
@@ -1081,14 +1096,9 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-<<<<<<< HEAD
-#### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
-=======
 #### Save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget20\\epicenter_S5_R75_20'
 
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

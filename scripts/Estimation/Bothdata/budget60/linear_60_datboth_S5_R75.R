@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget60\\linear_S5_R75_60'
 
-res <- 'E:/Chapter3/results_both/budget20/linear_S5_R75_20/densplots'
+res <- 'E:/Chapter3/results_datboth/budget60/linear_S5_R75_60/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 60 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -917,11 +917,7 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
                           "delta", "State.fin")
-<<<<<<< HEAD
-
-=======
   
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -1081,14 +1077,9 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-<<<<<<< HEAD
-#### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
-=======
 #### Save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget60\\linear_S5_R75_60'
 
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

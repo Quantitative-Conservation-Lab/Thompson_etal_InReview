@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget40\\linear_S5_R75_40_b'
 
-res <- 'E:/Chapter3/results_both/budget20/linear_S5_R75_20/densplots'
+res <- 'E:/Chapter3/results_datboth/budget40/linear_S5_R75_40_b/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -103,8 +103,11 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
-site.char <- site.char
-State.init <- State.init
+site.char <- read.csv( here::here('data', "site_char.csv"))
+site.char <- c(t(site.char$x))
+
+State.init <- read.csv( here::here('data', "state_init.csv"))
+State.init <- c(t(State.init$x))
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -168,15 +171,8 @@ truth.params <- rbind(alpha.ls, alpha.hs, truth.params)
 
 #Locations:
 vols.locs <- 8
-#site.vols <- array(NA, c(vols.locs, n.weeks, n.years))
 
-# for(y in 1:n.years){
-#   site.vols[,1:n.weeks,y] <- sample(1:n.sites, vols.locs, replace = FALSE)
-# }
-# 
-# 
-# saveRDS(site.vols, file = "site_vols.rds")
-site.vols <- readRDS("site_vols.rds")
+site.vols  <- readRDS("site_vols.rds")
 
 for(s in 1:n.sims){
   pD.l[s] <- invlogit(B0.pl[s] + B1.pl[s]*logeffort.D + alpha.l[s])
@@ -186,7 +182,6 @@ for(s in 1:n.sims){
   P.datD[2,s,] <- c(1-pD.l[s],pD.l[s])
   P.datD[3,s,] <- c(1-pD.h[s],pD.h[s])
 }
-
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
 
 #### JAGS arrays ####
@@ -917,11 +912,7 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
                           "delta", "State.fin")
-<<<<<<< HEAD
-
-=======
   
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -1081,14 +1072,9 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-<<<<<<< HEAD
-#### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
-=======
 #### Save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget40\\linear_S5_R75_40_b'
 
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

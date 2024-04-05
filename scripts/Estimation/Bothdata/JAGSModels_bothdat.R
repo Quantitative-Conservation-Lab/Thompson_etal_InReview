@@ -258,6 +258,8 @@ B0.p.h.tau <- 1/(B0.p.h.sd * B0.p.h.sd) #precision parameter
 B1.p.h ~ dnorm(B1.p.h.mean, B1.p.h.tau)T(0,) #effect of effort 
 B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
 
+delta ~dbeta(delta.a, delta.b)T(0.0001,0.9999)  #ability to correctly observe high state
+
 #difference between detection/nondetection data and multistate data
 alpha.l ~ dnorm(alpha.l.mean, alpha.l.sd)T(,0)
 alpha.h ~ dnorm(alpha.h.mean, alpha.h.sd)T(,0)
@@ -272,8 +274,7 @@ P.datD[2,1] <- 1-pD.l #low state and not detected
 P.datD[2,2] <- pD.l #low state and detected
 P.datD[3,1] <- 1-pD.h #high state and not detected
 P.datD[3,2] <- pD.h #high state and detected
-  
-delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
+
   
 #-----------------------------------------------------------------------------#
 # STATE TRANSITION

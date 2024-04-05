@@ -198,8 +198,12 @@ hstate_total_visit <- aggregate(visit ~ week + year + sim + location + detection
                            data = as.data.frame(hstate_total_visit), 
                            FUN = sum)
 
+#sometimes the max is > 1 if we visited at second observation 
 hstate_total_visit <- hstate_total_visit %>% filter(week < 5)
-hstate_total_visit$visit <- hstate_total_visit$visit/40 #as a percentage
+hstate_total_visit$visit <- hstate_total_visit$visit/40
+
+hstate_total_visit$visit[hstate_total_visit$visit > 1] <- 1
+
 
 path <- 'E:\\Chapter3\\results\\epicenter'
 file_name = paste(path, 'sites.csv',sep = '/')
@@ -215,6 +219,7 @@ epicenter_total_visit <- aggregate(visit ~ week + year + sim + location + detect
 
 epicenter_total_visit <- epicenter_total_visit %>% filter(week < 5)
 epicenter_total_visit$visit <- epicenter_total_visit$visit/40 #as a percentage
+epicenter_total_visit$visit[epicenter_total_visit$visit > 1] <- 1
 
 path <- 'E:\\Chapter3\\results\\linear'
 file_name = paste(path, 'sites.csv',sep = '/')
@@ -230,6 +235,8 @@ linear_total_visit <- aggregate(visit ~ week + year + sim + location + detection
 
 linear_total_visit <- linear_total_visit %>% filter(week < 5)
 linear_total_visit$visit <- linear_total_visit$visit/40 #as a percentage
+linear_total_visit$visit[linear_total_visit$visit > 1] <- 1
+
 
 total_visit <- rbind(hstate_total_visit, epicenter_total_visit, linear_total_visit)
 path <- 'E:\\Chapter3\\results'
@@ -252,6 +259,7 @@ hstate_total_rem <- aggregate(visit ~ week + year + sim + location + detection +
 
 hstate_total_rem <- hstate_total_rem %>% filter(week < 5)
 hstate_total_rem$visit <- hstate_total_rem$visit/40 #as a percentage
+hstate_total_rem$visit[hstate_total_rem$visit > 1] <- 1
 
 path <- 'E:\\Chapter3\\results\\epicenter'
 file_name = paste(path, 'sites.csv',sep = '/')
@@ -268,6 +276,8 @@ epicenter_total_rem <- aggregate(visit ~ week + year + sim + location + detectio
 
 epicenter_total_rem <- epicenter_total_rem %>% filter(week < 5)
 epicenter_total_rem$visit <- epicenter_total_rem$visit/40 #as a percentage
+epicenter_total_rem$visit[epicenter_total_rem$visit > 1] <- 1
+
 
 path <- 'E:\\Chapter3\\results\\linear'
 file_name = paste(path, 'sites.csv',sep = '/')
@@ -284,6 +294,8 @@ linear_total_rem <- aggregate(visit ~ week + year + sim + location + detection +
 
 linear_total_rem <- linear_total_rem %>% filter(week < 5)
 linear_total_rem$visit <- linear_total_rem$visit/40 #as a percentage
+linear_total_rem$visit[linear_total_rem$visit > 1] <- 1
+
 
 total_rem <- rbind(hstate_total_rem, epicenter_total_rem, linear_total_rem)
 path <- 'E:\\Chapter3\\results'
