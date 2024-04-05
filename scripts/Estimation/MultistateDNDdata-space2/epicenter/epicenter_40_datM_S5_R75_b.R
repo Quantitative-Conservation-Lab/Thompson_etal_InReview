@@ -104,8 +104,11 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 site.char <- site.char
-State.init <- State.init
+State.init <- rep(1,n.sites)
+State.init[17:24] <- c(2,2,3,3,3,3,2,2)
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
+
+
 
 #---Neighbor data---#
 N <- array(NA, c(n.sites, n.weeks, n.years,n.sims)) #neighbors array
@@ -1042,7 +1045,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_40'
+path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_40_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

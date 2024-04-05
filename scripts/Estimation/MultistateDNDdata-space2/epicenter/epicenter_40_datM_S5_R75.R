@@ -16,9 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_40'
+path <- 'E:\\Chapter3_old\\results-space2\\epicenter\\S5_R75_40'
 
-res <- 'E:/Chapter3/results-space2/epicenter/S5_R75_40/densplots'
+res <- 'E:/Chapter3_old/results-space2/epicenter/S5_R75_40/densplots'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -1043,7 +1043,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results-space2\\epicenter\\S5_R75_40'
+path <- 'E:\\Chapter3_old\\results-space2\\epicenter\\S5_R75_40'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
