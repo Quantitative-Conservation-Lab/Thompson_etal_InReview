@@ -10,7 +10,7 @@ library(ggrepel)
 
 
 #### NO REMOVAL ####
-ncpath <- 'D:\\Chapter3\\results_space2\\noremoval'
+ncpath <- 'D:\\Chapter3\\results\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
@@ -23,8 +23,8 @@ noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
 
 #### States Fin truth ####
-path <- 'D:\\Chapter3\\results_space2'
-file_name = paste(path, 'true_finstates.csv',sep = '/')
+path <- 'D:\\Chapter3\\results_both'
+file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
 
@@ -47,42 +47,6 @@ colors2 <- c('darkorange', 'deeppink3', 'grey50')
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 
 colnames(finstate_truth)[5] <- 'Budget'
-
-finstate_truth %>% 
-  ggplot(aes(x = loc2, y = state, fill = rates2, color = location,
-             group = interaction(location, rates2)))+
-  geom_boxplot() +
-  geom_hline(yintercept = nc.val, linetype = 2) + 
-  stat_summary(fun.y = mean, geom = "errorbar",
-               aes(ymax = after_stat(y), ymin = after_stat(y),
-                   group = interaction(location, rates2)),
-               width = .75, color = "black", linewidth = 1)+ 
-  scale_x_discrete(breaks = c("epicenter0.50.75",
-                              "hstate0.750.5",
-                              "linear0.750.5"),
-                   labels=c(
-                    "epicenter0.50.75" = "Epicenter",
-                     "hstate0.750.5" = "High invasion",
-                     "linear0.750.5" = "Linear"))+
-
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                    values = colors) +
-scale_color_manual(name = "Priotization",
-                  values = colors2, 
-                  labels = c('Epicenter', 'High invasion', 'Linear') )+
-  
-  xlab("Site prioritization")+
-  ylab("Average final invasion state")+
-  theme_bw() +   
-  theme(strip.background=element_rect(colour="white",
-                                      fill="white"),
-        #strip.text.x = element_blank(),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
 detach(packagD:plyr)
 
@@ -293,7 +257,6 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
   facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both)
 
 #---- SUBSET ----#
-#### FIX WHICH ONES! ####
 
 bias_state_yearssub <- bias_state_years %>% filter(rates == "p = 0.75, e = 0.5" | rates == "p = 0.25, e = 0.75"|
                                                    rates == "p = 0.75, e = 0.75" | rates == "p = 0.5, e = 0.75")
