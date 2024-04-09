@@ -5,7 +5,7 @@ library(data.table)
 
 #### States ####
 #-- Budget = 20 --#
-# #--- S25_R5_20 ---#
+#--- S25_R5_20 ---#
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S25_R5_20'
 file_name = paste(path, 'states.csv',sep = '/')
 state_S25_R5_20 <- fread(file_name)
@@ -26,7 +26,7 @@ state_S25_R5_20b$detection <- 0.25
 state_S25_R5_20b$eradication <- 0.5
 state_S25_R5_20b$budget <- 20
 
-# #--- S25_R75_20 ---#
+#--- S25_R75_20 ---#
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S25_R75_20'
 file_name = paste(path, 'states.csv',sep = '/')
 state_S25_R75_20 <- fread(file_name)
@@ -47,7 +47,7 @@ state_S25_R75_20b$detection <- 0.25
 state_S25_R75_20b$eradication <- 0.75
 state_S25_R75_20b$budget <- 20
 
-# #--- S5_R5_20 ---#
+#--- S5_R5_20 ---#
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S5_R5_20'
 file_name = paste(path, 'states.csv',sep = '/')
 state_S5_R5_20 <- fread(file_name)
@@ -109,7 +109,7 @@ state_S75_R5_20b$location <- 'hstate'
 state_S75_R5_20b$detection <- 0.75
 state_S75_R5_20b$eradication <- 0.5
 state_S75_R5_20b$budget <- 20
-# 
+
 #--- S75_R75_20 ---#
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S75_R75_20'
 file_name = paste(path, 'states.csv',sep = '/')
@@ -125,7 +125,7 @@ path <- 'E:\\Chapter3\\results_space2\\hstate\\S75_R75_20_b'
 file_name = paste(path, 'states.csv',sep = '/')
 state_S75_R75_20b <- fread(file_name)
 state_S75_R75_20b <- data.frame(state_S75_R75_20b)[-1]
-# 
+
 state_S75_R75_20b$location <- 'hstate'
 state_S75_R75_20b$detection <- 0.75
 state_S75_R75_20b$eradication <- 0.75
@@ -150,7 +150,7 @@ state_S25_R5_40$location <- 'hstate'
 state_S25_R5_40$detection <- 0.25
 state_S25_R5_40$eradication <- 0.5
 state_S25_R5_40$budget <- 40
- 
+
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S25_R5_40_b'
 file_name = paste(path, 'states.csv',sep = '/')
 state_S25_R5_40b <- fread(file_name)
@@ -160,8 +160,8 @@ state_S25_R5_40b$location <- 'hstate'
 state_S25_R5_40b$detection <- 0.25
 state_S25_R5_40b$eradication <- 0.5
 state_S25_R5_40b$budget <- 40
- 
-# #--- S25_R75_40 ---#
+
+#--- S25_R75_40 ---#
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S25_R75_40'
 file_name = paste(path, 'states.csv',sep = '/')
 state_S25_R75_40 <- fread(file_name)
@@ -411,7 +411,7 @@ state_60 <- rbind(state_S25_R5_60,state_S25_R5_60b,
                   state_S75_R75_60,state_S5_R75_60b)
 
 #-- Combine states --#
-states <- rbind(state_20, state_40) #, state_60 )
+states <- rbind(state_20, state_40, state_60 )
 
 #### States truth ####
 #-- Budget = 20 --#
@@ -822,7 +822,7 @@ state_truth_60 <- rbind(state_truth_S25_R5_60,state_truth_S25_R5_60b,
                         state_truth_S75_R75_60,state_truth_S5_R75_60b)
 
 
-state_truth <- rbind(state_truth_20, state_truth_40) #, state_truth_60)
+state_truth <- rbind(state_truth_20, state_truth_40, state_truth_60)
 
 #### Bias state ####
 #-- Budget = 20 --#
@@ -1316,7 +1316,7 @@ bias_state_60 <- rbind(bias_state_S25_R5_60,bias_state_S25_R5_60b,
 
 
 #-- Combine Bias --#
-bias_state <- rbind(bias_state_20, bias_state_40) #, bias_state_60 )
+bias_state <- rbind(bias_state_20, bias_state_40, bias_state_60 )
 
 #### CI state ####
 #-- Budget = 20 --#
@@ -1726,7 +1726,7 @@ CI_state_60 <- rbind(CI_state_S25_R5_60,CI_state_S25_R5_60b,
                      CI_state_S75_R75_60,CI_state_S5_R75_60b)
 
 #-- Combine CI --#
-CI_state <- c(CI_state_20, CI_state_40) #, CI_state_60)
+CI_state <- c(CI_state_20, CI_state_40, CI_state_60)
 
 #### Params ####
 #-- Budget = 20 --#
@@ -2135,7 +2135,7 @@ param_60 <- rbind(param_S25_R5_60,param_S25_R5_60b,
                   param_S75_R75_60,param_S5_R75_60b)
 
 #-- Combine params --#
-params <- rbind(param_20, param_40) #, param_60 )
+params <- rbind(param_20, param_40, param_60 )
 
 #### Bias params ####
 #-- Budget = 20 --#
@@ -2268,9 +2268,9 @@ bias_param_S75_R75_20b$budget <- 20
 #--- Combine bias_params ---#
 bias_param_20 <- rbind(bias_param_S25_R5_20,bias_param_S25_R5_20b,
                        bias_param_S25_R75_20,bias_param_S25_R75_20b,
-                      bias_param_S5_R5_20,bias_param_S5_R5_20b,
+                       bias_param_S5_R5_20,bias_param_S5_R5_20b,
                   bias_param_S5_R75_20,bias_param_S5_R75_20b,
-                 bias_param_S75_R5_20,bias_param_S75_R5_20b,
+                  bias_param_S75_R5_20,bias_param_S75_R5_20b,
                   bias_param_S75_R75_20,bias_param_S5_R75_20b)
 
 #-- Budget = 40 --#
@@ -2315,7 +2315,7 @@ bias_param_S25_R75_40b$location <- 'hstate'
 bias_param_S25_R75_40b$detection <- 0.25
 bias_param_S25_R75_40b$eradication <- 0.75
 bias_param_S25_R75_40b$budget <- 40
- 
+
 #--- S5_R5_40 ---#
 path <- 'E:\\Chapter3\\results_space2\\hstate\\S5_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
@@ -2544,7 +2544,7 @@ bias_param_60 <- rbind(bias_param_S25_R5_60,bias_param_S25_R5_60b,
                        bias_param_S75_R75_60,bias_param_S5_R75_60b)
 
 #-- Combine bias --#
-bias_params <- rbind(bias_param_20, bias_param_40) #, bias_param_60 )
+bias_params <- rbind(bias_param_20, bias_param_40, bias_param_60 )
 
 
 #### CI params ####
@@ -2680,7 +2680,7 @@ CI_param_20 <- rbind(CI_param_S25_R5_20,CI_param_S25_R5_20b,
                      CI_param_S25_R75_20,CI_param_S25_R75_20b,
                      CI_param_S5_R5_20,CI_param_S5_R5_20b,
                        CI_param_S5_R75_20,CI_param_S5_R75_20b,
-                      CI_param_S75_R5_20,CI_param_S75_R5_20b,
+                       CI_param_S75_R5_20,CI_param_S75_R5_20b,
                        CI_param_S75_R75_20,CI_param_S5_R75_20b)
 
 #-- Budget = 40 --#
@@ -2954,7 +2954,7 @@ CI_param_60 <- rbind(CI_param_S25_R5_60,CI_param_S25_R5_60b,
                      CI_param_S75_R5_60,CI_param_S75_R5_60b,
                      CI_param_S75_R75_60,CI_param_S5_R75_60b)
 
-CI_param <- rbind(CI_param_20, CI_param_40) #, CI_param_60 )
+CI_param <- rbind(CI_param_20, CI_param_40, CI_param_60 )
 
 #### Param summary ####
 #-- Budget = 20 --#
@@ -3363,7 +3363,7 @@ param_summary_60 <- rbind(param_summary_S25_R5_60,param_summary_S25_R5_60b,
                           param_summary_S75_R5_60,param_summary_S75_R5_60b,
                           param_summary_S75_R75_60,param_summary_S5_R75_60b)
 
-param_summary <- rbind(param_summary_20, param_summary_40) #, param_summary_60)
+param_summary <- rbind(param_summary_20, param_summary_40, param_summary_60)
 
 #### Dist travel ####
 #-- Budget = 20 --#
@@ -3772,7 +3772,7 @@ dist_60 <- rbind(dist_S25_R5_60,dist_S25_R5_60b,
                  dist_S75_R5_60,dist_S75_R5_60b,
                  dist_S75_R75_60,dist_S5_R75_60b)
 
-dist <- rbind(dist_20, dist_40) #, dist_60)
+dist <- rbind(dist_20, dist_40, dist_60)
 
 #### Sites Visit ####
 #-- Budget = 20 --#
@@ -4180,13 +4180,10 @@ sites_60 <- rbind(sites_S25_R5_60,sites_S25_R5_60b,
                   sites_S75_R5_60,sites_S75_R5_60b,
                   sites_S75_R75_60,sites_S5_R75_60b)
 
-sites <- rbind(sites_20, sites_40) #, sites_60)
-
-
+sites <- rbind(sites_20, sites_40, sites_60)
 
 #### Save CSVs ####
 path <- 'E:\\Chapter3\\results_space2\\hstate'
-
 file_name = paste(path, 'states.csv',sep = '/')
 fwrite(states,file_name)
 
@@ -4219,10 +4216,9 @@ fwrite(CI_param,file_name)
 file_name = paste(path, 'param_summary.csv',sep = '/')
 fwrite(param_summary,file_name)
 
-
 dist_traveled <- aggregate(distance ~ sim + location + detection + eradication + budget, 
-                          data = as.data.frame(dist), 
-                          FUN = sum)
+                           data = as.data.frame(dist), 
+                           FUN = sum)
 
 file_name = paste(path, 'dist.csv',sep = '/')
 fwrite(dist_traveled,file_name)
