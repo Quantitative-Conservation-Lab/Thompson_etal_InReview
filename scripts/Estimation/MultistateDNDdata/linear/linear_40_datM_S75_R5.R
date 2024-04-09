@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
 
-res <- 'E:/Chapter3/results/linear/S75_R5_40/densplots'
+res <- 'E:/Chapter3/densplots/results/linear/S75_R5_40'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -33,18 +33,21 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
 
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
+# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
+# 
+# for(y in 1:last.explore){
+#   for(w in 1:n.weeks){
+#     for(s in 1:n.sims){
+#       hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
+#       hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
+#     }
+#   }
+# }
+#saveRDS(hours.dat, file = "hours_dat.rds")
+hours.dat <- readRDS("hours_dat.rds")
+
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -1015,7 +1018,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
+path <- 'E:/Chapter3/results/linear/S75_R5_40'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

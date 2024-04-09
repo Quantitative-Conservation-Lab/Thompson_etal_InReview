@@ -16,9 +16,10 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
+#### Change name ####
 path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40'
 
-res <- 'E:/Chapter3/results/linear/S5_R5_40/densplots'
+res <- 'E:/Chapter3/densplots/results/linear/S5_R5_40'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -33,18 +34,20 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
 
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
+# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
+# 
+# for(y in 1:last.explore){
+#   for(w in 1:n.weeks){
+#     for(s in 1:n.sims){
+#       hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
+#       hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
+#     }
+#   }
+# }
+#saveRDS(hours.dat, file = "hours_dat.rds")
+hours.dat <- readRDS("hours_dat.rds")
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -853,7 +856,6 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", 
                           "delta", "State.fin")
-  
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains

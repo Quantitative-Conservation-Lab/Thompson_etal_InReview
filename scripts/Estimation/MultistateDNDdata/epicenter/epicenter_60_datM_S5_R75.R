@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60'
 
-res <- 'E:/Chapter3/results/epicenter/S5_R75_60/densplots'
+res <- 'E:/Chapter3/densplots/results/epicenter/S5_R75_60'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -33,18 +33,20 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
 
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
+# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
+# 
+# for(y in 1:last.explore){
+#   for(w in 1:n.weeks){
+#     for(s in 1:n.sims){
+#       hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
+#       hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
+#     }
+#   }
+# }
+#saveRDS(hours.dat, file = "hours_dat.rds")
+hours.dat <- readRDS("hours_dat.rds")
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -122,11 +124,13 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
 #### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
-
+# for(s in 1: n.sims){
+#   sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
+#   sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
+# }
+# 
+# saveRDS(sites.rem.M, file = "remM_sites.rds")
+sites.rem.M <- readRDS("remM_sites.rds")
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
@@ -159,6 +163,8 @@ for(w in 1:n.weeks){
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
 start.time <- Sys.time()
+
+
 
 #### JAGS arrays ####
 S.init <- array(NA, c(n.sites,n.years, n.sims))
@@ -1272,7 +1278,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-file_name = paste(path, 'sites_visit',sep = '/')
+file_name = paste(path, 'sites_visit.txt',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1280,7 +1286,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 
-file_name = paste(path, 'y_dat',sep = '/')
+file_name = paste(path, 'y_dat.txt',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####
