@@ -159,45 +159,6 @@ for(w in 1:n.weeks){
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
 start.time <- Sys.time()
 
-#### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
-
-
-yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
-resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
-
-d.traveled <- array(NA, c(n.weeks, n.years, n.sims))
-visit <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-
-#Detection probabilities
-pM.l <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
-pM.h <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
-
-P.datM <- array(NA, dim = c(n.states, n.sites, n.weeks, n.years, n.sims, n.states))
-
-
-for(w in 1:n.weeks){
-  for(y in 1:n.years){
-    for(s in 1:n.sims){
-      pM.l[1:n.sites,w,y,s] <- invlogit(B0.pl[s] + B1.pl[s]*log(hours.dat[1,1:n.sites,w,y,s])) #low state detection 
-      pM.h[1:n.sites,w,y,s]  <- invlogit(B0.ph[s] + B1.ph[s]*log(hours.dat[1,1:n.sites,w,y,s])) #high state detection 
-      
-      for(i in 1:n.sites){
-        P.datM[1,i,w,y,s,] <- c(1,0,0)
-        P.datM[2,i,w,y,s,] <- c(1-pM.l[i,w,y,s], pM.l[i,w,y,s], 0)
-        P.datM[3,i,w,y,s,] <- c(1-pM.h[i,w,y,s], pM.h[i,w,y,s]*(1-delta[s]), pM.h[i,w,y,s]*delta[s])
-      }
-    }
-  }
-}
-
-
-rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
-start.time <- Sys.time()
-
 #### JAGS arrays ####
 S.init <- array(NA, c(n.sites,n.years, n.sims))
 N.init <- array(NA, c(n.sites,n.years, n.sims))

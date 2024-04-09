@@ -139,7 +139,6 @@ pM.h <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
 
 P.datM <- array(NA, dim = c(n.states, n.sites, n.weeks, n.years, n.sims, n.states))
 
-
 for(w in 1:n.weeks){
   for(y in 1:n.years){
     for(s in 1:n.sims){
@@ -158,13 +157,6 @@ for(w in 1:n.weeks){
 
 rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
 start.time <- Sys.time()
-
-#### First Removal Locations ####
-for(s in 1: n.sims){
-  sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
-  sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
-}
-
 
 yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
 resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
