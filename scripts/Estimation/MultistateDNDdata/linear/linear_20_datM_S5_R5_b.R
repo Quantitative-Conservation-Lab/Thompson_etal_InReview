@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20_b'
 
-res <- 'E:/Chapter3/densplots/results/linear/S5_R5_20_b'
+res <- 'E:/Chapter3/densplots/linear/S5_R5_20_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -1108,13 +1108,13 @@ res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1
 
 res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
 
-ggplot(res.par.df.summary.sub) + 
-  geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
-  geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
-  geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
-  geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
-  scale_x_continuous(breaks=c(1,5,10))+
-  facet_wrap(~param, scales = "free")
+# ggplot(res.par.df.summary.sub) + 
+#   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
+#   geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
+#   geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
+#   geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
+#   scale_x_continuous(breaks=c(1,5,10))+
+#   facet_wrap(~param, scales = "free")
 
 ###### 4. Summary of parameters #####
 file_name = paste(path, 'par_summary.csv',sep = '/')

@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
 
-res <- 'E:/Chapter3/results/epicenter/S25_R5_40_b/densplots'
+res <- 'E:/Chapter3/densplots/epicenter/S25_R5_40_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -33,18 +33,20 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
 
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
+# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
+# 
+# for(y in 1:last.explore){
+#   for(w in 1:n.weeks){
+#     hours.dat[1,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#     hours.dat[2,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#   }
+# }
+# saveRDS(hours.dat, file = "hours_dat.rds")
+hours.dat <- readRDS("hours_dat.rds")
+
+max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -103,8 +105,12 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
-site.char <- site.char
-State.init <- State.init
+site.char <- read.csv( here::here('data', "site_char.csv"))
+site.char <- c(t(site.char$x))
+
+State.init <- read.csv( here::here('data', "state_init.csv"))
+State.init <- c(t(State.init$x))
+
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -118,8 +124,40 @@ neighbors[1:(n.sites-1), 2] <- seq(2,n.sites) #filling in downstream neighbors
 n.neighbors <- rep(2,n.sites)
 n.neighbors[1] <- n.neighbors[n.sites] <- 1
 
-#--- removal data and occupancy data ---#
-sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
+#### First Removal Locations ####
+sites.rem.M <- readRDS("remM_sites.rds")
+
+yM <- array(NA, c(n.sites, n.occs, n.weeks, n.years, n.sims)) 
+resource.total <- array(0, c(n.weeks, n.years, n.sims)) 
+
+d.traveled <- array(NA, c(n.weeks, n.years, n.sims))
+visit <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
+
+#Detection probabilities
+pM.l <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
+pM.h <- array(NA, c(n.sites, n.weeks,n.years, n.sims))
+
+P.datM <- array(NA, dim = c(n.states, n.sites, n.weeks, n.years, n.sims, n.states))
+
+
+for(w in 1:n.weeks){
+  for(y in 1:n.years){
+    for(s in 1:n.sims){
+      pM.l[1:n.sites,w,y,s] <- invlogit(B0.pl[s] + B1.pl[s]*log(hours.dat[1,1:n.sites,w,y,s])) #low state detection 
+      pM.h[1:n.sites,w,y,s]  <- invlogit(B0.ph[s] + B1.ph[s]*log(hours.dat[1,1:n.sites,w,y,s])) #high state detection 
+      
+      for(i in 1:n.sites){
+        P.datM[1,i,w,y,s,] <- c(1,0,0)
+        P.datM[2,i,w,y,s,] <- c(1-pM.l[i,w,y,s], pM.l[i,w,y,s], 0)
+        P.datM[3,i,w,y,s,] <- c(1-pM.h[i,w,y,s], pM.h[i,w,y,s]*(1-delta[s]), pM.h[i,w,y,s]*delta[s])
+      }
+    }
+  }
+}
+
+
+rem.vec <- array(NA, c(n.sites, n.weeks, n.years,  n.sims)) #removal sites array
+start.time <- Sys.time()
 
 #### First Removal Locations ####
 for(s in 1: n.sims){
@@ -1272,7 +1310,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-file_name = paste(path, 'sites_visit',sep = '/')
+file_name = paste(path, 'sites_visit.txt',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1280,7 +1318,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 
-file_name = paste(path, 'y_dat',sep = '/')
+file_name = paste(path, 'y_dat.txt',sep = '/')
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####
