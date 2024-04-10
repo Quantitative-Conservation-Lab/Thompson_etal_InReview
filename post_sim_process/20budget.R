@@ -432,9 +432,9 @@ finstate_truth <- aggregate(state ~ sim + location + detection + eradication + b
                             FUN = mean)
 
 colnames(finstate_truth)[5] <- 'Budget'
+finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 
-
-detach(packagD:plyr)
+detach(package:plyr)
 
 budget20_suppress <- finstate_truth %>% 
   filter(Budget == 20) %>% 
@@ -442,6 +442,7 @@ budget20_suppress <- finstate_truth %>%
   summarise(mean_c = mean(state),
             max_c = max(state))
 
+budget20_suppress
 
 ##### Containment ####
 fininv_truth <-  state_truth %>% filter(week == 5 & year == 10)
