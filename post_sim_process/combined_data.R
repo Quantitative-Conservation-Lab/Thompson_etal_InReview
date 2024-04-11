@@ -302,37 +302,3 @@ path <- 'E:\\Chapter3\\results'
 file_name = paste(path, 'total_rem.csv',sep = '/')
 fwrite(total_rem,file_name)
 
-#### VOI ####
-##### Suppress ####
-path <- 'E:\\Chapter3\\results\\hstate'
-file_name = paste(path, 'VOI_suppress.csv',sep = '/')
-hstate_VOI_suppress <- fread(file_name)
-hstate_VOI_suppress <- data.frame(hstate_VOI_suppress)
-
-path <- 'E:\\Chapter3\\results\\linear'
-file_name = paste(path, 'VOI_suppress.csv',sep = '/')
-linear_VOI_suppress <- fread(file_name)
-linear_VOI_suppress <- data.frame(linear_VOI_suppress)
-
-
-VOI_suppress <- rbind(hstate_VOI_suppress, linear_VOI_suppress)
-path <- 'E:\\Chapter3\\results'
-file_name = paste(path, 'VOI_suppress.csv',sep = '/')
-fwrite(VOI_suppress,file_name)
-
-##### Contain ####
-path <- 'E:\\Chapter3\\results\\hstate'
-file_name = paste(path, 'VOI_contain.csv',sep = '/')
-hstate_VOI_contain <- fread(file_name)
-hstate_VOI_contain <- data.frame(hstate_VOI_contain)
-
-path <- 'E:\\Chapter3\\results\\linear'
-file_name = paste(path, 'VOI_contain.csv',sep = '/')
-linear_VOI_contain <- fread(file_name)
-linear_VOI_contain <- data.frame(linear_VOI_contain)
-
-
-VOI_contain <- rbind(hstate_VOI_contain, linear_VOI_contain)
-path <- 'E:\\Chapter3\\results'
-file_name = paste(path, 'VOI_contain.csv',sep = '/')
-fwrite(VOI_contain,file_name)
