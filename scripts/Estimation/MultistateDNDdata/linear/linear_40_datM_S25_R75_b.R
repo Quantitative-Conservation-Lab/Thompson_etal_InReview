@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40_b'
 
-res <- 'E:/Chapter3/results/linear/S25_R75_40_b/densplots'
+res <- 'E:/Chapter3/densplots/linear/S25_R75_40_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -33,18 +33,18 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
 
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
+# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
+# 
+# for(y in 1:last.explore){
+#   for(w in 1:n.weeks){
+#     hours.dat[1,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#     hours.dat[2,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#   }
+# }
+# saveRDS(hours.dat, file = "hours_dat.rds")
+hours.dat <- readRDS("hours_dat.rds")
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -1107,8 +1107,8 @@ res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
 
 res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
 
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
-
+# res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
+# 
 # ggplot(res.par.df.summary.sub) + 
 #   geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
 #   geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +

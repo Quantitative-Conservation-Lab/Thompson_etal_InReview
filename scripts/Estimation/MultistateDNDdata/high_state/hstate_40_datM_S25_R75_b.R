@@ -18,7 +18,7 @@ library(readr)
 #### Path to save data ####
 path <- 'E:\\Chapter3\\results\\hstate\\S25_R75_40_b'
 
-res <- 'E:/Chapter3/densplots/results/hstate/S25_R75_40_b'
+res <- 'E:/Chapter3/densplots/hstate/S25_R75_40_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data_b.RData")
@@ -123,107 +123,6 @@ neighbors[n.sites,2] <- n.sites-1 #end site only has end site -1 as its neighbor
 neighbors[1:(n.sites-1), 2] <- seq(2,n.sites) #filling in downstream neighbors
 n.neighbors <- rep(2,n.sites)
 n.neighbors[1] <- n.neighbors[n.sites] <- 1
-
-#--- removal data and occupancy data ---#
-sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
-#### Data and parameters ####
-n.sims <-  100 #number of simulations (parameter sets)
-n.sites <- 40 #number of sites
-n.years <- 10 #number of years
-n.weeks <- 5 #number of weeks
-n.occs <- 2 #number of occasions for occupancy data collection
-n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
-last.explore <- 4
-
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
-
-max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
-
-for(i in 1:n.sites){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      for(y in 1:4){
-        max.spent[i,w,y,s] <-  hours.dat[1,i,w,y,s] +  hours.dat[2,i,w,y,s]
-      }
-    }
-  }
-}
-
-B0.gammas <- data.frame(param = 'B0.gamma', truth = B0.gamma, sim = seq(1:n.sims))
-B1.gammas <- data.frame(param= 'B1.gamma', truth = B1.gamma, sim = seq(1:n.sims))
-B2.gammas <- data.frame(param = 'B2.gamma', truth = B2.gamma, sim = seq(1:n.sims))
-
-B0.phihs <- data.frame(param = 'B0.phi.h', truth = B0.phih, sim = seq(1:n.sims))
-B1.phihs <- data.frame(param = 'B1.phi.h', truth = B1.phih, sim = seq(1:n.sims))
-
-B0.epsls <- data.frame(param = 'B0.eps.l', truth = B0.epsl, sim = seq(1:n.sims))
-B1.epsls <- data.frame(param = 'B1.eps.l', truth = B1.epsl, sim = seq(1:n.sims))
-
-B0.epshs <- data.frame(param = 'B0.eps.h', truth = B0.epsh, sim = seq(1:n.sims))
-B1.epshs <- data.frame(param = 'B1.eps.h', truth = B1.epsh, sim = seq(1:n.sims))
-
-gs <- data.frame(param = 'g', truth = g, sim = seq(1:n.sims))
-phiB.ls <- data.frame(param = 'phiB.l', truth = phiB.l, sim = seq(1:n.sims))
-phiB.hs <- data.frame(param = 'phiB.h', truth = phiB.h, sim = seq(1:n.sims))
-epsB.ls <- data.frame(param = 'epsB.l', truth = epsB.l, sim = seq(1:n.sims))
-epsB.hs <- data.frame(param = 'epsB.h', truth = epsB.h, sim = seq(1:n.sims))
-
-B0.p.ls <- data.frame(param = 'B0.p.l', truth = B0.pl, sim = seq(1:n.sims))
-B1.p.ls <- data.frame(param = 'B1.p.l', truth = B1.pl, sim = seq(1:n.sims))
-
-B0.p.hs <- data.frame(param = 'B0.p.h', truth = B0.ph, sim = seq(1:n.sims))
-B1.p.hs <- data.frame(param = 'B1.p.h', truth = B1.ph, sim = seq(1:n.sims))
-deltas <- data.frame(param = 'delta', truth = delta, sim = seq(1:n.sims))
-
-truth.params <- rbind(B0.gammas, B1.gammas, B2.gammas,
-                      B0.phihs, B1.phihs,
-                      B0.epsls, B1.epsls,
-                      B0.epshs, B1.epshs,
-                      gs, phiB.ls, phiB.hs, epsB.ls, epsB.hs,
-                      B0.p.ls, B1.p.ls, B0.p.hs, B1.p.hs,
-                      deltas)
-
-#---- arrays ----#
-gamma <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-eps.l <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-eps.h <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-phi.l <- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-phi.h<- array(NA, c(n.sites, n.weeks, n.years, n.sims))
-
-TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states)) 
-
-#---Habitat data---#
-# effect of habitat quality on occupancy
-site.char <- read.csv( here::here('data', "site_char.csv"))
-site.char <- c(t(site.char$x))
-
-State.init <- read.csv( here::here('data', "state_init.csv"))
-State.init <- c(t(State.init$x))
-
-State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
-
-#---Neighbor data---#
-N <- array(NA, c(n.sites, n.weeks, n.years,n.sims)) #neighbors array
-num.neighbors <- 2 #one upstream, one downstream
-neighbors <- matrix(NA, nrow = n.sites, ncol = num.neighbors) #neighbors matrix, each row (site) identifies the neighbors for that site 
-neighbors[1,1] <- 2 #site 1 only has site 2 as its neighbor 
-neighbors[2:n.sites, 1] <- seq(1,n.sites-1) #filling in upstream neighbors
-neighbors[n.sites,2] <- n.sites-1 #end site only has end site -1 as its neighbor
-neighbors[1:(n.sites-1), 2] <- seq(2,n.sites) #filling in downstream neighbors
-n.neighbors <- rep(2,n.sites)
-n.neighbors[1] <- n.neighbors[n.sites] <- 1
-
-#--- removal data and occupancy data ---#
-sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
 #### First Removal Locations ####
 sites.rem.M <- readRDS("remM_sites.rds")
