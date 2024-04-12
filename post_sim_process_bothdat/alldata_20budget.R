@@ -6,7 +6,7 @@ library(data.table)
 #### States ####
 
 #### States truth ####
-path <- 'D:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 epistate_truth_S5_R75_20 <- fread(file_name)
 epistate_truth_S5_R75_20 <- data.frame(epistate_truth_S5_R75_20)[-1]
@@ -17,7 +17,7 @@ epistate_truth_S5_R75_20$eradication <- 0.75
 epistate_truth_S5_R75_20$budget <- 20
 epistate_truth_S5_R75_20$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 epistate_truth_S5_R75_20b <- fread(file_name)
 epistate_truth_S5_R75_20b <- data.frame(epistate_truth_S5_R75_20b)[-1]
@@ -29,7 +29,7 @@ epistate_truth_S5_R75_20b$budget <- 20
 epistate_truth_S5_R75_20b$data <- 'both'
 
 #--- S5_R5_20 ---#
-path <- 'D:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 epilin_truth_S5_R75_20 <- fread(file_name)
 epilin_truth_S5_R75_20 <- data.frame(epilin_truth_S5_R75_20)[-1]
@@ -40,7 +40,7 @@ epilin_truth_S5_R75_20$eradication <- 0.75
 epilin_truth_S5_R75_20$budget <- 20
 epilin_truth_S5_R75_20$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 epilin_truth_S5_R75_20b <- fread(file_name)
 epilin_truth_S5_R75_20b <- data.frame(epilin_truth_S5_R75_20b)[-1]
@@ -62,14 +62,7 @@ state_truth <- rbind(state_truth_20)
 
 #### Bias state ####
 #-- Budget = 20 --#
-
-epi_biasstate_S25_R75_20b$location <- 'epicenter'
-epi_biasstate_S25_R75_20b$detection <- 0.25
-epi_biasstate_S25_R75_20b$eradication <- 0.75
-epi_biasstate_S25_R75_20b$budget <- 20
-epi_biasstate_S25_R75_20b$data <- 'both'
-
-path <- 'D:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epi_biasstate_S5_R75_20 <- fread(file_name)
 epi_biasstate_S5_R75_20 <- data.frame(epi_biasstate_S5_R75_20)[-1]
@@ -80,7 +73,7 @@ epi_biasstate_S5_R75_20$eradication <- 0.75
 epi_biasstate_S5_R75_20$budget <- 20
 epi_biasstate_S5_R75_20$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epi_biasstate_S5_R75_20b <- fread(file_name)
 epi_biasstate_S5_R75_20b <- data.frame(epi_biasstate_S5_R75_20b)[-1]
@@ -91,7 +84,7 @@ epi_biasstate_S5_R75_20b$eradication <- 0.75
 epi_biasstate_S5_R75_20b$budget <- 20
 epi_biasstate_S5_R75_20b$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 lin_biasstate_S5_R75_20 <- fread(file_name)
 lin_biasstate_S5_R75_20 <- data.frame(lin_biasstate_S5_R75_20)[-1]
@@ -102,7 +95,7 @@ lin_biasstate_S5_R75_20$eradication <- 0.75
 lin_biasstate_S5_R75_20$budget <- 20
 lin_biasstate_S5_R75_20$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 lin_biasstate_S5_R75_20b <- fread(file_name)
 lin_biasstate_S5_R75_20b <- data.frame(lin_biasstate_S5_R75_20b)[-1]
@@ -126,7 +119,7 @@ bias_state <- rbind(bias_state_20)
 #### Bias params ####
 #-- Budget = 20 --#
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epi_biasparam_S5_R75_20 <- fread(file_name)
 epi_biasparam_S5_R75_20 <- data.frame(epi_biasparam_S5_R75_20)[-1]
@@ -137,7 +130,7 @@ epi_biasparam_S5_R75_20$eradication <- 0.75
 epi_biasparam_S5_R75_20$budget <- 20
 epi_biasparam_S5_R75_20$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results_both\\budget20\\epicenter_S5_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epi_biasparam_S5_R75_20b <- fread(file_name)
 epi_biasparam_S5_R75_20b <- data.frame(epi_biasparam_S5_R75_20b)[-1]
@@ -148,7 +141,7 @@ epi_biasparam_S5_R75_20b$eradication <- 0.75
 epi_biasparam_S5_R75_20b$budget <- 20
 epi_biasparam_S5_R75_20b$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 lin_biasparam_S5_R75_20 <- fread(file_name)
 lin_biasparam_S5_R75_20 <- data.frame(lin_biasparam_S5_R75_20)[-1]
@@ -159,7 +152,7 @@ lin_biasparam_S5_R75_20$eradication <- 0.75
 lin_biasparam_S5_R75_20$budget <- 20
 lin_biasparam_S5_R75_20$data <- 'both'
 
-path <- 'D:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 lin_biasparam_S5_R75_20b <- fread(file_name)
 lin_biasparam_S5_R75_20b <- data.frame(lin_biasparam_S5_R75_20b)[-1]
@@ -181,12 +174,7 @@ bias_params <- rbind(bias_param_20)
 
 
 #### Save CSVs ####
-path <- 'D:\\Chapter3\\results_both'
-
-
-states_fin <- states %>% filter(year == 10)
-file_name = paste(path, 'states_fin.csv',sep = '/')
-fwrite(states_fin,file_name)
+path <- 'E:\\Chapter3\\results_both'
 
 file_name = paste(path, 'states_truth.csv',sep = '/')
 fwrite(state_truth,file_name)

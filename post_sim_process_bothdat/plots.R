@@ -10,7 +10,7 @@ library(ggrepel)
 
 
 #### NO REMOVAL ####
-ncpath <- 'D:\\Chapter3\\results\\noremoval'
+ncpath <- 'E:\\Chapter3\\results\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
@@ -24,7 +24,7 @@ nc.inv <- mean(noremoval$inv)
 
 #### States fin truth ####
 ##### States Fin truth dat A ####
-path <- 'D:\\Chapter3\\results'
+path <- 'E:\\Chapter3\\results'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
@@ -41,7 +41,7 @@ finstate_truth <- aggregate(state ~ sim + location + detection + eradication + b
 
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 
-finstate_truth <- finstate_truth %>% filter(loc2 == 'epicenter0.250.75' |
+finstate_truth <- finstate_truth %>% filter(#loc2 == 'epicenter0.250.75' |
                                             loc2 == 'epicenter0.50.75'  |
                                             loc2 == 'linear0.50.75')
 
@@ -52,7 +52,7 @@ finstate_truthA$data <- 'A'
 
 
 ##### States Fin truth A+C ####
-path <- 'D:\\Chapter3\\results_both'
+path <- 'E:\\Chapter3\\results_both'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
@@ -76,7 +76,7 @@ finstate_truth <- rbind(finstate_truthA, finstate_truthAC)
 
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication, finstate_truth$data )
 
-detach(packagD:plyr)
+detach(package:plyr)
 
 budget20_suppress <- finstate_truthAC %>% 
   filter(Budget == 20) %>% 
@@ -108,12 +108,13 @@ colors <- c(colors[c(2,4)],'white')
 
 colors2 <- c('grey50', 'purple')
 
+finstate_truth <- finstate_truth %>% filter(Budget == 20)
 
 finstate_truth %>% 
   ggplot(aes(x = loc2, y = state, fill = rates2, color =data,
              group = interaction(location, rates2, data)))+
   geom_boxplot() +
-  geom_hline(yintercept = nc.inv, linetype = 2) + 
+  geom_hline(yintercept = nc.val, linetype = 2) + 
   stat_summary(fun.y = mean, geom = "errorbar",
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
@@ -144,7 +145,7 @@ finstate_truth %>%
 
 #### States inv truth ####
 ##### States inv truth A ####
-path <- 'D:\\Chapter3\\results'
+path <- 'E:\\Chapter3\\results'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 fininv_truth <- fread(file_name)
 fininv_truth <- data.frame(fininv_truth)
@@ -166,7 +167,7 @@ fininv_truth$loc2 <- paste0(fininv_truth$location, fininv_truth$detection, finin
 colnames(fininv_truth)[c(2,5)] <- c('Location', 'Budget')
 
 fininv_truth$data <- 'A'
-fininv_truth <- fininv_truth %>% filter(loc2 == 'epicenter0.250.75' |
+fininv_truth <- fininv_truth %>% filter(#loc2 == 'epicenter0.250.75' |
                                               loc2 == 'epicenter0.50.75'  |
                                               loc2 == 'linear0.50.75')
 
@@ -175,7 +176,7 @@ fininv_truth$loc2 <- paste0(fininv_truth$Location, fininv_truth$detection, finin
 fininv_truthA <- fininv_truth
 
 ##### States inv truth A+ C ####
-path <- 'D:\\Chapter3\\results_both'
+path <- 'E:\\Chapter3\\results_both'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 fininv_truth <- fread(file_name)
 fininv_truth <- data.frame(fininv_truth)
@@ -232,6 +233,7 @@ colors <- c(colors[c(2,4)],'white')
 
 colors2 <- c('grey50', 'purple')
 
+fininv_truth <- fininv_truth %>% filter(Budget == 20)
 
 fininv_truth %>% 
   ggplot(aes(x = loc2, y = inv, fill = rates2, color =data,
@@ -268,7 +270,7 @@ fininv_truth %>%
 
 #### Bias state ####
 ##### Bias state A ####
-path <- 'D:\\Chapter3\\results'
+path <- 'E:\\Chapter3\\results'
 file_name = paste(path, 'bais_states.csv',sep = '/')
 bias_state <- fread(file_name)
 bias_state <- data.frame(bias_state)
@@ -281,7 +283,7 @@ bias_state$rates2 <- paste0('(', bias_state$detection, ', ', bias_state$eradicat
 colnames(bias_state)[8] <- 'Budget'
 
 bias_state$data <- 'A'
-bias_state <- bias_state %>% filter(loc2 == 'epicenter0.250.75' |
+bias_state <- bias_state %>% filter(#loc2 == 'epicenter0.250.75' |
                                           loc2 == 'epicenter0.50.75'  |
                                           loc2 == 'linear0.50.75')
 
@@ -289,7 +291,7 @@ bias_state$loc2 <- paste0(bias_state$location, bias_state$detection, bias_state$
 bias_stateA <- bias_state
 
 ##### Bias state A+ C ####
-path <- 'D:\\Chapter3\\results_both'
+path <- 'E:\\Chapter3\\results_both'
 file_name = paste(path, 'bias_state.csv',sep = '/')
 bias_state <- fread(file_name)
 bias_state <- data.frame(bias_state)
@@ -325,6 +327,8 @@ budget60_biasstate <- bias_stateAC %>%
             max_c = max(rel.bias))
 
 bias_state <- rbind(bias_stateAC, bias_stateA)
+
+bias_state  <- bias_state  %>% filter(Budget == 20)
 
 bias_state %>% 
   ggplot(aes(x = loc2, y = rel.bias, fill = rates2, color =data,
