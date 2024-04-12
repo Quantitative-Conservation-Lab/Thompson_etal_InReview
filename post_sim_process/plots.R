@@ -10,7 +10,7 @@ library(ggrepel)
 
 
 #### NO REMOVAL ####
-ncpath <- 'D:\\Chapter3\\results\\noremoval'
+ncpath <- 'E:\\Chapter3\\results\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
@@ -23,7 +23,7 @@ noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
 
 #### States Fin truth ####
-path <- 'D:\\Chapter3\\results'
+path <- 'E:\\Chapter3\\results'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
@@ -84,7 +84,7 @@ scale_color_manual(name = "Priotization",
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
-detach(packagD:plyr)
+detach(package:plyr)
 
 budget20_suppress <- finstate_truth %>% 
   filter(Budget == 20) %>% 
@@ -242,19 +242,19 @@ bias_state %>%
 
 
 budget20_biasstate <- bias_state %>% 
-  filter(budget == 20) %>% 
+  filter(Budget == 20) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
 
 budget40_biasstate <- bias_state %>% 
-  filter(budget == 40) %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
 
 budget60_biasstate <- bias_state %>% 
-  filter(budget == 60) %>% 
+  filter(Budget == 60) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
@@ -267,6 +267,8 @@ bias_state_years <- bias_state %>%
             upper = quantile(rel.bias, 0.95))
 
 colnames(bias_state_years)[c(1,5)] <- c("Prioritization", "Budget")
+
+bias_state_years$detection <- substr(bias_state_years$rates, start = 1,stop = 8)
 
 ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
@@ -285,7 +287,8 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both)
+ # facet_wrap(~Budget + detection + Prioritization, nrow = 3, labeller = label_both)
+  facet_wrap(~Budget+ Prioritization, nrow = 3, labeller = label_both)
 
 #---- SUBSET ----#
 
@@ -490,3 +493,49 @@ ggplot(bias_param_eps_yearssub,
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both, scales = "free")
+
+#### Sites visited ####
+file_name = paste(path, 'total_visit.csv',sep = '/')
+total_visit <- fread(file_name)
+total_visit <- data.frame(total_visit)
+
+total_visit$rates <- paste0('p = ', total_visit$detection, ', e = ', total_visit$eradication)
+
+total_visit <- total_visit %>% filter(detection < 1 & detection > 0)
+
+total_visit$loc2 <- paste0(total_visit$location, total_visit$detection, total_visit$eradication)
+total_visit$rates2 <- total_visit$rates
+
+total_visit %>% 
+  ggplot(aes(x = loc2, y = visit, fill = rates2, color = location,
+             group = interaction(location, rates)))+
+  geom_boxplot() +
+  stat_summary(fun.y = mean, geom = "errorbar",
+               aes(ymax = after_stat(y), ymin = after_stat(y),
+                   group = interaction(location, rates2)),
+               width = .75, color = "black", linewidth = 1)+ 
+  scale_x_discrete(breaks = c("epicenter0.50.75",
+                              "hstate0.750.5",
+                              "linear0.750.5"),
+                   labels=c(
+                     "epicenter0.50.75" = "Epicenter",
+                     "hstate0.750.5" = "High invasion",
+                     "linear0.750.5" = "Linear"))+
+  
+  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+                    values = colors) +
+  scale_color_manual(name = "Priotization",
+                     values = colors2, 
+                     labels = c('Epicenter', 'High invasion', 'Linear') )+
+  xlab("Site prioritization")+
+  ylab("% of sites visited each week")+
+  theme_bw() +   
+  theme(strip.background=element_rect(colour="white",
+                                      fill="white"),
+        strip.text.x = element_blank(),
+        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(hjust = 1))+
+  facet_wrap(~budget, nrow = 3)

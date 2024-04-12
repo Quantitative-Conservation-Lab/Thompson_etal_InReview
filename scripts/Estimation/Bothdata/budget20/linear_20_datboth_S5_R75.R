@@ -16,9 +16,9 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75'
 
-res <- 'E:/Chapter3/results_both/budget20/linear_S5_R75_20/densplots'
+res <- 'E:/Chapter3/densplots/results_datboth/budget20/linear_S5_R75'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
@@ -33,19 +33,8 @@ n.years <- 10 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
 last.explore <- 4
-
-for(y in 1:last.explore){
-  for(w in 1:n.weeks){
-    for(s in 1:n.sims){
-      hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-      hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-    }
-  }
-}
-
+hours.dat <- readRDS("hours_dat.rds")
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
 for(i in 1:n.sites){
@@ -917,11 +906,6 @@ for(year in 2:n.years){
                           "epsB.l", "epsB.h", "phiB.l", "phiB.h","g",
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h", "alpha.l", "alpha.h",
                           "delta", "State.fin")
-<<<<<<< HEAD
-
-=======
-  
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
@@ -1081,14 +1065,9 @@ for(year in 2:n.years){
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-<<<<<<< HEAD
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results_both\\budget20\\linear_S5_R75_20'
-=======
-#### Save data ####
-path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75_20'
+path <- 'E:\\Chapter3\\results_datboth\\budget20\\linear_S5_R75'
 
->>>>>>> 66a6351fc5406b5276008501db21be393c767fc9
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],

@@ -16,14 +16,14 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Path to save data ####
-path <- 'E:\\Chapter3\\results-space2\\hstate\\S75_R75_60'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 
-res <- 'E:/Chapter3/densplots/results-space2/hstate/S75_R75_60'
+res <- 'E:/Chapter3/densplots/results/hstatebins/S25_R75_20'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 60 #total hours per week
+n.resource <- 20 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -39,11 +39,13 @@ last.explore <- 4
 # 
 # for(y in 1:last.explore){
 #   for(w in 1:n.weeks){
-#     hours.dat[1,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
-#     hours.dat[2,,w,y,1:n.sims] <- runif(n.sites, 0.1,10)
+#     for(s in 1:n.sims){
+#       hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
+#       hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
+#     }
 #   }
 # }
-# saveRDS(hours.dat, file = "hours_dat.rds")
+#saveRDS(hours.dat, file = "hours_dat.rds")
 hours.dat <- readRDS("hours_dat.rds")
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
@@ -104,10 +106,7 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 site.char <- site.char
-State.init <- rep(1,n.sites)
-State.init[17:24] <- c(2,2,3,3,3,3,2,2)
-State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
-
+State.init <- State.init
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -122,11 +121,14 @@ n.neighbors <- rep(2,n.sites)
 n.neighbors[1] <- n.neighbors[n.sites] <- 1
 
 #--- removal data and occupancy data ---#
-# sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
+sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
+
+#### First Removal Locations ####
+# for(s in 1: n.sims){
+#   sites.rem.M[,1,1,s] <- sample(n.sites, n.sites, replace = F)
+#   sites.rem.M[,1,2,s] <- sample(n.sites, n.sites, replace = F)
+# }
 # 
-# #### First Removal Locations ####
-# sites.rem.M[,1,1,1:n.sims] <- sample(n.sites, n.sites, replace = F)
-# sites.rem.M[,1,2,1:n.sims] <- sample(n.sites, n.sites, replace = F)
 # saveRDS(sites.rem.M, file = "remM_sites.rds")
 sites.rem.M <- readRDS("remM_sites.rds")
 
@@ -250,6 +252,16 @@ logsearch.effort <- rep(NA, n.sims)
 removal.L <- rep(NA, n.sims)
 removal.H <- rep(NA, n.sims)
 removal.hours <- rep(NA, n.sims)
+
+#### distance matrix ####
+dist.mat <- matrix(NA, nrow = n.sites, ncol = n.sites)
+
+for(i in 1:n.sites){
+  for(h in 1:n.sites){
+    dist.mat[i,h] <- abs(h-i)
+  }
+}
+
 
 start.time <- Sys.time()
 ####################################################################################
@@ -962,13 +974,32 @@ for(year in 2:n.years){
   }
 
   ###### 3b. Make Decision #####
-  S.decision <- array(NA, c(n.sites, n.years, n.sims))
+  S.decision <-S.decision.pre <- array(NA, c(n.sites, n.years, n.sims))
+  three.list <- list()
+  two.list <- list()
+  one.list <- list()
   
   if(year < n.years){
     for(s in 1:n.sims){
       #Removal locations: rank sites by state
-      S.decision[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      sites.rem.M[,1,year+1,s] <- order(S.decision[,year,s], decreasing = T)
+      S.decision.pre[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
+      three.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 3))
+      
+      last <- tail(three.list[[s]], 1)  
+      two.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 2))
+      
+      first.two <- two.list[[s]][[which.min(dist.mat[two.list[[s]],last])]]
+      
+      two.list[[s]] <- c(two.list[[s]][(which.min(dist.mat[two.list[[s]],last]): length(two.list[[s]]))],
+                         two.list[[s]][(which.min(dist.mat[two.list[[s]],last]) -1): 1]
+        
+      )
+      
+      last.2 <- tail(two.list[[s]], 1)  
+      one.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 1))
+      
+      
+      sites.rem.M[,1,year+1,s] <- c(three.list[[s]], two.list[[s]], one.list[[s]])
       
     }
   }
@@ -983,8 +1014,8 @@ for(year in 2:n.years){
       B0.p.h.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.p.h' & sim == s) %>% select(mean))
       B1.p.h.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.p.h' & sim == s) %>% select(mean)))
       
-      logsearch.effort.L[s] <- (logit(0.75) - B0.p.l.est[s])/(B1.p.l.est[s])
-      logsearch.effort.H[s] <- (logit(0.75) - B0.p.h.est[s])/(B1.p.h.est[s])
+      logsearch.effort.L[s] <- (logit(0.25) - B0.p.l.est[s])/(B1.p.l.est[s])
+      logsearch.effort.H[s] <- (logit(0.25) - B0.p.h.est[s])/(B1.p.h.est[s])
       
       B0.eps.l.est[s] <- as.numeric(res.params[[year]] %>% filter(param == 'B0.eps.l' & sim == s) %>% select(mean))
       B1.eps.l.est[s] <- unlist(as.numeric(res.params[[year]] %>% filter(param == 'B1.eps.l' & sim == s) %>% select(mean)))
@@ -1031,7 +1062,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results-space2\\hstate\\S75_R75_60'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
@@ -1279,3 +1310,5 @@ write.table(time.taken,file_name)
 #### Quick res ####
 S.fin <- S.dat %>% filter(week == 5 & year == 10)
 mean(S.fin$state)
+
+
