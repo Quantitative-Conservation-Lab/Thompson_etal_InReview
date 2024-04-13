@@ -16,19 +16,19 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load("parameters_data_b.RData")
 
 p.goal <- 0.5
 eps.goal <- 0.5
 
 ##### Path to save data ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
-res <- 'E:/Chapter3/densplots/results/hstatebins/S5_R5_20'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
+res <- 'E:/Chapter3/densplots/results/hstatebins/S5_R5_60_b'
 
-n.resource <- 20 #total hours per week
+n.resource <- 60 #total hours per week
 
 #year 3 data path
-y3 <- 'E:\\Chapter3\\results\\first3yrs_20'
+y3 <- 'E:\\Chapter3\\results\\first3yrs_60_b'
 
 
 #------------------------------------------------------------------------------#
@@ -126,7 +126,9 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 #---Habitat data---#
 # effect of habitat quality on occupancy
 ##### site data #####
-site.char <- site.char
+site.char <- read.csv( here::here('data', "site_char.csv"))
+site.char <- c(t(site.char$x))
+
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 file_name = paste(y3, 'states_truth.csv',sep = '/')
@@ -1007,7 +1009,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]],
