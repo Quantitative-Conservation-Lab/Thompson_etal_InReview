@@ -17,14 +17,14 @@ library(readr)
 #------------------------------------------------------------------------------#
 #### Path to save data ####
 #### Change name ####
-path <- 'E:\\Chapter3\\results\\first3yrs_20'
+path <- 'E:\\Chapter3\\results\\first3yrs_60'
 
-res <- 'E:/Chapter3/densplots/first3yrs_20'
+res <- 'E:/Chapter3/densplots/first3yrs_60'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
 load("parameters_data.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 60 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -902,7 +902,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\first3yrs_20'
+path <- 'E:\\Chapter3\\results\\first3yrs_60'
 
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]])
@@ -1136,4 +1136,3 @@ for(s in 1:n.sims){
   fname <- paste0(path, "\\mcmc_dat", s, ".rds")
   saveRDS(get(mcmcs[s]), file = fname)
 }
-

@@ -17,14 +17,14 @@ library(readr)
 #------------------------------------------------------------------------------#
 #### Path to save data ####
 #### Change name ####
-path <- 'E:\\Chapter3\\results\\first3yrs_20'
+path <- 'E:\\Chapter3\\results-space2\\first3yrs_40_b'
 
-res <- 'E:/Chapter3/densplots/first3yrs_20'
+res <- 'E:/Chapter3/densplots-space2/first3yrs_40_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load("parameters_data_b.RData")
 #rule = by highest estimated state
-n.resource <- 20 #total hours per week
+n.resource <- 40 #total hours per week
 
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
@@ -34,18 +34,6 @@ n.years <- 3 #number of years
 n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
-
-# hours.dat <- array(NA, dim = c(2,n.sites,n.weeks, n.years, n.sims))
-# 
-# for(y in 1:n.years){
-#   for(w in 1:n.weeks){
-#     for(s in 1:n.sims){
-#       hours.dat[1,,w,y,s] <- runif(n.sites, 0.1,10)
-#       hours.dat[2,,w,y,s] <- runif(n.sites, 0.1,10)
-#     }
-#   }
-# }
-# saveRDS(hours.dat, file = "hours_dat.rds")
 
 hours.dat <- readRDS("hours_dat.rds")
 
@@ -106,8 +94,12 @@ TPM<- array(NA, c(n.states,n.sites,n.weeks, n.years + 1,n.sims, n.states))
 
 #---Habitat data---#
 # effect of habitat quality on occupancy
-site.char <- site.char
-State.init <- State.init
+site.char <- read.csv( here::here('data', "site_char.csv"))
+site.char <- c(t(site.char$x))
+
+State.init <- rep(1,n.sites)
+State.init[17:24] <- c(2,2,3,3,3,3,2,2)
+
 State <- array(NA,c(n.sites, n.weeks, n.years, n.sims)) #state array
 
 #---Neighbor data---#
@@ -902,7 +894,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\first3yrs_20'
+path <- 'E:\\Chapter3\\results-space2\\first3yrs_40_b'
 
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]])
