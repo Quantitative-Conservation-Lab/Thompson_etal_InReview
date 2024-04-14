@@ -30,7 +30,7 @@ B1.eps.h.tau <- 1/(B1.eps.h.sd * B1.eps.h.sd) #precision parameter
 #State transition:
 B0.phi.h ~ dnorm(B0.phi.h.mean, B0.phi.h.tau) #transition from high to high
 B0.phi.h.tau <- 1/(B0.phi.h.sd * B0.phi.h.sd) #precision parameter
-B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau)T(0,) #effect of removal on transition
+B1.phi.h ~ dnorm(B1.phi.h.mean, B1.phi.h.tau)T(,0) #effect of removal on transition
 B1.phi.h.tau <- 1/(B1.phi.h.sd*B1.phi.h.sd) #precision parameter
   
 #--------------- State parametes for between weeks: ---------------#
@@ -96,7 +96,7 @@ for (i in 1:n.sites){
       logit(eps.l[i,t,y]) <- B0.eps.l + B1.eps.l*rem.vec[i,t,y]*hours[2,i,t,y] #erradication low state, rem.vec = indicator of removal
       logit(eps.h[i,t,y]) <- B0.eps.h + B1.eps.h*rem.vec[i,t,y]*hours[2,i,t,y] #erradication high state
     
-      logit(phi.h[i,t,y]) <- B0.phi.h - B1.phi.h*rem.vec[i,t,y]*hours[2,i,t,y]
+      logit(phi.h[i,t,y]) <- B0.phi.h + B1.phi.h*rem.vec[i,t,y]*hours[2,i,t,y]
     
       #State transition matrix: TPM[current state, location, time, future state]
       TPM[1,i,t,y,1] <- 1 #empty to empty

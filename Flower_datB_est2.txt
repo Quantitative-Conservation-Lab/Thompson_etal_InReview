@@ -70,12 +70,13 @@ logit(pM.h) <- B0.p.h + B1.p.h*logeffort #detection high state
 delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
 
 #difference between detection/nondetection data and multistate data
-alpha.l ~ dnorm(alpha.l.mean, alpha.l.sd)T(,0)
-alpha.h ~ dnorm(alpha.h.mean, alpha.h.sd)T(,0)
+B0.p.l.D ~ dnorm(B0.p.l.D.mean, B0.p.l.D.sd)
+B0.p.h.D ~ dnorm(B0.p.h.D.mean, B0.p.h.D.sd)
+
 
 #Detection/nondetection data
-logit(pD.l) <- B0.p.l + B1.p.l*logeffort.D + alpha.l #detection low state 
-logit(pD.h) <- B0.p.h + B1.p.h*logeffort.D + alpha.h #detection high state
+logit(pD.l) <- B0.p.l.D #detection low state 
+logit(pD.h) <- B0.p.h.D #detection high state
 
 P.datD[1,1] <- 1 #empty and not detected
 P.datD[1,2] <- 0 #empty and detected

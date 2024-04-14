@@ -30,7 +30,6 @@ n.resource <- 20 #total hours per week
 #year 3 data path
 y3 <- 'E:\\Chapter3\\results\\first3yrs_20'
 
-
 #------------------------------------------------------------------------------#
 #### Data and parameters ####
 n.sims <-  100 #number of simulations (parameter sets)
