@@ -67,7 +67,7 @@ B1.p.h.tau <- 1/(B1.p.h.sd * B1.p.h.sd) #precision parameter
 logit(pM.l) <- B0.p.l + B1.p.l*logeffort #detection low state
 logit(pM.h) <- B0.p.h + B1.p.h*logeffort #detection high state
   
-delta ~dbeta(delta.a, delta.b)  #ability to correctly observe high state
+delta ~dbeta(delta.a, delta.b)T(0.0001,0.9999)  #ability to correctly observe high state
 
 #difference between detection/nondetection data and multistate data
 B0.p.l.D ~ dnorm(B0.p.l.D.mean, B0.p.l.D.sd)
