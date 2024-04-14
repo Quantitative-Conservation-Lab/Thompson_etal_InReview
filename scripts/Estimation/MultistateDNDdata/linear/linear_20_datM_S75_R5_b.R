@@ -916,41 +916,7 @@ for(year in 1:n.years){
   }
 
   ###### 3b. Make Decision #####
-  S.decision <-S.decision.pre <- array(NA, c(n.sites, n.years, n.sims))
-  three.list <- list()
-  two.list <- list()
-  one.list <- list()
-  
-  if(year < n.years){
-    for(s in 1:n.sims){
-      #Removal locations: rank sites by state
-      S.decision.pre[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      three.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 3))
-      
-      last <- tail(three.list[[s]], 1)  
-      two.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 2))
-      
-      first.two <- two.list[[s]][[which.min(dist.mat[two.list[[s]],last])]]
-      
-      two.list[[s]] <- c(two.list[[s]][(which.min(dist.mat[two.list[[s]],last]): length(two.list[[s]]))],
-                         two.list[[s]][(which.min(dist.mat[two.list[[s]],last]) -1): 1]
-        
-      )
-      
-      one.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 1))
-      
-      last2 <- tail(two.list[[s]], 1)  
-      first.3 <- one.list[[s]][[which.min(dist.mat[one.list[[s]],last2])]]  
-      
-      one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1],
-                         one.list[[s]][((which.min(dist.mat[one.list[[s]],last2])+1): length(one.list[[s]]))]
-                         
-      )
-      
-      sites.rem.M[,1,year+1,s] <- c(three.list[[s]], two.list[[s]], one.list[[s]])
-      
-    }
-  }
+ 
   
 
   

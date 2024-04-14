@@ -1016,6 +1016,7 @@ res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[8]], res.params[[9]], res.params[[10]])
 
 max(res.par.df$Rhat)
+res.par.df$sim <- res.par.df$sim + 100
 file_name = paste(path, 'params.csv',sep = '/')
 write.csv(res.par.df,file_name)
 
@@ -1026,6 +1027,8 @@ res.states.df <- rbind(res.state[[2]],res.state[[3]],
                        res.state[[8]],res.state[[9]],
                        res.state[[10]])
 
+res.states.df$sim <- res.states.df$sim + 100
+
 file_name = paste(path, 'states.csv',sep = '/')
 write.csv(res.states.df,file_name)
 
@@ -1033,6 +1036,7 @@ write.csv(res.states.df,file_name)
 S.dat <- as.data.frame.table(State)
 colnames(S.dat) <- c("site", "week", "year", "sim", "state")
 S.dat <-  as.data.frame(sapply(S.dat,as.numeric))
+S.dat$sim <- S.dat$sim + 100
 
 file_name = paste(path, 'states_truth.csv',sep = '/')
 write.csv(S.dat,file_name)
@@ -1103,6 +1107,7 @@ ggplot(res.par.df.summary.sub) +
   facet_wrap(~param, scales = "free")
 
 ###### 4. Summary of parameters #####
+res.par.df.summary$sim <- res.par.df.summary$sim+ 100
 file_name = paste(path, 'par_summary.csv',sep = '/')
 write.csv(res.par.df.summary,file_name)
 
@@ -1124,8 +1129,10 @@ bias.state.df <- adply(state.bias, c(1,2,3))
 colnames(bias.state.df) <- c("year", "site", "sim", "rel.bias") 
 bias.state.df$year <- as.numeric(bias.state.df$year)
 bias.state.df$site<- as.numeric(bias.state.df$site)
-bias.state.df$sim <- as.numeric(bias.state.df$sim)
+bias.state.df$sim <- as.numeric(bias.state.df$sim) + 100
 bias.state.df <- bias.state.df %>% filter(year > 1)
+
+
 
 file_name = paste(path, 'bias_states.csv',sep = '/')
 write.csv(bias.state.df,file_name)
@@ -1149,7 +1156,7 @@ for(year in 2:n.years){
 bias.param.df <- adply(param.bias, c(1,2,3))
 colnames(bias.param.df) <- c("year", "param", "sim", "rel.bias") 
 bias.param.df$year <- as.numeric(bias.param.df$year)
-bias.param.df$sim <- as.numeric(bias.param.df$sim)
+bias.param.df$sim <- as.numeric(bias.param.df$sim) + 100
 bias.param.df <- bias.param.df %>% filter(year > 1)
 bias.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
 
@@ -1177,7 +1184,7 @@ CI.state.df <- adply(CI.state, c(1,2,3))
 colnames(CI.state.df) <- c("year", "site", "sim", "CI.coverage") 
 CI.state.df$year <- as.numeric(CI.state.df$year)
 CI.state.df$site<- as.numeric(CI.state.df$site)
-CI.state.df$sim <- as.numeric(CI.state.df$sim)
+CI.state.df$sim <- as.numeric(CI.state.df$sim) + 100
 CI.state.df <- CI.state.df %>% filter(year > 1)
 
 file_name = paste(path, 'CI_state.csv',sep = '/')
@@ -1206,7 +1213,7 @@ for(year in 2:n.years){
 CI.param.df <- adply(CI.param, c(1,2,3))
 colnames(CI.param.df) <- c("year", "param", "sim", "CI.coverage") 
 CI.param.df$year <- as.numeric(CI.param.df$year)
-CI.param.df$sim <- as.numeric(CI.param.df$sim)
+CI.param.df$sim <- as.numeric(CI.param.df$sim) + 100
 CI.param.df <- CI.param.df %>% filter(year > 1)
 CI.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
 
@@ -1217,6 +1224,7 @@ write.csv(CI.param.df,file_name)
 dist.travel <- as.data.frame.table(d.traveled)
 colnames(dist.travel) <- c("week", "year", "sim", "distance")
 dist.travel <-  as.data.frame(sapply(dist.travel,as.numeric))
+dist.travel$sim <- dist.travel$sim + 100
 
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 write.csv(dist.travel,file_name)
@@ -1239,6 +1247,8 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
+site.visit$sim <- site.visit$sim + 100
+
 file_name = paste(path, 'sites_visit',sep = '/')
 write.csv(site.visit,file_name)
 
@@ -1246,6 +1256,8 @@ write.csv(site.visit,file_name)
 yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
+
+yM.dat$sim <- yM.dat$sim + 100
 
 file_name = paste(path, 'y_dat',sep = '/')
 write.csv(yM.dat,file_name)
