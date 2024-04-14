@@ -927,20 +927,17 @@ time.taken <- end.time - start.time
 #### SAVE SOME data ####
 path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20'
 ###### 1. Estimated parameters #####
-res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
-                    res.params[[5]], res.params[[6]], res.params[[7]],
-                    res.params[[8]], res.params[[9]], res.params[[10]])
+res.par.df <- rbind(res.params[[1]], res.params[[2]], res.params[[3]], res.params[[4]],
+                    res.params[[5]], res.params[[6]], res.params[[7]])
 
 max(res.par.df$Rhat)
 file_name = paste(path, 'params.csv',sep = '/')
 write.csv(res.par.df,file_name)
 
 ###### 2. Estimated states #####
-res.states.df <- rbind(res.state[[2]],res.state[[3]],
+res.states.df <- rbind(res.state[[1]], res.state[[2]],res.state[[3]],
                        res.state[[4]],res.state[[5]],
-                       res.state[[6]],res.state[[7]],
-                       res.state[[8]],res.state[[9]],
-                       res.state[[10]])
+                       res.state[[6]],res.state[[7]])
 
 file_name = paste(path, 'states.csv',sep = '/')
 write.csv(res.states.df,file_name)
@@ -971,52 +968,7 @@ ggplot(res.params[[year]]) +
   guides(color = guide_legend(title = "Simulation"))   
 
 ##### parameters through time ####
-
-truth.paramslist <- list()
-
-for(s in 1:n.sims){
-  truth.paramslist[[s]] <- truth.params %>% filter(sim == s)
-  truth.paramslist[[s]]$mean <- c(1,1,2,
-                                  2,0,1,0,-2,0, 
-                                  (3/15), (3/15), 14/30, 12/24, 3.5/35,
-                                  0,0,0,0,0.5)
-  
-  truth.paramslist[[s]]$low <- c(qnorm(0.025, 1, 0.05), qnorm(0.025, 1, 0.05), qnorm(0.025, 2, 0.05),
-                                 qnorm(0.025, 2, 0.05), 0, qnorm(0.025, 1, 0.05), 0, qnorm(0.025, -2, 0.05),0,
-                                 qbeta(0.025, 3, 12), qbeta(0.025, 3, 12),qbeta(0.025, 14, 6), qbeta(0.025, 12, 12),qbeta(0.025, 3.5,31.5),
-                                 qnorm(0.025, 0,1), 0, qnorm(0.025, 0,1),0, qbeta(0.025, 1,1))
-  
-  truth.paramslist[[s]]$high <- c(qnorm(0.975, 1, 0.05), qnorm(0.975, 1, 0.05), qnorm(0.975, 2, 0.05),
-                                  qnorm(0.975, 2, 0.05), 0, qnorm(0.975, 1, 0.05), 0, qnorm(0.975, -2, 0.05),0,
-                                  qbeta(0.975, 3, 12), qbeta(0.975, 3, 12),qbeta(0.975, 14, 6), qbeta(0.975, 12, 12),qbeta(0.975, 3.5,31.5),
-                                  qnorm(0.975, 0,1), 0, qnorm(0.975, 0,1),0, qbeta(0.975, 1,1))
-  
-  truth.paramslist[[s]]$year <- 1
-  truth.paramslist[[s]]<- truth.paramslist[[s]] %>% select(mean, low, high, param, sim, truth, year)
-  
-  
-}
-
-y1.priors <- truth.paramslist[[1]]
-
-for(s in 2:n.sims){
-  y1.priors <- rbind(y1.priors,truth.paramslist[[2]] )
-}
-
 res.par.df.summary <- res.par.df %>% select(mean, low, high, param, sim, truth, year)
-res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
-
-res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
-
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
-
-ggplot(res.par.df.summary.sub) + 
-  geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
-  geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
-  geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
-  geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
-  scale_x_continuous(breaks=c(1,5,10))+
-  facet_wrap(~param, scales = "free")
 
 ###### 4. Summary of parameters #####
 file_name = paste(path, 'par_summary.csv',sep = '/')
@@ -1028,7 +980,7 @@ mean.state <- array(NA, c(n.years,n.sites,n.sims))
 true.state <- array(NA, c(n.years,n.sites,n.sims))
 state.bias <- array(NA, c(n.years,n.sites,n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(i in 1:n.sites){
     mean.state[year,i,] <- c(t(res.state[[year]] %>% filter(Segment == i) %>% select(mean)))
     true.state[year,i,] <- c(t(res.state[[year]] %>% filter(Segment == i) %>% select(truth)))
@@ -1054,7 +1006,7 @@ mean.param <- array(NA, c(n.years,n.params, n.sims))
 true.param <- array(NA, c(n.years,n.params, n.sims))
 param.bias <- array(NA, c(n.years,n.params, n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(par in 1:n.params){
     mean.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
     true.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(truth))))
@@ -1077,7 +1029,7 @@ low.state <- array(NA, c(n.years,n.sites,n.sims))
 high.state <- array(NA, c(n.years,n.sites,n.sims))
 CI.state <- array(NA, c(n.years,n.sites,n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(s in 1:n.sims){
     low.state[year,,s] <- c(t((res.state[[year]] %>% filter(sim == s) %>% select(low))))
     high.state[year,,s] <- c(t(res.state[[year]] %>% filter(sim == s) %>% select(high)))
@@ -1106,7 +1058,7 @@ high.param <- array(NA, c(n.years,n.params,n.sims))
 truth.param <- array(NA, c(n.years,n.params,n.sims))
 CI.param <- array(NA, c(n.years,n.params,n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(s in 1:n.sims){
     low.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(low)))
     high.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(high)))
@@ -1169,8 +1121,4 @@ write.csv(yM.dat,file_name)
 ##### 12. Timing #####
 file_name = paste(path, 'time.txt',sep = '/')
 write.table(time.taken,file_name)
-
-#### Quick res ####
-S.fin <- S.dat %>% filter(week == 5 & year == 10)
-mean(S.fin$state)
 
