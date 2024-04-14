@@ -852,7 +852,7 @@ for(year in 1:n.years){
         rem.vec = rem.vec.dat[,,s],
         removal.hours = removal.effort[s],
         n.neighbors = n.neighbors,
-        logeffort.D = logeffort.D,
+        #logeffort.D = logeffort.D,
         
         #priors
         alpha.init = alpha.init[year,,,s],
@@ -904,7 +904,6 @@ for(year in 1:n.years){
                           "B0.p.l", "B1.p.l", "B0.p.h", "B1.p.h",  "B0.p.l.D",  "B0.p.h.D",
                           "delta", "State.fin")
   
-  #### FIX ####
   n.burnin <- 2000
   n.iter <- 20000 
   n.chains <- n.chains
