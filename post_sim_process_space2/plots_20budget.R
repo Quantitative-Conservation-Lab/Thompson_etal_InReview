@@ -10,7 +10,7 @@ library(ggrepel)
 
 
 #### NO REMOVAL ####
-ncpath <- 'D:\\Chapter3\\results_space2\\noremoval'
+ncpath <- 'E:\\Chapter3\\results-space2\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
@@ -23,7 +23,7 @@ noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
 
 #### States Fin truth ####
-path <- 'D:\\Chapter3\\results_space2'
+path <- 'E:\\Chapter3\\results-space2'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 finstate_truth <- fread(file_name)
 finstate_truth <- data.frame(finstate_truth)
@@ -42,7 +42,7 @@ finstate_truth <- finstate_truth %>% filter(detection < 1 & detection > 0)
 cols <- brewer.pal(12, "Paired") 
 colors <- c(cols[1:4], cols[9:10])
 
-colors2 <- c('darkorange', 'deeppink3', 'grey50')
+colors2 <- c('deeppink3', 'grey50')
 
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 
@@ -57,19 +57,19 @@ finstate_truth %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates2)),
                width = .75, color = "black", linewidth = 1)+ 
-  scale_x_discrete(breaks = c("epicenter0.50.75",
-                              "hstate0.750.5",
+  scale_x_discrete(breaks = c(
+                              "hstatebins0.750.5",
                               "linear0.750.5"),
                    labels=c(
-                    "epicenter0.50.75" = "Epicenter",
-                     "hstate0.750.5" = "High invasion",
+                    
+                     "hstatebins0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
 
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
                     values = colors) +
 scale_color_manual(name = "Priotization",
                   values = colors2, 
-                  labels = c('Epicenter', 'High invasion', 'Linear') )+
+                  labels = c('High invasion', 'Linear') )+
   
   xlab("Site prioritization")+
   ylab("Average final invasion state")+
@@ -84,7 +84,7 @@ scale_color_manual(name = "Priotization",
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
-detach(packagD:plyr)
+detach(package:plyr)
 
 budget20_suppress <- finstate_truth %>% 
   filter(Budget == 20) %>% 
@@ -141,19 +141,19 @@ fininv_truth %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(Location, rates)),
                width = .75, color = "black", linewidth = 1)+ 
-  scale_x_discrete(breaks = c("epicenter0.50.75",
-                              "hstate0.750.5",
+  scale_x_discrete(breaks = c(
+                              "hstatebins0.750.5",
                               "linear0.750.5"),
                    labels=c(
-                     "epicenter0.50.75" = "Epicenter",
-                     "hstate0.750.5" = "High invasion",
+                     
+                     "hstatebins0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
                     values = colors) +
   scale_color_manual(name = "Prioritization",
                      values = colors2, 
-                     labels = c('Epicenter', 'High invasion', 'Linear') )+
+                     labels = c('High invasion', 'Linear') )+
   
   xlab("Site prioritization")+
   ylab("Average final % invaded")+
@@ -192,7 +192,6 @@ budget60_contain <- fininv_truth %>%
             lower = quantile(inv, 0.1),
             upper = quantile(inv, 0.9))
 
-
 #### Bias state ####
 file_name = paste(path, 'bais_states.csv',sep = '/')
 bias_state <- fread(file_name)
@@ -215,19 +214,19 @@ bias_state %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "black", linewidth = 1)+ 
-  scale_x_discrete(breaks = c("epicenter0.50.75",
-                              "hstate0.750.5",
+  scale_x_discrete(breaks = c(
+                              "hstatebins0.750.5",
                               "linear0.750.5"),
                    labels=c(
-                     "epicenter0.50.75" = "Epicenter",
-                     "hstate0.750.5" = "High invasion",
+                     
+                     "hstatebins0.750.5" = "High invasion",
                      "linear0.750.5" = "Linear"))+
   
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
                     values = colors) +
   scale_color_manual(name = "Prioritization",
                      values = colors2, 
-                     labels = c('Epicenter', 'High invasion', 'Linear') )+
+                     labels = c('High invasion', 'Linear') )+
   
   xlab("Site prioritization")+
   ylab("State relative bias")+
@@ -269,9 +268,7 @@ bias_state_years <- bias_state %>%
 
 colnames(bias_state_years)[c(1,5)] <- c("Prioritization", "Budget")
 
-bias_state_years$Prioritization[bias_state_years$Prioritization == "epicenter"] <- 'Epicenter'
-bias_state_years$Prioritization[bias_state_years$Prioritization == "linear"] <- 'Linear'
-bias_state_years$Prioritization[bias_state_years$Prioritization == "hstate"] <- 'High invasion'
+bias_state_years$detection <- substr(bias_state_years$rates, start = 1,stop = 8)
 
 ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
@@ -290,36 +287,8 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both)
-
-#---- SUBSET ----#
-#### FIX WHICH ONES! ####
-
-bias_state_yearssub <- bias_state_years %>% filter(rates == "p = 0.75, e = 0.5" | rates == "p = 0.25, e = 0.75"|
-                                                   rates == "p = 0.75, e = 0.75" | rates == "p = 0.5, e = 0.75")
-
-
-
-colors_sub <- colors[c(2,4,5,6)]
-
-ggplot(bias_state_yearssub, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
-  geom_point()+
-  geom_errorbar()+
-  geom_hline(yintercept = 0, linetype = 2) + 
-  scale_x_continuous(breaks = c(2,4,6,8,10)) +
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                    values = colors_sub) +
-  ylab("State relative bias ")+
-  xlab("Year")+
-  theme_bw() +   
-  theme(strip.background=element_rect(colour="white",
-                                      fill="white"),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both)
+ # facet_wrap(~Budget + detection + Prioritization, nrow = 3, labeller = label_both)
+  facet_wrap(~Budget+ Prioritization, nrow = 3, labeller = label_both)
 
 
 #### Bias params ####
@@ -328,7 +297,6 @@ bias_param <- fread(file_name)
 bias_param <- data.frame(bias_param)
 
 bias_param$rates <- paste0('p = ', bias_param$detection, ', e = ', bias_param$eradication)
-
 
 bias_param$loc2 <- paste0(bias_param$location, bias_param$detection, bias_param$eradication)
 
@@ -362,8 +330,7 @@ bias_param_detect_years <- bias_param_detect %>%
 
 colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Budget")
 
-bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'epicenter'] <- 'Epicenter'
-bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'hstate'] <- 'High invasion'
+bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'linear'] <- 'Linear'
 
 ggplot(bias_param_detect_years, 
@@ -388,12 +355,12 @@ ggplot(bias_param_detect_years,
 
 #----- SUBSET ----#
 
-bias_param_detect_yearssub <- bias_param_detect_years %>% filter(rates == "p = 0.5, e = 0.75" | 
-                                                                   rates == "p = 0.25, e = 0.5"|
-                                                                   rates == "p = 0.75, e = 0.5"|
-                                                                   rates == "p = 0.25, e = 0.75")
+bias_param_detect_yearssub <- bias_param_detect_years %>% filter(rates == "p = 0.5, e = 0.75" |
+                                                                   rates == "p = 0.5, e = 0.5" |
+                                                                   rates == "p = 0.75, e = 0.5" |
+                                                                   rates == "p = 0.25, e = 0.5")
 
-colors_sub <- colors[c(1,2,4,5)]
+colors_sub_p <- colors[c(1,3,4,5)]
 
 ggplot(bias_param_detect_yearssub, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
@@ -402,7 +369,7 @@ ggplot(bias_param_detect_yearssub,
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8, 10)) +
   scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                     values = colors_sub) +
+                     values = colors_sub_p) +
   ylab(paste0('p parameters relative bias'))+
   xlab("Year")+
   theme_bw() +   
@@ -444,8 +411,7 @@ bias_param_eps_years <- bias_param_eps %>%
 
 colnames(bias_param_eps_years)[c(1,5)] <- c("Prioritization", "Budget")
 
-bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'epicenter'] <- 'Epicenter'
-bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'hstate'] <- 'High invasion'
+bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'linear'] <- 'Linear'
 
 ggplot(bias_param_eps_years, 
@@ -470,10 +436,9 @@ ggplot(bias_param_eps_years,
 
 #----- SUBSET ----#
 
-bias_param_eps_yearssub <- bias_param_eps_years %>% filter(rates == "p = 0.5, e = 0.75" | rates == "p = 0.25, e = 0.75" |
-                                                             rates == "p = 0.75, e = 0.75")
+bias_param_eps_yearssub <- bias_param_eps_years %>% filter(rates == "p = 0.5, e = 0.75" | rates == "p = 0.75, e = 0.75")
 
-colors_sub <- colors[c(2,4,6)]
+colors_sub_eps <- colors[c(4,6)]
 
 ggplot(bias_param_eps_yearssub, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
@@ -482,7 +447,7 @@ ggplot(bias_param_eps_yearssub,
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8, 10)) +
   scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                     values = colors_sub) +
+                     values = colors_sub_eps) +
   ylab(paste0('\u03F5 parameters relative bias'))+
   xlab("Year")+
   theme_bw() +   
@@ -495,3 +460,48 @@ ggplot(bias_param_eps_yearssub,
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
+#### Sites visited ####
+file_name = paste(path, 'total_visit.csv',sep = '/')
+total_visit <- fread(file_name)
+total_visit <- data.frame(total_visit)
+
+total_visit$rates <- paste0('p = ', total_visit$detection, ', e = ', total_visit$eradication)
+
+total_visit <- total_visit %>% filter(detection < 1 & detection > 0)
+
+total_visit$loc2 <- paste0(total_visit$location, total_visit$detection, total_visit$eradication)
+total_visit$rates2 <- total_visit$rates
+
+total_visit %>% 
+  ggplot(aes(x = loc2, y = visit, fill = rates2, color = location,
+             group = interaction(location, rates)))+
+  geom_boxplot() +
+  stat_summary(fun.y = mean, geom = "errorbar",
+               aes(ymax = after_stat(y), ymin = after_stat(y),
+                   group = interaction(location, rates2)),
+               width = .75, color = "black", linewidth = 1)+ 
+  scale_x_discrete(breaks = c(
+                              "hstatebins0.750.5",
+                              "linear0.750.5"),
+                   labels=c(
+                     
+                     "hstatebins0.750.5" = "High invasion",
+                     "linear0.750.5" = "Linear"))+
+  
+  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+                    values = colors) +
+  scale_color_manual(name = "Priotization",
+                     values = colors2, 
+                     labels = c( 'High invasion', 'Linear') )+
+  xlab("Site prioritization")+
+  ylab("% of sites visited each week")+
+  theme_bw() +   
+  theme(strip.background=element_rect(colour="white",
+                                      fill="white"),
+        strip.text.x = element_blank(),
+        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(hjust = 1))+
+  facet_wrap(~budget, nrow = 3)
