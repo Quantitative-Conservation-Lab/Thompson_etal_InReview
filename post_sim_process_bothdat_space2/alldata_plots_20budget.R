@@ -50,14 +50,20 @@ finstate_truth$rates <- paste0('(p = )', finstate_truth$detection, ',  \u03F5 = 
 finstate_truth$rates2 <- paste0('(', finstate_truth$detection, ', ', finstate_truth$eradication, ")")
 
 finstate_truth$state <- finstate_truth$state - 1
+finstate_truth <- finstate_truth %>% filter(week == 5 & year == 7)
 
 finstate_truth <- aggregate(state ~ sim + location + detection + eradication + budget + rates + rates2, 
                             data = as.data.frame(finstate_truth), 
                             FUN = mean)
 
-finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 
 colnames(finstate_truth)[5] <- 'Budget'
+finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication, finstate_truth$data )
+
+
+
+detach(package:plyr)
+
 finstate_truthA <- finstate_truth
 finstate_truthA$data <- 'A'
 
@@ -88,33 +94,34 @@ finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection,
 
 detach(package:plyr)
 
-budget20_suppress <- finstate_truthAC %>% 
+budget20_suppress <- finstate_truth %>% 
   filter(Budget == 20) %>% 
-  group_by(loc2) %>%
+  group_by(loc2, data) %>%
   summarise(mean_c = mean(state),
             max_c = max(state),
             lower = quantile(state, 0.1),
             upper = quantile(state, 0.9))
 
+budget20_suppress
 
 cols <- brewer.pal(12, "Paired") 
 colors <- c(cols[1:4], cols[9:10])
 colors <- c(colors[c(2,4)],'white')
 
-colors2 <- c('deeppink3', 'darkred')
+colors2 <- c('palevioletred', 'darkmagenta')
 
 finstate_truth <- finstate_truth %>% filter(Budget == 20)
 
 finstate_truth %>% 
   ggplot(aes(x = loc2, y = state, fill = rates2, color =data,
              group = interaction(location, rates2, data)))+
-  geom_boxplot() +
+  geom_boxplot(size = 1) +
   geom_hline(yintercept = nc.val, linetype = 2) + 
   stat_summary(fun.y = mean, geom = "errorbar",
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "black", linewidth = 1)+ 
-  scale_x_discrete(breaks = c("hstatebins0.50.75A"),
+  scale_x_discrete(breaks = c("hstatebins0.50.75A" ),
                    labels=c(
                      "hstatebins0.50.75A" = "High Invasion"))+
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
@@ -131,8 +138,8 @@ finstate_truth %>%
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.x = element_text(hjust = 1))+
+        axis.ticks = element_blank()
+        )+
   facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
 #### States inv truth ####
@@ -167,11 +174,12 @@ fininv_truth$inv <- fininv_truth$state
 fininv_truth$inv[fininv_truth$inv <= 2 ] <- 0
 fininv_truth$inv[fininv_truth$inv > 2 ] <- 1
 
+fininv_truth <- fininv_truth %>% filter(week == 5 & year == 7)
+
 fininv_truth <- aggregate(inv ~ sim + location + detection + eradication + budget + rates + rates2, 
                           data = as.data.frame(fininv_truth), 
                           FUN = mean)
 
-fininv_truth <- fininv_truth %>% filter(detection < 1 & detection > 0)
 
 fininv_truth$loc2 <- paste0(fininv_truth$location, fininv_truth$detection, fininv_truth$eradication)
 colnames(fininv_truth)[c(2,5)] <- c('Location', 'Budget')
@@ -207,18 +215,20 @@ fininv_truthAC$loc2 <- paste0(fininv_truthAC$Location, fininv_truthAC$detection,
 
 fininv_truth <- rbind(fininv_truthA, fininv_truthAC)
 
-budget20_contain <- fininv_truthAC %>% 
+budget20_contain <- fininv_truth %>% 
   filter(Budget == 20) %>% 
-  group_by(loc2) %>%
+  group_by(loc2, data) %>%
   summarise(mean_c = mean(inv),
             max_c = max(inv),
             lower = quantile(inv, 0.1),
             upper = quantile(inv, 0.9))
 
+budget20_contain
+
 fininv_truth %>% 
   ggplot(aes(x = loc2, y = inv, fill = rates2, color =data,
              group = interaction(Location, rates2, data)))+
-  geom_boxplot() +
+  geom_boxplot(size = 1) +
   geom_hline(yintercept = nc.inv, linetype = 2) + 
   stat_summary(fun.y = mean, geom = "errorbar",
                aes(ymax = after_stat(y), ymin = after_stat(y),
@@ -250,9 +260,7 @@ fininv_truth %>%
 
 #### Bias state ####
 ##### Bias state A ####
-path <- 'E:\\Chapter3\\results'
-
-path <- 'E:\\Chapter3\\results-space2\\budget20\\hstatebins_S5_R75_20'
+path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_20 <- fread(file_name)
 hsb_biasstate_S5_R75_20 <- data.frame(hsb_biasstate_S5_R75_20)[-1]
@@ -262,7 +270,7 @@ hsb_biasstate_S5_R75_20$detection <- 0.5
 hsb_biasstate_S5_R75_20$eradication <- 0.75
 hsb_biasstate_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results-space2\\budget20\\hstatebins_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_20b <- fread(file_name)
 hsb_biasstate_S5_R75_20b <- data.frame(hsb_biasstate_S5_R75_20b)[-1]
@@ -304,20 +312,22 @@ bias_state$data <- 'AC'
 bias_state$loc2 <- paste0(bias_state$location, bias_state$detection, bias_state$eradication, bias_state$data)
 bias_stateAC <- bias_state
 
-budget20_biasstate <- bias_stateAC %>% 
+bias_state <- rbind(bias_stateAC, bias_stateA)
+
+budget20_biasstate <- bias_state %>% 
   filter(Budget == 20) %>% 
-  group_by(loc2) %>%
+  group_by(loc2, data) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
 
-bias_state <- rbind(bias_stateAC, bias_stateA)
+budget20_biasstate
 
 bias_state  <- bias_state  %>% filter(Budget == 20)
 
 bias_state %>% 
   ggplot(aes(x = loc2, y = rel.bias, fill = rates2, color =data,
              group = interaction(location, rates2, data)))+
-  geom_boxplot() +
+  geom_boxplot(size = 1) +
   geom_hline(yintercept = 0, linetype = 2) + 
   stat_summary(fun.y = mean, geom = "errorbar",
                aes(ymax = after_stat(y), ymin = after_stat(y),
@@ -358,13 +368,13 @@ colnames(bias_state_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_state_years$Prioritization[bias_state_years$Prioritization == "hstatebins"] <- 'High invasion'
 
-ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
+ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = data))+
   geom_point()+
   geom_errorbar()+
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8,10)) +
   scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
-                     values = colors) +
+                     values = colors2) +
   ylab("State relative bias ")+
   xlab("Year")+
   theme_bw() +   
@@ -379,7 +389,7 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
 
 #### Bias params ####
 ##### Bias A ####
-path <- 'E:\\Chapter3\\results-space2\\budget20\\hstatebins_S5_R75_20'
+path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_20 <- fread(file_name)
 hsb_biasparam_S5_R75_20 <- data.frame(hsb_biasparam_S5_R75_20)[-1]
@@ -389,7 +399,7 @@ hsb_biasparam_S5_R75_20$detection <- 0.5
 hsb_biasparam_S5_R75_20$eradication <- 0.75
 hsb_biasparam_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results-space2\\budget20\\hstatebins_S5_R75_20_b'
+path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_20b <- fread(file_name)
 hsb_biasparam_S5_R75_20b <- data.frame(hsb_biasparam_S5_R75_20b)[-1]
@@ -413,10 +423,9 @@ bias_param$data <- 'A'
 bias_param$loc2 <- paste0(bias_param$location, bias_param$detection, bias_param$eradication, bias_param$data)
 bias_paramA <- bias_param
 
-
 ##### Bias A+ C ####
 path <- 'E:\\Chapter3\\results-datboth-space2'
-file_name = paste(path, 'bias_param.csv',sep = '/')
+file_name = paste(path, 'bias_params.csv',sep = '/')
 bias_param <- fread(file_name)
 bias_param <- data.frame(bias_param)
 
@@ -437,14 +446,16 @@ bias_paramA_p <- bias_paramA %>% filter(param %in% c("B0.p.h", "B0.p.h", "B1.p.l
 
 bias_paramAC_p <- bias_paramAC %>% filter(param %in% c("B0.p.h", "B0.p.h", "B1.p.l", "B1.p.h"))
 
-budget20_bias_paramAC_p <- bias_paramAC_p %>% 
+bias_param_p <- rbind(bias_paramA_p, bias_paramAC_p)
+
+budget20_bias_param_p <- bias_param_p %>% 
   filter(Budget == 20) %>% 
-  group_by(loc2) %>%
+  group_by(loc2, data) %>%
   summarise(mean_c = mean(rel.bias))
 
-bias_paramAC_p <- rbind(bias_paramA_p, bias_paramAC_p)
+budget20_bias_param_p
 
-bias_paramAC_pyears <- bias_paramAC_p %>%
+bias_paramAC_pyears <- bias_param_p %>%
   group_by(location, year, rates, rates2, Budget, data) %>%
   summarise(mean_b = mean(rel.bias),
             lower = quantile(rel.bias, 0.05),
@@ -454,7 +465,7 @@ colnames(bias_paramAC_pyears)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_paramAC_pyears$Prioritization[bias_paramAC_pyears$Prioritization == "hstatebins"] <- 'High invasion'
 
-ggplot(bias_paramAC_pyears, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
+ggplot(bias_paramAC_pyears, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = data))+
   geom_point()+
   geom_errorbar()+
   geom_hline(yintercept = 0, linetype = 2) + 
@@ -477,24 +488,26 @@ ggplot(bias_paramAC_pyears, aes(x = year, y = mean_b, ymin = lower, ymax = upper
 bias_paramA_eps <- bias_paramA %>% filter(param %in% c("B0.eps.h", "B0.eps.h", "B1.eps.l", "B1.eps.h"))
 bias_paramAC_eps <- bias_paramAC %>% filter(param %in% c("B0.eps.h", "B0.eps.h", "B1.eps.l", "B1.eps.h"))
 
-budget20_bias_paramAC_eps <- bias_paramAC_eps %>% 
+bias_param_eps <- rbind(bias_paramA_eps, bias_paramAC_eps)
+
+budget20_bias_param_eps <- bias_param_eps %>% 
   filter(Budget == 20) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
 
-bias_paramAC_eps <- rbind(bias_paramA_eps, bias_paramAC_eps)
+budget20_bias_param_eps
 
-bias_paramAC_epsyears <- bias_paramAC_eps %>%
+bias_param_epsyears <- bias_param_eps %>%
   group_by(location, year, rates, rates2, Budget, data) %>%
   summarise(mean_b = mean(rel.bias),
             lower = quantile(rel.bias, 0.05),
             upper = quantile(rel.bias, 0.95))
 
-colnames(bias_paramAC_epsyears)[c(1,5)] <- c("Prioritization", "Budget")
+colnames(bias_param_epsyears)[c(1,5)] <- c("Prioritization", "Budget")
 
-bias_paramAC_epsyears$Prioritization[bias_paramAC_epsyears$Prioritization == "hstatebins"] <- 'High invasion'
+bias_param_epsyears$Prioritization[bias_param_epsyears$Prioritization == "hstatebins"] <- 'High invasion'
 
-ggplot(bias_paramAC_epsyears, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
+ggplot(bias_param_epsyears, aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = data))+
   geom_point()+
   geom_errorbar()+
   geom_hline(yintercept = 0, linetype = 2) + 
