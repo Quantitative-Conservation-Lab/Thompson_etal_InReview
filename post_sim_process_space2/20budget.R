@@ -8,25 +8,25 @@ library(RColorBrewer)
 ##### hstatebins #####
 #-- Budget = 20 --#
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S25_R5_20'
-file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S25_R5_20 <- fread(file_name)
-state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
-
-state_truth_S25_R5_20$location <- 'hstatebins'
-state_truth_S25_R5_20$detection <- 0.25
-state_truth_S25_R5_20$eradication <- 0.5
-state_truth_S25_R5_20$budget <- 20
-
-path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S25_R5_20_b'
-file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S25_R5_20b <- fread(file_name)
-state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
-
-state_truth_S25_R5_20b$location <- 'hstatebins'
-state_truth_S25_R5_20b$detection <- 0.25
-state_truth_S25_R5_20b$eradication <- 0.5
-state_truth_S25_R5_20b$budget <- 20
+# path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S25_R5_20'
+# file_name = paste(path, 'states_truth.csv',sep = '/')
+# state_truth_S25_R5_20 <- fread(file_name)
+# state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
+# 
+# state_truth_S25_R5_20$location <- 'hstatebins'
+# state_truth_S25_R5_20$detection <- 0.25
+# state_truth_S25_R5_20$eradication <- 0.5
+# state_truth_S25_R5_20$budget <- 20
+# 
+# path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S25_R5_20_b'
+# file_name = paste(path, 'states_truth.csv',sep = '/')
+# state_truth_S25_R5_20b <- fread(file_name)
+# state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
+# 
+# state_truth_S25_R5_20b$location <- 'hstatebins'
+# state_truth_S25_R5_20b$detection <- 0.25
+# state_truth_S25_R5_20b$eradication <- 0.5
+# state_truth_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
 path <- 'E:\\Chapter3\\results-space2\\hstatebins\\S25_R75_20'
@@ -134,8 +134,8 @@ state_truth_S75_R75_20b$eradication <- 0.75
 state_truth_S75_R75_20b$budget <- 20
 
 #--- Combine state_truths ---#
-state_truth_20 <- rbind(state_truth_S25_R5_20,state_truth_S25_R5_20b,
-                        state_truth_S25_R75_20,state_truth_S25_R75_20b,
+state_truth_20 <- rbind(#state_truth_S25_R5_20,state_truth_S25_R5_20b,
+                        #state_truth_S25_R75_20,state_truth_S25_R75_20b,
                         state_truth_S5_R5_20,state_truth_S5_R5_20b,
                   state_truth_S5_R75_20,state_truth_S5_R75_20b,
                   state_truth_S75_R5_20,state_truth_S75_R5_20b,
@@ -146,25 +146,25 @@ state_truth_hstatebins <- rbind(state_truth_20)
 ##### linear #####
 #-- Budget = 20 --#
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R5_20'
-file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S25_R5_20 <- fread(file_name)
-state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
-
-state_truth_S25_R5_20$location <- 'linear'
-state_truth_S25_R5_20$detection <- 0.25
-state_truth_S25_R5_20$eradication <- 0.5
-state_truth_S25_R5_20$budget <- 20
-
-path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R5_20_b'
-file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S25_R5_20b <- fread(file_name)
-state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
-
-state_truth_S25_R5_20b$location <- 'linear'
-state_truth_S25_R5_20b$detection <- 0.25
-state_truth_S25_R5_20b$eradication <- 0.5
-state_truth_S25_R5_20b$budget <- 20
+# path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R5_20'
+# file_name = paste(path, 'states_truth.csv',sep = '/')
+# state_truth_S25_R5_20 <- fread(file_name)
+# state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
+# 
+# state_truth_S25_R5_20$location <- 'linear'
+# state_truth_S25_R5_20$detection <- 0.25
+# state_truth_S25_R5_20$eradication <- 0.5
+# state_truth_S25_R5_20$budget <- 20
+# 
+# path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R5_20_b'
+# file_name = paste(path, 'states_truth.csv',sep = '/')
+# state_truth_S25_R5_20b <- fread(file_name)
+# state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
+# 
+# state_truth_S25_R5_20b$location <- 'linear'
+# state_truth_S25_R5_20b$detection <- 0.25
+# state_truth_S25_R5_20b$eradication <- 0.5
+# state_truth_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
 path <- 'E:\\Chapter3\\results-space2\\linear\\S25_R75_20'
@@ -272,8 +272,8 @@ state_truth_S75_R75_20b$eradication <- 0.75
 state_truth_S75_R75_20b$budget <- 20
 
 #--- Combine state_truths ---#
-state_truth_20 <- rbind(state_truth_S25_R5_20,state_truth_S25_R5_20b,
-                        state_truth_S25_R75_20,state_truth_S25_R75_20b,
+state_truth_20 <- rbind(#state_truth_S25_R5_20,state_truth_S25_R5_20b,
+                       # state_truth_S25_R75_20,state_truth_S25_R75_20b,
                         state_truth_S5_R5_20,state_truth_S5_R5_20b,
                         state_truth_S5_R75_20,state_truth_S5_R75_20b,
                         state_truth_S75_R5_20,state_truth_S75_R5_20b,
