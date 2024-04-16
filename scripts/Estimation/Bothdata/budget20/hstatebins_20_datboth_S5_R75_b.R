@@ -1246,7 +1246,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-file_name = paste(path, 'sites_visit',sep = '/')
+file_name = paste(path, 'sites_visit.txt',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1254,7 +1254,7 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 
-file_name = paste(path, 'y_dat',sep = '/')
+file_name = paste(path, 'y_dat.txt',sep = '/')
 yM.dat$sim <- yM.dat$sim + 100
 write.csv(yM.dat,file_name)
 
@@ -1262,7 +1262,7 @@ yD.dat <- as.data.frame.table(yD)
 colnames(yD.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yD.dat <-  as.data.frame(sapply(yD.dat,as.numeric))
 
-file_name = paste(path, 'yD_dat',sep = '/')
+file_name = paste(path, 'yD_dat.txt',sep = '/')
 write.csv(yD.dat,file_name)
 
 
