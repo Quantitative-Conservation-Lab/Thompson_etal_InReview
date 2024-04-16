@@ -55,6 +55,8 @@ finstate_truth <- aggregate(state ~ sim + location + detection + eradication + b
                             data = as.data.frame(finstate_truth), 
                             FUN = mean)
 
+finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
+
 colnames(finstate_truth)[5] <- 'Budget'
 finstate_truthA <- finstate_truth
 finstate_truthA$data <- 'A'
