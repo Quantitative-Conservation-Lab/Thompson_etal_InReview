@@ -108,7 +108,7 @@ cols <- brewer.pal(12, "Paired")
 colors <- c(cols[1:4], cols[9:10])
 colors <- c(colors[c(2,4)],'white')
 
-colors2 <- c('palevioletred', 'darkmagenta')
+colors2 <- c('palevioletred', 'darkmagenta', 'purple')
 
 finstate_truth <- finstate_truth %>% filter(Budget == 20)
 
@@ -121,7 +121,7 @@ finstate_truth %>%
                aes(ymax = after_stat(y), ymin = after_stat(y),
                    group = interaction(location, rates)),
                width = .75, color = "black", linewidth = 1)+ 
-  scale_x_discrete(breaks = c("hstatebins0.50.75A", ),
+  scale_x_discrete(breaks = c("hstatebins0.50.75A" ),
                    labels=c(
                      "hstatebins0.50.75A" = "High Invasion"))+
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),

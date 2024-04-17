@@ -28,8 +28,31 @@ hsbstate_truth_S5_R75_20b$eradication <- 0.75
 hsbstate_truth_S5_R75_20b$budget <- 20
 hsbstate_truth_S5_R75_20b$data <- 'both'
 
+path <- 'E:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_cert'
+file_name = paste(path, 'states_truth.csv',sep = '/')
+hsbstate_truth_S5_R75_20c <- fread(file_name)
+hsbstate_truth_S5_R75_20c <- data.frame(hsbstate_truth_S5_R75_20c)[-1]
+
+hsbstate_truth_S5_R75_20c$location <- 'hstatebins'
+hsbstate_truth_S5_R75_20c$detection <- 1
+hsbstate_truth_S5_R75_20c$eradication <- 0.75
+hsbstate_truth_S5_R75_20c$budget <- 20
+hsbstate_truth_S5_R75_20c$data <- 'both'
+
+path <- 'E:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_cert_b'
+file_name = paste(path, 'states_truth.csv',sep = '/')
+hsbstate_truth_S5_R75_20cb <- fread(file_name)
+hsbstate_truth_S5_R75_20cb <- data.frame(hsbstate_truth_S5_R75_20cb)[-1]
+
+hsbstate_truth_S5_R75_20cb$location <- 'hstatebins'
+hsbstate_truth_S5_R75_20cb$detection <- 1
+hsbstate_truth_S5_R75_20cb$eradication <- 0.75
+hsbstate_truth_S5_R75_20cb$budget <- 20
+hsbstate_truth_S5_R75_20cb$data <- 'both'
+
 #--- Combine state_truths ---#
-state_truth_20 <- rbind(hsbstate_truth_S5_R75_20,hsbstate_truth_S5_R75_20b)
+state_truth_20 <- rbind(hsbstate_truth_S5_R75_20,hsbstate_truth_S5_R75_20b,
+                        hsbstate_truth_S5_R75_20c,hsbstate_truth_S5_R75_20cb)
 
 
 state_truth <- rbind(state_truth_20)
@@ -58,8 +81,31 @@ hsb_biasstate_S5_R75_20b$eradication <- 0.75
 hsb_biasstate_S5_R75_20b$budget <- 20
 hsb_biasstate_S5_R75_20b$data <- 'both'
 
+path <- 'E:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_cert'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hsb_biasstate_S5_R75_20c <- fread(file_name)
+hsb_biasstate_S5_R75_20c <- data.frame(hsb_biasstate_S5_R75_20c)[-1]
+
+hsb_biasstate_S5_R75_20c$location <- 'hstatebins'
+hsb_biasstate_S5_R75_20c$detection <- 1
+hsb_biasstate_S5_R75_20c$eradication <- 0.75
+hsb_biasstate_S5_R75_20c$budget <- 20
+hsb_biasstate_S5_R75_20c$data <- 'both'
+
+path <- 'E:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_cert_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hsb_biasstate_S5_R75_20cb <- fread(file_name)
+hsb_biasstate_S5_R75_20cb <- data.frame(hsb_biasstate_S5_R75_20cb)[-1]
+
+hsb_biasstate_S5_R75_20cb$location <- 'hstatebins'
+hsb_biasstate_S5_R75_20cb$detection <- 1
+hsb_biasstate_S5_R75_20cb$eradication <- 0.75
+hsb_biasstate_S5_R75_20cb$budget <- 20
+hsb_biasstate_S5_R75_20cb$data <- 'both'
+
 #--- Combine bias_states ---#
-bias_state_20 <- rbind(hsb_biasstate_S5_R75_20,hsb_biasstate_S5_R75_20b)
+bias_state_20 <- rbind(hsb_biasstate_S5_R75_20,hsb_biasstate_S5_R75_20b,
+                       hsb_biasstate_S5_R75_20c,hsb_biasstate_S5_R75_20cb)
 
 #-- Combine Bias --#
 bias_state <- rbind(bias_state_20)
@@ -88,9 +134,32 @@ hsb_biasparam_S5_R75_20b$eradication <- 0.75
 hsb_biasparam_S5_R75_20b$budget <- 20
 hsb_biasparam_S5_R75_20b$data <- 'both'
 
+path <- 'E:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_cert'
+file_name = paste(path, 'bias_params.csv',sep = '/')
+hsb_biasparam_S5_R75_20c <- fread(file_name)
+hsb_biasparam_S5_R75_20c <- data.frame(hsb_biasparam_S5_R75_20c)[-1]
+
+hsb_biasparam_S5_R75_20c$location <- 'hstatebins'
+hsb_biasparam_S5_R75_20c$detection <- 1
+hsb_biasparam_S5_R75_20c$eradication <- 0.75
+hsb_biasparam_S5_R75_20c$budget <- 20
+hsb_biasparam_S5_R75_20c$data <- 'both'
+
+path <- 'E:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_cert_b'
+file_name = paste(path, 'bias_params.csv',sep = '/')
+hsb_biasparam_S5_R75_20cb <- fread(file_name)
+hsb_biasparam_S5_R75_20cb <- data.frame(hsb_biasparam_S5_R75_20cb)[-1]
+
+hsb_biasparam_S5_R75_20cb$location <- 'hstatebins'
+hsb_biasparam_S5_R75_20cb$detection <- 1
+hsb_biasparam_S5_R75_20cb$eradication <- 0.75
+hsb_biasparam_S5_R75_20cb$budget <- 20
+hsb_biasparam_S5_R75_20cb$data <- 'both'
+
 #--- Combine bias_params ---#
 bias_param_20 <- rbind(
-                       hsb_biasparam_S5_R75_20,hsb_biasparam_S5_R75_20b)
+                       hsb_biasparam_S5_R75_20,hsb_biasparam_S5_R75_20b,
+                       hsb_biasparam_S5_R75_20c,hsb_biasparam_S5_R75_20cb)
 
 #-- Combine bias --#
 bias_params <- rbind(bias_param_20)
