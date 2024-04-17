@@ -18,12 +18,12 @@ library(readr)
 #### Management Strategy ####
 load("parameters_data.RData")
 
-p.goal <- 0.75
-eps.goal <- 0.75
+p.goal <- 0.25
+eps.goal <- 0.5
 
 ##### Path to save data ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
-res <- 'E:/Chapter3/densplots/results/hstatebins/S75_R75_40'
+path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
+res <- 'E:/Chapter3/densplots/results/linear/S25_R5_40'
 
 n.resource <- 40 #total hours per week
 
@@ -154,56 +154,8 @@ n.neighbors[1] <- n.neighbors[n.sites] <- 1
 #--- removal data and occupancy data ---#
 sites.rem.M <- array(NA, c(n.sites, n.weeks, n.years, n.sims)) 
 
-#### First Removal Locations ####
-file_name = paste(y3, 'states.csv',sep = '/')
-est_state <- read.csv(file_name)[-1]
-
-s.year3 <- array(NA, c(n.sites, n.sims))
-
-for(s in 1:n.sims){
-  s.year3[1:n.sites,s] <- c(t(est_state %>% filter(year == 3 & sim == s) %>% select(mean)))
-}
-
-S.decision <-S.decision.pre <- array(NA, c(n.sites, n.years, n.sims))
-three.list <- list()
-two.list <- list()
-one.list <- list()
-
-dist.mat <- matrix(NA, nrow = n.sites, ncol = n.sites)
-
-for(i in 1:n.sites){
-  for(h in 1:n.sites){
-    dist.mat[i,h] <- abs(h-i)
-  }
-}
-
-for(s in 1:n.sims){
-  #Removal locations: rank sites by state
-  three.list[[s]] <- which((ntile(s.year3[1:n.sites,s], 3) == 3))
-    
-  last <- tail(three.list[[s]], 1)  
-  two.list[[s]] <- which((ntile(s.year3[1:n.sites,s], 3) == 2))
-    
-  first.two <- two.list[[s]][[which.min(dist.mat[two.list[[s]],last])]]
-    
-  two.list[[s]] <- c(two.list[[s]][(which.min(dist.mat[two.list[[s]],last]): length(two.list[[s]]))],
-                       two.list[[s]][(which.min(dist.mat[two.list[[s]],last]) -1): 1]
-                       
-  )
-    
-  one.list[[s]] <- which((ntile(s.year3[1:n.sites,s], 3) == 1))
-  
-  last2 <- tail(two.list[[s]], 1)  
-  first.3 <- one.list[[s]][[which.min(dist.mat[one.list[[s]],last2])]]  
-    
-  one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1],
-    one.list[[s]][((which.min(dist.mat[one.list[[s]],last2])+1): length(one.list[[s]]))]
-                     
-  )
-  
-  sites.rem.M[,1,1,s] <- c(three.list[[s]], two.list[[s]], one.list[[s]])
-  
-}
+#### Removal Locations ####
+sites.rem.M[,1,1:n.years,] <- seq(1,n.sites)
 
 
 #-----------------------------------#
@@ -962,46 +914,9 @@ for(year in 1:n.years){
   }
 
   ###### 3b. Make Decision #####
-  S.decision <-S.decision.pre <- array(NA, c(n.sites, n.years, n.sims))
-  three.list <- list()
-  two.list <- list()
-  one.list <- list()
   
-  if(year < n.years){
-    for(s in 1:n.sims){
-      #Removal locations: rank sites by state
-      S.decision.pre[,year,s] <- as.vector(t(res.state[[year]] %>% filter(sim == s) %>% select(mean)))
-      three.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 3))
-      
-      last <- tail(three.list[[s]], 1)  
-      two.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 2))
-      
-      first.two <- two.list[[s]][[which.min(dist.mat[two.list[[s]],last])]]
-      
-      two.list[[s]] <- c(two.list[[s]][(which.min(dist.mat[two.list[[s]],last]): length(two.list[[s]]))],
-                         two.list[[s]][(which.min(dist.mat[two.list[[s]],last]) -1): 1]
-                         
-      )
-      
-      one.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 1))
-      
-      last2 <- tail(two.list[[s]], 1)  
-      first.3 <- one.list[[s]][[which.min(dist.mat[one.list[[s]],last2])]]  
-      
-      if((which.min(dist.mat[one.list[[s]],last2])+1) <= length(one.list[[s]])){
-        one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1],
-                           one.list[[s]][((which.min(dist.mat[one.list[[s]],last2])+1): length(one.list[[s]]))])
-      }else{
-        one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1])
-      }
-      
-      
-      
-      sites.rem.M[,1,year+1,s] <- c(three.list[[s]], two.list[[s]], one.list[[s]])
-      
-    }
-  }
   
+
   
   
 } #End Simulations  
@@ -1010,8 +925,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
-
+path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[1]], res.params[[2]], res.params[[3]], res.params[[4]],
                     res.params[[5]], res.params[[6]], res.params[[7]])
