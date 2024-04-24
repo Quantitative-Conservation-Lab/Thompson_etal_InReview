@@ -136,7 +136,7 @@ budget40_suppress <- finstate_truth %>%
   summarise(mean_c = mean(state),
             max_c = max(state),
             lower = quantile(state, 0.1),
-            upper = quantile(state, 0.9))
+            upper = quantile(state, 0.95))
 
 budget40_suppress
 

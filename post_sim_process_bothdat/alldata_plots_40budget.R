@@ -17,24 +17,10 @@ noremoval <- data.frame(noremoval)
 
 nc.val <- mean(noremoval$state) -1 
 
-nc.val2 <- aggregate(state ~ sim + location + detection + eradication + budget, 
-                     data = as.data.frame(noremoval), 
-                     FUN = mean)
-
-nc.val <- mean(nc.val2$state) -1
-nc.val.max <- max(nc.val2$state)-1
-
 noremoval$inv <- noremoval$state
 noremoval$inv[noremoval$inv <= 2 ] <- 0
 noremoval$inv[noremoval$inv > 2 ] <- 1
 nc.inv <- mean(noremoval$inv)
-
-nc.inv2 <- aggregate(inv ~ sim + location + detection + eradication + budget, 
-                     data = as.data.frame(noremoval), 
-                     FUN = mean)
-nc.val <- mean(nc.inv2$inv)
-nc.val.max <- max(nc.inv2$inv)
-
 
 #### States fin truth ####
 ##### States Fin truth dat A ####
@@ -97,7 +83,7 @@ finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection,
 
 
 
-detach(package:plyr)
+#detach(package:plyr)
 
 finstate_truthA <- finstate_truth
 finstate_truthA$data <- 'A'
@@ -135,7 +121,7 @@ budget40_suppress <- finstate_truth %>%
   summarise(mean_c = mean(state),
             max_c = max(state),
             lower = quantile(state, 0.1),
-            upper = quantile(state, 0.9))
+            upper = quantile(state, 0.95))
 
 budget40_suppress
 

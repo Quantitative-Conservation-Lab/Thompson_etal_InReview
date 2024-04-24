@@ -470,6 +470,9 @@ budget20_contain <- fininv_truth %>%
 
 budget20_contain 
 
+cor(fininv_truth$inv, finstate_truth$state)
+
+
 #### Bias state ####
 ##### hstatebins ######
 #-- Budget = 20 --#

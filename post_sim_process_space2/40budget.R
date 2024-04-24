@@ -469,6 +469,7 @@ budget40_contain <- fininv_truth %>%
             max_c = max(inv))
 
 budget40_contain 
+cor(fininv_truth$inv, finstate_truth$state)
 
 #### Bias state ####
 ##### hstatebins ######

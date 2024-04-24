@@ -469,6 +469,7 @@ budget40_contain <- fininv_truth %>%
             max_c = max(inv))
 
 budget40_contain 
+cor(fininv_truth$inv, finstate_truth$state)
 
 #### Bias state ####
 ##### hstatebins ######
@@ -1296,6 +1297,9 @@ budget40_bias_param_eps <- bias_param_eps %>%
   summarise(mean_c = mean(rel.bias))
 
 budget40_bias_param_eps
+
+
+
 
 #### Sites visit ####
 #-- Budget = 40 --#
