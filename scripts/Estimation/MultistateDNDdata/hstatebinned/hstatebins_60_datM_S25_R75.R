@@ -18,12 +18,12 @@ library(readr)
 #### Management Strategy ####
 load("parameters_data.RData")
 
-p.goal <- 0.5
-eps.goal <- 0.5
+p.goal <- 0.25
+eps.goal <- 0.75
 
 ##### Path to save data ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
-res <- 'E:/Chapter3/densplots/results/hstatebins/S5_R5_60'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
+res <- 'E:/Chapter3/densplots/results/hstatebins/S25_R75_60'
 
 n.resource <- 60 #total hours per week
 
@@ -1001,7 +1001,7 @@ for(year in 1:n.years){
       
     }
   }
-
+  
   
   
 } #End Simulations  
@@ -1010,7 +1010,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
 
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[1]], res.params[[2]], res.params[[3]], res.params[[4]],

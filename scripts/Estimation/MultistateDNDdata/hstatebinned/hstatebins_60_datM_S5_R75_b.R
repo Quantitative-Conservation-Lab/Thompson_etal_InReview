@@ -982,7 +982,7 @@ for(year in 1:n.years){
       
       two.list[[s]] <- c(two.list[[s]][(which.min(dist.mat[two.list[[s]],last]): length(two.list[[s]]))],
                          two.list[[s]][(which.min(dist.mat[two.list[[s]],last]) -1): 1]
-        
+                         
       )
       
       one.list[[s]] <- which((ntile(S.decision.pre[,year,s], 3) == 1))
@@ -990,17 +990,20 @@ for(year in 1:n.years){
       last2 <- tail(two.list[[s]], 1)  
       first.3 <- one.list[[s]][[which.min(dist.mat[one.list[[s]],last2])]]  
       
-      one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1],
-                         one.list[[s]][((which.min(dist.mat[one.list[[s]],last2])+1): length(one.list[[s]]))]
-                         
-      )
+      if((which.min(dist.mat[one.list[[s]],last2])+1) <= length(one.list[[s]])){
+        one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1],
+                           one.list[[s]][((which.min(dist.mat[one.list[[s]],last2])+1): length(one.list[[s]]))])
+      }else{
+        one.list[[s]] <- c(one.list[[s]][(which.min(dist.mat[one.list[[s]],last2])): 1])
+      }
+      
+      
       
       sites.rem.M[,1,year+1,s] <- c(three.list[[s]], two.list[[s]], one.list[[s]])
       
     }
   }
   
-
   
   
 } #End Simulations  
@@ -1010,23 +1013,23 @@ time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
 path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+
 ###### 1. Estimated parameters #####
-res.par.df <- rbind(res.params[[2]], res.params[[3]], res.params[[4]],
-                    res.params[[5]], res.params[[6]], res.params[[7]],
-                    res.params[[8]], res.params[[9]], res.params[[10]])
+res.par.df <- rbind(res.params[[1]], res.params[[2]], res.params[[3]], res.params[[4]],
+                    res.params[[5]], res.params[[6]], res.params[[7]])
 
 max(res.par.df$Rhat)
 file_name = paste(path, 'params.csv',sep = '/')
+res.par.df$sim <- res.par.df$sim + 100
 write.csv(res.par.df,file_name)
 
 ###### 2. Estimated states #####
-res.states.df <- rbind(res.state[[2]],res.state[[3]],
+res.states.df <- rbind(res.state[[1]], res.state[[2]],res.state[[3]],
                        res.state[[4]],res.state[[5]],
-                       res.state[[6]],res.state[[7]],
-                       res.state[[8]],res.state[[9]],
-                       res.state[[10]])
+                       res.state[[6]],res.state[[7]])
 
 file_name = paste(path, 'states.csv',sep = '/')
+res.states.df$sim <- res.states.df$sim + 100
 write.csv(res.states.df,file_name)
 
 ###### 3. True states #####
@@ -1035,6 +1038,7 @@ colnames(S.dat) <- c("site", "week", "year", "sim", "state")
 S.dat <-  as.data.frame(sapply(S.dat,as.numeric))
 
 file_name = paste(path, 'states_truth.csv',sep = '/')
+S.dat$sim <- S.dat$sim + 100
 write.csv(S.dat,file_name)
 
 ##### plots #####
@@ -1055,55 +1059,11 @@ ggplot(res.params[[year]]) +
   guides(color = guide_legend(title = "Simulation"))   
 
 ##### parameters through time ####
-
-truth.paramslist <- list()
-
-for(s in 1:n.sims){
-  truth.paramslist[[s]] <- truth.params %>% filter(sim == s)
-  truth.paramslist[[s]]$mean <- c(1,1,2,
-                                  2,0,1,0,-2,0, 
-                                  (3/15), (3/15), 14/30, 12/24, 3.5/35,
-                                  0,0,0,0,0.5)
-  
-  truth.paramslist[[s]]$low <- c(qnorm(0.025, 1, 0.05), qnorm(0.025, 1, 0.05), qnorm(0.025, 2, 0.05),
-                                 qnorm(0.025, 2, 0.05), 0, qnorm(0.025, 1, 0.05), 0, qnorm(0.025, -2, 0.05),0,
-                                 qbeta(0.025, 3, 12), qbeta(0.025, 3, 12),qbeta(0.025, 14, 6), qbeta(0.025, 12, 12),qbeta(0.025, 3.5,31.5),
-                                 qnorm(0.025, 0,1), 0, qnorm(0.025, 0,1),0, qbeta(0.025, 1,1))
-  
-  truth.paramslist[[s]]$high <- c(qnorm(0.975, 1, 0.05), qnorm(0.975, 1, 0.05), qnorm(0.975, 2, 0.05),
-                                  qnorm(0.975, 2, 0.05), 0, qnorm(0.975, 1, 0.05), 0, qnorm(0.975, -2, 0.05),0,
-                                  qbeta(0.975, 3, 12), qbeta(0.975, 3, 12),qbeta(0.975, 14, 6), qbeta(0.975, 12, 12),qbeta(0.975, 3.5,31.5),
-                                  qnorm(0.975, 0,1), 0, qnorm(0.975, 0,1),0, qbeta(0.975, 1,1))
-  
-  truth.paramslist[[s]]$year <- 1
-  truth.paramslist[[s]]<- truth.paramslist[[s]] %>% select(mean, low, high, param, sim, truth, year)
-  
-  
-}
-
-y1.priors <- truth.paramslist[[1]]
-
-for(s in 2:n.sims){
-  y1.priors <- rbind(y1.priors,truth.paramslist[[2]] )
-}
-
 res.par.df.summary <- res.par.df %>% select(mean, low, high, param, sim, truth, year)
-res.par.df.summary <- rbind(y1.priors, res.par.df.summary)
-
-res.par.df.summary <- res.par.df.summary %>% filter(!param %in% c('B1.gamma','B1.phi.h', 'phiB.h'))
-
-res.par.df.summary.sub <- res.par.df.summary %>% filter(sim == 7)
-
-ggplot(res.par.df.summary.sub) + 
-  geom_ribbon(aes(x = year, ymin = low, ymax = high), fill = 'grey70', alpha = 0.8)+
-  geom_point(aes(x = year, y = mean), color = 'black', size = 0.5) +
-  geom_line(aes(x = year, y = mean), color = 'black', size = 1) +
-  geom_point(aes(x = year, y = truth), color = 'red', size = 0.5)+
-  scale_x_continuous(breaks=c(1,5,10))+
-  facet_wrap(~param, scales = "free")
 
 ###### 4. Summary of parameters #####
 file_name = paste(path, 'par_summary.csv',sep = '/')
+res.par.df.summary$sim <- res.par.df.summary$sim + 100
 write.csv(res.par.df.summary,file_name)
 
 
@@ -1112,7 +1072,7 @@ mean.state <- array(NA, c(n.years,n.sites,n.sims))
 true.state <- array(NA, c(n.years,n.sites,n.sims))
 state.bias <- array(NA, c(n.years,n.sites,n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(i in 1:n.sites){
     mean.state[year,i,] <- c(t(res.state[[year]] %>% filter(Segment == i) %>% select(mean)))
     true.state[year,i,] <- c(t(res.state[[year]] %>% filter(Segment == i) %>% select(truth)))
@@ -1124,7 +1084,7 @@ bias.state.df <- adply(state.bias, c(1,2,3))
 colnames(bias.state.df) <- c("year", "site", "sim", "rel.bias") 
 bias.state.df$year <- as.numeric(bias.state.df$year)
 bias.state.df$site<- as.numeric(bias.state.df$site)
-bias.state.df$sim <- as.numeric(bias.state.df$sim)
+bias.state.df$sim <- as.numeric(bias.state.df$sim) + 100
 bias.state.df <- bias.state.df %>% filter(year > 1)
 
 file_name = paste(path, 'bias_states.csv',sep = '/')
@@ -1138,7 +1098,7 @@ mean.param <- array(NA, c(n.years,n.params, n.sims))
 true.param <- array(NA, c(n.years,n.params, n.sims))
 param.bias <- array(NA, c(n.years,n.params, n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(par in 1:n.params){
     mean.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(mean))))
     true.param[year,par,] <- c(t((res.params[[year]] %>% filter(param == p.list[par]) %>% select(truth))))
@@ -1149,7 +1109,7 @@ for(year in 2:n.years){
 bias.param.df <- adply(param.bias, c(1,2,3))
 colnames(bias.param.df) <- c("year", "param", "sim", "rel.bias") 
 bias.param.df$year <- as.numeric(bias.param.df$year)
-bias.param.df$sim <- as.numeric(bias.param.df$sim)
+bias.param.df$sim <- as.numeric(bias.param.df$sim) + 100
 bias.param.df <- bias.param.df %>% filter(year > 1)
 bias.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
 
@@ -1161,7 +1121,7 @@ low.state <- array(NA, c(n.years,n.sites,n.sims))
 high.state <- array(NA, c(n.years,n.sites,n.sims))
 CI.state <- array(NA, c(n.years,n.sites,n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(s in 1:n.sims){
     low.state[year,,s] <- c(t((res.state[[year]] %>% filter(sim == s) %>% select(low))))
     high.state[year,,s] <- c(t(res.state[[year]] %>% filter(sim == s) %>% select(high)))
@@ -1177,7 +1137,7 @@ CI.state.df <- adply(CI.state, c(1,2,3))
 colnames(CI.state.df) <- c("year", "site", "sim", "CI.coverage") 
 CI.state.df$year <- as.numeric(CI.state.df$year)
 CI.state.df$site<- as.numeric(CI.state.df$site)
-CI.state.df$sim <- as.numeric(CI.state.df$sim)
+CI.state.df$sim <- as.numeric(CI.state.df$sim) + 100
 CI.state.df <- CI.state.df %>% filter(year > 1)
 
 file_name = paste(path, 'CI_state.csv',sep = '/')
@@ -1190,7 +1150,7 @@ high.param <- array(NA, c(n.years,n.params,n.sims))
 truth.param <- array(NA, c(n.years,n.params,n.sims))
 CI.param <- array(NA, c(n.years,n.params,n.sims))
 
-for(year in 2:n.years){
+for(year in 1:n.years){
   for(s in 1:n.sims){
     low.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(low)))
     high.param[year,,s] <- c(t(res.params[[year]] %>% filter(sim == s) %>% select(high)))
@@ -1206,7 +1166,7 @@ for(year in 2:n.years){
 CI.param.df <- adply(CI.param, c(1,2,3))
 colnames(CI.param.df) <- c("year", "param", "sim", "CI.coverage") 
 CI.param.df$year <- as.numeric(CI.param.df$year)
-CI.param.df$sim <- as.numeric(CI.param.df$sim)
+CI.param.df$sim <- as.numeric(CI.param.df$sim) + 100
 CI.param.df <- CI.param.df %>% filter(year > 1)
 CI.param.df$param<- rep(p.list, each = (n.years-1), times = n.sims)
 
@@ -1219,11 +1179,13 @@ colnames(dist.travel) <- c("week", "year", "sim", "distance")
 dist.travel <-  as.data.frame(sapply(dist.travel,as.numeric))
 
 file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist.travel$sim <- dist.travel$sim + 100
 write.csv(dist.travel,file_name)
 
 ##### 10. Sites visited #####
 site.visit <- as.data.frame.table(rem.vec)
 colnames(site.visit) <- c("site", "week", "year", "sim", "visit")
+site.visit$sim <- site.visit$sim + 100
 site.visit <-  as.data.frame(sapply(site.visit,as.numeric))
 
 #replace Nas with 3
@@ -1239,7 +1201,7 @@ site.visit$visit[site.visit$visit == 0] <- 1
 #replace 3s with 0 (means we did not visit)
 site.visit$visit[site.visit$visit == 3] <- 0
 
-file_name = paste(path, 'sites_visit',sep = '/')
+file_name = paste(path, 'sites_visit.txt',sep = '/')
 write.csv(site.visit,file_name)
 
 ##### 11. Observation data ####
@@ -1247,14 +1209,11 @@ yM.dat <- as.data.frame.table(yM)
 colnames(yM.dat) <- c("site", "occasion", "week", "year", "sim", "observation")
 yM.dat <-  as.data.frame(sapply(yM.dat,as.numeric))
 
-file_name = paste(path, 'y_dat',sep = '/')
+file_name = paste(path, 'y_dat.txt',sep = '/')
+yM.dat$sim <- yM.dat$sim + 100
 write.csv(yM.dat,file_name)
 
 ##### 12. Timing #####
 file_name = paste(path, 'time.txt',sep = '/')
 write.table(time.taken,file_name)
-
-#### Quick res ####
-S.fin <- S.dat %>% filter(week == 5 & year == 10)
-mean(S.fin$state)
 
