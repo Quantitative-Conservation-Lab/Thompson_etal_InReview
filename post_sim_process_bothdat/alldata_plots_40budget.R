@@ -24,49 +24,49 @@ nc.inv <- mean(noremoval$inv)
 
 #### States fin truth ####
 ##### States Fin truth dat A ####
-#--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+#--- S5_R75_40 ---#
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S5_R75_20 <- fread(file_name)
-state_truth_S5_R75_20 <- data.frame(state_truth_S5_R75_20)[-1]
+state_truth_S5_R75_40 <- fread(file_name)
+state_truth_S5_R75_40 <- data.frame(state_truth_S5_R75_40)[-1]
 
-state_truth_S5_R75_20$location <- 'hstatebins'
-state_truth_S5_R75_20$detection <- 0.5
-state_truth_S5_R75_20$eradication <- 0.75
-state_truth_S5_R75_20$budget <- 20
+state_truth_S5_R75_40$location <- 'hstatebins'
+state_truth_S5_R75_40$detection <- 0.5
+state_truth_S5_R75_40$eradication <- 0.75
+state_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S5_R75_20b <- fread(file_name)
-state_truth_S5_R75_20b <- data.frame(state_truth_S5_R75_20b)[-1]
+state_truth_S5_R75_40b <- fread(file_name)
+state_truth_S5_R75_40b <- data.frame(state_truth_S5_R75_40b)[-1]
 
-state_truth_S5_R75_20b$location <- 'hstatebins'
-state_truth_S5_R75_20b$detection <- 0.5
-state_truth_S5_R75_20b$eradication <- 0.75
-state_truth_S5_R75_20b$budget <- 20
+state_truth_S5_R75_40b$location <- 'hstatebins'
+state_truth_S5_R75_40b$detection <- 0.5
+state_truth_S5_R75_40b$eradication <- 0.75
+state_truth_S5_R75_40b$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-epistate_truth_S5_R75_20 <- fread(file_name)
-epistate_truth_S5_R75_20 <- data.frame(epistate_truth_S5_R75_20)[-1]
+epistate_truth_S5_R75_40 <- fread(file_name)
+epistate_truth_S5_R75_40 <- data.frame(epistate_truth_S5_R75_40)[-1]
 
-epistate_truth_S5_R75_20$location <- 'epicenter'
-epistate_truth_S5_R75_20$detection <- 0.5
-epistate_truth_S5_R75_20$eradication <- 0.75
-epistate_truth_S5_R75_20$budget <- 20
+epistate_truth_S5_R75_40$location <- 'epicenter'
+epistate_truth_S5_R75_40$detection <- 0.5
+epistate_truth_S5_R75_40$eradication <- 0.75
+epistate_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-epistate_truth_S5_R75_20b <- fread(file_name)
-epistate_truth_S5_R75_20b <- data.frame(epistate_truth_S5_R75_20b)[-1]
+epistate_truth_S5_R75_40b <- fread(file_name)
+epistate_truth_S5_R75_40b <- data.frame(epistate_truth_S5_R75_40b)[-1]
 
-epistate_truth_S5_R75_20b$location <- 'epicenter'
-epistate_truth_S5_R75_20b$detection <- 0.5
-epistate_truth_S5_R75_20b$eradication <- 0.75
-epistate_truth_S5_R75_20b$budget <- 20
+epistate_truth_S5_R75_40b$location <- 'epicenter'
+epistate_truth_S5_R75_40b$detection <- 0.5
+epistate_truth_S5_R75_40b$eradication <- 0.75
+epistate_truth_S5_R75_40b$budget <- 40
 
-finstate_truth <- rbind(state_truth_S5_R75_20, state_truth_S5_R75_20b,
-                        epistate_truth_S5_R75_20, epistate_truth_S5_R75_20b)
+finstate_truth <- rbind(state_truth_S5_R75_40, state_truth_S5_R75_40b,
+                        epistate_truth_S5_R75_40, epistate_truth_S5_R75_40b)
 finstate_truth$rates <- paste0('(p = )', finstate_truth$detection, ',  \u03F5 = ', finstate_truth$eradication)
 finstate_truth$rates2 <- paste0('(', finstate_truth$detection, ', ', finstate_truth$eradication, ")")
 
@@ -115,15 +115,15 @@ finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection,
 
 detach(package:plyr)
 
-budget20_suppress <- finstate_truth %>% 
-  filter(Budget == 20) %>% 
+budget40_suppress <- finstate_truth %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2, data) %>%
   summarise(mean_c = mean(state),
             max_c = max(state),
             lower = quantile(state, 0.1),
             upper = quantile(state, 0.95))
 
-budget20_suppress
+budget40_suppress
 
 cols <- brewer.pal(12, "Paired") 
 colors <- c(cols[1:4], cols[9:10])
@@ -131,7 +131,7 @@ colors <- c(colors[c(2,4)],'white')
 
 colors2 <- c('palevioletred', 'darkmagenta', 'purple')
 
-finstate_truth <- finstate_truth %>% filter(Budget == 20)
+finstate_truth <- finstate_truth %>% filter(Budget == 40)
 
 finstate_truth %>% 
   ggplot(aes(x = loc2, y = state, fill = rates2, color =data,
@@ -165,49 +165,49 @@ finstate_truth %>%
 
 #### States inv truth ####
 ##### States inv truth A ####
-#--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+#--- S5_R75_40 ---#
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S5_R75_20 <- fread(file_name)
-state_truth_S5_R75_20 <- data.frame(state_truth_S5_R75_20)[-1]
+state_truth_S5_R75_40 <- fread(file_name)
+state_truth_S5_R75_40 <- data.frame(state_truth_S5_R75_40)[-1]
 
-state_truth_S5_R75_20$location <- 'hstatebins'
-state_truth_S5_R75_20$detection <- 0.5
-state_truth_S5_R75_20$eradication <- 0.75
-state_truth_S5_R75_20$budget <- 20
+state_truth_S5_R75_40$location <- 'hstatebins'
+state_truth_S5_R75_40$detection <- 0.5
+state_truth_S5_R75_40$eradication <- 0.75
+state_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-state_truth_S5_R75_20b <- fread(file_name)
-state_truth_S5_R75_20b <- data.frame(state_truth_S5_R75_20b)[-1]
+state_truth_S5_R75_40b <- fread(file_name)
+state_truth_S5_R75_40b <- data.frame(state_truth_S5_R75_40b)[-1]
 
-state_truth_S5_R75_20b$location <- 'hstatebins'
-state_truth_S5_R75_20b$detection <- 0.5
-state_truth_S5_R75_20b$eradication <- 0.75
-state_truth_S5_R75_20b$budget <- 20
+state_truth_S5_R75_40b$location <- 'hstatebins'
+state_truth_S5_R75_40b$detection <- 0.5
+state_truth_S5_R75_40b$eradication <- 0.75
+state_truth_S5_R75_40b$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-epistate_truth_S5_R75_20 <- fread(file_name)
-epistate_truth_S5_R75_20 <- data.frame(epistate_truth_S5_R75_20)[-1]
+epistate_truth_S5_R75_40 <- fread(file_name)
+epistate_truth_S5_R75_40 <- data.frame(epistate_truth_S5_R75_40)[-1]
 
-epistate_truth_S5_R75_20$location <- 'epicenter'
-epistate_truth_S5_R75_20$detection <- 0.5
-epistate_truth_S5_R75_20$eradication <- 0.75
-epistate_truth_S5_R75_20$budget <- 20
+epistate_truth_S5_R75_40$location <- 'epicenter'
+epistate_truth_S5_R75_40$detection <- 0.5
+epistate_truth_S5_R75_40$eradication <- 0.75
+epistate_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
-epistate_truth_S5_R75_20b <- fread(file_name)
-epistate_truth_S5_R75_20b <- data.frame(epistate_truth_S5_R75_20b)[-1]
+epistate_truth_S5_R75_40b <- fread(file_name)
+epistate_truth_S5_R75_40b <- data.frame(epistate_truth_S5_R75_40b)[-1]
 
-epistate_truth_S5_R75_20b$location <- 'epicenter'
-epistate_truth_S5_R75_20b$detection <- 0.5
-epistate_truth_S5_R75_20b$eradication <- 0.75
-epistate_truth_S5_R75_20b$budget <- 20
+epistate_truth_S5_R75_40b$location <- 'epicenter'
+epistate_truth_S5_R75_40b$detection <- 0.5
+epistate_truth_S5_R75_40b$eradication <- 0.75
+epistate_truth_S5_R75_40b$budget <- 40
 
-fininv_truth <- rbind(state_truth_S5_R75_20, state_truth_S5_R75_20b,
-                      epistate_truth_S5_R75_20, epistate_truth_S5_R75_20b)
+fininv_truth <- rbind(state_truth_S5_R75_40, state_truth_S5_R75_40b,
+                      epistate_truth_S5_R75_40, epistate_truth_S5_R75_40b)
 
 fininv_truth$rates <- paste0('p = ', fininv_truth$detection, ', e = ', fininv_truth$eradication)
 fininv_truth$rates2 <- paste0('(', fininv_truth$detection, ', ', fininv_truth$eradication, ")")
@@ -257,15 +257,15 @@ fininv_truthAC$loc2 <- paste0(fininv_truthAC$Location, fininv_truthAC$detection,
 
 fininv_truth <- rbind(fininv_truthA, fininv_truthAC)
 
-budget20_contain <- fininv_truth %>% 
-  filter(Budget == 20) %>% 
+budget40_contain <- fininv_truth %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2, data) %>%
   summarise(mean_c = mean(inv),
             max_c = max(inv),
             lower = quantile(inv, 0.1),
             upper = quantile(inv, 0.9))
 
-budget20_contain
+budget40_contain
 
 fininv_truth %>% 
   ggplot(aes(x = loc2, y = inv, fill = rates2, color =data,
@@ -302,48 +302,48 @@ fininv_truth %>%
 
 #### Bias state ####
 ##### Bias state A ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
-hsb_biasstate_S5_R75_20 <- fread(file_name)
-hsb_biasstate_S5_R75_20 <- data.frame(hsb_biasstate_S5_R75_20)[-1]
+hsb_biasstate_S5_R75_40 <- fread(file_name)
+hsb_biasstate_S5_R75_40 <- data.frame(hsb_biasstate_S5_R75_40)[-1]
 
-hsb_biasstate_S5_R75_20$location <- 'hstatebins'
-hsb_biasstate_S5_R75_20$detection <- 0.5
-hsb_biasstate_S5_R75_20$eradication <- 0.75
-hsb_biasstate_S5_R75_20$budget <- 20
+hsb_biasstate_S5_R75_40$location <- 'hstatebins'
+hsb_biasstate_S5_R75_40$detection <- 0.5
+hsb_biasstate_S5_R75_40$eradication <- 0.75
+hsb_biasstate_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
-hsb_biasstate_S5_R75_20b <- fread(file_name)
-hsb_biasstate_S5_R75_20b <- data.frame(hsb_biasstate_S5_R75_20b)[-1]
+hsb_biasstate_S5_R75_40b <- fread(file_name)
+hsb_biasstate_S5_R75_40b <- data.frame(hsb_biasstate_S5_R75_40b)[-1]
 
-hsb_biasstate_S5_R75_20b$location <- 'hstatebins'
-hsb_biasstate_S5_R75_20b$detection <- 0.5
-hsb_biasstate_S5_R75_20b$eradication <- 0.75
-hsb_biasstate_S5_R75_20b$budget <- 20
+hsb_biasstate_S5_R75_40b$location <- 'hstatebins'
+hsb_biasstate_S5_R75_40b$detection <- 0.5
+hsb_biasstate_S5_R75_40b$eradication <- 0.75
+hsb_biasstate_S5_R75_40b$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
-epi_biasstate_S5_R75_20 <- fread(file_name)
-epi_biasstate_S5_R75_20 <- data.frame(epi_biasstate_S5_R75_20)[-1]
+epi_biasstate_S5_R75_40 <- fread(file_name)
+epi_biasstate_S5_R75_40 <- data.frame(epi_biasstate_S5_R75_40)[-1]
 
-epi_biasstate_S5_R75_20$location <- 'epicenter'
-epi_biasstate_S5_R75_20$detection <- 0.5
-epi_biasstate_S5_R75_20$eradication <- 0.75
-epi_biasstate_S5_R75_20$budget <- 20
+epi_biasstate_S5_R75_40$location <- 'epicenter'
+epi_biasstate_S5_R75_40$detection <- 0.5
+epi_biasstate_S5_R75_40$eradication <- 0.75
+epi_biasstate_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
-epi_biasstate_S5_R75_20b <- fread(file_name)
-epi_biasstate_S5_R75_20b <- data.frame(epi_biasstate_S5_R75_20b)[-1]
+epi_biasstate_S5_R75_40b <- fread(file_name)
+epi_biasstate_S5_R75_40b <- data.frame(epi_biasstate_S5_R75_40b)[-1]
 
-epi_biasstate_S5_R75_20b$location <- 'epicenter'
-epi_biasstate_S5_R75_20b$detection <- 0.5
-epi_biasstate_S5_R75_20b$eradication <- 0.75
-epi_biasstate_S5_R75_20b$budget <- 20
+epi_biasstate_S5_R75_40b$location <- 'epicenter'
+epi_biasstate_S5_R75_40b$detection <- 0.5
+epi_biasstate_S5_R75_40b$eradication <- 0.75
+epi_biasstate_S5_R75_40b$budget <- 40
 
-bias_state <- rbind(hsb_biasstate_S5_R75_20, hsb_biasstate_S5_R75_20b,
-                    epi_biasstate_S5_R75_20, epi_biasstate_S5_R75_20b)
+bias_state <- rbind(hsb_biasstate_S5_R75_40, hsb_biasstate_S5_R75_40b,
+                    epi_biasstate_S5_R75_40, epi_biasstate_S5_R75_40b)
 
 bias_state$rates <- paste0('p = ', bias_state$detection, ', e = ', bias_state$eradication)
 
@@ -377,15 +377,15 @@ bias_stateAC <- bias_state
 
 bias_state <- rbind(bias_stateAC, bias_stateA)
 
-budget20_biasstate <- bias_state %>% 
-  filter(Budget == 20) %>% 
+budget40_biasstate <- bias_state %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2, data) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
 
-budget20_biasstate
+budget40_biasstate
 
-bias_state  <- bias_state  %>% filter(Budget == 20)
+bias_state  <- bias_state  %>% filter(Budget == 40)
 
 bias_state %>% 
   ggplot(aes(x = loc2, y = rel.bias, fill = rates2, color =data,
@@ -452,48 +452,48 @@ ggplot(bias_state_years, aes(x = year, y = mean_b, ymin = lower, ymax = upper, c
 
 #### Bias params ####
 ##### Bias A ####
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
-hsb_biasparam_S5_R75_20 <- fread(file_name)
-hsb_biasparam_S5_R75_20 <- data.frame(hsb_biasparam_S5_R75_20)[-1]
+hsb_biasparam_S5_R75_40 <- fread(file_name)
+hsb_biasparam_S5_R75_40 <- data.frame(hsb_biasparam_S5_R75_40)[-1]
 
-hsb_biasparam_S5_R75_20$location <- 'hstatebins'
-hsb_biasparam_S5_R75_20$detection <- 0.5
-hsb_biasparam_S5_R75_20$eradication <- 0.75
-hsb_biasparam_S5_R75_20$budget <- 20
+hsb_biasparam_S5_R75_40$location <- 'hstatebins'
+hsb_biasparam_S5_R75_40$detection <- 0.5
+hsb_biasparam_S5_R75_40$eradication <- 0.75
+hsb_biasparam_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
-hsb_biasparam_S5_R75_20b <- fread(file_name)
-hsb_biasparam_S5_R75_20b <- data.frame(hsb_biasparam_S5_R75_20b)[-1]
+hsb_biasparam_S5_R75_40b <- fread(file_name)
+hsb_biasparam_S5_R75_40b <- data.frame(hsb_biasparam_S5_R75_40b)[-1]
 
-hsb_biasparam_S5_R75_20b$location <- 'hstatebins'
-hsb_biasparam_S5_R75_20b$detection <- 0.5
-hsb_biasparam_S5_R75_20b$eradication <- 0.75
-hsb_biasparam_S5_R75_20b$budget <- 20
+hsb_biasparam_S5_R75_40b$location <- 'hstatebins'
+hsb_biasparam_S5_R75_40b$detection <- 0.5
+hsb_biasparam_S5_R75_40b$eradication <- 0.75
+hsb_biasparam_S5_R75_40b$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
-epi_biasparam_S5_R75_20 <- fread(file_name)
-epi_biasparam_S5_R75_20 <- data.frame(epi_biasparam_S5_R75_20)[-1]
+epi_biasparam_S5_R75_40 <- fread(file_name)
+epi_biasparam_S5_R75_40 <- data.frame(epi_biasparam_S5_R75_40)[-1]
 
-epi_biasparam_S5_R75_20$location <- 'epicenter'
-epi_biasparam_S5_R75_20$detection <- 0.5
-epi_biasparam_S5_R75_20$eradication <- 0.75
-epi_biasparam_S5_R75_20$budget <- 20
+epi_biasparam_S5_R75_40$location <- 'epicenter'
+epi_biasparam_S5_R75_40$detection <- 0.5
+epi_biasparam_S5_R75_40$eradication <- 0.75
+epi_biasparam_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
-epi_biasparam_S5_R75_20b <- fread(file_name)
-epi_biasparam_S5_R75_20b <- data.frame(epi_biasparam_S5_R75_20b)[-1]
+epi_biasparam_S5_R75_40b <- fread(file_name)
+epi_biasparam_S5_R75_40b <- data.frame(epi_biasparam_S5_R75_40b)[-1]
 
-epi_biasparam_S5_R75_20b$location <- 'epicenter'
-epi_biasparam_S5_R75_20b$detection <- 0.5
-epi_biasparam_S5_R75_20b$eradication <- 0.75
-epi_biasparam_S5_R75_20b$budget <- 20
+epi_biasparam_S5_R75_40b$location <- 'epicenter'
+epi_biasparam_S5_R75_40b$detection <- 0.5
+epi_biasparam_S5_R75_40b$eradication <- 0.75
+epi_biasparam_S5_R75_40b$budget <- 40
 
-bias_param <- rbind(hsb_biasparam_S5_R75_20, hsb_biasparam_S5_R75_20b,
-                    epi_biasparam_S5_R75_20, epi_biasparam_S5_R75_20b)
+bias_param <- rbind(hsb_biasparam_S5_R75_40, hsb_biasparam_S5_R75_40b,
+                    epi_biasparam_S5_R75_40, epi_biasparam_S5_R75_40b)
 
 bias_param$rates <- paste0('p = ', bias_param$detection, ', e = ', bias_param$eradication)
 
@@ -532,12 +532,12 @@ bias_paramAC_p <- bias_paramAC %>% filter(param %in% c("B0.p.h", "B0.p.h", "B1.p
 
 bias_param_p <- rbind(bias_paramA_p, bias_paramAC_p)
 
-budget20_bias_param_p <- bias_param_p %>% 
-  filter(Budget == 20) %>% 
+budget40_bias_param_p <- bias_param_p %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2, data) %>%
   summarise(mean_c = mean(rel.bias))
 
-budget20_bias_param_p
+budget40_bias_param_p
 
 bias_paramAC_pyears <- bias_param_p %>%
   group_by(location, year, rates, rates2, Budget, data) %>%
@@ -574,12 +574,12 @@ bias_paramAC_eps <- bias_paramAC %>% filter(param %in% c("B0.eps.h", "B0.eps.h",
 
 bias_param_eps <- rbind(bias_paramA_eps, bias_paramAC_eps)
 
-budget20_bias_param_eps <- bias_param_eps %>% 
-  filter(Budget == 20) %>% 
+budget40_bias_param_eps <- bias_param_eps %>% 
+  filter(Budget == 40) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
 
-budget20_bias_param_eps
+budget40_bias_param_eps
 
 bias_param_epsyears <- bias_param_eps %>%
   group_by(location, year, rates, rates2, Budget, data) %>%
