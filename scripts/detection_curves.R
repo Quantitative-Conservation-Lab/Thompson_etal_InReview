@@ -50,20 +50,21 @@ hrsdat_summary
 #### PLOTS ####
 cols <- brewer.pal(12, "Paired") 
 
-colors2 <- c('red','grey20')
+colors2 <- c('grey20','red')
 
+hrsdat$data[hrsdat$data == 'eps'] <- paste0('\u03F5')
 
 hrsdat %>% 
-  ggplot(aes(x = rate, y = hours, color = data,
+  ggplot(aes(x = hours, y = rate, color = data,
              group = interaction(rate, data)))+
   geom_boxplot() +
-  scale_x_continuous(breaks = c(0.25, 0.5, 0.75))+
-  scale_color_manual(name = "Priotization",
+  scale_y_continuous(breaks = c(0.25, 0.5, 0.75))+
+  scale_color_manual(name = "Parameter",
                      values = colors2, 
-                     labels = c(paste0('\u03F5'), 'eps'))+
+                     labels = c('p', paste0('\u03F5')))+
   
-  xlab("Rate")+
-  ylab("Hours")+
+  xlab("Hours")+
+  ylab("Rate")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
@@ -78,18 +79,19 @@ cols <- brewer.pal(12, "Paired")
 
 colors2 <- c('red','grey20')
 
+hrsdat_summary$data[hrsdat_summary$data == 'eps'] <- paste0('\u03F5')
 
 hrsdat_summary %>% 
-  ggplot(aes(x = rate, y = mean, ymin = lower, ymax = upper, color = data,
+  ggplot(aes(y = rate, x = mean, xmin = lower, xmax = upper, color = data,
              group = interaction(rate, data)))+
   geom_point() +
-  geom_errorbar()+
-  scale_color_manual(name = "Priotization",
+  geom_errorbar(width = 0.05)+
+  scale_color_manual(name = "Parameter",
                      values = colors2, 
-                     labels = c(paste0('\u03F5'), 'p'))+
-  scale_x_continuous(breaks = c(0.25, 0.5, 0.75))+
-  xlab("Rate")+
-  ylab("Hours")+
+                     labels = c('p', paste0('\u03F5')))+
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75))+
+  xlab("Hours")+
+  ylab("Rate")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
