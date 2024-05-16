@@ -6717,4 +6717,66 @@ ggplot(suppression_alls_shift)+
 # fwrite(pareto,file_name)
 
 
+#### Bias vs outcome ####
+budget20_biasstate$budget <- 20
+budget40_biasstate$budget <- 40
+budget60_biasstate$budget <- 60
+
+biasstate <- rbind(budget20_biasstate, budget40_biasstate, budget60_biasstate)
+colnames(biasstate)[2:3] <- c('mean_bias', 'max_bias')
+
+biasstate <- biasstate %>% select(loc2, 
+                                budget, mean_bias, max_bias)
+
+budget20_suppress$budget <- 20
+budget40_suppress$budget <- 40
+budget60_suppress$budget <- 60
+
+
+suppress <- rbind(budget20_suppress,budget40_suppress,budget60_suppress)
+colnames(suppress)[2:3] <- c('mean_suppress', 'max_suppress')
+
+suppress <- suppress %>% select(
+                    mean_suppress, max_suppress)
+
+
+combined <- cbind(biasstate, suppress)
+
+combined <- combined %>% select(loc2, mean_bias, max_bias,
+                                budget, mean_suppress, max_suppress)
+
+sites <- combined %>% filter(loc2 == 'linear0.50.75')
+sites$loc2 <- 'Linear(0.5, 0.75)'
+
+ggplot(combined)+
+  geom_point(aes(x = mean_bias, y = mean_suppress)) + #, color = 'white')+
+  geom_point(data = sites, aes(x = mean_bias, y = mean_suppress), color = 'red')+
+  geom_vline(data = sites, aes(xintercept = mean_bias), color = 'red')+
+  geom_text_repel(data=sites, aes(x = mean_bias, y = mean_suppress,
+                                   label=loc2), 
+                  color="black", 
+                  segment.color = "white",
+                  nudge_y = -0.01,
+                  size=4, fontface="bold"
+  )+
+  xlab("Average invasion state bias") + ylab("Final invasion state")+
+  theme_bw() +  facet_wrap(~budget) +
+  
+  theme(strip.background=element_rect(colour="white",
+                                      fill="white"),
+        #  strip.text.x = element_blank(),
+        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14)
+        # legend.position = "none",
+  )
+
+
+combined_1 <- psel(combined, 
+                     low(mean_bias) * low(max_suppress))
+
+combined_1
 
