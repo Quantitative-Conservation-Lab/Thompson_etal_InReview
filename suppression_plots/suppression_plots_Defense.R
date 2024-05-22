@@ -79,20 +79,15 @@ suppression_alls2$type[suppression_alls2$type == 'mini-max'] <- 'ii) mini-max'
 pareto_alls2$type[pareto_alls2$type == 'expected value'] <- 'i) expected value'
 pareto_alls2$type[pareto_alls2$type == 'mini-max'] <- 'ii) mini-max'
 
-p2<- ggplot(suppression_alls2)+
+suppression_alls2a <- suppression_alls2 %>% filter(type == 'i) expected value')
+suppression_alls2a <- suppression_alls2 %>% filter(type == 'ii) mini-max')
+
+p2<- ggplot(suppression_alls2a)+
   geom_point(aes(x = Budget, y = state,
                  shape = location,
                  color = rates2, size = data))+
-  #geom_text_repel(data=pareto_alls1, aes(x = Budget, y = state,
-  #                                      label=pareto_alls1$location2), 
-  #              color="black", 
-  #             segment.color = "white",
-  #            size=5 , fontface="bold", 
-  #           nudge_y = -0.1,
-  #                 nudge_x = 2
-  #  )+
   scale_x_continuous(breaks = c(20,40,60))+
-  ylim(c(0.2, 1.5))+
+  ylim(c(0.75, 1.5))+
   scale_size_manual(name = 'Data', values = c(2,5))+
   scale_shape_manual(name = "Priotization",
                      values = c(21, 22, 24), 
@@ -103,7 +98,6 @@ p2<- ggplot(suppression_alls2)+
                     values = colors) +
   ylab("Final invasion state") +
   xlab("Budget (hours)")+
-  facet_wrap(~type)+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
