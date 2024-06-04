@@ -68,8 +68,7 @@ hrsdat %>%
         panel.border = element_rect(colour = "gray", size = 1.5), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.ticks = element_blank())+
-  facet_wrap(~data, scales="free")
+        axis.ticks = element_blank())
 
 #### PLOTS 2 ####
 cols <- brewer.pal(12, "Paired") 
@@ -80,10 +79,6 @@ hrsdat_summary$data[hrsdat_summary$data == 'eps'] <- paste0('e')
 hrsdat_summary$data[hrsdat_summary$data == 'p'] <- paste0('d')
 
 
-
-hplot$data <- factor(hplot$data, 
-                      levels = rev(hplot$data))
-
 hplot <- 
 hrsdat_summary %>% 
   ggplot(aes(y = rate, x = mean, xmin = lower, xmax = upper, shape = factor(data), 
@@ -93,7 +88,7 @@ hrsdat_summary %>%
   geom_errorbar(width = 0.02)+
   scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0))+
   xlab("Effort (hours)")+
-  ylab("Rate")+
+  ylab("Probability")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
@@ -107,20 +102,26 @@ hplot
 
 
 hplot <- hplot + scale_colour_manual("Parameter",
-                                       values = c('red', 'black'),
-                                       labels = c(paste0('Eradication rate (', '\u03F5', ')'),
-                                         'Detection rate (p)' 
+                                       values = c('black', 'red'),
+                                       labels = c('Detection (p)', paste0(
+                                         'Eradication (', '\u03F5', ')')
+                                         
                                                    
-                                                 ),
-                                     guide = guide_legend(reverse = TRUE)   
+                                                 )#,
+                                    # guide = guide_legend(reverse = TRUE)   
                                      )
 
 hplot
   
 hplot <- hplot +  scale_shape_manual(name = "Parameter",
                      values = c(16, 1), 
-                     labels = c(paste0('Eradication rate (', '\u03F5', ')'),
-                                'Detection rate (p)'),
-                     guide = guide_legend(reverse = TRUE)   )
+                     labels = c('Detection (p)', paste0(
+                       'Eradication (', '\u03F5', ')')
+                       
+                       
+                     )#,
+                     # guide = guide_legend(reverse = TRUE)   
+)
 
 hplot
+

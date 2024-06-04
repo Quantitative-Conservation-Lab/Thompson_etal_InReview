@@ -11,7 +11,7 @@ cols <- brewer.pal(12, "Paired")
 colors <- c(cols[1:4], cols[9:10])
 
 ##### plots space 1 ####
-path <- 'E:\\Chapter3\\results'
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'suppression_data2.csv',sep = '/')
 suppression_alls1 <- fread(file_name)
 
@@ -33,20 +33,21 @@ p1 <- ggplot(suppression_alls1)+
                                          label=pareto_alls1$location2), 
                   color="black", 
                   segment.color = "white",
-                  size=5 , fontface="bold", 
+                  size=4 , fontface="bold", 
                   nudge_y = -0.1,
                   nudge_x = 2
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
-  scale_shape_manual(name = "Priotization",
+  scale_shape_manual(name = "Spatial priority",
                      values = c(21, 22, 24), 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors) +
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  ylab("Final invasion state") +
-  xlab("Budget (hours)")+
+  scale_x_continuous(breaks = c(20,40,60))+
+  ylab("Final average invasion state") +
+  xlab("Investment (hours)")+
   facet_wrap(~type)+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -63,7 +64,7 @@ p1 <- ggplot(suppression_alls1)+
 p1
 
 ##### plots space 2 ####
-path <- 'E:\\Chapter3\\results-space2'
+path <- 'D:\\Chapter3\\results-space2'
 file_name = paste(path, 'suppression_data2.csv',sep = '/')
 suppression_alls2 <- fread(file_name)
 
@@ -85,20 +86,21 @@ p2<- ggplot(suppression_alls2)+
                                          label=pareto_alls2$location2), 
                   color="black", 
                   segment.color = "white",
-                  size=5 , fontface="bold", 
+                  size=4 , fontface="bold", 
                   nudge_y = -0.1,
                   nudge_x = 2
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
-  scale_shape_manual(name = "Priotization",
+  scale_shape_manual(name = "Spatial priority",
                      values = c(21, 22, 24), 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors) +
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  ylab("Final invasion state") +
-  xlab("Budget (hours)")+
+  scale_x_continuous(breaks = c(20,40,60))+
+  ylab("Final average invasion state") +
+  xlab("Investment (hours)")+
   facet_wrap(~type)+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -129,19 +131,19 @@ rates_legend <- ggplot(suppression_alls2)+
                   nudge_x = 2
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
-  scale_shape_manual(name = "Priotization",
+  scale_shape_manual(name = "Spatial priority",
                      values = c(21, 22, 24), 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors,
                      guide = guide_legend(
                        direction = "horizontal",
                        title.position = "top"
                      )) +
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  ylab("Final invasion state") +
-  xlab("Budget (hours)")+
+  ylab("Final average invasion state") +
+  xlab("Investment (hours)")+
   facet_wrap(~type)+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -171,16 +173,16 @@ shape_legend <- ggplot(suppression_alls2)+
                   nudge_x = 2
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
-  scale_shape_manual(name = "Priotization",
+  scale_shape_manual(name = "Spatial priority",
                      values = c(21, 22, 24), 
                      labels = c('Epicenter', 'High invasion', 'Linear'),
                      )+
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors) +
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  ylab("Final invasion state") +
-  xlab("Budget (hours)")+
+  ylab("Final average invasion state") +
+  xlab("Investment (hours)")+
   facet_wrap(~type)+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -211,15 +213,15 @@ data_legend <- ggplot(suppression_alls2)+
                   nudge_x = 2
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
-  scale_shape_manual(name = "Priotization",
+  scale_shape_manual(name = "Spatial priority",
                      values = c(21, 22, 24), 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors) +
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  ylab("Final invasion state") +
-  xlab("Budget (hours)")+
+  ylab("Final average invasion state") +
+  xlab("Investment (hours)")+
   facet_wrap(~type)+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",

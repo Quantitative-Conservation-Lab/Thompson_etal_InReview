@@ -11,7 +11,7 @@ library(ggrepel)
 ##### hstatebins #####
 #-- Budget = 20 --#
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_20 <- fread(file_name)
 state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
@@ -21,7 +21,7 @@ state_truth_S25_R5_20$detection <- 0.25
 state_truth_S25_R5_20$eradication <- 0.5
 state_truth_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_20b <- fread(file_name)
 state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
@@ -32,7 +32,7 @@ state_truth_S25_R5_20b$eradication <- 0.5
 state_truth_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_20 <- fread(file_name)
 state_truth_S25_R75_20 <- data.frame(state_truth_S25_R75_20)[-1]
@@ -42,7 +42,7 @@ state_truth_S25_R75_20$detection <- 0.25
 state_truth_S25_R75_20$eradication <- 0.75
 state_truth_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_20b <- fread(file_name)
 state_truth_S25_R75_20b <- data.frame(state_truth_S25_R75_20b)[-1]
@@ -53,7 +53,7 @@ state_truth_S25_R75_20b$eradication <- 0.75
 state_truth_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_20 <- fread(file_name)
 state_truth_S5_R5_20 <- data.frame(state_truth_S5_R5_20)[-1]
@@ -63,7 +63,7 @@ state_truth_S5_R5_20$detection <- 0.5
 state_truth_S5_R5_20$eradication <- 0.5
 state_truth_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_20b <- fread(file_name)
 state_truth_S5_R5_20b <- data.frame(state_truth_S5_R5_20b)[-1]
@@ -74,7 +74,7 @@ state_truth_S5_R5_20b$eradication <- 0.5
 state_truth_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_20 <- fread(file_name)
 state_truth_S5_R75_20 <- data.frame(state_truth_S5_R75_20)[-1]
@@ -84,7 +84,7 @@ state_truth_S5_R75_20$detection <- 0.5
 state_truth_S5_R75_20$eradication <- 0.75
 state_truth_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_20b <- fread(file_name)
 state_truth_S5_R75_20b <- data.frame(state_truth_S5_R75_20b)[-1]
@@ -95,7 +95,7 @@ state_truth_S5_R75_20b$eradication <- 0.75
 state_truth_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_20 <- fread(file_name)
 state_truth_S75_R5_20 <- data.frame(state_truth_S75_R5_20)[-1]
@@ -105,7 +105,7 @@ state_truth_S75_R5_20$detection <- 0.75
 state_truth_S75_R5_20$eradication <- 0.5
 state_truth_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_20b <- fread(file_name)
 state_truth_S75_R5_20b <- data.frame(state_truth_S75_R5_20b)[-1]
@@ -116,7 +116,7 @@ state_truth_S75_R5_20b$eradication <- 0.5
 state_truth_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_20 <- fread(file_name)
 state_truth_S75_R75_20 <- data.frame(state_truth_S75_R75_20)[-1]
@@ -126,7 +126,7 @@ state_truth_S75_R75_20$detection <- 0.75
 state_truth_S75_R75_20$eradication <- 0.75
 state_truth_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_20b <- fread(file_name)
 state_truth_S75_R75_20b <- data.frame(state_truth_S75_R75_20b)[-1]
@@ -146,7 +146,7 @@ state_truth_20 <- rbind(state_truth_S25_R5_20,state_truth_S25_R5_20b,
 
 #-- Budget = 40 --#
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_40 <- fread(file_name)
 state_truth_S25_R5_40 <- data.frame(state_truth_S25_R5_40)[-1]
@@ -156,7 +156,7 @@ state_truth_S25_R5_40$detection <- 0.25
 state_truth_S25_R5_40$eradication <- 0.5
 state_truth_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_40b <- fread(file_name)
 state_truth_S25_R5_40b <- data.frame(state_truth_S25_R5_40b)[-1]
@@ -167,7 +167,7 @@ state_truth_S25_R5_40b$eradication <- 0.5
 state_truth_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_40 <- fread(file_name)
 state_truth_S25_R75_40 <- data.frame(state_truth_S25_R75_40)[-1]
@@ -177,7 +177,7 @@ state_truth_S25_R75_40$detection <- 0.25
 state_truth_S25_R75_40$eradication <- 0.75
 state_truth_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_40b <- fread(file_name)
 state_truth_S25_R75_40b <- data.frame(state_truth_S25_R75_40b)[-1]
@@ -188,7 +188,7 @@ state_truth_S25_R75_40b$eradication <- 0.75
 state_truth_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_40 <- fread(file_name)
 state_truth_S5_R5_40 <- data.frame(state_truth_S5_R5_40)[-1]
@@ -198,7 +198,7 @@ state_truth_S5_R5_40$detection <- 0.5
 state_truth_S5_R5_40$eradication <- 0.5
 state_truth_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_40b <- fread(file_name)
 state_truth_S5_R5_40b <- data.frame(state_truth_S5_R5_40b)[-1]
@@ -209,7 +209,7 @@ state_truth_S5_R5_40b$eradication <- 0.5
 state_truth_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_40 <- fread(file_name)
 state_truth_S5_R75_40 <- data.frame(state_truth_S5_R75_40)[-1]
@@ -219,7 +219,7 @@ state_truth_S5_R75_40$detection <- 0.5
 state_truth_S5_R75_40$eradication <- 0.75
 state_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_40b <- fread(file_name)
 state_truth_S5_R75_40b <- data.frame(state_truth_S5_R75_40b)[-1]
@@ -230,7 +230,7 @@ state_truth_S5_R75_40b$eradication <- 0.75
 state_truth_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_40 <- fread(file_name)
 state_truth_S75_R5_40 <- data.frame(state_truth_S75_R5_40)[-1]
@@ -240,7 +240,7 @@ state_truth_S75_R5_40$detection <- 0.75
 state_truth_S75_R5_40$eradication <- 0.5
 state_truth_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_40b <- fread(file_name)
 state_truth_S75_R5_40b <- data.frame(state_truth_S75_R5_40b)[-1]
@@ -251,7 +251,7 @@ state_truth_S75_R5_40b$eradication <- 0.5
 state_truth_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_40 <- fread(file_name)
 state_truth_S75_R75_40 <- data.frame(state_truth_S75_R75_40)[-1]
@@ -261,7 +261,7 @@ state_truth_S75_R75_40$detection <- 0.75
 state_truth_S75_R75_40$eradication <- 0.75
 state_truth_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_40b <- fread(file_name)
 state_truth_S75_R75_40b <- data.frame(state_truth_S75_R75_40b)[-1]
@@ -281,7 +281,7 @@ state_truth_40 <- rbind(state_truth_S25_R5_40,state_truth_S25_R5_40b,
 
 #-- Budget = 60 --#
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_60 <- fread(file_name)
 state_truth_S25_R5_60 <- data.frame(state_truth_S25_R5_60)[-1]
@@ -291,7 +291,7 @@ state_truth_S25_R5_60$detection <- 0.25
 state_truth_S25_R5_60$eradication <- 0.5
 state_truth_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_60b <- fread(file_name)
 state_truth_S25_R5_60b <- data.frame(state_truth_S25_R5_60b)[-1]
@@ -302,7 +302,7 @@ state_truth_S25_R5_60b$eradication <- 0.5
 state_truth_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_60 <- fread(file_name)
 state_truth_S25_R75_60 <- data.frame(state_truth_S25_R75_60)[-1]
@@ -312,7 +312,7 @@ state_truth_S25_R75_60$detection <- 0.25
 state_truth_S25_R75_60$eradication <- 0.75
 state_truth_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_60b <- fread(file_name)
 state_truth_S25_R75_60b <- data.frame(state_truth_S25_R75_60b)[-1]
@@ -323,7 +323,7 @@ state_truth_S25_R75_60b$eradication <- 0.75
 state_truth_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_60 <- fread(file_name)
 state_truth_S5_R5_60 <- data.frame(state_truth_S5_R5_60)[-1]
@@ -333,7 +333,7 @@ state_truth_S5_R5_60$detection <- 0.5
 state_truth_S5_R5_60$eradication <- 0.5
 state_truth_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_60b <- fread(file_name)
 state_truth_S5_R5_60b <- data.frame(state_truth_S5_R5_60b)[-1]
@@ -344,7 +344,7 @@ state_truth_S5_R5_60b$eradication <- 0.5
 state_truth_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_60 <- fread(file_name)
 state_truth_S5_R75_60 <- data.frame(state_truth_S5_R75_60)[-1]
@@ -354,7 +354,7 @@ state_truth_S5_R75_60$detection <- 0.5
 state_truth_S5_R75_60$eradication <- 0.75
 state_truth_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_60b <- fread(file_name)
 state_truth_S5_R75_60b <- data.frame(state_truth_S5_R75_60b)[-1]
@@ -365,7 +365,7 @@ state_truth_S5_R75_60b$eradication <- 0.75
 state_truth_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_60 <- fread(file_name)
 state_truth_S75_R5_60 <- data.frame(state_truth_S75_R5_60)[-1]
@@ -375,7 +375,7 @@ state_truth_S75_R5_60$detection <- 0.75
 state_truth_S75_R5_60$eradication <- 0.5
 state_truth_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_60b <- fread(file_name)
 state_truth_S75_R5_60b <- data.frame(state_truth_S75_R5_60b)[-1]
@@ -386,7 +386,7 @@ state_truth_S75_R5_60b$eradication <- 0.5
 state_truth_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_60 <- fread(file_name)
 state_truth_S75_R75_60 <- data.frame(state_truth_S75_R75_60)[-1]
@@ -396,7 +396,7 @@ state_truth_S75_R75_60$detection <- 0.75
 state_truth_S75_R75_60$eradication <- 0.75
 state_truth_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_60b <- fread(file_name)
 state_truth_S75_R75_60b <- data.frame(state_truth_S75_R75_60b)[-1]
@@ -420,7 +420,7 @@ state_truth_hstatebins <- rbind(state_truth_20, state_truth_40, state_truth_60)
 ##### linear #####
 #-- Budget = 20 --#
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_20 <- fread(file_name)
 state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
@@ -430,7 +430,7 @@ state_truth_S25_R5_20$detection <- 0.25
 state_truth_S25_R5_20$eradication <- 0.5
 state_truth_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_20b <- fread(file_name)
 state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
@@ -441,7 +441,7 @@ state_truth_S25_R5_20b$eradication <- 0.5
 state_truth_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_20 <- fread(file_name)
 state_truth_S25_R75_20 <- data.frame(state_truth_S25_R75_20)[-1]
@@ -451,7 +451,7 @@ state_truth_S25_R75_20$detection <- 0.25
 state_truth_S25_R75_20$eradication <- 0.75
 state_truth_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_20b <- fread(file_name)
 state_truth_S25_R75_20b <- data.frame(state_truth_S25_R75_20b)[-1]
@@ -462,7 +462,7 @@ state_truth_S25_R75_20b$eradication <- 0.75
 state_truth_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_20 <- fread(file_name)
 state_truth_S5_R5_20 <- data.frame(state_truth_S5_R5_20)[-1]
@@ -472,7 +472,7 @@ state_truth_S5_R5_20$detection <- 0.5
 state_truth_S5_R5_20$eradication <- 0.5
 state_truth_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_20b <- fread(file_name)
 state_truth_S5_R5_20b <- data.frame(state_truth_S5_R5_20b)[-1]
@@ -483,7 +483,7 @@ state_truth_S5_R5_20b$eradication <- 0.5
 state_truth_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_20 <- fread(file_name)
 state_truth_S5_R75_20 <- data.frame(state_truth_S5_R75_20)[-1]
@@ -493,7 +493,7 @@ state_truth_S5_R75_20$detection <- 0.5
 state_truth_S5_R75_20$eradication <- 0.75
 state_truth_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_20b <- fread(file_name)
 state_truth_S5_R75_20b <- data.frame(state_truth_S5_R75_20b)[-1]
@@ -504,7 +504,7 @@ state_truth_S5_R75_20b$eradication <- 0.75
 state_truth_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_20 <- fread(file_name)
 state_truth_S75_R5_20 <- data.frame(state_truth_S75_R5_20)[-1]
@@ -514,7 +514,7 @@ state_truth_S75_R5_20$detection <- 0.75
 state_truth_S75_R5_20$eradication <- 0.5
 state_truth_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_20b <- fread(file_name)
 state_truth_S75_R5_20b <- data.frame(state_truth_S75_R5_20b)[-1]
@@ -525,7 +525,7 @@ state_truth_S75_R5_20b$eradication <- 0.5
 state_truth_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_20 <- fread(file_name)
 state_truth_S75_R75_20 <- data.frame(state_truth_S75_R75_20)[-1]
@@ -535,7 +535,7 @@ state_truth_S75_R75_20$detection <- 0.75
 state_truth_S75_R75_20$eradication <- 0.75
 state_truth_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_20b <- fread(file_name)
 state_truth_S75_R75_20b <- data.frame(state_truth_S75_R75_20b)[-1]
@@ -555,7 +555,7 @@ state_truth_20 <- rbind(state_truth_S25_R5_20,state_truth_S25_R5_20b,
 
 #-- Budget = 40 --#
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_40 <- fread(file_name)
 state_truth_S25_R5_40 <- data.frame(state_truth_S25_R5_40)[-1]
@@ -565,7 +565,7 @@ state_truth_S25_R5_40$detection <- 0.25
 state_truth_S25_R5_40$eradication <- 0.5
 state_truth_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_40b <- fread(file_name)
 state_truth_S25_R5_40b <- data.frame(state_truth_S25_R5_40b)[-1]
@@ -576,7 +576,7 @@ state_truth_S25_R5_40b$eradication <- 0.5
 state_truth_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_40 <- fread(file_name)
 state_truth_S25_R75_40 <- data.frame(state_truth_S25_R75_40)[-1]
@@ -586,7 +586,7 @@ state_truth_S25_R75_40$detection <- 0.25
 state_truth_S25_R75_40$eradication <- 0.75
 state_truth_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_40b <- fread(file_name)
 state_truth_S25_R75_40b <- data.frame(state_truth_S25_R75_40b)[-1]
@@ -597,7 +597,7 @@ state_truth_S25_R75_40b$eradication <- 0.75
 state_truth_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_40 <- fread(file_name)
 state_truth_S5_R5_40 <- data.frame(state_truth_S5_R5_40)[-1]
@@ -607,7 +607,7 @@ state_truth_S5_R5_40$detection <- 0.5
 state_truth_S5_R5_40$eradication <- 0.5
 state_truth_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_40b <- fread(file_name)
 state_truth_S5_R5_40b <- data.frame(state_truth_S5_R5_40b)[-1]
@@ -618,7 +618,7 @@ state_truth_S5_R5_40b$eradication <- 0.5
 state_truth_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_40 <- fread(file_name)
 state_truth_S5_R75_40 <- data.frame(state_truth_S5_R75_40)[-1]
@@ -628,7 +628,7 @@ state_truth_S5_R75_40$detection <- 0.5
 state_truth_S5_R75_40$eradication <- 0.75
 state_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_40b <- fread(file_name)
 state_truth_S5_R75_40b <- data.frame(state_truth_S5_R75_40b)[-1]
@@ -639,7 +639,7 @@ state_truth_S5_R75_40b$eradication <- 0.75
 state_truth_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_40 <- fread(file_name)
 state_truth_S75_R5_40 <- data.frame(state_truth_S75_R5_40)[-1]
@@ -649,7 +649,7 @@ state_truth_S75_R5_40$detection <- 0.75
 state_truth_S75_R5_40$eradication <- 0.5
 state_truth_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_40b <- fread(file_name)
 state_truth_S75_R5_40b <- data.frame(state_truth_S75_R5_40b)[-1]
@@ -660,7 +660,7 @@ state_truth_S75_R5_40b$eradication <- 0.5
 state_truth_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_40 <- fread(file_name)
 state_truth_S75_R75_40 <- data.frame(state_truth_S75_R75_40)[-1]
@@ -670,7 +670,7 @@ state_truth_S75_R75_40$detection <- 0.75
 state_truth_S75_R75_40$eradication <- 0.75
 state_truth_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_40b <- fread(file_name)
 state_truth_S75_R75_40b <- data.frame(state_truth_S75_R75_40b)[-1]
@@ -689,7 +689,7 @@ state_truth_40 <- rbind(state_truth_S25_R5_40,state_truth_S25_R5_40b,
                         state_truth_S75_R75_40,state_truth_S5_R75_40b)
 #-- Budget = 60 --#
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_60 <- fread(file_name)
 state_truth_S25_R5_60 <- data.frame(state_truth_S25_R5_60)[-1]
@@ -699,7 +699,7 @@ state_truth_S25_R5_60$detection <- 0.25
 state_truth_S25_R5_60$eradication <- 0.5
 state_truth_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_60b <- fread(file_name)
 state_truth_S25_R5_60b <- data.frame(state_truth_S25_R5_60b)[-1]
@@ -710,7 +710,7 @@ state_truth_S25_R5_60b$eradication <- 0.5
 state_truth_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_60 <- fread(file_name)
 state_truth_S25_R75_60 <- data.frame(state_truth_S25_R75_60)[-1]
@@ -720,7 +720,7 @@ state_truth_S25_R75_60$detection <- 0.25
 state_truth_S25_R75_60$eradication <- 0.75
 state_truth_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_60b <- fread(file_name)
 state_truth_S25_R75_60b <- data.frame(state_truth_S25_R75_60b)[-1]
@@ -731,7 +731,7 @@ state_truth_S25_R75_60b$eradication <- 0.75
 state_truth_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_60 <- fread(file_name)
 state_truth_S5_R5_60 <- data.frame(state_truth_S5_R5_60)[-1]
@@ -741,7 +741,7 @@ state_truth_S5_R5_60$detection <- 0.5
 state_truth_S5_R5_60$eradication <- 0.5
 state_truth_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_60b <- fread(file_name)
 state_truth_S5_R5_60b <- data.frame(state_truth_S5_R5_60b)[-1]
@@ -752,7 +752,7 @@ state_truth_S5_R5_60b$eradication <- 0.5
 state_truth_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_60 <- fread(file_name)
 state_truth_S5_R75_60 <- data.frame(state_truth_S5_R75_60)[-1]
@@ -762,7 +762,7 @@ state_truth_S5_R75_60$detection <- 0.5
 state_truth_S5_R75_60$eradication <- 0.75
 state_truth_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_60b <- fread(file_name)
 state_truth_S5_R75_60b <- data.frame(state_truth_S5_R75_60b)[-1]
@@ -773,7 +773,7 @@ state_truth_S5_R75_60b$eradication <- 0.75
 state_truth_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_60 <- fread(file_name)
 state_truth_S75_R5_60 <- data.frame(state_truth_S75_R5_60)[-1]
@@ -783,7 +783,7 @@ state_truth_S75_R5_60$detection <- 0.75
 state_truth_S75_R5_60$eradication <- 0.5
 state_truth_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_60b <- fread(file_name)
 state_truth_S75_R5_60b <- data.frame(state_truth_S75_R5_60b)[-1]
@@ -794,7 +794,7 @@ state_truth_S75_R5_60b$eradication <- 0.5
 state_truth_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_60 <- fread(file_name)
 state_truth_S75_R75_60 <- data.frame(state_truth_S75_R75_60)[-1]
@@ -804,7 +804,7 @@ state_truth_S75_R75_60$detection <- 0.75
 state_truth_S75_R75_60$eradication <- 0.75
 state_truth_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_60b <- fread(file_name)
 state_truth_S75_R75_60b <- data.frame(state_truth_S75_R75_60b)[-1]
@@ -828,7 +828,7 @@ state_truth_linear <- rbind(state_truth_20, state_truth_40, state_truth_60)
 ##### epicenter #####
 #-- Budget = 20 --#
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_20 <- fread(file_name)
 state_truth_S25_R5_20 <- data.frame(state_truth_S25_R5_20)[-1]
@@ -838,7 +838,7 @@ state_truth_S25_R5_20$detection <- 0.25
 state_truth_S25_R5_20$eradication <- 0.5
 state_truth_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_20b <- fread(file_name)
 state_truth_S25_R5_20b <- data.frame(state_truth_S25_R5_20b)[-1]
@@ -849,7 +849,7 @@ state_truth_S25_R5_20b$eradication <- 0.5
 state_truth_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_20 <- fread(file_name)
 state_truth_S25_R75_20 <- data.frame(state_truth_S25_R75_20)[-1]
@@ -859,7 +859,7 @@ state_truth_S25_R75_20$detection <- 0.25
 state_truth_S25_R75_20$eradication <- 0.75
 state_truth_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_20b <- fread(file_name)
 state_truth_S25_R75_20b <- data.frame(state_truth_S25_R75_20b)[-1]
@@ -870,7 +870,7 @@ state_truth_S25_R75_20b$eradication <- 0.75
 state_truth_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_20 <- fread(file_name)
 state_truth_S5_R5_20 <- data.frame(state_truth_S5_R5_20)[-1]
@@ -880,7 +880,7 @@ state_truth_S5_R5_20$detection <- 0.5
 state_truth_S5_R5_20$eradication <- 0.5
 state_truth_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_20b <- fread(file_name)
 state_truth_S5_R5_20b <- data.frame(state_truth_S5_R5_20b)[-1]
@@ -891,7 +891,7 @@ state_truth_S5_R5_20b$eradication <- 0.5
 state_truth_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_20 <- fread(file_name)
 state_truth_S5_R75_20 <- data.frame(state_truth_S5_R75_20)[-1]
@@ -901,7 +901,7 @@ state_truth_S5_R75_20$detection <- 0.5
 state_truth_S5_R75_20$eradication <- 0.75
 state_truth_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_20b <- fread(file_name)
 state_truth_S5_R75_20b <- data.frame(state_truth_S5_R75_20b)[-1]
@@ -912,7 +912,7 @@ state_truth_S5_R75_20b$eradication <- 0.75
 state_truth_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_20 <- fread(file_name)
 state_truth_S75_R5_20 <- data.frame(state_truth_S75_R5_20)[-1]
@@ -922,7 +922,7 @@ state_truth_S75_R5_20$detection <- 0.75
 state_truth_S75_R5_20$eradication <- 0.5
 state_truth_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_20b <- fread(file_name)
 state_truth_S75_R5_20b <- data.frame(state_truth_S75_R5_20b)[-1]
@@ -933,7 +933,7 @@ state_truth_S75_R5_20b$eradication <- 0.5
 state_truth_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_20 <- fread(file_name)
 state_truth_S75_R75_20 <- data.frame(state_truth_S75_R75_20)[-1]
@@ -943,7 +943,7 @@ state_truth_S75_R75_20$detection <- 0.75
 state_truth_S75_R75_20$eradication <- 0.75
 state_truth_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_20b <- fread(file_name)
 state_truth_S75_R75_20b <- data.frame(state_truth_S75_R75_20b)[-1]
@@ -963,7 +963,7 @@ state_truth_20 <- rbind(state_truth_S25_R5_20,state_truth_S25_R5_20b,
 
 #-- Budget = 40 --#
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_40 <- fread(file_name)
 state_truth_S25_R5_40 <- data.frame(state_truth_S25_R5_40)[-1]
@@ -973,7 +973,7 @@ state_truth_S25_R5_40$detection <- 0.25
 state_truth_S25_R5_40$eradication <- 0.5
 state_truth_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_40b <- fread(file_name)
 state_truth_S25_R5_40b <- data.frame(state_truth_S25_R5_40b)[-1]
@@ -984,7 +984,7 @@ state_truth_S25_R5_40b$eradication <- 0.5
 state_truth_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_40 <- fread(file_name)
 state_truth_S25_R75_40 <- data.frame(state_truth_S25_R75_40)[-1]
@@ -994,7 +994,7 @@ state_truth_S25_R75_40$detection <- 0.25
 state_truth_S25_R75_40$eradication <- 0.75
 state_truth_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_40b <- fread(file_name)
 state_truth_S25_R75_40b <- data.frame(state_truth_S25_R75_40b)[-1]
@@ -1005,7 +1005,7 @@ state_truth_S25_R75_40b$eradication <- 0.75
 state_truth_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_40 <- fread(file_name)
 state_truth_S5_R5_40 <- data.frame(state_truth_S5_R5_40)[-1]
@@ -1015,7 +1015,7 @@ state_truth_S5_R5_40$detection <- 0.5
 state_truth_S5_R5_40$eradication <- 0.5
 state_truth_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_40b <- fread(file_name)
 state_truth_S5_R5_40b <- data.frame(state_truth_S5_R5_40b)[-1]
@@ -1026,7 +1026,7 @@ state_truth_S5_R5_40b$eradication <- 0.5
 state_truth_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_40 <- fread(file_name)
 state_truth_S5_R75_40 <- data.frame(state_truth_S5_R75_40)[-1]
@@ -1036,7 +1036,7 @@ state_truth_S5_R75_40$detection <- 0.5
 state_truth_S5_R75_40$eradication <- 0.75
 state_truth_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_40b <- fread(file_name)
 state_truth_S5_R75_40b <- data.frame(state_truth_S5_R75_40b)[-1]
@@ -1047,7 +1047,7 @@ state_truth_S5_R75_40b$eradication <- 0.75
 state_truth_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_40 <- fread(file_name)
 state_truth_S75_R5_40 <- data.frame(state_truth_S75_R5_40)[-1]
@@ -1057,7 +1057,7 @@ state_truth_S75_R5_40$detection <- 0.75
 state_truth_S75_R5_40$eradication <- 0.5
 state_truth_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_40b <- fread(file_name)
 state_truth_S75_R5_40b <- data.frame(state_truth_S75_R5_40b)[-1]
@@ -1068,7 +1068,7 @@ state_truth_S75_R5_40b$eradication <- 0.5
 state_truth_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_40 <- fread(file_name)
 state_truth_S75_R75_40 <- data.frame(state_truth_S75_R75_40)[-1]
@@ -1078,7 +1078,7 @@ state_truth_S75_R75_40$detection <- 0.75
 state_truth_S75_R75_40$eradication <- 0.75
 state_truth_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_40b <- fread(file_name)
 state_truth_S75_R75_40b <- data.frame(state_truth_S75_R75_40b)[-1]
@@ -1098,7 +1098,7 @@ state_truth_40 <- rbind(state_truth_S25_R5_40,state_truth_S25_R5_40b,
 
 #-- Budget = 60 --#
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_60 <- fread(file_name)
 state_truth_S25_R5_60 <- data.frame(state_truth_S25_R5_60)[-1]
@@ -1108,7 +1108,7 @@ state_truth_S25_R5_60$detection <- 0.25
 state_truth_S25_R5_60$eradication <- 0.5
 state_truth_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R5_60b <- fread(file_name)
 state_truth_S25_R5_60b <- data.frame(state_truth_S25_R5_60b)[-1]
@@ -1119,7 +1119,7 @@ state_truth_S25_R5_60b$eradication <- 0.5
 state_truth_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_60 <- fread(file_name)
 state_truth_S25_R75_60 <- data.frame(state_truth_S25_R75_60)[-1]
@@ -1129,7 +1129,7 @@ state_truth_S25_R75_60$detection <- 0.25
 state_truth_S25_R75_60$eradication <- 0.75
 state_truth_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S25_R75_60b <- fread(file_name)
 state_truth_S25_R75_60b <- data.frame(state_truth_S25_R75_60b)[-1]
@@ -1140,7 +1140,7 @@ state_truth_S25_R75_60b$eradication <- 0.75
 state_truth_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_60 <- fread(file_name)
 state_truth_S5_R5_60 <- data.frame(state_truth_S5_R5_60)[-1]
@@ -1150,7 +1150,7 @@ state_truth_S5_R5_60$detection <- 0.5
 state_truth_S5_R5_60$eradication <- 0.5
 state_truth_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R5_60b <- fread(file_name)
 state_truth_S5_R5_60b <- data.frame(state_truth_S5_R5_60b)[-1]
@@ -1161,7 +1161,7 @@ state_truth_S5_R5_60b$eradication <- 0.5
 state_truth_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_60 <- fread(file_name)
 state_truth_S5_R75_60 <- data.frame(state_truth_S5_R75_60)[-1]
@@ -1171,7 +1171,7 @@ state_truth_S5_R75_60$detection <- 0.5
 state_truth_S5_R75_60$eradication <- 0.75
 state_truth_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S5_R75_60b <- fread(file_name)
 state_truth_S5_R75_60b <- data.frame(state_truth_S5_R75_60b)[-1]
@@ -1182,7 +1182,7 @@ state_truth_S5_R75_60b$eradication <- 0.75
 state_truth_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_60 <- fread(file_name)
 state_truth_S75_R5_60 <- data.frame(state_truth_S75_R5_60)[-1]
@@ -1192,7 +1192,7 @@ state_truth_S75_R5_60$detection <- 0.75
 state_truth_S75_R5_60$eradication <- 0.5
 state_truth_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R5_60b <- fread(file_name)
 state_truth_S75_R5_60b <- data.frame(state_truth_S75_R5_60b)[-1]
@@ -1203,7 +1203,7 @@ state_truth_S75_R5_60b$eradication <- 0.5
 state_truth_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_60 <- fread(file_name)
 state_truth_S75_R75_60 <- data.frame(state_truth_S75_R75_60)[-1]
@@ -1213,7 +1213,7 @@ state_truth_S75_R75_60$detection <- 0.75
 state_truth_S75_R75_60$eradication <- 0.75
 state_truth_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
 file_name = paste(path, 'states_truth.csv',sep = '/')
 state_truth_S75_R75_60b <- fread(file_name)
 state_truth_S75_R75_60b <- data.frame(state_truth_S75_R75_60b)[-1]
@@ -1274,7 +1274,7 @@ cor(fininv_truth$inv, finstate_truth$state)
 #### Bias state ####
 ##### hstatebins ######
 #-- Budget = 20 --#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R5_20 <- fread(file_name)
 hsb_biasstate_S25_R5_20 <- data.frame(hsb_biasstate_S25_R5_20)[-1]
@@ -1284,7 +1284,7 @@ hsb_biasstate_S25_R5_20$detection <- 0.25
 hsb_biasstate_S25_R5_20$eradication <- 0.5
 hsb_biasstate_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R5_20b <- fread(file_name)
 hsb_biasstate_S25_R5_20b <- data.frame(hsb_biasstate_S25_R5_20b)[-1]
@@ -1294,7 +1294,7 @@ hsb_biasstate_S25_R5_20b$detection <- 0.25
 hsb_biasstate_S25_R5_20b$eradication <- 0.5
 hsb_biasstate_S25_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R75_20 <- fread(file_name)
 hsb_biasstate_S25_R75_20 <- data.frame(hsb_biasstate_S25_R75_20)[-1]
@@ -1304,7 +1304,7 @@ hsb_biasstate_S25_R75_20$detection <- 0.25
 hsb_biasstate_S25_R75_20$eradication <- 0.75
 hsb_biasstate_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R75_20b <- fread(file_name)
 hsb_biasstate_S25_R75_20b <- data.frame(hsb_biasstate_S25_R75_20b)[-1]
@@ -1315,7 +1315,7 @@ hsb_biasstate_S25_R75_20b$eradication <- 0.75
 hsb_biasstate_S25_R75_20b$budget <- 20
 
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R5_20 <- fread(file_name)
 hsb_biasstate_S5_R5_20 <- data.frame(hsb_biasstate_S5_R5_20)[-1]
@@ -1325,7 +1325,7 @@ hsb_biasstate_S5_R5_20$detection <- 0.5
 hsb_biasstate_S5_R5_20$eradication <- 0.5
 hsb_biasstate_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R5_20b <- fread(file_name)
 hsb_biasstate_S5_R5_20b <- data.frame(hsb_biasstate_S5_R5_20b)[-1]
@@ -1335,7 +1335,7 @@ hsb_biasstate_S5_R5_20b$detection <- 0.5
 hsb_biasstate_S5_R5_20b$eradication <- 0.5
 hsb_biasstate_S5_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_20 <- fread(file_name)
 hsb_biasstate_S5_R75_20 <- data.frame(hsb_biasstate_S5_R75_20)[-1]
@@ -1345,7 +1345,7 @@ hsb_biasstate_S5_R75_20$detection <- 0.5
 hsb_biasstate_S5_R75_20$eradication <- 0.75
 hsb_biasstate_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_20b <- fread(file_name)
 hsb_biasstate_S5_R75_20b <- data.frame(hsb_biasstate_S5_R75_20b)[-1]
@@ -1355,7 +1355,7 @@ hsb_biasstate_S5_R75_20b$detection <- 0.5
 hsb_biasstate_S5_R75_20b$eradication <- 0.75
 hsb_biasstate_S5_R75_20b$budget <- 20
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R5_20 <- fread(file_name)
 hsb_biasstate_S75_R5_20 <- data.frame(hsb_biasstate_S75_R5_20)[-1]
@@ -1365,7 +1365,7 @@ hsb_biasstate_S75_R5_20$detection <- 0.75
 hsb_biasstate_S75_R5_20$eradication <- 0.5
 hsb_biasstate_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R5_20b <- fread(file_name)
 hsb_biasstate_S75_R5_20b <- data.frame(hsb_biasstate_S75_R5_20b)[-1]
@@ -1375,7 +1375,7 @@ hsb_biasstate_S75_R5_20b$detection <- 0.75
 hsb_biasstate_S75_R5_20b$eradication <- 0.5
 hsb_biasstate_S75_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R75_20 <- fread(file_name)
 hsb_biasstate_S75_R75_20 <- data.frame(hsb_biasstate_S75_R75_20)[-1]
@@ -1385,7 +1385,7 @@ hsb_biasstate_S75_R75_20$detection <- 0.75
 hsb_biasstate_S75_R75_20$eradication <- 0.75
 hsb_biasstate_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R75_20b <- fread(file_name)
 hsb_biasstate_S75_R75_20b <- data.frame(hsb_biasstate_S75_R75_20b)[-1]
@@ -1396,7 +1396,7 @@ hsb_biasstate_S75_R75_20b$eradication <- 0.75
 hsb_biasstate_S75_R75_20b$budget <- 20
 
 #-- Budget = 40 --#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R5_40 <- fread(file_name)
 hsb_biasstate_S25_R5_40 <- data.frame(hsb_biasstate_S25_R5_40)[-1]
@@ -1406,7 +1406,7 @@ hsb_biasstate_S25_R5_40$detection <- 0.25
 hsb_biasstate_S25_R5_40$eradication <- 0.5
 hsb_biasstate_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R5_40b <- fread(file_name)
 hsb_biasstate_S25_R5_40b <- data.frame(hsb_biasstate_S25_R5_40b)[-1]
@@ -1416,7 +1416,7 @@ hsb_biasstate_S25_R5_40b$detection <- 0.25
 hsb_biasstate_S25_R5_40b$eradication <- 0.5
 hsb_biasstate_S25_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R75_40 <- fread(file_name)
 hsb_biasstate_S25_R75_40 <- data.frame(hsb_biasstate_S25_R75_40)[-1]
@@ -1426,7 +1426,7 @@ hsb_biasstate_S25_R75_40$detection <- 0.25
 hsb_biasstate_S25_R75_40$eradication <- 0.75
 hsb_biasstate_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R75_40b <- fread(file_name)
 hsb_biasstate_S25_R75_40b <- data.frame(hsb_biasstate_S25_R75_40b)[-1]
@@ -1437,7 +1437,7 @@ hsb_biasstate_S25_R75_40b$eradication <- 0.75
 hsb_biasstate_S25_R75_40b$budget <- 40
 
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R5_40 <- fread(file_name)
 hsb_biasstate_S5_R5_40 <- data.frame(hsb_biasstate_S5_R5_40)[-1]
@@ -1447,7 +1447,7 @@ hsb_biasstate_S5_R5_40$detection <- 0.5
 hsb_biasstate_S5_R5_40$eradication <- 0.5
 hsb_biasstate_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R5_40b <- fread(file_name)
 hsb_biasstate_S5_R5_40b <- data.frame(hsb_biasstate_S5_R5_40b)[-1]
@@ -1457,7 +1457,7 @@ hsb_biasstate_S5_R5_40b$detection <- 0.5
 hsb_biasstate_S5_R5_40b$eradication <- 0.5
 hsb_biasstate_S5_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_40 <- fread(file_name)
 hsb_biasstate_S5_R75_40 <- data.frame(hsb_biasstate_S5_R75_40)[-1]
@@ -1467,7 +1467,7 @@ hsb_biasstate_S5_R75_40$detection <- 0.5
 hsb_biasstate_S5_R75_40$eradication <- 0.75
 hsb_biasstate_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_40b <- fread(file_name)
 hsb_biasstate_S5_R75_40b <- data.frame(hsb_biasstate_S5_R75_40b)[-1]
@@ -1477,7 +1477,7 @@ hsb_biasstate_S5_R75_40b$detection <- 0.5
 hsb_biasstate_S5_R75_40b$eradication <- 0.75
 hsb_biasstate_S5_R75_40b$budget <- 40
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R5_40 <- fread(file_name)
 hsb_biasstate_S75_R5_40 <- data.frame(hsb_biasstate_S75_R5_40)[-1]
@@ -1487,7 +1487,7 @@ hsb_biasstate_S75_R5_40$detection <- 0.75
 hsb_biasstate_S75_R5_40$eradication <- 0.5
 hsb_biasstate_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R5_40b <- fread(file_name)
 hsb_biasstate_S75_R5_40b <- data.frame(hsb_biasstate_S75_R5_40b)[-1]
@@ -1497,7 +1497,7 @@ hsb_biasstate_S75_R5_40b$detection <- 0.75
 hsb_biasstate_S75_R5_40b$eradication <- 0.5
 hsb_biasstate_S75_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R75_40 <- fread(file_name)
 hsb_biasstate_S75_R75_40 <- data.frame(hsb_biasstate_S75_R75_40)[-1]
@@ -1507,7 +1507,7 @@ hsb_biasstate_S75_R75_40$detection <- 0.75
 hsb_biasstate_S75_R75_40$eradication <- 0.75
 hsb_biasstate_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R75_40b <- fread(file_name)
 hsb_biasstate_S75_R75_40b <- data.frame(hsb_biasstate_S75_R75_40b)[-1]
@@ -1518,7 +1518,7 @@ hsb_biasstate_S75_R75_40b$eradication <- 0.75
 hsb_biasstate_S75_R75_40b$budget <- 40
 
 #-- Budget = 60 --#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R5_60 <- fread(file_name)
 hsb_biasstate_S25_R5_60 <- data.frame(hsb_biasstate_S25_R5_60)[-1]
@@ -1528,7 +1528,7 @@ hsb_biasstate_S25_R5_60$detection <- 0.25
 hsb_biasstate_S25_R5_60$eradication <- 0.5
 hsb_biasstate_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R5_60b <- fread(file_name)
 hsb_biasstate_S25_R5_60b <- data.frame(hsb_biasstate_S25_R5_60b)[-1]
@@ -1538,7 +1538,7 @@ hsb_biasstate_S25_R5_60b$detection <- 0.25
 hsb_biasstate_S25_R5_60b$eradication <- 0.5
 hsb_biasstate_S25_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R75_60 <- fread(file_name)
 hsb_biasstate_S25_R75_60 <- data.frame(hsb_biasstate_S25_R75_60)[-1]
@@ -1548,7 +1548,7 @@ hsb_biasstate_S25_R75_60$detection <- 0.25
 hsb_biasstate_S25_R75_60$eradication <- 0.75
 hsb_biasstate_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S25_R75_60b <- fread(file_name)
 hsb_biasstate_S25_R75_60b <- data.frame(hsb_biasstate_S25_R75_60b)[-1]
@@ -1559,7 +1559,7 @@ hsb_biasstate_S25_R75_60b$eradication <- 0.75
 hsb_biasstate_S25_R75_60b$budget <- 60
 
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R5_60 <- fread(file_name)
 hsb_biasstate_S5_R5_60 <- data.frame(hsb_biasstate_S5_R5_60)[-1]
@@ -1569,7 +1569,7 @@ hsb_biasstate_S5_R5_60$detection <- 0.5
 hsb_biasstate_S5_R5_60$eradication <- 0.5
 hsb_biasstate_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R5_60b <- fread(file_name)
 hsb_biasstate_S5_R5_60b <- data.frame(hsb_biasstate_S5_R5_60b)[-1]
@@ -1579,7 +1579,7 @@ hsb_biasstate_S5_R5_60b$detection <- 0.5
 hsb_biasstate_S5_R5_60b$eradication <- 0.5
 hsb_biasstate_S5_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_60 <- fread(file_name)
 hsb_biasstate_S5_R75_60 <- data.frame(hsb_biasstate_S5_R75_60)[-1]
@@ -1589,7 +1589,7 @@ hsb_biasstate_S5_R75_60$detection <- 0.5
 hsb_biasstate_S5_R75_60$eradication <- 0.75
 hsb_biasstate_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S5_R75_60b <- fread(file_name)
 hsb_biasstate_S5_R75_60b <- data.frame(hsb_biasstate_S5_R75_60b)[-1]
@@ -1599,7 +1599,7 @@ hsb_biasstate_S5_R75_60b$detection <- 0.5
 hsb_biasstate_S5_R75_60b$eradication <- 0.75
 hsb_biasstate_S5_R75_60b$budget <- 60
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R5_60 <- fread(file_name)
 hsb_biasstate_S75_R5_60 <- data.frame(hsb_biasstate_S75_R5_60)[-1]
@@ -1609,7 +1609,7 @@ hsb_biasstate_S75_R5_60$detection <- 0.75
 hsb_biasstate_S75_R5_60$eradication <- 0.5
 hsb_biasstate_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R5_60b <- fread(file_name)
 hsb_biasstate_S75_R5_60b <- data.frame(hsb_biasstate_S75_R5_60b)[-1]
@@ -1619,7 +1619,7 @@ hsb_biasstate_S75_R5_60b$detection <- 0.75
 hsb_biasstate_S75_R5_60b$eradication <- 0.5
 hsb_biasstate_S75_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R75_60 <- fread(file_name)
 hsb_biasstate_S75_R75_60 <- data.frame(hsb_biasstate_S75_R75_60)[-1]
@@ -1629,7 +1629,7 @@ hsb_biasstate_S75_R75_60$detection <- 0.75
 hsb_biasstate_S75_R75_60$eradication <- 0.75
 hsb_biasstate_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 hsb_biasstate_S75_R75_60b <- fread(file_name)
 hsb_biasstate_S75_R75_60b <- data.frame(hsb_biasstate_S75_R75_60b)[-1]
@@ -1641,7 +1641,7 @@ hsb_biasstate_S75_R75_60b$budget <- 60
 
 ##### linear #####
 #----- linear -----#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R5_20 <- fread(file_name)
 linear_biasstate_S25_R5_20 <- data.frame(linear_biasstate_S25_R5_20)[-1]
@@ -1651,7 +1651,7 @@ linear_biasstate_S25_R5_20$detection <- 0.25
 linear_biasstate_S25_R5_20$eradication <- 0.5
 linear_biasstate_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R5_20b <- fread(file_name)
 linear_biasstate_S25_R5_20b <- data.frame(linear_biasstate_S25_R5_20b)[-1]
@@ -1661,7 +1661,7 @@ linear_biasstate_S25_R5_20b$detection <- 0.25
 linear_biasstate_S25_R5_20b$eradication <- 0.5
 linear_biasstate_S25_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R75_20 <- fread(file_name)
 linear_biasstate_S25_R75_20 <- data.frame(linear_biasstate_S25_R75_20)[-1]
@@ -1671,7 +1671,7 @@ linear_biasstate_S25_R75_20$detection <- 0.25
 linear_biasstate_S25_R75_20$eradication <- 0.75
 linear_biasstate_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R75_20b <- fread(file_name)
 linear_biasstate_S25_R75_20b <- data.frame(linear_biasstate_S25_R75_20b)[-1]
@@ -1682,7 +1682,7 @@ linear_biasstate_S25_R75_20b$eradication <- 0.75
 linear_biasstate_S25_R75_20b$budget <- 20
 
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R5_20 <- fread(file_name)
 linear_biasstate_S5_R5_20 <- data.frame(linear_biasstate_S5_R5_20)[-1]
@@ -1692,7 +1692,7 @@ linear_biasstate_S5_R5_20$detection <- 0.5
 linear_biasstate_S5_R5_20$eradication <- 0.5
 linear_biasstate_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R5_20b <- fread(file_name)
 linear_biasstate_S5_R5_20b <- data.frame(linear_biasstate_S5_R5_20b)[-1]
@@ -1702,7 +1702,7 @@ linear_biasstate_S5_R5_20b$detection <- 0.5
 linear_biasstate_S5_R5_20b$eradication <- 0.5
 linear_biasstate_S5_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R75_20 <- fread(file_name)
 linear_biasstate_S5_R75_20 <- data.frame(linear_biasstate_S5_R75_20)[-1]
@@ -1712,7 +1712,7 @@ linear_biasstate_S5_R75_20$detection <- 0.5
 linear_biasstate_S5_R75_20$eradication <- 0.75
 linear_biasstate_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R75_20b <- fread(file_name)
 linear_biasstate_S5_R75_20b <- data.frame(linear_biasstate_S5_R75_20b)[-1]
@@ -1722,7 +1722,7 @@ linear_biasstate_S5_R75_20b$detection <- 0.5
 linear_biasstate_S5_R75_20b$eradication <- 0.75
 linear_biasstate_S5_R75_20b$budget <- 20
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R5_20 <- fread(file_name)
 linear_biasstate_S75_R5_20 <- data.frame(linear_biasstate_S75_R5_20)[-1]
@@ -1732,7 +1732,7 @@ linear_biasstate_S75_R5_20$detection <- 0.75
 linear_biasstate_S75_R5_20$eradication <- 0.5
 linear_biasstate_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R5_20b <- fread(file_name)
 linear_biasstate_S75_R5_20b <- data.frame(linear_biasstate_S75_R5_20b)[-1]
@@ -1742,7 +1742,7 @@ linear_biasstate_S75_R5_20b$detection <- 0.75
 linear_biasstate_S75_R5_20b$eradication <- 0.5
 linear_biasstate_S75_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R75_20 <- fread(file_name)
 linear_biasstate_S75_R75_20 <- data.frame(linear_biasstate_S75_R75_20)[-1]
@@ -1752,7 +1752,7 @@ linear_biasstate_S75_R75_20$detection <- 0.75
 linear_biasstate_S75_R75_20$eradication <- 0.75
 linear_biasstate_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R75_20b <- fread(file_name)
 linear_biasstate_S75_R75_20b <- data.frame(linear_biasstate_S75_R75_20b)[-1]
@@ -1763,7 +1763,7 @@ linear_biasstate_S75_R75_20b$eradication <- 0.75
 linear_biasstate_S75_R75_20b$budget <- 20
 
 #----- linear -----#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R5_40 <- fread(file_name)
 linear_biasstate_S25_R5_40 <- data.frame(linear_biasstate_S25_R5_40)[-1]
@@ -1773,7 +1773,7 @@ linear_biasstate_S25_R5_40$detection <- 0.25
 linear_biasstate_S25_R5_40$eradication <- 0.5
 linear_biasstate_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R5_40b <- fread(file_name)
 linear_biasstate_S25_R5_40b <- data.frame(linear_biasstate_S25_R5_40b)[-1]
@@ -1783,7 +1783,7 @@ linear_biasstate_S25_R5_40b$detection <- 0.25
 linear_biasstate_S25_R5_40b$eradication <- 0.5
 linear_biasstate_S25_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R75_40 <- fread(file_name)
 linear_biasstate_S25_R75_40 <- data.frame(linear_biasstate_S25_R75_40)[-1]
@@ -1793,7 +1793,7 @@ linear_biasstate_S25_R75_40$detection <- 0.25
 linear_biasstate_S25_R75_40$eradication <- 0.75
 linear_biasstate_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R75_40b <- fread(file_name)
 linear_biasstate_S25_R75_40b <- data.frame(linear_biasstate_S25_R75_40b)[-1]
@@ -1804,7 +1804,7 @@ linear_biasstate_S25_R75_40b$eradication <- 0.75
 linear_biasstate_S25_R75_40b$budget <- 40
 
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R5_40 <- fread(file_name)
 linear_biasstate_S5_R5_40 <- data.frame(linear_biasstate_S5_R5_40)[-1]
@@ -1814,7 +1814,7 @@ linear_biasstate_S5_R5_40$detection <- 0.5
 linear_biasstate_S5_R5_40$eradication <- 0.5
 linear_biasstate_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R5_40b <- fread(file_name)
 linear_biasstate_S5_R5_40b <- data.frame(linear_biasstate_S5_R5_40b)[-1]
@@ -1824,7 +1824,7 @@ linear_biasstate_S5_R5_40b$detection <- 0.5
 linear_biasstate_S5_R5_40b$eradication <- 0.5
 linear_biasstate_S5_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R75_40 <- fread(file_name)
 linear_biasstate_S5_R75_40 <- data.frame(linear_biasstate_S5_R75_40)[-1]
@@ -1834,7 +1834,7 @@ linear_biasstate_S5_R75_40$detection <- 0.5
 linear_biasstate_S5_R75_40$eradication <- 0.75
 linear_biasstate_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R75_40b <- fread(file_name)
 linear_biasstate_S5_R75_40b <- data.frame(linear_biasstate_S5_R75_40b)[-1]
@@ -1844,7 +1844,7 @@ linear_biasstate_S5_R75_40b$detection <- 0.5
 linear_biasstate_S5_R75_40b$eradication <- 0.75
 linear_biasstate_S5_R75_40b$budget <- 40
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R5_40 <- fread(file_name)
 linear_biasstate_S75_R5_40 <- data.frame(linear_biasstate_S75_R5_40)[-1]
@@ -1854,7 +1854,7 @@ linear_biasstate_S75_R5_40$detection <- 0.75
 linear_biasstate_S75_R5_40$eradication <- 0.5
 linear_biasstate_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R5_40b <- fread(file_name)
 linear_biasstate_S75_R5_40b <- data.frame(linear_biasstate_S75_R5_40b)[-1]
@@ -1864,7 +1864,7 @@ linear_biasstate_S75_R5_40b$detection <- 0.75
 linear_biasstate_S75_R5_40b$eradication <- 0.5
 linear_biasstate_S75_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R75_40 <- fread(file_name)
 linear_biasstate_S75_R75_40 <- data.frame(linear_biasstate_S75_R75_40)[-1]
@@ -1874,7 +1874,7 @@ linear_biasstate_S75_R75_40$detection <- 0.75
 linear_biasstate_S75_R75_40$eradication <- 0.75
 linear_biasstate_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R75_40b <- fread(file_name)
 linear_biasstate_S75_R75_40b <- data.frame(linear_biasstate_S75_R75_40b)[-1]
@@ -1885,7 +1885,7 @@ linear_biasstate_S75_R75_40b$eradication <- 0.75
 linear_biasstate_S75_R75_40b$budget <- 40
 
 #----- linear -----#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R5_60 <- fread(file_name)
 linear_biasstate_S25_R5_60 <- data.frame(linear_biasstate_S25_R5_60)[-1]
@@ -1895,7 +1895,7 @@ linear_biasstate_S25_R5_60$detection <- 0.25
 linear_biasstate_S25_R5_60$eradication <- 0.5
 linear_biasstate_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R5_60b <- fread(file_name)
 linear_biasstate_S25_R5_60b <- data.frame(linear_biasstate_S25_R5_60b)[-1]
@@ -1905,7 +1905,7 @@ linear_biasstate_S25_R5_60b$detection <- 0.25
 linear_biasstate_S25_R5_60b$eradication <- 0.5
 linear_biasstate_S25_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R75_60 <- fread(file_name)
 linear_biasstate_S25_R75_60 <- data.frame(linear_biasstate_S25_R75_60)[-1]
@@ -1915,7 +1915,7 @@ linear_biasstate_S25_R75_60$detection <- 0.25
 linear_biasstate_S25_R75_60$eradication <- 0.75
 linear_biasstate_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S25_R75_60b <- fread(file_name)
 linear_biasstate_S25_R75_60b <- data.frame(linear_biasstate_S25_R75_60b)[-1]
@@ -1926,7 +1926,7 @@ linear_biasstate_S25_R75_60b$eradication <- 0.75
 linear_biasstate_S25_R75_60b$budget <- 60
 
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R5_60 <- fread(file_name)
 linear_biasstate_S5_R5_60 <- data.frame(linear_biasstate_S5_R5_60)[-1]
@@ -1936,7 +1936,7 @@ linear_biasstate_S5_R5_60$detection <- 0.5
 linear_biasstate_S5_R5_60$eradication <- 0.5
 linear_biasstate_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R5_60b <- fread(file_name)
 linear_biasstate_S5_R5_60b <- data.frame(linear_biasstate_S5_R5_60b)[-1]
@@ -1946,7 +1946,7 @@ linear_biasstate_S5_R5_60b$detection <- 0.5
 linear_biasstate_S5_R5_60b$eradication <- 0.5
 linear_biasstate_S5_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R75_60 <- fread(file_name)
 linear_biasstate_S5_R75_60 <- data.frame(linear_biasstate_S5_R75_60)[-1]
@@ -1956,7 +1956,7 @@ linear_biasstate_S5_R75_60$detection <- 0.5
 linear_biasstate_S5_R75_60$eradication <- 0.75
 linear_biasstate_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S5_R75_60b <- fread(file_name)
 linear_biasstate_S5_R75_60b <- data.frame(linear_biasstate_S5_R75_60b)[-1]
@@ -1966,7 +1966,7 @@ linear_biasstate_S5_R75_60b$detection <- 0.5
 linear_biasstate_S5_R75_60b$eradication <- 0.75
 linear_biasstate_S5_R75_60b$budget <- 60
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R5_60 <- fread(file_name)
 linear_biasstate_S75_R5_60 <- data.frame(linear_biasstate_S75_R5_60)[-1]
@@ -1976,7 +1976,7 @@ linear_biasstate_S75_R5_60$detection <- 0.75
 linear_biasstate_S75_R5_60$eradication <- 0.5
 linear_biasstate_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R5_60b <- fread(file_name)
 linear_biasstate_S75_R5_60b <- data.frame(linear_biasstate_S75_R5_60b)[-1]
@@ -1986,7 +1986,7 @@ linear_biasstate_S75_R5_60b$detection <- 0.75
 linear_biasstate_S75_R5_60b$eradication <- 0.5
 linear_biasstate_S75_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R75_60 <- fread(file_name)
 linear_biasstate_S75_R75_60 <- data.frame(linear_biasstate_S75_R75_60)[-1]
@@ -1996,7 +1996,7 @@ linear_biasstate_S75_R75_60$detection <- 0.75
 linear_biasstate_S75_R75_60$eradication <- 0.75
 linear_biasstate_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 linear_biasstate_S75_R75_60b <- fread(file_name)
 linear_biasstate_S75_R75_60b <- data.frame(linear_biasstate_S75_R75_60b)[-1]
@@ -2009,7 +2009,7 @@ linear_biasstate_S75_R75_60b$budget <- 60
 
 ##### epicenter #####
 #----- epicenter -----#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R5_20 <- fread(file_name)
 epicenter_biasstate_S25_R5_20 <- data.frame(epicenter_biasstate_S25_R5_20)[-1]
@@ -2019,7 +2019,7 @@ epicenter_biasstate_S25_R5_20$detection <- 0.25
 epicenter_biasstate_S25_R5_20$eradication <- 0.5
 epicenter_biasstate_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R5_20b <- fread(file_name)
 epicenter_biasstate_S25_R5_20b <- data.frame(epicenter_biasstate_S25_R5_20b)[-1]
@@ -2029,7 +2029,7 @@ epicenter_biasstate_S25_R5_20b$detection <- 0.25
 epicenter_biasstate_S25_R5_20b$eradication <- 0.5
 epicenter_biasstate_S25_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R75_20 <- fread(file_name)
 epicenter_biasstate_S25_R75_20 <- data.frame(epicenter_biasstate_S25_R75_20)[-1]
@@ -2039,7 +2039,7 @@ epicenter_biasstate_S25_R75_20$detection <- 0.25
 epicenter_biasstate_S25_R75_20$eradication <- 0.75
 epicenter_biasstate_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R75_20b <- fread(file_name)
 epicenter_biasstate_S25_R75_20b <- data.frame(epicenter_biasstate_S25_R75_20b)[-1]
@@ -2050,7 +2050,7 @@ epicenter_biasstate_S25_R75_20b$eradication <- 0.75
 epicenter_biasstate_S25_R75_20b$budget <- 20
 
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R5_20 <- fread(file_name)
 epicenter_biasstate_S5_R5_20 <- data.frame(epicenter_biasstate_S5_R5_20)[-1]
@@ -2060,7 +2060,7 @@ epicenter_biasstate_S5_R5_20$detection <- 0.5
 epicenter_biasstate_S5_R5_20$eradication <- 0.5
 epicenter_biasstate_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R5_20b <- fread(file_name)
 epicenter_biasstate_S5_R5_20b <- data.frame(epicenter_biasstate_S5_R5_20b)[-1]
@@ -2070,7 +2070,7 @@ epicenter_biasstate_S5_R5_20b$detection <- 0.5
 epicenter_biasstate_S5_R5_20b$eradication <- 0.5
 epicenter_biasstate_S5_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R75_20 <- fread(file_name)
 epicenter_biasstate_S5_R75_20 <- data.frame(epicenter_biasstate_S5_R75_20)[-1]
@@ -2080,7 +2080,7 @@ epicenter_biasstate_S5_R75_20$detection <- 0.5
 epicenter_biasstate_S5_R75_20$eradication <- 0.75
 epicenter_biasstate_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R75_20b <- fread(file_name)
 epicenter_biasstate_S5_R75_20b <- data.frame(epicenter_biasstate_S5_R75_20b)[-1]
@@ -2090,7 +2090,7 @@ epicenter_biasstate_S5_R75_20b$detection <- 0.5
 epicenter_biasstate_S5_R75_20b$eradication <- 0.75
 epicenter_biasstate_S5_R75_20b$budget <- 20
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R5_20 <- fread(file_name)
 epicenter_biasstate_S75_R5_20 <- data.frame(epicenter_biasstate_S75_R5_20)[-1]
@@ -2100,7 +2100,7 @@ epicenter_biasstate_S75_R5_20$detection <- 0.75
 epicenter_biasstate_S75_R5_20$eradication <- 0.5
 epicenter_biasstate_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R5_20b <- fread(file_name)
 epicenter_biasstate_S75_R5_20b <- data.frame(epicenter_biasstate_S75_R5_20b)[-1]
@@ -2110,7 +2110,7 @@ epicenter_biasstate_S75_R5_20b$detection <- 0.75
 epicenter_biasstate_S75_R5_20b$eradication <- 0.5
 epicenter_biasstate_S75_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R75_20 <- fread(file_name)
 epicenter_biasstate_S75_R75_20 <- data.frame(epicenter_biasstate_S75_R75_20)[-1]
@@ -2120,7 +2120,7 @@ epicenter_biasstate_S75_R75_20$detection <- 0.75
 epicenter_biasstate_S75_R75_20$eradication <- 0.75
 epicenter_biasstate_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R75_20b <- fread(file_name)
 epicenter_biasstate_S75_R75_20b <- data.frame(epicenter_biasstate_S75_R75_20b)[-1]
@@ -2131,7 +2131,7 @@ epicenter_biasstate_S75_R75_20b$eradication <- 0.75
 epicenter_biasstate_S75_R75_20b$budget <- 20
 
 #----- epicenter -----#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R5_40 <- fread(file_name)
 epicenter_biasstate_S25_R5_40 <- data.frame(epicenter_biasstate_S25_R5_40)[-1]
@@ -2141,7 +2141,7 @@ epicenter_biasstate_S25_R5_40$detection <- 0.25
 epicenter_biasstate_S25_R5_40$eradication <- 0.5
 epicenter_biasstate_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R5_40b <- fread(file_name)
 epicenter_biasstate_S25_R5_40b <- data.frame(epicenter_biasstate_S25_R5_40b)[-1]
@@ -2151,7 +2151,7 @@ epicenter_biasstate_S25_R5_40b$detection <- 0.25
 epicenter_biasstate_S25_R5_40b$eradication <- 0.5
 epicenter_biasstate_S25_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R75_40 <- fread(file_name)
 epicenter_biasstate_S25_R75_40 <- data.frame(epicenter_biasstate_S25_R75_40)[-1]
@@ -2161,7 +2161,7 @@ epicenter_biasstate_S25_R75_40$detection <- 0.25
 epicenter_biasstate_S25_R75_40$eradication <- 0.75
 epicenter_biasstate_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R75_40b <- fread(file_name)
 epicenter_biasstate_S25_R75_40b <- data.frame(epicenter_biasstate_S25_R75_40b)[-1]
@@ -2172,7 +2172,7 @@ epicenter_biasstate_S25_R75_40b$eradication <- 0.75
 epicenter_biasstate_S25_R75_40b$budget <- 40
 
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R5_40 <- fread(file_name)
 epicenter_biasstate_S5_R5_40 <- data.frame(epicenter_biasstate_S5_R5_40)[-1]
@@ -2182,7 +2182,7 @@ epicenter_biasstate_S5_R5_40$detection <- 0.5
 epicenter_biasstate_S5_R5_40$eradication <- 0.5
 epicenter_biasstate_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R5_40b <- fread(file_name)
 epicenter_biasstate_S5_R5_40b <- data.frame(epicenter_biasstate_S5_R5_40b)[-1]
@@ -2192,7 +2192,7 @@ epicenter_biasstate_S5_R5_40b$detection <- 0.5
 epicenter_biasstate_S5_R5_40b$eradication <- 0.5
 epicenter_biasstate_S5_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R75_40 <- fread(file_name)
 epicenter_biasstate_S5_R75_40 <- data.frame(epicenter_biasstate_S5_R75_40)[-1]
@@ -2202,7 +2202,7 @@ epicenter_biasstate_S5_R75_40$detection <- 0.5
 epicenter_biasstate_S5_R75_40$eradication <- 0.75
 epicenter_biasstate_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R75_40b <- fread(file_name)
 epicenter_biasstate_S5_R75_40b <- data.frame(epicenter_biasstate_S5_R75_40b)[-1]
@@ -2212,7 +2212,7 @@ epicenter_biasstate_S5_R75_40b$detection <- 0.5
 epicenter_biasstate_S5_R75_40b$eradication <- 0.75
 epicenter_biasstate_S5_R75_40b$budget <- 40
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R5_40 <- fread(file_name)
 epicenter_biasstate_S75_R5_40 <- data.frame(epicenter_biasstate_S75_R5_40)[-1]
@@ -2222,7 +2222,7 @@ epicenter_biasstate_S75_R5_40$detection <- 0.75
 epicenter_biasstate_S75_R5_40$eradication <- 0.5
 epicenter_biasstate_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R5_40b <- fread(file_name)
 epicenter_biasstate_S75_R5_40b <- data.frame(epicenter_biasstate_S75_R5_40b)[-1]
@@ -2232,7 +2232,7 @@ epicenter_biasstate_S75_R5_40b$detection <- 0.75
 epicenter_biasstate_S75_R5_40b$eradication <- 0.5
 epicenter_biasstate_S75_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R75_40 <- fread(file_name)
 epicenter_biasstate_S75_R75_40 <- data.frame(epicenter_biasstate_S75_R75_40)[-1]
@@ -2242,7 +2242,7 @@ epicenter_biasstate_S75_R75_40$detection <- 0.75
 epicenter_biasstate_S75_R75_40$eradication <- 0.75
 epicenter_biasstate_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R75_40b <- fread(file_name)
 epicenter_biasstate_S75_R75_40b <- data.frame(epicenter_biasstate_S75_R75_40b)[-1]
@@ -2254,7 +2254,7 @@ epicenter_biasstate_S75_R75_40b$budget <- 40
 
 
 #----- epicenter -----#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R5_60 <- fread(file_name)
 epicenter_biasstate_S25_R5_60 <- data.frame(epicenter_biasstate_S25_R5_60)[-1]
@@ -2264,7 +2264,7 @@ epicenter_biasstate_S25_R5_60$detection <- 0.25
 epicenter_biasstate_S25_R5_60$eradication <- 0.5
 epicenter_biasstate_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R5_60b <- fread(file_name)
 epicenter_biasstate_S25_R5_60b <- data.frame(epicenter_biasstate_S25_R5_60b)[-1]
@@ -2274,7 +2274,7 @@ epicenter_biasstate_S25_R5_60b$detection <- 0.25
 epicenter_biasstate_S25_R5_60b$eradication <- 0.5
 epicenter_biasstate_S25_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R75_60 <- fread(file_name)
 epicenter_biasstate_S25_R75_60 <- data.frame(epicenter_biasstate_S25_R75_60)[-1]
@@ -2284,7 +2284,7 @@ epicenter_biasstate_S25_R75_60$detection <- 0.25
 epicenter_biasstate_S25_R75_60$eradication <- 0.75
 epicenter_biasstate_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S25_R75_60b <- fread(file_name)
 epicenter_biasstate_S25_R75_60b <- data.frame(epicenter_biasstate_S25_R75_60b)[-1]
@@ -2295,7 +2295,7 @@ epicenter_biasstate_S25_R75_60b$eradication <- 0.75
 epicenter_biasstate_S25_R75_60b$budget <- 60
 
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R5_60 <- fread(file_name)
 epicenter_biasstate_S5_R5_60 <- data.frame(epicenter_biasstate_S5_R5_60)[-1]
@@ -2305,7 +2305,7 @@ epicenter_biasstate_S5_R5_60$detection <- 0.5
 epicenter_biasstate_S5_R5_60$eradication <- 0.5
 epicenter_biasstate_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R5_60b <- fread(file_name)
 epicenter_biasstate_S5_R5_60b <- data.frame(epicenter_biasstate_S5_R5_60b)[-1]
@@ -2315,7 +2315,7 @@ epicenter_biasstate_S5_R5_60b$detection <- 0.5
 epicenter_biasstate_S5_R5_60b$eradication <- 0.5
 epicenter_biasstate_S5_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R75_60 <- fread(file_name)
 epicenter_biasstate_S5_R75_60 <- data.frame(epicenter_biasstate_S5_R75_60)[-1]
@@ -2325,7 +2325,7 @@ epicenter_biasstate_S5_R75_60$detection <- 0.5
 epicenter_biasstate_S5_R75_60$eradication <- 0.75
 epicenter_biasstate_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S5_R75_60b <- fread(file_name)
 epicenter_biasstate_S5_R75_60b <- data.frame(epicenter_biasstate_S5_R75_60b)[-1]
@@ -2335,7 +2335,7 @@ epicenter_biasstate_S5_R75_60b$detection <- 0.5
 epicenter_biasstate_S5_R75_60b$eradication <- 0.75
 epicenter_biasstate_S5_R75_60b$budget <- 60
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R5_60 <- fread(file_name)
 epicenter_biasstate_S75_R5_60 <- data.frame(epicenter_biasstate_S75_R5_60)[-1]
@@ -2345,7 +2345,7 @@ epicenter_biasstate_S75_R5_60$detection <- 0.75
 epicenter_biasstate_S75_R5_60$eradication <- 0.5
 epicenter_biasstate_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R5_60b <- fread(file_name)
 epicenter_biasstate_S75_R5_60b <- data.frame(epicenter_biasstate_S75_R5_60b)[-1]
@@ -2355,7 +2355,7 @@ epicenter_biasstate_S75_R5_60b$detection <- 0.75
 epicenter_biasstate_S75_R5_60b$eradication <- 0.5
 epicenter_biasstate_S75_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R75_60 <- fread(file_name)
 epicenter_biasstate_S75_R75_60 <- data.frame(epicenter_biasstate_S75_R75_60)[-1]
@@ -2365,7 +2365,7 @@ epicenter_biasstate_S75_R75_60$detection <- 0.75
 epicenter_biasstate_S75_R75_60$eradication <- 0.75
 epicenter_biasstate_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
 file_name = paste(path, 'bias_states.csv',sep = '/')
 epicenter_biasstate_S75_R75_60b <- fread(file_name)
 epicenter_biasstate_S75_R75_60b <- data.frame(epicenter_biasstate_S75_R75_60b)[-1]
@@ -2443,7 +2443,7 @@ bias_state$loc2 <- paste0(bias_state$location, bias_state$detection, bias_state$
 #### Bias params ####
 ##### hstatebins #####
 #-- Budget = 20 --#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R5_20 <- fread(file_name)
 hsb_biasparam_S25_R5_20 <- data.frame(hsb_biasparam_S25_R5_20)[-1]
@@ -2453,7 +2453,7 @@ hsb_biasparam_S25_R5_20$detection <- 0.25
 hsb_biasparam_S25_R5_20$eradication <- 0.5
 hsb_biasparam_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R5_20b <- fread(file_name)
 hsb_biasparam_S25_R5_20b <- data.frame(hsb_biasparam_S25_R5_20b)[-1]
@@ -2463,7 +2463,7 @@ hsb_biasparam_S25_R5_20b$detection <- 0.25
 hsb_biasparam_S25_R5_20b$eradication <- 0.5
 hsb_biasparam_S25_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R75_20 <- fread(file_name)
 hsb_biasparam_S25_R75_20 <- data.frame(hsb_biasparam_S25_R75_20)[-1]
@@ -2473,7 +2473,7 @@ hsb_biasparam_S25_R75_20$detection <- 0.25
 hsb_biasparam_S25_R75_20$eradication <- 0.75
 hsb_biasparam_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R75_20b <- fread(file_name)
 hsb_biasparam_S25_R75_20b <- data.frame(hsb_biasparam_S25_R75_20b)[-1]
@@ -2484,7 +2484,7 @@ hsb_biasparam_S25_R75_20b$eradication <- 0.75
 hsb_biasparam_S25_R75_20b$budget <- 20
 
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R5_20 <- fread(file_name)
 hsb_biasparam_S5_R5_20 <- data.frame(hsb_biasparam_S5_R5_20)[-1]
@@ -2494,7 +2494,7 @@ hsb_biasparam_S5_R5_20$detection <- 0.5
 hsb_biasparam_S5_R5_20$eradication <- 0.5
 hsb_biasparam_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R5_20b <- fread(file_name)
 hsb_biasparam_S5_R5_20b <- data.frame(hsb_biasparam_S5_R5_20b)[-1]
@@ -2504,7 +2504,7 @@ hsb_biasparam_S5_R5_20b$detection <- 0.5
 hsb_biasparam_S5_R5_20b$eradication <- 0.5
 hsb_biasparam_S5_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_20 <- fread(file_name)
 hsb_biasparam_S5_R75_20 <- data.frame(hsb_biasparam_S5_R75_20)[-1]
@@ -2514,7 +2514,7 @@ hsb_biasparam_S5_R75_20$detection <- 0.5
 hsb_biasparam_S5_R75_20$eradication <- 0.75
 hsb_biasparam_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_20b <- fread(file_name)
 hsb_biasparam_S5_R75_20b <- data.frame(hsb_biasparam_S5_R75_20b)[-1]
@@ -2524,7 +2524,7 @@ hsb_biasparam_S5_R75_20b$detection <- 0.5
 hsb_biasparam_S5_R75_20b$eradication <- 0.75
 hsb_biasparam_S5_R75_20b$budget <- 20
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R5_20 <- fread(file_name)
 hsb_biasparam_S75_R5_20 <- data.frame(hsb_biasparam_S75_R5_20)[-1]
@@ -2534,7 +2534,7 @@ hsb_biasparam_S75_R5_20$detection <- 0.75
 hsb_biasparam_S75_R5_20$eradication <- 0.5
 hsb_biasparam_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R5_20b <- fread(file_name)
 hsb_biasparam_S75_R5_20b <- data.frame(hsb_biasparam_S75_R5_20b)[-1]
@@ -2544,7 +2544,7 @@ hsb_biasparam_S75_R5_20b$detection <- 0.75
 hsb_biasparam_S75_R5_20b$eradication <- 0.5
 hsb_biasparam_S75_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R75_20 <- fread(file_name)
 hsb_biasparam_S75_R75_20 <- data.frame(hsb_biasparam_S75_R75_20)[-1]
@@ -2554,7 +2554,7 @@ hsb_biasparam_S75_R75_20$detection <- 0.75
 hsb_biasparam_S75_R75_20$eradication <- 0.75
 hsb_biasparam_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R75_20b <- fread(file_name)
 hsb_biasparam_S75_R75_20b <- data.frame(hsb_biasparam_S75_R75_20b)[-1]
@@ -2565,7 +2565,7 @@ hsb_biasparam_S75_R75_20b$eradication <- 0.75
 hsb_biasparam_S75_R75_20b$budget <- 20
 
 #-- Budget = 40 --#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R5_40 <- fread(file_name)
 hsb_biasparam_S25_R5_40 <- data.frame(hsb_biasparam_S25_R5_40)[-1]
@@ -2575,7 +2575,7 @@ hsb_biasparam_S25_R5_40$detection <- 0.25
 hsb_biasparam_S25_R5_40$eradication <- 0.5
 hsb_biasparam_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R5_40b <- fread(file_name)
 hsb_biasparam_S25_R5_40b <- data.frame(hsb_biasparam_S25_R5_40b)[-1]
@@ -2585,7 +2585,7 @@ hsb_biasparam_S25_R5_40b$detection <- 0.25
 hsb_biasparam_S25_R5_40b$eradication <- 0.5
 hsb_biasparam_S25_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R75_40 <- fread(file_name)
 hsb_biasparam_S25_R75_40 <- data.frame(hsb_biasparam_S25_R75_40)[-1]
@@ -2595,7 +2595,7 @@ hsb_biasparam_S25_R75_40$detection <- 0.25
 hsb_biasparam_S25_R75_40$eradication <- 0.75
 hsb_biasparam_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R75_40b <- fread(file_name)
 hsb_biasparam_S25_R75_40b <- data.frame(hsb_biasparam_S25_R75_40b)[-1]
@@ -2606,7 +2606,7 @@ hsb_biasparam_S25_R75_40b$eradication <- 0.75
 hsb_biasparam_S25_R75_40b$budget <- 40
 
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R5_40 <- fread(file_name)
 hsb_biasparam_S5_R5_40 <- data.frame(hsb_biasparam_S5_R5_40)[-1]
@@ -2616,7 +2616,7 @@ hsb_biasparam_S5_R5_40$detection <- 0.5
 hsb_biasparam_S5_R5_40$eradication <- 0.5
 hsb_biasparam_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R5_40b <- fread(file_name)
 hsb_biasparam_S5_R5_40b <- data.frame(hsb_biasparam_S5_R5_40b)[-1]
@@ -2626,7 +2626,7 @@ hsb_biasparam_S5_R5_40b$detection <- 0.5
 hsb_biasparam_S5_R5_40b$eradication <- 0.5
 hsb_biasparam_S5_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_40 <- fread(file_name)
 hsb_biasparam_S5_R75_40 <- data.frame(hsb_biasparam_S5_R75_40)[-1]
@@ -2636,7 +2636,7 @@ hsb_biasparam_S5_R75_40$detection <- 0.5
 hsb_biasparam_S5_R75_40$eradication <- 0.75
 hsb_biasparam_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_40b <- fread(file_name)
 hsb_biasparam_S5_R75_40b <- data.frame(hsb_biasparam_S5_R75_40b)[-1]
@@ -2646,7 +2646,7 @@ hsb_biasparam_S5_R75_40b$detection <- 0.5
 hsb_biasparam_S5_R75_40b$eradication <- 0.75
 hsb_biasparam_S5_R75_40b$budget <- 40
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R5_40 <- fread(file_name)
 hsb_biasparam_S75_R5_40 <- data.frame(hsb_biasparam_S75_R5_40)[-1]
@@ -2656,7 +2656,7 @@ hsb_biasparam_S75_R5_40$detection <- 0.75
 hsb_biasparam_S75_R5_40$eradication <- 0.5
 hsb_biasparam_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R5_40b <- fread(file_name)
 hsb_biasparam_S75_R5_40b <- data.frame(hsb_biasparam_S75_R5_40b)[-1]
@@ -2666,7 +2666,7 @@ hsb_biasparam_S75_R5_40b$detection <- 0.75
 hsb_biasparam_S75_R5_40b$eradication <- 0.5
 hsb_biasparam_S75_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R75_40 <- fread(file_name)
 hsb_biasparam_S75_R75_40 <- data.frame(hsb_biasparam_S75_R75_40)[-1]
@@ -2676,7 +2676,7 @@ hsb_biasparam_S75_R75_40$detection <- 0.75
 hsb_biasparam_S75_R75_40$eradication <- 0.75
 hsb_biasparam_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R75_40b <- fread(file_name)
 hsb_biasparam_S75_R75_40b <- data.frame(hsb_biasparam_S75_R75_40b)[-1]
@@ -2687,7 +2687,7 @@ hsb_biasparam_S75_R75_40b$eradication <- 0.75
 hsb_biasparam_S75_R75_40b$budget <- 40
 
 #-- Budget = 60 --#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R5_60 <- fread(file_name)
 hsb_biasparam_S25_R5_60 <- data.frame(hsb_biasparam_S25_R5_60)[-1]
@@ -2697,7 +2697,7 @@ hsb_biasparam_S25_R5_60$detection <- 0.25
 hsb_biasparam_S25_R5_60$eradication <- 0.5
 hsb_biasparam_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R5_60b <- fread(file_name)
 hsb_biasparam_S25_R5_60b <- data.frame(hsb_biasparam_S25_R5_60b)[-1]
@@ -2707,7 +2707,7 @@ hsb_biasparam_S25_R5_60b$detection <- 0.25
 hsb_biasparam_S25_R5_60b$eradication <- 0.5
 hsb_biasparam_S25_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R75_60 <- fread(file_name)
 hsb_biasparam_S25_R75_60 <- data.frame(hsb_biasparam_S25_R75_60)[-1]
@@ -2717,7 +2717,7 @@ hsb_biasparam_S25_R75_60$detection <- 0.25
 hsb_biasparam_S25_R75_60$eradication <- 0.75
 hsb_biasparam_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S25_R75_60b <- fread(file_name)
 hsb_biasparam_S25_R75_60b <- data.frame(hsb_biasparam_S25_R75_60b)[-1]
@@ -2728,7 +2728,7 @@ hsb_biasparam_S25_R75_60b$eradication <- 0.75
 hsb_biasparam_S25_R75_60b$budget <- 60
 
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R5_60 <- fread(file_name)
 hsb_biasparam_S5_R5_60 <- data.frame(hsb_biasparam_S5_R5_60)[-1]
@@ -2738,7 +2738,7 @@ hsb_biasparam_S5_R5_60$detection <- 0.5
 hsb_biasparam_S5_R5_60$eradication <- 0.5
 hsb_biasparam_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R5_60b <- fread(file_name)
 hsb_biasparam_S5_R5_60b <- data.frame(hsb_biasparam_S5_R5_60b)[-1]
@@ -2748,7 +2748,7 @@ hsb_biasparam_S5_R5_60b$detection <- 0.5
 hsb_biasparam_S5_R5_60b$eradication <- 0.5
 hsb_biasparam_S5_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_60 <- fread(file_name)
 hsb_biasparam_S5_R75_60 <- data.frame(hsb_biasparam_S5_R75_60)[-1]
@@ -2758,7 +2758,7 @@ hsb_biasparam_S5_R75_60$detection <- 0.5
 hsb_biasparam_S5_R75_60$eradication <- 0.75
 hsb_biasparam_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S5_R75_60b <- fread(file_name)
 hsb_biasparam_S5_R75_60b <- data.frame(hsb_biasparam_S5_R75_60b)[-1]
@@ -2768,7 +2768,7 @@ hsb_biasparam_S5_R75_60b$detection <- 0.5
 hsb_biasparam_S5_R75_60b$eradication <- 0.75
 hsb_biasparam_S5_R75_60b$budget <- 60
 ##
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R5_60 <- fread(file_name)
 hsb_biasparam_S75_R5_60 <- data.frame(hsb_biasparam_S75_R5_60)[-1]
@@ -2778,7 +2778,7 @@ hsb_biasparam_S75_R5_60$detection <- 0.75
 hsb_biasparam_S75_R5_60$eradication <- 0.5
 hsb_biasparam_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R5_60b <- fread(file_name)
 hsb_biasparam_S75_R5_60b <- data.frame(hsb_biasparam_S75_R5_60b)[-1]
@@ -2788,7 +2788,7 @@ hsb_biasparam_S75_R5_60b$detection <- 0.75
 hsb_biasparam_S75_R5_60b$eradication <- 0.5
 hsb_biasparam_S75_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R75_60 <- fread(file_name)
 hsb_biasparam_S75_R75_60 <- data.frame(hsb_biasparam_S75_R75_60)[-1]
@@ -2798,7 +2798,7 @@ hsb_biasparam_S75_R75_60$detection <- 0.75
 hsb_biasparam_S75_R75_60$eradication <- 0.75
 hsb_biasparam_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 hsb_biasparam_S75_R75_60b <- fread(file_name)
 hsb_biasparam_S75_R75_60b <- data.frame(hsb_biasparam_S75_R75_60b)[-1]
@@ -2810,7 +2810,7 @@ hsb_biasparam_S75_R75_60b$budget <- 60
 
 ##### linear #####
 #----- linear -----#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R5_20 <- fread(file_name)
 linear_biasparam_S25_R5_20 <- data.frame(linear_biasparam_S25_R5_20)[-1]
@@ -2820,7 +2820,7 @@ linear_biasparam_S25_R5_20$detection <- 0.25
 linear_biasparam_S25_R5_20$eradication <- 0.5
 linear_biasparam_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R5_20b <- fread(file_name)
 linear_biasparam_S25_R5_20b <- data.frame(linear_biasparam_S25_R5_20b)[-1]
@@ -2830,7 +2830,7 @@ linear_biasparam_S25_R5_20b$detection <- 0.25
 linear_biasparam_S25_R5_20b$eradication <- 0.5
 linear_biasparam_S25_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R75_20 <- fread(file_name)
 linear_biasparam_S25_R75_20 <- data.frame(linear_biasparam_S25_R75_20)[-1]
@@ -2840,7 +2840,7 @@ linear_biasparam_S25_R75_20$detection <- 0.25
 linear_biasparam_S25_R75_20$eradication <- 0.75
 linear_biasparam_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R75_20b <- fread(file_name)
 linear_biasparam_S25_R75_20b <- data.frame(linear_biasparam_S25_R75_20b)[-1]
@@ -2851,7 +2851,7 @@ linear_biasparam_S25_R75_20b$eradication <- 0.75
 linear_biasparam_S25_R75_20b$budget <- 20
 
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R5_20 <- fread(file_name)
 linear_biasparam_S5_R5_20 <- data.frame(linear_biasparam_S5_R5_20)[-1]
@@ -2861,7 +2861,7 @@ linear_biasparam_S5_R5_20$detection <- 0.5
 linear_biasparam_S5_R5_20$eradication <- 0.5
 linear_biasparam_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R5_20b <- fread(file_name)
 linear_biasparam_S5_R5_20b <- data.frame(linear_biasparam_S5_R5_20b)[-1]
@@ -2871,7 +2871,7 @@ linear_biasparam_S5_R5_20b$detection <- 0.5
 linear_biasparam_S5_R5_20b$eradication <- 0.5
 linear_biasparam_S5_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R75_20 <- fread(file_name)
 linear_biasparam_S5_R75_20 <- data.frame(linear_biasparam_S5_R75_20)[-1]
@@ -2881,7 +2881,7 @@ linear_biasparam_S5_R75_20$detection <- 0.5
 linear_biasparam_S5_R75_20$eradication <- 0.75
 linear_biasparam_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R75_20b <- fread(file_name)
 linear_biasparam_S5_R75_20b <- data.frame(linear_biasparam_S5_R75_20b)[-1]
@@ -2891,7 +2891,7 @@ linear_biasparam_S5_R75_20b$detection <- 0.5
 linear_biasparam_S5_R75_20b$eradication <- 0.75
 linear_biasparam_S5_R75_20b$budget <- 20
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R5_20 <- fread(file_name)
 linear_biasparam_S75_R5_20 <- data.frame(linear_biasparam_S75_R5_20)[-1]
@@ -2901,7 +2901,7 @@ linear_biasparam_S75_R5_20$detection <- 0.75
 linear_biasparam_S75_R5_20$eradication <- 0.5
 linear_biasparam_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R5_20b <- fread(file_name)
 linear_biasparam_S75_R5_20b <- data.frame(linear_biasparam_S75_R5_20b)[-1]
@@ -2911,7 +2911,7 @@ linear_biasparam_S75_R5_20b$detection <- 0.75
 linear_biasparam_S75_R5_20b$eradication <- 0.5
 linear_biasparam_S75_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R75_20 <- fread(file_name)
 linear_biasparam_S75_R75_20 <- data.frame(linear_biasparam_S75_R75_20)[-1]
@@ -2921,7 +2921,7 @@ linear_biasparam_S75_R75_20$detection <- 0.75
 linear_biasparam_S75_R75_20$eradication <- 0.75
 linear_biasparam_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R75_20b <- fread(file_name)
 linear_biasparam_S75_R75_20b <- data.frame(linear_biasparam_S75_R75_20b)[-1]
@@ -2932,7 +2932,7 @@ linear_biasparam_S75_R75_20b$eradication <- 0.75
 linear_biasparam_S75_R75_20b$budget <- 20
 
 #----- linear -----#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R5_40 <- fread(file_name)
 linear_biasparam_S25_R5_40 <- data.frame(linear_biasparam_S25_R5_40)[-1]
@@ -2942,7 +2942,7 @@ linear_biasparam_S25_R5_40$detection <- 0.25
 linear_biasparam_S25_R5_40$eradication <- 0.5
 linear_biasparam_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R5_40b <- fread(file_name)
 linear_biasparam_S25_R5_40b <- data.frame(linear_biasparam_S25_R5_40b)[-1]
@@ -2952,7 +2952,7 @@ linear_biasparam_S25_R5_40b$detection <- 0.25
 linear_biasparam_S25_R5_40b$eradication <- 0.5
 linear_biasparam_S25_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R75_40 <- fread(file_name)
 linear_biasparam_S25_R75_40 <- data.frame(linear_biasparam_S25_R75_40)[-1]
@@ -2962,7 +2962,7 @@ linear_biasparam_S25_R75_40$detection <- 0.25
 linear_biasparam_S25_R75_40$eradication <- 0.75
 linear_biasparam_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R75_40b <- fread(file_name)
 linear_biasparam_S25_R75_40b <- data.frame(linear_biasparam_S25_R75_40b)[-1]
@@ -2973,7 +2973,7 @@ linear_biasparam_S25_R75_40b$eradication <- 0.75
 linear_biasparam_S25_R75_40b$budget <- 40
 
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R5_40 <- fread(file_name)
 linear_biasparam_S5_R5_40 <- data.frame(linear_biasparam_S5_R5_40)[-1]
@@ -2983,7 +2983,7 @@ linear_biasparam_S5_R5_40$detection <- 0.5
 linear_biasparam_S5_R5_40$eradication <- 0.5
 linear_biasparam_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R5_40b <- fread(file_name)
 linear_biasparam_S5_R5_40b <- data.frame(linear_biasparam_S5_R5_40b)[-1]
@@ -2993,7 +2993,7 @@ linear_biasparam_S5_R5_40b$detection <- 0.5
 linear_biasparam_S5_R5_40b$eradication <- 0.5
 linear_biasparam_S5_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R75_40 <- fread(file_name)
 linear_biasparam_S5_R75_40 <- data.frame(linear_biasparam_S5_R75_40)[-1]
@@ -3003,7 +3003,7 @@ linear_biasparam_S5_R75_40$detection <- 0.5
 linear_biasparam_S5_R75_40$eradication <- 0.75
 linear_biasparam_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R75_40b <- fread(file_name)
 linear_biasparam_S5_R75_40b <- data.frame(linear_biasparam_S5_R75_40b)[-1]
@@ -3013,7 +3013,7 @@ linear_biasparam_S5_R75_40b$detection <- 0.5
 linear_biasparam_S5_R75_40b$eradication <- 0.75
 linear_biasparam_S5_R75_40b$budget <- 40
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R5_40 <- fread(file_name)
 linear_biasparam_S75_R5_40 <- data.frame(linear_biasparam_S75_R5_40)[-1]
@@ -3023,7 +3023,7 @@ linear_biasparam_S75_R5_40$detection <- 0.75
 linear_biasparam_S75_R5_40$eradication <- 0.5
 linear_biasparam_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R5_40b <- fread(file_name)
 linear_biasparam_S75_R5_40b <- data.frame(linear_biasparam_S75_R5_40b)[-1]
@@ -3033,7 +3033,7 @@ linear_biasparam_S75_R5_40b$detection <- 0.75
 linear_biasparam_S75_R5_40b$eradication <- 0.5
 linear_biasparam_S75_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R75_40 <- fread(file_name)
 linear_biasparam_S75_R75_40 <- data.frame(linear_biasparam_S75_R75_40)[-1]
@@ -3043,7 +3043,7 @@ linear_biasparam_S75_R75_40$detection <- 0.75
 linear_biasparam_S75_R75_40$eradication <- 0.75
 linear_biasparam_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R75_40b <- fread(file_name)
 linear_biasparam_S75_R75_40b <- data.frame(linear_biasparam_S75_R75_40b)[-1]
@@ -3054,7 +3054,7 @@ linear_biasparam_S75_R75_40b$eradication <- 0.75
 linear_biasparam_S75_R75_40b$budget <- 40
 
 #----- linear -----#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R5_60 <- fread(file_name)
 linear_biasparam_S25_R5_60 <- data.frame(linear_biasparam_S25_R5_60)[-1]
@@ -3064,7 +3064,7 @@ linear_biasparam_S25_R5_60$detection <- 0.25
 linear_biasparam_S25_R5_60$eradication <- 0.5
 linear_biasparam_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R5_60b <- fread(file_name)
 linear_biasparam_S25_R5_60b <- data.frame(linear_biasparam_S25_R5_60b)[-1]
@@ -3074,7 +3074,7 @@ linear_biasparam_S25_R5_60b$detection <- 0.25
 linear_biasparam_S25_R5_60b$eradication <- 0.5
 linear_biasparam_S25_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R75_60 <- fread(file_name)
 linear_biasparam_S25_R75_60 <- data.frame(linear_biasparam_S25_R75_60)[-1]
@@ -3084,7 +3084,7 @@ linear_biasparam_S25_R75_60$detection <- 0.25
 linear_biasparam_S25_R75_60$eradication <- 0.75
 linear_biasparam_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S25_R75_60b <- fread(file_name)
 linear_biasparam_S25_R75_60b <- data.frame(linear_biasparam_S25_R75_60b)[-1]
@@ -3095,7 +3095,7 @@ linear_biasparam_S25_R75_60b$eradication <- 0.75
 linear_biasparam_S25_R75_60b$budget <- 60
 
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R5_60 <- fread(file_name)
 linear_biasparam_S5_R5_60 <- data.frame(linear_biasparam_S5_R5_60)[-1]
@@ -3105,7 +3105,7 @@ linear_biasparam_S5_R5_60$detection <- 0.5
 linear_biasparam_S5_R5_60$eradication <- 0.5
 linear_biasparam_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R5_60b <- fread(file_name)
 linear_biasparam_S5_R5_60b <- data.frame(linear_biasparam_S5_R5_60b)[-1]
@@ -3115,7 +3115,7 @@ linear_biasparam_S5_R5_60b$detection <- 0.5
 linear_biasparam_S5_R5_60b$eradication <- 0.5
 linear_biasparam_S5_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R75_60 <- fread(file_name)
 linear_biasparam_S5_R75_60 <- data.frame(linear_biasparam_S5_R75_60)[-1]
@@ -3125,7 +3125,7 @@ linear_biasparam_S5_R75_60$detection <- 0.5
 linear_biasparam_S5_R75_60$eradication <- 0.75
 linear_biasparam_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S5_R75_60b <- fread(file_name)
 linear_biasparam_S5_R75_60b <- data.frame(linear_biasparam_S5_R75_60b)[-1]
@@ -3135,7 +3135,7 @@ linear_biasparam_S5_R75_60b$detection <- 0.5
 linear_biasparam_S5_R75_60b$eradication <- 0.75
 linear_biasparam_S5_R75_60b$budget <- 60
 ##
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R5_60 <- fread(file_name)
 linear_biasparam_S75_R5_60 <- data.frame(linear_biasparam_S75_R5_60)[-1]
@@ -3145,7 +3145,7 @@ linear_biasparam_S75_R5_60$detection <- 0.75
 linear_biasparam_S75_R5_60$eradication <- 0.5
 linear_biasparam_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R5_60b <- fread(file_name)
 linear_biasparam_S75_R5_60b <- data.frame(linear_biasparam_S75_R5_60b)[-1]
@@ -3155,7 +3155,7 @@ linear_biasparam_S75_R5_60b$detection <- 0.75
 linear_biasparam_S75_R5_60b$eradication <- 0.5
 linear_biasparam_S75_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R75_60 <- fread(file_name)
 linear_biasparam_S75_R75_60 <- data.frame(linear_biasparam_S75_R75_60)[-1]
@@ -3165,7 +3165,7 @@ linear_biasparam_S75_R75_60$detection <- 0.75
 linear_biasparam_S75_R75_60$eradication <- 0.75
 linear_biasparam_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_biasparam_S75_R75_60b <- fread(file_name)
 linear_biasparam_S75_R75_60b <- data.frame(linear_biasparam_S75_R75_60b)[-1]
@@ -3177,7 +3177,7 @@ linear_biasparam_S75_R75_60b$budget <- 60
 
 ##### epicenter #####
 #----- epicenter -----#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R5_20 <- fread(file_name)
 epicenter_biasparam_S25_R5_20 <- data.frame(epicenter_biasparam_S25_R5_20)[-1]
@@ -3187,7 +3187,7 @@ epicenter_biasparam_S25_R5_20$detection <- 0.25
 epicenter_biasparam_S25_R5_20$eradication <- 0.5
 epicenter_biasparam_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R5_20b <- fread(file_name)
 epicenter_biasparam_S25_R5_20b <- data.frame(epicenter_biasparam_S25_R5_20b)[-1]
@@ -3197,7 +3197,7 @@ epicenter_biasparam_S25_R5_20b$detection <- 0.25
 epicenter_biasparam_S25_R5_20b$eradication <- 0.5
 epicenter_biasparam_S25_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R75_20 <- fread(file_name)
 epicenter_biasparam_S25_R75_20 <- data.frame(epicenter_biasparam_S25_R75_20)[-1]
@@ -3207,7 +3207,7 @@ epicenter_biasparam_S25_R75_20$detection <- 0.25
 epicenter_biasparam_S25_R75_20$eradication <- 0.75
 epicenter_biasparam_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R75_20b <- fread(file_name)
 epicenter_biasparam_S25_R75_20b <- data.frame(epicenter_biasparam_S25_R75_20b)[-1]
@@ -3218,7 +3218,7 @@ epicenter_biasparam_S25_R75_20b$eradication <- 0.75
 epicenter_biasparam_S25_R75_20b$budget <- 20
 
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R5_20 <- fread(file_name)
 epicenter_biasparam_S5_R5_20 <- data.frame(epicenter_biasparam_S5_R5_20)[-1]
@@ -3228,7 +3228,7 @@ epicenter_biasparam_S5_R5_20$detection <- 0.5
 epicenter_biasparam_S5_R5_20$eradication <- 0.5
 epicenter_biasparam_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R5_20b <- fread(file_name)
 epicenter_biasparam_S5_R5_20b <- data.frame(epicenter_biasparam_S5_R5_20b)[-1]
@@ -3238,7 +3238,7 @@ epicenter_biasparam_S5_R5_20b$detection <- 0.5
 epicenter_biasparam_S5_R5_20b$eradication <- 0.5
 epicenter_biasparam_S5_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R75_20 <- fread(file_name)
 epicenter_biasparam_S5_R75_20 <- data.frame(epicenter_biasparam_S5_R75_20)[-1]
@@ -3248,7 +3248,7 @@ epicenter_biasparam_S5_R75_20$detection <- 0.5
 epicenter_biasparam_S5_R75_20$eradication <- 0.75
 epicenter_biasparam_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R75_20b <- fread(file_name)
 epicenter_biasparam_S5_R75_20b <- data.frame(epicenter_biasparam_S5_R75_20b)[-1]
@@ -3258,7 +3258,7 @@ epicenter_biasparam_S5_R75_20b$detection <- 0.5
 epicenter_biasparam_S5_R75_20b$eradication <- 0.75
 epicenter_biasparam_S5_R75_20b$budget <- 20
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R5_20 <- fread(file_name)
 epicenter_biasparam_S75_R5_20 <- data.frame(epicenter_biasparam_S75_R5_20)[-1]
@@ -3268,7 +3268,7 @@ epicenter_biasparam_S75_R5_20$detection <- 0.75
 epicenter_biasparam_S75_R5_20$eradication <- 0.5
 epicenter_biasparam_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R5_20b <- fread(file_name)
 epicenter_biasparam_S75_R5_20b <- data.frame(epicenter_biasparam_S75_R5_20b)[-1]
@@ -3278,7 +3278,7 @@ epicenter_biasparam_S75_R5_20b$detection <- 0.75
 epicenter_biasparam_S75_R5_20b$eradication <- 0.5
 epicenter_biasparam_S75_R5_20b$budget <- 20
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R75_20 <- fread(file_name)
 epicenter_biasparam_S75_R75_20 <- data.frame(epicenter_biasparam_S75_R75_20)[-1]
@@ -3288,7 +3288,7 @@ epicenter_biasparam_S75_R75_20$detection <- 0.75
 epicenter_biasparam_S75_R75_20$eradication <- 0.75
 epicenter_biasparam_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R75_20b <- fread(file_name)
 epicenter_biasparam_S75_R75_20b <- data.frame(epicenter_biasparam_S75_R75_20b)[-1]
@@ -3298,7 +3298,7 @@ epicenter_biasparam_S75_R75_20b$detection <- 0.75
 epicenter_biasparam_S75_R75_20b$eradication <- 0.75
 epicenter_biasparam_S75_R75_20b$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R5_40 <- fread(file_name)
 epicenter_biasparam_S25_R5_40 <- data.frame(epicenter_biasparam_S25_R5_40)[-1]
@@ -3308,7 +3308,7 @@ epicenter_biasparam_S25_R5_40$detection <- 0.25
 epicenter_biasparam_S25_R5_40$eradication <- 0.5
 epicenter_biasparam_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R5_40b <- fread(file_name)
 epicenter_biasparam_S25_R5_40b <- data.frame(epicenter_biasparam_S25_R5_40b)[-1]
@@ -3318,7 +3318,7 @@ epicenter_biasparam_S25_R5_40b$detection <- 0.25
 epicenter_biasparam_S25_R5_40b$eradication <- 0.5
 epicenter_biasparam_S25_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R75_40 <- fread(file_name)
 epicenter_biasparam_S25_R75_40 <- data.frame(epicenter_biasparam_S25_R75_40)[-1]
@@ -3328,7 +3328,7 @@ epicenter_biasparam_S25_R75_40$detection <- 0.25
 epicenter_biasparam_S25_R75_40$eradication <- 0.75
 epicenter_biasparam_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R75_40b <- fread(file_name)
 epicenter_biasparam_S25_R75_40b <- data.frame(epicenter_biasparam_S25_R75_40b)[-1]
@@ -3339,7 +3339,7 @@ epicenter_biasparam_S25_R75_40b$eradication <- 0.75
 epicenter_biasparam_S25_R75_40b$budget <- 40
 
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R5_40 <- fread(file_name)
 epicenter_biasparam_S5_R5_40 <- data.frame(epicenter_biasparam_S5_R5_40)[-1]
@@ -3349,7 +3349,7 @@ epicenter_biasparam_S5_R5_40$detection <- 0.5
 epicenter_biasparam_S5_R5_40$eradication <- 0.5
 epicenter_biasparam_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R5_40b <- fread(file_name)
 epicenter_biasparam_S5_R5_40b <- data.frame(epicenter_biasparam_S5_R5_40b)[-1]
@@ -3359,7 +3359,7 @@ epicenter_biasparam_S5_R5_40b$detection <- 0.5
 epicenter_biasparam_S5_R5_40b$eradication <- 0.5
 epicenter_biasparam_S5_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R75_40 <- fread(file_name)
 epicenter_biasparam_S5_R75_40 <- data.frame(epicenter_biasparam_S5_R75_40)[-1]
@@ -3369,7 +3369,7 @@ epicenter_biasparam_S5_R75_40$detection <- 0.5
 epicenter_biasparam_S5_R75_40$eradication <- 0.75
 epicenter_biasparam_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R75_40b <- fread(file_name)
 epicenter_biasparam_S5_R75_40b <- data.frame(epicenter_biasparam_S5_R75_40b)[-1]
@@ -3379,7 +3379,7 @@ epicenter_biasparam_S5_R75_40b$detection <- 0.5
 epicenter_biasparam_S5_R75_40b$eradication <- 0.75
 epicenter_biasparam_S5_R75_40b$budget <- 40
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R5_40 <- fread(file_name)
 epicenter_biasparam_S75_R5_40 <- data.frame(epicenter_biasparam_S75_R5_40)[-1]
@@ -3389,7 +3389,7 @@ epicenter_biasparam_S75_R5_40$detection <- 0.75
 epicenter_biasparam_S75_R5_40$eradication <- 0.5
 epicenter_biasparam_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R5_40b <- fread(file_name)
 epicenter_biasparam_S75_R5_40b <- data.frame(epicenter_biasparam_S75_R5_40b)[-1]
@@ -3399,7 +3399,7 @@ epicenter_biasparam_S75_R5_40b$detection <- 0.75
 epicenter_biasparam_S75_R5_40b$eradication <- 0.5
 epicenter_biasparam_S75_R5_40b$budget <- 40
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R75_40 <- fread(file_name)
 epicenter_biasparam_S75_R75_40 <- data.frame(epicenter_biasparam_S75_R75_40)[-1]
@@ -3409,7 +3409,7 @@ epicenter_biasparam_S75_R75_40$detection <- 0.75
 epicenter_biasparam_S75_R75_40$eradication <- 0.75
 epicenter_biasparam_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R75_40b <- fread(file_name)
 epicenter_biasparam_S75_R75_40b <- data.frame(epicenter_biasparam_S75_R75_40b)[-1]
@@ -3420,7 +3420,7 @@ epicenter_biasparam_S75_R75_40b$eradication <- 0.75
 epicenter_biasparam_S75_R75_40b$budget <- 40
 
 #----- epicenter -----#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R5_60 <- fread(file_name)
 epicenter_biasparam_S25_R5_60 <- data.frame(epicenter_biasparam_S25_R5_60)[-1]
@@ -3430,7 +3430,7 @@ epicenter_biasparam_S25_R5_60$detection <- 0.25
 epicenter_biasparam_S25_R5_60$eradication <- 0.5
 epicenter_biasparam_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R5_60b <- fread(file_name)
 epicenter_biasparam_S25_R5_60b <- data.frame(epicenter_biasparam_S25_R5_60b)[-1]
@@ -3440,7 +3440,7 @@ epicenter_biasparam_S25_R5_60b$detection <- 0.25
 epicenter_biasparam_S25_R5_60b$eradication <- 0.5
 epicenter_biasparam_S25_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R75_60 <- fread(file_name)
 epicenter_biasparam_S25_R75_60 <- data.frame(epicenter_biasparam_S25_R75_60)[-1]
@@ -3450,7 +3450,7 @@ epicenter_biasparam_S25_R75_60$detection <- 0.25
 epicenter_biasparam_S25_R75_60$eradication <- 0.75
 epicenter_biasparam_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S25_R75_60b <- fread(file_name)
 epicenter_biasparam_S25_R75_60b <- data.frame(epicenter_biasparam_S25_R75_60b)[-1]
@@ -3461,7 +3461,7 @@ epicenter_biasparam_S25_R75_60b$eradication <- 0.75
 epicenter_biasparam_S25_R75_60b$budget <- 60
 
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R5_60 <- fread(file_name)
 epicenter_biasparam_S5_R5_60 <- data.frame(epicenter_biasparam_S5_R5_60)[-1]
@@ -3471,7 +3471,7 @@ epicenter_biasparam_S5_R5_60$detection <- 0.5
 epicenter_biasparam_S5_R5_60$eradication <- 0.5
 epicenter_biasparam_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R5_60b <- fread(file_name)
 epicenter_biasparam_S5_R5_60b <- data.frame(epicenter_biasparam_S5_R5_60b)[-1]
@@ -3481,7 +3481,7 @@ epicenter_biasparam_S5_R5_60b$detection <- 0.5
 epicenter_biasparam_S5_R5_60b$eradication <- 0.5
 epicenter_biasparam_S5_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R75_60 <- fread(file_name)
 epicenter_biasparam_S5_R75_60 <- data.frame(epicenter_biasparam_S5_R75_60)[-1]
@@ -3491,7 +3491,7 @@ epicenter_biasparam_S5_R75_60$detection <- 0.5
 epicenter_biasparam_S5_R75_60$eradication <- 0.75
 epicenter_biasparam_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S5_R75_60b <- fread(file_name)
 epicenter_biasparam_S5_R75_60b <- data.frame(epicenter_biasparam_S5_R75_60b)[-1]
@@ -3501,7 +3501,7 @@ epicenter_biasparam_S5_R75_60b$detection <- 0.5
 epicenter_biasparam_S5_R75_60b$eradication <- 0.75
 epicenter_biasparam_S5_R75_60b$budget <- 60
 ##
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R5_60 <- fread(file_name)
 epicenter_biasparam_S75_R5_60 <- data.frame(epicenter_biasparam_S75_R5_60)[-1]
@@ -3511,7 +3511,7 @@ epicenter_biasparam_S75_R5_60$detection <- 0.75
 epicenter_biasparam_S75_R5_60$eradication <- 0.5
 epicenter_biasparam_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R5_60b <- fread(file_name)
 epicenter_biasparam_S75_R5_60b <- data.frame(epicenter_biasparam_S75_R5_60b)[-1]
@@ -3521,7 +3521,7 @@ epicenter_biasparam_S75_R5_60b$detection <- 0.75
 epicenter_biasparam_S75_R5_60b$eradication <- 0.5
 epicenter_biasparam_S75_R5_60b$budget <- 60
 #
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R75_60 <- fread(file_name)
 epicenter_biasparam_S75_R75_60 <- data.frame(epicenter_biasparam_S75_R75_60)[-1]
@@ -3531,7 +3531,7 @@ epicenter_biasparam_S75_R75_60$detection <- 0.75
 epicenter_biasparam_S75_R75_60$eradication <- 0.75
 epicenter_biasparam_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 epicenter_biasparam_S75_R75_60b <- fread(file_name)
 epicenter_biasparam_S75_R75_60b <- data.frame(epicenter_biasparam_S75_R75_60b)[-1]
@@ -3618,7 +3618,7 @@ bias_param_eps  <- bias_params %>% filter(param %in% c("B0.eps.h", "B0.eps.h", "
 #-- Budget = 20 --#
 ##### hstatebins #####
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_20 <- fread(file_name)
 sites_S25_R5_20 <- data.frame(sites_S25_R5_20)[-1]
@@ -3628,7 +3628,7 @@ sites_S25_R5_20$detection <- 0.25
 sites_S25_R5_20$eradication <- 0.5
 sites_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_20b <- fread(file_name)
 sites_S25_R5_20b <- data.frame(sites_S25_R5_20b)[-1]
@@ -3639,7 +3639,7 @@ sites_S25_R5_20b$eradication <- 0.5
 sites_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_20 <- fread(file_name)
 sites_S25_R75_20 <- data.frame(sites_S25_R75_20)[-1]
@@ -3649,7 +3649,7 @@ sites_S25_R75_20$detection <- 0.25
 sites_S25_R75_20$eradication <- 0.75
 sites_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_20b <- fread(file_name)
 sites_S25_R75_20b <- data.frame(sites_S25_R75_20b)[-1]
@@ -3660,7 +3660,7 @@ sites_S25_R75_20b$eradication <- 0.75
 sites_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_20 <- fread(file_name)
 sites_S5_R5_20 <- data.frame(sites_S5_R5_20)[-1]
@@ -3670,7 +3670,7 @@ sites_S5_R5_20$detection <- 0.5
 sites_S5_R5_20$eradication <- 0.5
 sites_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_20b <- fread(file_name)
 sites_S5_R5_20b <- data.frame(sites_S5_R5_20b)[-1]
@@ -3681,7 +3681,7 @@ sites_S5_R5_20b$eradication <- 0.5
 sites_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_20 <- fread(file_name)
 sites_S5_R75_20 <- data.frame(sites_S5_R75_20)[-1]
@@ -3691,7 +3691,7 @@ sites_S5_R75_20$detection <- 0.5
 sites_S5_R75_20$eradication <- 0.75
 sites_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_20b <- fread(file_name)
 sites_S5_R75_20b <- data.frame(sites_S5_R75_20b)[-1]
@@ -3702,7 +3702,7 @@ sites_S5_R75_20b$eradication <- 0.75
 sites_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_20 <- fread(file_name)
 sites_S75_R5_20 <- data.frame(sites_S75_R5_20)[-1]
@@ -3712,7 +3712,7 @@ sites_S75_R5_20$detection <- 0.75
 sites_S75_R5_20$eradication <- 0.5
 sites_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_20b <- fread(file_name)
 sites_S75_R5_20b <- data.frame(sites_S75_R5_20b)[-1]
@@ -3723,7 +3723,7 @@ sites_S75_R5_20b$eradication <- 0.5
 sites_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_20 <- fread(file_name)
 sites_S75_R75_20 <- data.frame(sites_S75_R75_20)[-1]
@@ -3733,7 +3733,7 @@ sites_S75_R75_20$detection <- 0.75
 sites_S75_R75_20$eradication <- 0.75
 sites_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_20b <- fread(file_name)
 sites_S75_R75_20b <- data.frame(sites_S75_R75_20b)[-1]
@@ -3752,7 +3752,7 @@ sites_20 <- rbind(sites_S25_R5_20,sites_S25_R5_20b,
                   sites_S75_R75_20,sites_S5_R75_20b)
 
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_40 <- fread(file_name)
 sites_S25_R5_40 <- data.frame(sites_S25_R5_40)[-1]
@@ -3762,7 +3762,7 @@ sites_S25_R5_40$detection <- 0.25
 sites_S25_R5_40$eradication <- 0.5
 sites_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_40b <- fread(file_name)
 sites_S25_R5_40b <- data.frame(sites_S25_R5_40b)[-1]
@@ -3773,7 +3773,7 @@ sites_S25_R5_40b$eradication <- 0.5
 sites_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_40 <- fread(file_name)
 sites_S25_R75_40 <- data.frame(sites_S25_R75_40)[-1]
@@ -3783,7 +3783,7 @@ sites_S25_R75_40$detection <- 0.25
 sites_S25_R75_40$eradication <- 0.75
 sites_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_40b <- fread(file_name)
 sites_S25_R75_40b <- data.frame(sites_S25_R75_40b)[-1]
@@ -3794,7 +3794,7 @@ sites_S25_R75_40b$eradication <- 0.75
 sites_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_40 <- fread(file_name)
 sites_S5_R5_40 <- data.frame(sites_S5_R5_40)[-1]
@@ -3804,7 +3804,7 @@ sites_S5_R5_40$detection <- 0.5
 sites_S5_R5_40$eradication <- 0.5
 sites_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_40b <- fread(file_name)
 sites_S5_R5_40b <- data.frame(sites_S5_R5_40b)[-1]
@@ -3815,7 +3815,7 @@ sites_S5_R5_40b$eradication <- 0.5
 sites_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_40 <- fread(file_name)
 sites_S5_R75_40 <- data.frame(sites_S5_R75_40)[-1]
@@ -3825,7 +3825,7 @@ sites_S5_R75_40$detection <- 0.5
 sites_S5_R75_40$eradication <- 0.75
 sites_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_40b <- fread(file_name)
 sites_S5_R75_40b <- data.frame(sites_S5_R75_40b)[-1]
@@ -3836,7 +3836,7 @@ sites_S5_R75_40b$eradication <- 0.75
 sites_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_40 <- fread(file_name)
 sites_S75_R5_40 <- data.frame(sites_S75_R5_40)[-1]
@@ -3846,7 +3846,7 @@ sites_S75_R5_40$detection <- 0.75
 sites_S75_R5_40$eradication <- 0.5
 sites_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_40b <- fread(file_name)
 sites_S75_R5_40b <- data.frame(sites_S75_R5_40b)[-1]
@@ -3857,7 +3857,7 @@ sites_S75_R5_40b$eradication <- 0.5
 sites_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_40 <- fread(file_name)
 sites_S75_R75_40 <- data.frame(sites_S75_R75_40)[-1]
@@ -3867,7 +3867,7 @@ sites_S75_R75_40$detection <- 0.75
 sites_S75_R75_40$eradication <- 0.75
 sites_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_40b <- fread(file_name)
 sites_S75_R75_40b <- data.frame(sites_S75_R75_40b)[-1]
@@ -3886,7 +3886,7 @@ sites_40 <- rbind(sites_S25_R5_40,sites_S25_R5_40b,
                   sites_S75_R75_40,sites_S5_R75_40b)
 
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_60 <- fread(file_name)
 sites_S25_R5_60 <- data.frame(sites_S25_R5_60)[-1]
@@ -3896,7 +3896,7 @@ sites_S25_R5_60$detection <- 0.25
 sites_S25_R5_60$eradication <- 0.5
 sites_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_60b <- fread(file_name)
 sites_S25_R5_60b <- data.frame(sites_S25_R5_60b)[-1]
@@ -3907,7 +3907,7 @@ sites_S25_R5_60b$eradication <- 0.5
 sites_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_60 <- fread(file_name)
 sites_S25_R75_60 <- data.frame(sites_S25_R75_60)[-1]
@@ -3917,7 +3917,7 @@ sites_S25_R75_60$detection <- 0.25
 sites_S25_R75_60$eradication <- 0.75
 sites_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_60b <- fread(file_name)
 sites_S25_R75_60b <- data.frame(sites_S25_R75_60b)[-1]
@@ -3928,7 +3928,7 @@ sites_S25_R75_60b$eradication <- 0.75
 sites_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_60 <- fread(file_name)
 sites_S5_R5_60 <- data.frame(sites_S5_R5_60)[-1]
@@ -3938,7 +3938,7 @@ sites_S5_R5_60$detection <- 0.5
 sites_S5_R5_60$eradication <- 0.5
 sites_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_60b <- fread(file_name)
 sites_S5_R5_60b <- data.frame(sites_S5_R5_60b)[-1]
@@ -3949,7 +3949,7 @@ sites_S5_R5_60b$eradication <- 0.5
 sites_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_60 <- fread(file_name)
 sites_S5_R75_60 <- data.frame(sites_S5_R75_60)[-1]
@@ -3959,7 +3959,7 @@ sites_S5_R75_60$detection <- 0.5
 sites_S5_R75_60$eradication <- 0.75
 sites_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_60b <- fread(file_name)
 sites_S5_R75_60b <- data.frame(sites_S5_R75_60b)[-1]
@@ -3970,7 +3970,7 @@ sites_S5_R75_60b$eradication <- 0.75
 sites_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_60 <- fread(file_name)
 sites_S75_R5_60 <- data.frame(sites_S75_R5_60)[-1]
@@ -3980,7 +3980,7 @@ sites_S75_R5_60$detection <- 0.75
 sites_S75_R5_60$eradication <- 0.5
 sites_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_60b <- fread(file_name)
 sites_S75_R5_60b <- data.frame(sites_S75_R5_60b)[-1]
@@ -3991,7 +3991,7 @@ sites_S75_R5_60b$eradication <- 0.5
 sites_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_60 <- fread(file_name)
 sites_S75_R75_60 <- data.frame(sites_S75_R75_60)[-1]
@@ -4001,7 +4001,7 @@ sites_S75_R75_60$detection <- 0.75
 sites_S75_R75_60$eradication <- 0.75
 sites_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_60b <- fread(file_name)
 sites_S75_R75_60b <- data.frame(sites_S75_R75_60b)[-1]
@@ -4024,7 +4024,7 @@ sites_hsd <- rbind(sites_20, sites_40, sites_60 )
 
 ##### linear #####
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_20 <- fread(file_name)
 sites_S25_R5_20 <- data.frame(sites_S25_R5_20)[-1]
@@ -4034,7 +4034,7 @@ sites_S25_R5_20$detection <- 0.25
 sites_S25_R5_20$eradication <- 0.5
 sites_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_20b <- fread(file_name)
 sites_S25_R5_20b <- data.frame(sites_S25_R5_20b)[-1]
@@ -4045,7 +4045,7 @@ sites_S25_R5_20b$eradication <- 0.5
 sites_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_20 <- fread(file_name)
 sites_S25_R75_20 <- data.frame(sites_S25_R75_20)[-1]
@@ -4055,7 +4055,7 @@ sites_S25_R75_20$detection <- 0.25
 sites_S25_R75_20$eradication <- 0.75
 sites_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_20b <- fread(file_name)
 sites_S25_R75_20b <- data.frame(sites_S25_R75_20b)[-1]
@@ -4066,7 +4066,7 @@ sites_S25_R75_20b$eradication <- 0.75
 sites_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_20 <- fread(file_name)
 sites_S5_R5_20 <- data.frame(sites_S5_R5_20)[-1]
@@ -4076,7 +4076,7 @@ sites_S5_R5_20$detection <- 0.5
 sites_S5_R5_20$eradication <- 0.5
 sites_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_20b <- fread(file_name)
 sites_S5_R5_20b <- data.frame(sites_S5_R5_20b)[-1]
@@ -4087,7 +4087,7 @@ sites_S5_R5_20b$eradication <- 0.5
 sites_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_20 <- fread(file_name)
 sites_S5_R75_20 <- data.frame(sites_S5_R75_20)[-1]
@@ -4097,7 +4097,7 @@ sites_S5_R75_20$detection <- 0.5
 sites_S5_R75_20$eradication <- 0.75
 sites_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_20b <- fread(file_name)
 sites_S5_R75_20b <- data.frame(sites_S5_R75_20b)[-1]
@@ -4108,7 +4108,7 @@ sites_S5_R75_20b$eradication <- 0.75
 sites_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_20 <- fread(file_name)
 sites_S75_R5_20 <- data.frame(sites_S75_R5_20)[-1]
@@ -4118,7 +4118,7 @@ sites_S75_R5_20$detection <- 0.75
 sites_S75_R5_20$eradication <- 0.5
 sites_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_20b <- fread(file_name)
 sites_S75_R5_20b <- data.frame(sites_S75_R5_20b)[-1]
@@ -4129,7 +4129,7 @@ sites_S75_R5_20b$eradication <- 0.5
 sites_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_20 <- fread(file_name)
 sites_S75_R75_20 <- data.frame(sites_S75_R75_20)[-1]
@@ -4139,7 +4139,7 @@ sites_S75_R75_20$detection <- 0.75
 sites_S75_R75_20$eradication <- 0.75
 sites_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_20b <- fread(file_name)
 sites_S75_R75_20b <- data.frame(sites_S75_R75_20b)[-1]
@@ -4158,7 +4158,7 @@ sites_20 <- rbind(sites_S25_R5_20,sites_S25_R5_20b,
                   sites_S75_R75_20,sites_S5_R75_20b)
 
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_40 <- fread(file_name)
 sites_S25_R5_40 <- data.frame(sites_S25_R5_40)[-1]
@@ -4168,7 +4168,7 @@ sites_S25_R5_40$detection <- 0.25
 sites_S25_R5_40$eradication <- 0.5
 sites_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_40b <- fread(file_name)
 sites_S25_R5_40b <- data.frame(sites_S25_R5_40b)[-1]
@@ -4179,7 +4179,7 @@ sites_S25_R5_40b$eradication <- 0.5
 sites_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_40 <- fread(file_name)
 sites_S25_R75_40 <- data.frame(sites_S25_R75_40)[-1]
@@ -4189,7 +4189,7 @@ sites_S25_R75_40$detection <- 0.25
 sites_S25_R75_40$eradication <- 0.75
 sites_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_40b <- fread(file_name)
 sites_S25_R75_40b <- data.frame(sites_S25_R75_40b)[-1]
@@ -4200,7 +4200,7 @@ sites_S25_R75_40b$eradication <- 0.75
 sites_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_40 <- fread(file_name)
 sites_S5_R5_40 <- data.frame(sites_S5_R5_40)[-1]
@@ -4210,7 +4210,7 @@ sites_S5_R5_40$detection <- 0.5
 sites_S5_R5_40$eradication <- 0.5
 sites_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_40b <- fread(file_name)
 sites_S5_R5_40b <- data.frame(sites_S5_R5_40b)[-1]
@@ -4221,7 +4221,7 @@ sites_S5_R5_40b$eradication <- 0.5
 sites_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_40 <- fread(file_name)
 sites_S5_R75_40 <- data.frame(sites_S5_R75_40)[-1]
@@ -4231,7 +4231,7 @@ sites_S5_R75_40$detection <- 0.5
 sites_S5_R75_40$eradication <- 0.75
 sites_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_40b <- fread(file_name)
 sites_S5_R75_40b <- data.frame(sites_S5_R75_40b)[-1]
@@ -4242,7 +4242,7 @@ sites_S5_R75_40b$eradication <- 0.75
 sites_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_40 <- fread(file_name)
 sites_S75_R5_40 <- data.frame(sites_S75_R5_40)[-1]
@@ -4252,7 +4252,7 @@ sites_S75_R5_40$detection <- 0.75
 sites_S75_R5_40$eradication <- 0.5
 sites_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_40b <- fread(file_name)
 sites_S75_R5_40b <- data.frame(sites_S75_R5_40b)[-1]
@@ -4263,7 +4263,7 @@ sites_S75_R5_40b$eradication <- 0.5
 sites_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_40 <- fread(file_name)
 sites_S75_R75_40 <- data.frame(sites_S75_R75_40)[-1]
@@ -4273,7 +4273,7 @@ sites_S75_R75_40$detection <- 0.75
 sites_S75_R75_40$eradication <- 0.75
 sites_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_40b <- fread(file_name)
 sites_S75_R75_40b <- data.frame(sites_S75_R75_40b)[-1]
@@ -4292,7 +4292,7 @@ sites_40 <- rbind(sites_S25_R5_40,sites_S25_R5_40b,
                   sites_S75_R75_40,sites_S5_R75_40b)
 
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_60 <- fread(file_name)
 sites_S25_R5_60 <- data.frame(sites_S25_R5_60)[-1]
@@ -4302,7 +4302,7 @@ sites_S25_R5_60$detection <- 0.25
 sites_S25_R5_60$eradication <- 0.5
 sites_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_60b <- fread(file_name)
 sites_S25_R5_60b <- data.frame(sites_S25_R5_60b)[-1]
@@ -4313,7 +4313,7 @@ sites_S25_R5_60b$eradication <- 0.5
 sites_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_60 <- fread(file_name)
 sites_S25_R75_60 <- data.frame(sites_S25_R75_60)[-1]
@@ -4323,7 +4323,7 @@ sites_S25_R75_60$detection <- 0.25
 sites_S25_R75_60$eradication <- 0.75
 sites_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_60b <- fread(file_name)
 sites_S25_R75_60b <- data.frame(sites_S25_R75_60b)[-1]
@@ -4334,7 +4334,7 @@ sites_S25_R75_60b$eradication <- 0.75
 sites_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_60 <- fread(file_name)
 sites_S5_R5_60 <- data.frame(sites_S5_R5_60)[-1]
@@ -4344,7 +4344,7 @@ sites_S5_R5_60$detection <- 0.5
 sites_S5_R5_60$eradication <- 0.5
 sites_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_60b <- fread(file_name)
 sites_S5_R5_60b <- data.frame(sites_S5_R5_60b)[-1]
@@ -4355,7 +4355,7 @@ sites_S5_R5_60b$eradication <- 0.5
 sites_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_60 <- fread(file_name)
 sites_S5_R75_60 <- data.frame(sites_S5_R75_60)[-1]
@@ -4365,7 +4365,7 @@ sites_S5_R75_60$detection <- 0.5
 sites_S5_R75_60$eradication <- 0.75
 sites_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_60b <- fread(file_name)
 sites_S5_R75_60b <- data.frame(sites_S5_R75_60b)[-1]
@@ -4376,7 +4376,7 @@ sites_S5_R75_60b$eradication <- 0.75
 sites_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_60 <- fread(file_name)
 sites_S75_R5_60 <- data.frame(sites_S75_R5_60)[-1]
@@ -4386,7 +4386,7 @@ sites_S75_R5_60$detection <- 0.75
 sites_S75_R5_60$eradication <- 0.5
 sites_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_60b <- fread(file_name)
 sites_S75_R5_60b <- data.frame(sites_S75_R5_60b)[-1]
@@ -4397,7 +4397,7 @@ sites_S75_R5_60b$eradication <- 0.5
 sites_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_60 <- fread(file_name)
 sites_S75_R75_60 <- data.frame(sites_S75_R75_60)[-1]
@@ -4407,7 +4407,7 @@ sites_S75_R75_60$detection <- 0.75
 sites_S75_R75_60$eradication <- 0.75
 sites_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_60b <- fread(file_name)
 sites_S75_R75_60b <- data.frame(sites_S75_R75_60b)[-1]
@@ -4429,7 +4429,7 @@ sites_linear <- rbind(sites_20, sites_40, sites_60 )
 
 ##### epicenter #####
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_20 <- fread(file_name)
 sites_S25_R5_20 <- data.frame(sites_S25_R5_20)[-1]
@@ -4439,7 +4439,7 @@ sites_S25_R5_20$detection <- 0.25
 sites_S25_R5_20$eradication <- 0.5
 sites_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_20b <- fread(file_name)
 sites_S25_R5_20b <- data.frame(sites_S25_R5_20b)[-1]
@@ -4450,7 +4450,7 @@ sites_S25_R5_20b$eradication <- 0.5
 sites_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_20 <- fread(file_name)
 sites_S25_R75_20 <- data.frame(sites_S25_R75_20)[-1]
@@ -4460,7 +4460,7 @@ sites_S25_R75_20$detection <- 0.25
 sites_S25_R75_20$eradication <- 0.75
 sites_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_20b <- fread(file_name)
 sites_S25_R75_20b <- data.frame(sites_S25_R75_20b)[-1]
@@ -4471,7 +4471,7 @@ sites_S25_R75_20b$eradication <- 0.75
 sites_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_20 <- fread(file_name)
 sites_S5_R5_20 <- data.frame(sites_S5_R5_20)[-1]
@@ -4481,7 +4481,7 @@ sites_S5_R5_20$detection <- 0.5
 sites_S5_R5_20$eradication <- 0.5
 sites_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_20b <- fread(file_name)
 sites_S5_R5_20b <- data.frame(sites_S5_R5_20b)[-1]
@@ -4492,7 +4492,7 @@ sites_S5_R5_20b$eradication <- 0.5
 sites_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_20 <- fread(file_name)
 sites_S5_R75_20 <- data.frame(sites_S5_R75_20)[-1]
@@ -4502,7 +4502,7 @@ sites_S5_R75_20$detection <- 0.5
 sites_S5_R75_20$eradication <- 0.75
 sites_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_20b <- fread(file_name)
 sites_S5_R75_20b <- data.frame(sites_S5_R75_20b)[-1]
@@ -4513,7 +4513,7 @@ sites_S5_R75_20b$eradication <- 0.75
 sites_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_20 <- fread(file_name)
 sites_S75_R5_20 <- data.frame(sites_S75_R5_20)[-1]
@@ -4523,7 +4523,7 @@ sites_S75_R5_20$detection <- 0.75
 sites_S75_R5_20$eradication <- 0.5
 sites_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_20b <- fread(file_name)
 sites_S75_R5_20b <- data.frame(sites_S75_R5_20b)[-1]
@@ -4534,7 +4534,7 @@ sites_S75_R5_20b$eradication <- 0.5
 sites_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_20 <- fread(file_name)
 sites_S75_R75_20 <- data.frame(sites_S75_R75_20)[-1]
@@ -4544,7 +4544,7 @@ sites_S75_R75_20$detection <- 0.75
 sites_S75_R75_20$eradication <- 0.75
 sites_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_20b <- fread(file_name)
 sites_S75_R75_20b <- data.frame(sites_S75_R75_20b)[-1]
@@ -4563,7 +4563,7 @@ sites_20 <- rbind(sites_S25_R5_20,sites_S25_R5_20b,
                   sites_S75_R75_20,sites_S5_R75_20b)
 
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_40 <- fread(file_name)
 sites_S25_R5_40 <- data.frame(sites_S25_R5_40)[-1]
@@ -4573,7 +4573,7 @@ sites_S25_R5_40$detection <- 0.25
 sites_S25_R5_40$eradication <- 0.5
 sites_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_40b <- fread(file_name)
 sites_S25_R5_40b <- data.frame(sites_S25_R5_40b)[-1]
@@ -4584,7 +4584,7 @@ sites_S25_R5_40b$eradication <- 0.5
 sites_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_40 <- fread(file_name)
 sites_S25_R75_40 <- data.frame(sites_S25_R75_40)[-1]
@@ -4594,7 +4594,7 @@ sites_S25_R75_40$detection <- 0.25
 sites_S25_R75_40$eradication <- 0.75
 sites_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_40b <- fread(file_name)
 sites_S25_R75_40b <- data.frame(sites_S25_R75_40b)[-1]
@@ -4605,7 +4605,7 @@ sites_S25_R75_40b$eradication <- 0.75
 sites_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_40 <- fread(file_name)
 sites_S5_R5_40 <- data.frame(sites_S5_R5_40)[-1]
@@ -4615,7 +4615,7 @@ sites_S5_R5_40$detection <- 0.5
 sites_S5_R5_40$eradication <- 0.5
 sites_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_40b <- fread(file_name)
 sites_S5_R5_40b <- data.frame(sites_S5_R5_40b)[-1]
@@ -4626,7 +4626,7 @@ sites_S5_R5_40b$eradication <- 0.5
 sites_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_40 <- fread(file_name)
 sites_S5_R75_40 <- data.frame(sites_S5_R75_40)[-1]
@@ -4636,7 +4636,7 @@ sites_S5_R75_40$detection <- 0.5
 sites_S5_R75_40$eradication <- 0.75
 sites_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_40b <- fread(file_name)
 sites_S5_R75_40b <- data.frame(sites_S5_R75_40b)[-1]
@@ -4647,7 +4647,7 @@ sites_S5_R75_40b$eradication <- 0.75
 sites_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_40 <- fread(file_name)
 sites_S75_R5_40 <- data.frame(sites_S75_R5_40)[-1]
@@ -4657,7 +4657,7 @@ sites_S75_R5_40$detection <- 0.75
 sites_S75_R5_40$eradication <- 0.5
 sites_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_40b <- fread(file_name)
 sites_S75_R5_40b <- data.frame(sites_S75_R5_40b)[-1]
@@ -4668,7 +4668,7 @@ sites_S75_R5_40b$eradication <- 0.5
 sites_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_40 <- fread(file_name)
 sites_S75_R75_40 <- data.frame(sites_S75_R75_40)[-1]
@@ -4678,7 +4678,7 @@ sites_S75_R75_40$detection <- 0.75
 sites_S75_R75_40$eradication <- 0.75
 sites_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_40b <- fread(file_name)
 sites_S75_R75_40b <- data.frame(sites_S75_R75_40b)[-1]
@@ -4698,7 +4698,7 @@ sites_40 <- rbind(sites_S25_R5_40,sites_S25_R5_40b,
 
 
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_60 <- fread(file_name)
 sites_S25_R5_60 <- data.frame(sites_S25_R5_60)[-1]
@@ -4708,7 +4708,7 @@ sites_S25_R5_60$detection <- 0.25
 sites_S25_R5_60$eradication <- 0.5
 sites_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R5_60b <- fread(file_name)
 sites_S25_R5_60b <- data.frame(sites_S25_R5_60b)[-1]
@@ -4719,7 +4719,7 @@ sites_S25_R5_60b$eradication <- 0.5
 sites_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_60 <- fread(file_name)
 sites_S25_R75_60 <- data.frame(sites_S25_R75_60)[-1]
@@ -4729,7 +4729,7 @@ sites_S25_R75_60$detection <- 0.25
 sites_S25_R75_60$eradication <- 0.75
 sites_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S25_R75_60b <- fread(file_name)
 sites_S25_R75_60b <- data.frame(sites_S25_R75_60b)[-1]
@@ -4740,7 +4740,7 @@ sites_S25_R75_60b$eradication <- 0.75
 sites_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_60 <- fread(file_name)
 sites_S5_R5_60 <- data.frame(sites_S5_R5_60)[-1]
@@ -4750,7 +4750,7 @@ sites_S5_R5_60$detection <- 0.5
 sites_S5_R5_60$eradication <- 0.5
 sites_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R5_60b <- fread(file_name)
 sites_S5_R5_60b <- data.frame(sites_S5_R5_60b)[-1]
@@ -4761,7 +4761,7 @@ sites_S5_R5_60b$eradication <- 0.5
 sites_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_60 <- fread(file_name)
 sites_S5_R75_60 <- data.frame(sites_S5_R75_60)[-1]
@@ -4771,7 +4771,7 @@ sites_S5_R75_60$detection <- 0.5
 sites_S5_R75_60$eradication <- 0.75
 sites_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S5_R75_60b <- fread(file_name)
 sites_S5_R75_60b <- data.frame(sites_S5_R75_60b)[-1]
@@ -4782,7 +4782,7 @@ sites_S5_R75_60b$eradication <- 0.75
 sites_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_60 <- fread(file_name)
 sites_S75_R5_60 <- data.frame(sites_S75_R5_60)[-1]
@@ -4792,7 +4792,7 @@ sites_S75_R5_60$detection <- 0.75
 sites_S75_R5_60$eradication <- 0.5
 sites_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R5_60b <- fread(file_name)
 sites_S75_R5_60b <- data.frame(sites_S75_R5_60b)[-1]
@@ -4803,7 +4803,7 @@ sites_S75_R5_60b$eradication <- 0.5
 sites_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_60 <- fread(file_name)
 sites_S75_R75_60 <- data.frame(sites_S75_R75_60)[-1]
@@ -4813,7 +4813,7 @@ sites_S75_R75_60$detection <- 0.75
 sites_S75_R75_60$eradication <- 0.75
 sites_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
 file_name = paste(path, 'sites_visit.txt',sep = '/')
 sites_S75_R75_60b <- fread(file_name)
 sites_S75_R75_60b <- data.frame(sites_S75_R75_60b)[-1]
@@ -4849,7 +4849,7 @@ sites_visit$visit <- sites_visit$visit/40
 #-- Budget = 20 --#
 ##### hstatebins #####
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_20 <- fread(file_name)
 dist_S25_R5_20 <- data.frame(dist_S25_R5_20)[-1]
@@ -4859,7 +4859,7 @@ dist_S25_R5_20$detection <- 0.25
 dist_S25_R5_20$eradication <- 0.5
 dist_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_20b <- fread(file_name)
 dist_S25_R5_20b <- data.frame(dist_S25_R5_20b)[-1]
@@ -4870,7 +4870,7 @@ dist_S25_R5_20b$eradication <- 0.5
 dist_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_20 <- fread(file_name)
 dist_S25_R75_20 <- data.frame(dist_S25_R75_20)[-1]
@@ -4880,7 +4880,7 @@ dist_S25_R75_20$detection <- 0.25
 dist_S25_R75_20$eradication <- 0.75
 dist_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_20b <- fread(file_name)
 dist_S25_R75_20b <- data.frame(dist_S25_R75_20b)[-1]
@@ -4891,7 +4891,7 @@ dist_S25_R75_20b$eradication <- 0.75
 dist_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_20 <- fread(file_name)
 dist_S5_R5_20 <- data.frame(dist_S5_R5_20)[-1]
@@ -4901,7 +4901,7 @@ dist_S5_R5_20$detection <- 0.5
 dist_S5_R5_20$eradication <- 0.5
 dist_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_20b <- fread(file_name)
 dist_S5_R5_20b <- data.frame(dist_S5_R5_20b)[-1]
@@ -4912,7 +4912,7 @@ dist_S5_R5_20b$eradication <- 0.5
 dist_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_20 <- fread(file_name)
 dist_S5_R75_20 <- data.frame(dist_S5_R75_20)[-1]
@@ -4922,7 +4922,7 @@ dist_S5_R75_20$detection <- 0.5
 dist_S5_R75_20$eradication <- 0.75
 dist_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_20b <- fread(file_name)
 dist_S5_R75_20b <- data.frame(dist_S5_R75_20b)[-1]
@@ -4933,7 +4933,7 @@ dist_S5_R75_20b$eradication <- 0.75
 dist_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_20 <- fread(file_name)
 dist_S75_R5_20 <- data.frame(dist_S75_R5_20)[-1]
@@ -4943,7 +4943,7 @@ dist_S75_R5_20$detection <- 0.75
 dist_S75_R5_20$eradication <- 0.5
 dist_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_20b <- fread(file_name)
 dist_S75_R5_20b <- data.frame(dist_S75_R5_20b)[-1]
@@ -4954,7 +4954,7 @@ dist_S75_R5_20b$eradication <- 0.5
 dist_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_20 <- fread(file_name)
 dist_S75_R75_20 <- data.frame(dist_S75_R75_20)[-1]
@@ -4964,7 +4964,7 @@ dist_S75_R75_20$detection <- 0.75
 dist_S75_R75_20$eradication <- 0.75
 dist_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_20b <- fread(file_name)
 dist_S75_R75_20b <- data.frame(dist_S75_R75_20b)[-1]
@@ -4983,7 +4983,7 @@ dist_20 <- rbind(dist_S25_R5_20,dist_S25_R5_20b,
                   dist_S75_R75_20,dist_S5_R75_20b)
 
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_40 <- fread(file_name)
 dist_S25_R5_40 <- data.frame(dist_S25_R5_40)[-1]
@@ -4993,7 +4993,7 @@ dist_S25_R5_40$detection <- 0.25
 dist_S25_R5_40$eradication <- 0.5
 dist_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_40b <- fread(file_name)
 dist_S25_R5_40b <- data.frame(dist_S25_R5_40b)[-1]
@@ -5004,7 +5004,7 @@ dist_S25_R5_40b$eradication <- 0.5
 dist_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_40 <- fread(file_name)
 dist_S25_R75_40 <- data.frame(dist_S25_R75_40)[-1]
@@ -5014,7 +5014,7 @@ dist_S25_R75_40$detection <- 0.25
 dist_S25_R75_40$eradication <- 0.75
 dist_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_40b <- fread(file_name)
 dist_S25_R75_40b <- data.frame(dist_S25_R75_40b)[-1]
@@ -5025,7 +5025,7 @@ dist_S25_R75_40b$eradication <- 0.75
 dist_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_40 <- fread(file_name)
 dist_S5_R5_40 <- data.frame(dist_S5_R5_40)[-1]
@@ -5035,7 +5035,7 @@ dist_S5_R5_40$detection <- 0.5
 dist_S5_R5_40$eradication <- 0.5
 dist_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_40b <- fread(file_name)
 dist_S5_R5_40b <- data.frame(dist_S5_R5_40b)[-1]
@@ -5046,7 +5046,7 @@ dist_S5_R5_40b$eradication <- 0.5
 dist_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_40 <- fread(file_name)
 dist_S5_R75_40 <- data.frame(dist_S5_R75_40)[-1]
@@ -5056,7 +5056,7 @@ dist_S5_R75_40$detection <- 0.5
 dist_S5_R75_40$eradication <- 0.75
 dist_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_40b <- fread(file_name)
 dist_S5_R75_40b <- data.frame(dist_S5_R75_40b)[-1]
@@ -5067,7 +5067,7 @@ dist_S5_R75_40b$eradication <- 0.75
 dist_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_40 <- fread(file_name)
 dist_S75_R5_40 <- data.frame(dist_S75_R5_40)[-1]
@@ -5077,7 +5077,7 @@ dist_S75_R5_40$detection <- 0.75
 dist_S75_R5_40$eradication <- 0.5
 dist_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_40b <- fread(file_name)
 dist_S75_R5_40b <- data.frame(dist_S75_R5_40b)[-1]
@@ -5088,7 +5088,7 @@ dist_S75_R5_40b$eradication <- 0.5
 dist_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_40 <- fread(file_name)
 dist_S75_R75_40 <- data.frame(dist_S75_R75_40)[-1]
@@ -5098,7 +5098,7 @@ dist_S75_R75_40$detection <- 0.75
 dist_S75_R75_40$eradication <- 0.75
 dist_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_40b <- fread(file_name)
 dist_S75_R75_40b <- data.frame(dist_S75_R75_40b)[-1]
@@ -5117,7 +5117,7 @@ dist_40 <- rbind(dist_S25_R5_40,dist_S25_R5_40b,
                  dist_S75_R75_40,dist_S5_R75_40b)
 
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_60 <- fread(file_name)
 dist_S25_R5_60 <- data.frame(dist_S25_R5_60)[-1]
@@ -5127,7 +5127,7 @@ dist_S25_R5_60$detection <- 0.25
 dist_S25_R5_60$eradication <- 0.5
 dist_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_60b <- fread(file_name)
 dist_S25_R5_60b <- data.frame(dist_S25_R5_60b)[-1]
@@ -5138,7 +5138,7 @@ dist_S25_R5_60b$eradication <- 0.5
 dist_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_60 <- fread(file_name)
 dist_S25_R75_60 <- data.frame(dist_S25_R75_60)[-1]
@@ -5148,7 +5148,7 @@ dist_S25_R75_60$detection <- 0.25
 dist_S25_R75_60$eradication <- 0.75
 dist_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S25_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_60b <- fread(file_name)
 dist_S25_R75_60b <- data.frame(dist_S25_R75_60b)[-1]
@@ -5159,7 +5159,7 @@ dist_S25_R75_60b$eradication <- 0.75
 dist_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_60 <- fread(file_name)
 dist_S5_R5_60 <- data.frame(dist_S5_R5_60)[-1]
@@ -5169,7 +5169,7 @@ dist_S5_R5_60$detection <- 0.5
 dist_S5_R5_60$eradication <- 0.5
 dist_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_60b <- fread(file_name)
 dist_S5_R5_60b <- data.frame(dist_S5_R5_60b)[-1]
@@ -5180,7 +5180,7 @@ dist_S5_R5_60b$eradication <- 0.5
 dist_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_60 <- fread(file_name)
 dist_S5_R75_60 <- data.frame(dist_S5_R75_60)[-1]
@@ -5190,7 +5190,7 @@ dist_S5_R75_60$detection <- 0.5
 dist_S5_R75_60$eradication <- 0.75
 dist_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_60b <- fread(file_name)
 dist_S5_R75_60b <- data.frame(dist_S5_R75_60b)[-1]
@@ -5201,7 +5201,7 @@ dist_S5_R75_60b$eradication <- 0.75
 dist_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_60 <- fread(file_name)
 dist_S75_R5_60 <- data.frame(dist_S75_R5_60)[-1]
@@ -5211,7 +5211,7 @@ dist_S75_R5_60$detection <- 0.75
 dist_S75_R5_60$eradication <- 0.5
 dist_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_60b <- fread(file_name)
 dist_S75_R5_60b <- data.frame(dist_S75_R5_60b)[-1]
@@ -5222,7 +5222,7 @@ dist_S75_R5_60b$eradication <- 0.5
 dist_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_60 <- fread(file_name)
 dist_S75_R75_60 <- data.frame(dist_S75_R75_60)[-1]
@@ -5232,7 +5232,7 @@ dist_S75_R75_60$detection <- 0.75
 dist_S75_R75_60$eradication <- 0.75
 dist_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\hstatebins\\S75_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_60b <- fread(file_name)
 dist_S75_R75_60b <- data.frame(dist_S75_R75_60b)[-1]
@@ -5254,7 +5254,7 @@ dist_hsd <- rbind(dist_20, dist_40, dist_60)
 
 ##### linear #####
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_20 <- fread(file_name)
 dist_S25_R5_20 <- data.frame(dist_S25_R5_20)[-1]
@@ -5264,7 +5264,7 @@ dist_S25_R5_20$detection <- 0.25
 dist_S25_R5_20$eradication <- 0.5
 dist_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_20b <- fread(file_name)
 dist_S25_R5_20b <- data.frame(dist_S25_R5_20b)[-1]
@@ -5275,7 +5275,7 @@ dist_S25_R5_20b$eradication <- 0.5
 dist_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_20 <- fread(file_name)
 dist_S25_R75_20 <- data.frame(dist_S25_R75_20)[-1]
@@ -5285,7 +5285,7 @@ dist_S25_R75_20$detection <- 0.25
 dist_S25_R75_20$eradication <- 0.75
 dist_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_20b <- fread(file_name)
 dist_S25_R75_20b <- data.frame(dist_S25_R75_20b)[-1]
@@ -5296,7 +5296,7 @@ dist_S25_R75_20b$eradication <- 0.75
 dist_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_20 <- fread(file_name)
 dist_S5_R5_20 <- data.frame(dist_S5_R5_20)[-1]
@@ -5306,7 +5306,7 @@ dist_S5_R5_20$detection <- 0.5
 dist_S5_R5_20$eradication <- 0.5
 dist_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_20b <- fread(file_name)
 dist_S5_R5_20b <- data.frame(dist_S5_R5_20b)[-1]
@@ -5317,7 +5317,7 @@ dist_S5_R5_20b$eradication <- 0.5
 dist_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_20 <- fread(file_name)
 dist_S5_R75_20 <- data.frame(dist_S5_R75_20)[-1]
@@ -5327,7 +5327,7 @@ dist_S5_R75_20$detection <- 0.5
 dist_S5_R75_20$eradication <- 0.75
 dist_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_20b <- fread(file_name)
 dist_S5_R75_20b <- data.frame(dist_S5_R75_20b)[-1]
@@ -5338,7 +5338,7 @@ dist_S5_R75_20b$eradication <- 0.75
 dist_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_20 <- fread(file_name)
 dist_S75_R5_20 <- data.frame(dist_S75_R5_20)[-1]
@@ -5348,7 +5348,7 @@ dist_S75_R5_20$detection <- 0.75
 dist_S75_R5_20$eradication <- 0.5
 dist_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_20b <- fread(file_name)
 dist_S75_R5_20b <- data.frame(dist_S75_R5_20b)[-1]
@@ -5359,7 +5359,7 @@ dist_S75_R5_20b$eradication <- 0.5
 dist_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_20 <- fread(file_name)
 dist_S75_R75_20 <- data.frame(dist_S75_R75_20)[-1]
@@ -5369,7 +5369,7 @@ dist_S75_R75_20$detection <- 0.75
 dist_S75_R75_20$eradication <- 0.75
 dist_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_20b <- fread(file_name)
 dist_S75_R75_20b <- data.frame(dist_S75_R75_20b)[-1]
@@ -5388,7 +5388,7 @@ dist_20 <- rbind(dist_S25_R5_20,dist_S25_R5_20b,
                   dist_S75_R75_20,dist_S5_R75_20b)
 
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_40 <- fread(file_name)
 dist_S25_R5_40 <- data.frame(dist_S25_R5_40)[-1]
@@ -5398,7 +5398,7 @@ dist_S25_R5_40$detection <- 0.25
 dist_S25_R5_40$eradication <- 0.5
 dist_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_40b <- fread(file_name)
 dist_S25_R5_40b <- data.frame(dist_S25_R5_40b)[-1]
@@ -5409,7 +5409,7 @@ dist_S25_R5_40b$eradication <- 0.5
 dist_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_40 <- fread(file_name)
 dist_S25_R75_40 <- data.frame(dist_S25_R75_40)[-1]
@@ -5419,7 +5419,7 @@ dist_S25_R75_40$detection <- 0.25
 dist_S25_R75_40$eradication <- 0.75
 dist_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_40b <- fread(file_name)
 dist_S25_R75_40b <- data.frame(dist_S25_R75_40b)[-1]
@@ -5430,7 +5430,7 @@ dist_S25_R75_40b$eradication <- 0.75
 dist_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_40 <- fread(file_name)
 dist_S5_R5_40 <- data.frame(dist_S5_R5_40)[-1]
@@ -5440,7 +5440,7 @@ dist_S5_R5_40$detection <- 0.5
 dist_S5_R5_40$eradication <- 0.5
 dist_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_40b <- fread(file_name)
 dist_S5_R5_40b <- data.frame(dist_S5_R5_40b)[-1]
@@ -5451,7 +5451,7 @@ dist_S5_R5_40b$eradication <- 0.5
 dist_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_40 <- fread(file_name)
 dist_S5_R75_40 <- data.frame(dist_S5_R75_40)[-1]
@@ -5461,7 +5461,7 @@ dist_S5_R75_40$detection <- 0.5
 dist_S5_R75_40$eradication <- 0.75
 dist_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_40b <- fread(file_name)
 dist_S5_R75_40b <- data.frame(dist_S5_R75_40b)[-1]
@@ -5472,7 +5472,7 @@ dist_S5_R75_40b$eradication <- 0.75
 dist_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_40 <- fread(file_name)
 dist_S75_R5_40 <- data.frame(dist_S75_R5_40)[-1]
@@ -5482,7 +5482,7 @@ dist_S75_R5_40$detection <- 0.75
 dist_S75_R5_40$eradication <- 0.5
 dist_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_40b <- fread(file_name)
 dist_S75_R5_40b <- data.frame(dist_S75_R5_40b)[-1]
@@ -5493,7 +5493,7 @@ dist_S75_R5_40b$eradication <- 0.5
 dist_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_40 <- fread(file_name)
 dist_S75_R75_40 <- data.frame(dist_S75_R75_40)[-1]
@@ -5503,7 +5503,7 @@ dist_S75_R75_40$detection <- 0.75
 dist_S75_R75_40$eradication <- 0.75
 dist_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_40b <- fread(file_name)
 dist_S75_R75_40b <- data.frame(dist_S75_R75_40b)[-1]
@@ -5522,7 +5522,7 @@ dist_40 <- rbind(dist_S25_R5_40,dist_S25_R5_40b,
                  dist_S75_R75_40,dist_S5_R75_40b)
 
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_60 <- fread(file_name)
 dist_S25_R5_60 <- data.frame(dist_S25_R5_60)[-1]
@@ -5532,7 +5532,7 @@ dist_S25_R5_60$detection <- 0.25
 dist_S25_R5_60$eradication <- 0.5
 dist_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_60b <- fread(file_name)
 dist_S25_R5_60b <- data.frame(dist_S25_R5_60b)[-1]
@@ -5543,7 +5543,7 @@ dist_S25_R5_60b$eradication <- 0.5
 dist_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_60 <- fread(file_name)
 dist_S25_R75_60 <- data.frame(dist_S25_R75_60)[-1]
@@ -5553,7 +5553,7 @@ dist_S25_R75_60$detection <- 0.25
 dist_S25_R75_60$eradication <- 0.75
 dist_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S25_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_60b <- fread(file_name)
 dist_S25_R75_60b <- data.frame(dist_S25_R75_60b)[-1]
@@ -5564,7 +5564,7 @@ dist_S25_R75_60b$eradication <- 0.75
 dist_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_60 <- fread(file_name)
 dist_S5_R5_60 <- data.frame(dist_S5_R5_60)[-1]
@@ -5574,7 +5574,7 @@ dist_S5_R5_60$detection <- 0.5
 dist_S5_R5_60$eradication <- 0.5
 dist_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_60b <- fread(file_name)
 dist_S5_R5_60b <- data.frame(dist_S5_R5_60b)[-1]
@@ -5585,7 +5585,7 @@ dist_S5_R5_60b$eradication <- 0.5
 dist_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_60 <- fread(file_name)
 dist_S5_R75_60 <- data.frame(dist_S5_R75_60)[-1]
@@ -5595,7 +5595,7 @@ dist_S5_R75_60$detection <- 0.5
 dist_S5_R75_60$eradication <- 0.75
 dist_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_60b <- fread(file_name)
 dist_S5_R75_60b <- data.frame(dist_S5_R75_60b)[-1]
@@ -5606,7 +5606,7 @@ dist_S5_R75_60b$eradication <- 0.75
 dist_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_60 <- fread(file_name)
 dist_S75_R5_60 <- data.frame(dist_S75_R5_60)[-1]
@@ -5616,7 +5616,7 @@ dist_S75_R5_60$detection <- 0.75
 dist_S75_R5_60$eradication <- 0.5
 dist_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_60b <- fread(file_name)
 dist_S75_R5_60b <- data.frame(dist_S75_R5_60b)[-1]
@@ -5627,7 +5627,7 @@ dist_S75_R5_60b$eradication <- 0.5
 dist_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_60 <- fread(file_name)
 dist_S75_R75_60 <- data.frame(dist_S75_R75_60)[-1]
@@ -5637,7 +5637,7 @@ dist_S75_R75_60$detection <- 0.75
 dist_S75_R75_60$eradication <- 0.75
 dist_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\linear\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\linear\\S75_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_60b <- fread(file_name)
 dist_S75_R75_60b <- data.frame(dist_S75_R75_60b)[-1]
@@ -5660,7 +5660,7 @@ dist_linear <- rbind(dist_20, dist_40, dist_60)
 
 ##### epicenter #####
 #--- S25_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_20 <- fread(file_name)
 dist_S25_R5_20 <- data.frame(dist_S25_R5_20)[-1]
@@ -5670,7 +5670,7 @@ dist_S25_R5_20$detection <- 0.25
 dist_S25_R5_20$eradication <- 0.5
 dist_S25_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_20b <- fread(file_name)
 dist_S25_R5_20b <- data.frame(dist_S25_R5_20b)[-1]
@@ -5681,7 +5681,7 @@ dist_S25_R5_20b$eradication <- 0.5
 dist_S25_R5_20b$budget <- 20
 
 #--- S25_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_20 <- fread(file_name)
 dist_S25_R75_20 <- data.frame(dist_S25_R75_20)[-1]
@@ -5691,7 +5691,7 @@ dist_S25_R75_20$detection <- 0.25
 dist_S25_R75_20$eradication <- 0.75
 dist_S25_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_20b <- fread(file_name)
 dist_S25_R75_20b <- data.frame(dist_S25_R75_20b)[-1]
@@ -5702,7 +5702,7 @@ dist_S25_R75_20b$eradication <- 0.75
 dist_S25_R75_20b$budget <- 20
 
 #--- S5_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_20 <- fread(file_name)
 dist_S5_R5_20 <- data.frame(dist_S5_R5_20)[-1]
@@ -5712,7 +5712,7 @@ dist_S5_R5_20$detection <- 0.5
 dist_S5_R5_20$eradication <- 0.5
 dist_S5_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_20b <- fread(file_name)
 dist_S5_R5_20b <- data.frame(dist_S5_R5_20b)[-1]
@@ -5723,7 +5723,7 @@ dist_S5_R5_20b$eradication <- 0.5
 dist_S5_R5_20b$budget <- 20
 
 #--- S5_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_20 <- fread(file_name)
 dist_S5_R75_20 <- data.frame(dist_S5_R75_20)[-1]
@@ -5733,7 +5733,7 @@ dist_S5_R75_20$detection <- 0.5
 dist_S5_R75_20$eradication <- 0.75
 dist_S5_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_20b <- fread(file_name)
 dist_S5_R75_20b <- data.frame(dist_S5_R75_20b)[-1]
@@ -5744,7 +5744,7 @@ dist_S5_R75_20b$eradication <- 0.75
 dist_S5_R75_20b$budget <- 20
 
 #--- S75_R5_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_20 <- fread(file_name)
 dist_S75_R5_20 <- data.frame(dist_S75_R5_20)[-1]
@@ -5754,7 +5754,7 @@ dist_S75_R5_20$detection <- 0.75
 dist_S75_R5_20$eradication <- 0.5
 dist_S75_R5_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_20b <- fread(file_name)
 dist_S75_R5_20b <- data.frame(dist_S75_R5_20b)[-1]
@@ -5765,7 +5765,7 @@ dist_S75_R5_20b$eradication <- 0.5
 dist_S75_R5_20b$budget <- 20
 
 #--- S75_R75_20 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_20 <- fread(file_name)
 dist_S75_R75_20 <- data.frame(dist_S75_R75_20)[-1]
@@ -5775,7 +5775,7 @@ dist_S75_R75_20$detection <- 0.75
 dist_S75_R75_20$eradication <- 0.75
 dist_S75_R75_20$budget <- 20
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_20_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_20b <- fread(file_name)
 dist_S75_R75_20b <- data.frame(dist_S75_R75_20b)[-1]
@@ -5794,7 +5794,7 @@ dist_20 <- rbind(dist_S25_R5_20,dist_S25_R5_20b,
                   dist_S75_R75_20,dist_S5_R75_20b)
 
 #--- S25_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_40 <- fread(file_name)
 dist_S25_R5_40 <- data.frame(dist_S25_R5_40)[-1]
@@ -5804,7 +5804,7 @@ dist_S25_R5_40$detection <- 0.25
 dist_S25_R5_40$eradication <- 0.5
 dist_S25_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_40b <- fread(file_name)
 dist_S25_R5_40b <- data.frame(dist_S25_R5_40b)[-1]
@@ -5815,7 +5815,7 @@ dist_S25_R5_40b$eradication <- 0.5
 dist_S25_R5_40b$budget <- 40
 
 #--- S25_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_40 <- fread(file_name)
 dist_S25_R75_40 <- data.frame(dist_S25_R75_40)[-1]
@@ -5825,7 +5825,7 @@ dist_S25_R75_40$detection <- 0.25
 dist_S25_R75_40$eradication <- 0.75
 dist_S25_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_40b <- fread(file_name)
 dist_S25_R75_40b <- data.frame(dist_S25_R75_40b)[-1]
@@ -5836,7 +5836,7 @@ dist_S25_R75_40b$eradication <- 0.75
 dist_S25_R75_40b$budget <- 40
 
 #--- S5_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_40 <- fread(file_name)
 dist_S5_R5_40 <- data.frame(dist_S5_R5_40)[-1]
@@ -5846,7 +5846,7 @@ dist_S5_R5_40$detection <- 0.5
 dist_S5_R5_40$eradication <- 0.5
 dist_S5_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_40b <- fread(file_name)
 dist_S5_R5_40b <- data.frame(dist_S5_R5_40b)[-1]
@@ -5857,7 +5857,7 @@ dist_S5_R5_40b$eradication <- 0.5
 dist_S5_R5_40b$budget <- 40
 
 #--- S5_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_40 <- fread(file_name)
 dist_S5_R75_40 <- data.frame(dist_S5_R75_40)[-1]
@@ -5867,7 +5867,7 @@ dist_S5_R75_40$detection <- 0.5
 dist_S5_R75_40$eradication <- 0.75
 dist_S5_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_40b <- fread(file_name)
 dist_S5_R75_40b <- data.frame(dist_S5_R75_40b)[-1]
@@ -5878,7 +5878,7 @@ dist_S5_R75_40b$eradication <- 0.75
 dist_S5_R75_40b$budget <- 40
 
 #--- S75_R5_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_40 <- fread(file_name)
 dist_S75_R5_40 <- data.frame(dist_S75_R5_40)[-1]
@@ -5888,7 +5888,7 @@ dist_S75_R5_40$detection <- 0.75
 dist_S75_R5_40$eradication <- 0.5
 dist_S75_R5_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_40b <- fread(file_name)
 dist_S75_R5_40b <- data.frame(dist_S75_R5_40b)[-1]
@@ -5899,7 +5899,7 @@ dist_S75_R5_40b$eradication <- 0.5
 dist_S75_R5_40b$budget <- 40
 
 #--- S75_R75_40 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_40 <- fread(file_name)
 dist_S75_R75_40 <- data.frame(dist_S75_R75_40)[-1]
@@ -5909,7 +5909,7 @@ dist_S75_R75_40$detection <- 0.75
 dist_S75_R75_40$eradication <- 0.75
 dist_S75_R75_40$budget <- 40
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_40_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_40b <- fread(file_name)
 dist_S75_R75_40b <- data.frame(dist_S75_R75_40b)[-1]
@@ -5928,7 +5928,7 @@ dist_40 <- rbind(dist_S25_R5_40,dist_S25_R5_40b,
                  dist_S75_R75_40,dist_S5_R75_40b)
 
 #--- S25_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_60 <- fread(file_name)
 dist_S25_R5_60 <- data.frame(dist_S25_R5_60)[-1]
@@ -5938,7 +5938,7 @@ dist_S25_R5_60$detection <- 0.25
 dist_S25_R5_60$eradication <- 0.5
 dist_S25_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R5_60b <- fread(file_name)
 dist_S25_R5_60b <- data.frame(dist_S25_R5_60b)[-1]
@@ -5949,7 +5949,7 @@ dist_S25_R5_60b$eradication <- 0.5
 dist_S25_R5_60b$budget <- 60
 
 #--- S25_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_60 <- fread(file_name)
 dist_S25_R75_60 <- data.frame(dist_S25_R75_60)[-1]
@@ -5959,7 +5959,7 @@ dist_S25_R75_60$detection <- 0.25
 dist_S25_R75_60$eradication <- 0.75
 dist_S25_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S25_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S25_R75_60b <- fread(file_name)
 dist_S25_R75_60b <- data.frame(dist_S25_R75_60b)[-1]
@@ -5970,7 +5970,7 @@ dist_S25_R75_60b$eradication <- 0.75
 dist_S25_R75_60b$budget <- 60
 
 #--- S5_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_60 <- fread(file_name)
 dist_S5_R5_60 <- data.frame(dist_S5_R5_60)[-1]
@@ -5980,7 +5980,7 @@ dist_S5_R5_60$detection <- 0.5
 dist_S5_R5_60$eradication <- 0.5
 dist_S5_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R5_60b <- fread(file_name)
 dist_S5_R5_60b <- data.frame(dist_S5_R5_60b)[-1]
@@ -5991,7 +5991,7 @@ dist_S5_R5_60b$eradication <- 0.5
 dist_S5_R5_60b$budget <- 60
 
 #--- S5_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_60 <- fread(file_name)
 dist_S5_R75_60 <- data.frame(dist_S5_R75_60)[-1]
@@ -6001,7 +6001,7 @@ dist_S5_R75_60$detection <- 0.5
 dist_S5_R75_60$eradication <- 0.75
 dist_S5_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S5_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S5_R75_60b <- fread(file_name)
 dist_S5_R75_60b <- data.frame(dist_S5_R75_60b)[-1]
@@ -6012,7 +6012,7 @@ dist_S5_R75_60b$eradication <- 0.75
 dist_S5_R75_60b$budget <- 60
 
 #--- S75_R5_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_60 <- fread(file_name)
 dist_S75_R5_60 <- data.frame(dist_S75_R5_60)[-1]
@@ -6022,7 +6022,7 @@ dist_S75_R5_60$detection <- 0.75
 dist_S75_R5_60$eradication <- 0.5
 dist_S75_R5_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R5_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R5_60b <- fread(file_name)
 dist_S75_R5_60b <- data.frame(dist_S75_R5_60b)[-1]
@@ -6033,7 +6033,7 @@ dist_S75_R5_60b$eradication <- 0.5
 dist_S75_R5_60b$budget <- 60
 
 #--- S75_R75_60 ---#
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_60 <- fread(file_name)
 dist_S75_R75_60 <- data.frame(dist_S75_R75_60)[-1]
@@ -6043,7 +6043,7 @@ dist_S75_R75_60$detection <- 0.75
 dist_S75_R75_60$eradication <- 0.75
 dist_S75_R75_60$budget <- 60
 
-path <- 'E:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
+path <- 'D:\\Chapter3\\results\\epicenter\\S75_R75_60_b'
 file_name = paste(path, 'dist_travel.csv',sep = '/')
 dist_S75_R75_60b <- fread(file_name)
 dist_S75_R75_60b <- data.frame(dist_S75_R75_60b)[-1]
@@ -6077,7 +6077,7 @@ colors <- c(cols[1:4], cols[9:10])
 colors2 <- c('deeppink3','orange2' ,'grey50')
 
 #### NO REMOVAL ####
-ncpath <- 'E:\\Chapter3\\results\\noremoval'
+ncpath <- 'D:\\Chapter3\\results\\noremoval'
 file_name = paste(ncpath, 'states_fin_truth.csv',sep = '/')
 noremoval <- fread(file_name)
 noremoval <- data.frame(noremoval)
@@ -6093,6 +6093,7 @@ nc.max95 <- quantile(nc.val2$state, 0.95) -1
 ##### Suppression #####
 
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
+colnames(finstate_truth)[5] <- "Investment"
 
 finstate_truth %>% 
   ggplot(aes(x = loc2, y = state, fill = rates2, color = location,
@@ -6113,13 +6114,13 @@ finstate_truth %>%
       "linear0.750.5" = "Linear",
       "epicenter0.750.5" = "Epicenter"))+
   
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  scale_color_manual(name = "Priotization",
+  scale_color_manual(name = "Spatial priority",
                      values = colors2, 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
   
-  xlab("Site prioritization")+
+  xlab("Spatial priority")+
   ylab("Average final invasion state")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -6130,8 +6131,9 @@ finstate_truth %>%
         axis.ticks = element_blank(),
         legend.position = "bottom",
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, nrow = 3, labeller = label_both)
+  facet_wrap(~Investment, nrow = 3, labeller = label_both)
 
+colnames(finstate_truth)[5] <- "Budget"
 
 budget20_suppress <- finstate_truth %>% 
   filter(Budget == 20) %>% 
@@ -6200,7 +6202,7 @@ budget60_biasstate
 
 bias_param_detect$rates2 <- paste0('(', bias_param_detect$detection, ', ', bias_param_detect$eradication, ")")
 
-bias_param_detect_years <- bias_param_detect %>%
+bias_param_detect_years <- bias_state %>%
   group_by(location, year, rates, rates2, budget) %>%
   summarise(mean_b = mean(rel.bias),
             lower = quantile(rel.bias, 0.05),
@@ -6212,15 +6214,18 @@ bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization ==
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'linear'] <- 'Linear'
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'epicenter'] <- 'Epicenter'
 
+col_old <- colnames(bias_param_detect_years)
+colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Investment")
+
 ggplot(bias_param_detect_years, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
   geom_errorbar()+
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8, 10)) +
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors) +
-  ylab(paste0('p parameters relative bias'))+
+  ylab(paste0('state relative bias'))+
   xlab("Year")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -6230,7 +6235,7 @@ ggplot(bias_param_detect_years,
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both, scales = "free")
+  facet_wrap(~Investment + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
 
 
@@ -6252,16 +6257,16 @@ bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization ==
 bias_param_detect_years_sum <- bias_param_detect_years %>% filter(year == 2 | year == 7)
 bias_param_detect_years_sum <- bias_param_detect_years_sum %>% filter(Prioritization == 'High invasion')
 
-
+colnames(bias_param_detect_years)[5] <- "Investment"
 ggplot(bias_param_detect_years, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
   geom_errorbar(width = 1)+
   geom_hline(yintercept = 0, linetype = 2) + 
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors,
                      guide = guide_legend(
-                       direction = "horizontal",
+                       direction = "vertical",
                        title.position = "top"
                      )) +
   ylab(paste0('p parameters relative bias'))+
@@ -6274,7 +6279,7 @@ ggplot(bias_param_detect_years,
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both, scales = "free")
+  facet_wrap(~Investment + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
 
 bias_param_detect_years_sum
@@ -6304,12 +6309,14 @@ for(i in 1:length(bias_param_detect_years_sum$rates)){
   } 
 }
 
+colnames(bias_param_detect_years_sum)[5] <- "Investment"
+
 ggplot(bias_param_detect_years_sum, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
   geom_errorbar(width = 0.2)+
   geom_hline(yintercept = 0, linetype = 2) + 
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors,
                      guide = guide_legend(
                        direction = "horizontal",
@@ -6329,7 +6336,7 @@ ggplot(bias_param_detect_years_sum,
         legend.position = "bottom",
         text = element_text(size = 15),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, nrow = 1, labeller = label_both, scales = "free")
+  facet_wrap(~Investment, nrow = 1, labeller = label_both, scales = "free")
 
 
 budget20_bias_param_detect <- bias_param_detect %>% 
@@ -6364,13 +6371,15 @@ bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'hsta
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'linear'] <- 'Linear'
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'epicenter'] <- 'Epicenter'
 
+colnames(bias_param_eps_years)[5] <- "Investment"
+
 ggplot(bias_param_eps_years, 
        aes(x = year, y = mean_b, ymin = lower, ymax = upper, color = rates2))+
   geom_point()+
   geom_errorbar()+
   geom_hline(yintercept = 0, linetype = 2) + 
   scale_x_continuous(breaks = c(2,4,6,8, 10)) +
-  scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_color_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors) +
   ylab(paste0('\u03F5 parameters relative bias'))+
   xlab("Year")+
@@ -6382,7 +6391,7 @@ ggplot(bias_param_eps_years,
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget + Prioritization, nrow = 3, labeller = label_both, scales = "free")
+  facet_wrap(~Investment + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
 budget20_bias_param_eps <- bias_param_eps %>% 
   filter(budget == 20) %>% 
@@ -6411,7 +6420,7 @@ total_visit <- total_visit %>% filter(detection < 1 & detection > 0)
 
 total_visit$loc2 <- paste0(total_visit$location, total_visit$detection, total_visit$eradication)
 
-colnames(total_visit)[7] <- 'Budget'
+colnames(total_visit)[7] <- 'Investment'
 
 p1 <- total_visit %>% 
   ggplot(aes(x = loc2, y = visit, fill = rates2, color = location,
@@ -6431,12 +6440,12 @@ p1 <- total_visit %>%
       "linear0.750.5" = "Linear",
       "epicenter0.750.5" = "Epicenter"))+
   
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  scale_color_manual(name = "Priotization",
+  scale_color_manual(name = "Spatial priority",
                      values = colors2, 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
-  xlab("Prioritization")+
+  xlab("Spatial priority")+
   ylab("% of segments visited each week")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -6449,7 +6458,7 @@ p1 <- total_visit %>%
         text = element_text(size = 15),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, labeller = label_both, nrow = 3)
+  facet_wrap(~Investment, labeller = label_both, nrow = 3)
 
 ##### Distance #####
 total_dist <- dist_travel
@@ -6461,7 +6470,7 @@ total_dist <- total_dist %>% filter(detection < 1 & detection > 0)
 
 total_dist$loc2 <- paste0(total_dist$location, total_dist$detection, total_dist$eradication)
 
-colnames(total_dist)[5] <- 'Budget'
+colnames(total_dist)[5] <- 'Investment'
 
 p2 <- total_dist %>% 
   ggplot(aes(x = loc2, y = distance, fill = rates2, color = location,
@@ -6481,12 +6490,12 @@ p2 <- total_dist %>%
       "linear0.750.5" = "Linear",
       "epicenter0.750.5" = "Epicenter"))+
   
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
-  scale_color_manual(name = "Priotization",
+  scale_color_manual(name = "Spatial priority",
                      values = colors2, 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
-  xlab("Prioritization")+
+  xlab("Spatial priority")+
   ylab("Average weekly distance traveled (segment units)")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -6499,7 +6508,7 @@ p2 <- total_dist %>%
         axis.ticks = element_blank(),
         text = element_text(size = 15),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, labeller = label_both, nrow = 3)
+  facet_wrap(~Investment, labeller = label_both, nrow = 3)
 
 
 l1 <- total_visit %>% 
@@ -6520,7 +6529,7 @@ l1 <- total_visit %>%
       "linear0.750.5" = "Linear",
       "epicenter0.750.5" = "Epicenter"))+
   
-  scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
+  scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors,
                      guide = guide_legend(
                        direction = "horizontal",
@@ -6529,7 +6538,7 @@ l1 <- total_visit %>%
   # scale_color_manual(name = "Priotization",
   #                    values = colors2, 
   #                    labels = c('Epicenter', 'High invasion', 'Linear') )+
-  xlab("Site prioritization")+
+  xlab("Spatial priority")+
   ylab("% of segments visited each week")+
   theme_bw() +   
   theme(strip.background=element_rect(colour="white",
@@ -6542,7 +6551,7 @@ l1 <- total_visit %>%
         text = element_text(size = 15),
         legend.position = "bottom",
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, nrow = 3)
+  facet_wrap(~Investment, nrow = 3)
 
 
 l2 <- total_visit %>% 
@@ -6565,7 +6574,7 @@ l2 <- total_visit %>%
   
   # scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
   #                   values = colors) +
-  scale_color_manual(name = "Priotization",
+  scale_color_manual(name = "Spatial priority",
                      values = colors2,
                      labels = c('Epicenter', 'High invasion', 'Linear'),
                      guide = guide_legend(
@@ -6585,7 +6594,7 @@ l2 <- total_visit %>%
         legend.position = "bottom",
         text = element_text(size = 15),
         axis.text.x = element_text(hjust = 1))+
-  facet_wrap(~Budget, nrow = 3)
+  facet_wrap(~Investment, nrow = 3)
 
 l2
 ##### COMBINED PLOTS ####
@@ -6596,7 +6605,7 @@ cowplot::plot_grid(p1, p2, legend1, legend2, nrow = 2,labels = c('A', 'B', ''),
                    rel_heights = c(0.8, 0.2))
 
 ##### Add data integration: ####
-path <- 'E:\\Chapter3\\results-datboth'
+path <- 'D:\\Chapter3\\results-datboth'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 finstate_truthAC <- fread(file_name)
 finstate_truthAC <- data.frame(finstate_truthAC)
@@ -6709,7 +6718,7 @@ ggplot(suppression_alls_shift)+
 # suppression_alls_shift$space <- 1
 # pareto$space <- 1
 # 
-# path <- 'E:\\Chapter3\\results'
+# path <- 'D:\\Chapter3\\results'
 # file_name = paste(path, 'suppression_data2.csv',sep = '/')
 # fwrite(suppression_alls_shift,file_name)
 # 
