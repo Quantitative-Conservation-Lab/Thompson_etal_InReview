@@ -146,17 +146,23 @@ budget20_biasstate <- bias_stateAC %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
 
+budget20_biasstate
+
 budget40_biasstate <- bias_stateAC %>% 
   filter(Budget == 40) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
 
+budget40_biasstate
+
 budget60_biasstate <- bias_stateAC %>% 
   filter(Budget == 60) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias),
             max_c = max(rel.bias))
+
+budget60_biasstate
 
 bias_state <- rbind(bias_stateAC, bias_stateA)
 
@@ -274,16 +280,21 @@ budget20_bias_param_detect <- bias_param_detect %>%
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
 
+budget20_bias_param_detect
+
 budget40_bias_param_detect <- bias_param_detect %>% 
   filter(budget == 40) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
+
+budget40_bias_param_detect
 
 budget60_bias_param_detect <- bias_param_detect %>% 
   filter(budget == 60) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
 
+budget60_bias_param_detect
 
 ###### Time #######
 bias_param_detect$rates2 <- paste0('(', bias_param_detect$detection, ', ', bias_param_detect$eradication, ")")
@@ -357,15 +368,21 @@ budget20_bias_param_eps <- bias_param_eps %>%
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
 
+budget20_bias_param_eps
+
 budget40_bias_param_eps <- bias_param_eps %>% 
   filter(budget == 40) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
 
+budget40_bias_param_eps
+
 budget60_bias_param_eps <- bias_param_eps %>% 
   filter(budget == 60) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias))
+
+budget60_bias_param_eps
 
 ###### Time #######
 bias_param_eps$rates2 <- paste0('(', bias_param_eps$detection, ', ', bias_param_eps$eradication, ")")

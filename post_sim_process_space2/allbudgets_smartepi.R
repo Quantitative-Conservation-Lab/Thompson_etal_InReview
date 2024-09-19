@@ -8773,6 +8773,8 @@ paramp_rmse60
 ##### Bias param time -p #####
 bias_param_detect$rates2 <- paste0('(', bias_param_detect$detection, ', ', bias_param_detect$eradication, ")")
 
+#detach(package:plyr)
+
 bias_param_detect_years <- bias_param_detect %>%
   group_by(location, year, rates, rates2, budget) %>%
   summarise(mean_b = mean(rel.bias),
@@ -9172,7 +9174,7 @@ cowplot::plot_grid(p1, p2, legend1, legend2, nrow = 2,labels = c('A', 'B', ''),
                    rel_heights = c(0.8, 0.2))
 
 ##### Add data integration: ####
-path <- 'D:\\Chapter3\\results-space2-datboth'
+path <- 'D:\\Chapter3\\results-datboth-space2'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 finstate_truthAC <- fread(file_name)
 finstate_truthAC <- data.frame(finstate_truthAC)
@@ -9227,10 +9229,14 @@ Objectives_mm
 
 pareto <- rbind(Objectives_ex, Objectives_mm)
 pareto$location[pareto$location == 'linear'] <- 'Linear'
-pareto$location[pareto$location == 'smartepicenter'] <- 'smartepicenter'
+pareto$location[pareto$location == 'smartepicenter'] <- 'Epicenter'
 pareto$location[pareto$location == 'hstatebins'] <- 'High Invasion'
 
-pareto$location2 <- paste0(pareto$location, ' ', pareto$rates2)
+pareto
+
+pareto$datav <- c(' ', 'A+C', 'A+C', 'A+C', ' ', ' ', ' ')
+
+pareto$location2 <- paste0(pareto$location, ' ', pareto$rates2, ' ', pareto$datav)
 
 library(ggstance)
 
@@ -9261,7 +9267,7 @@ ggplot(suppression_alls_shift)+
   scale_size_manual(name = 'Data', values = c(2,5))+
   scale_shape_manual(name = "Priotization",
                      values = c(21, 22, 24), 
-                     labels = c('smartepicenter', 'High invasion', 'Linear') )+
+                     labels = c('Epicenter', 'High invasion', 'Linear') )+
   scale_color_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
                     values = colors) +
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
@@ -9282,15 +9288,15 @@ ggplot(suppression_alls_shift)+
 
 
 #save this data:
-# suppression_alls_shift$space <- 1
-# pareto$space <- 1
-# 
-# path <- 'D:\\Chapter3\\results-space2'
-# file_name = paste(path, 'suppression_data2.csv',sep = '/')
-# fwrite(suppression_alls_shift,file_name)
-# 
-# file_name = paste(path, 'pareto_data2.csv',sep = '/')
-# fwrite(pareto,file_name)
+suppression_alls_shift$space <- 2
+pareto$space <- 2
+
+path <- 'D:\\Chapter3\\results-space2'
+file_name = paste(path, 'suppression_data2.csv',sep = '/')
+fwrite(suppression_alls_shift,file_name)
+
+file_name = paste(path, 'pareto_data2.csv',sep = '/')
+fwrite(pareto,file_name)
 
 
 #### Bias vs outcome ####

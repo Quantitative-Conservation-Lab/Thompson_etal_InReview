@@ -296,7 +296,8 @@ state_truth_60 <- rbind(hsbstate_truth_S5_R75_60,hsbstate_truth_S5_R75_60b,
 
 state_truth <- rbind(state_truth_20, state_truth_40, state_truth_60)
 
-#### rmse state ####
+##### rmse state #####
+detach(package:plyr)
 
 state_est_week5 <- state
 state_est_week5$rmse <- sqrt((state_est_week5$mean - state_est_week5$truth)^2)
@@ -479,6 +480,215 @@ bias_state_60 <- rbind(hsb_biasstate_S5_R75_60,hsb_biasstate_S5_R75_60b,
 #-- Combine Bias --#
 bias_state <- rbind(bias_state_20, bias_state_40, bias_state_60)
 
+#### params summary ####
+#-- Budget = 20 --#
+path <- 'D:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75_20'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+hsb_parsum_S5_R75_20 <- fread(file_name)
+hsb_parsum_S5_R75_20 <- data.frame(hsb_parsum_S5_R75_20)[-1]
+
+hsb_parsum_S5_R75_20$location <- 'hstatebins'
+hsb_parsum_S5_R75_20$detection <- 0.5
+hsb_parsum_S5_R75_20$eradication <- 0.75
+hsb_parsum_S5_R75_20$budget <- 20
+hsb_parsum_S5_R75_20$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75_20_b'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+hsb_parsum_S5_R75_20b <- fread(file_name)
+hsb_parsum_S5_R75_20b <- data.frame(hsb_parsum_S5_R75_20b)[-1]
+
+hsb_parsum_S5_R75_20b$location <- 'hstatebins'
+hsb_parsum_S5_R75_20b$detection <- 0.5
+hsb_parsum_S5_R75_20b$eradication <- 0.75
+hsb_parsum_S5_R75_20b$budget <- 20
+hsb_parsum_S5_R75_20b$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget20\\smartepicenter_S5_R75_20'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+epi_parsum_S5_R75_20 <- fread(file_name)
+epi_parsum_S5_R75_20 <- data.frame(epi_parsum_S5_R75_20)[-1]
+
+epi_parsum_S5_R75_20$location <- 'smartepicenter'
+epi_parsum_S5_R75_20$detection <- 0.5
+epi_parsum_S5_R75_20$eradication <- 0.75
+epi_parsum_S5_R75_20$budget <- 20
+epi_parsum_S5_R75_20$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget20\\smartepicenter_S5_R75_20_b'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+epi_parsum_S5_R75_20b <- fread(file_name)
+epi_parsum_S5_R75_20b <- data.frame(epi_parsum_S5_R75_20b)[-1]
+
+epi_parsum_S5_R75_20b$location <- 'smartepicenter'
+epi_parsum_S5_R75_20b$detection <- 0.5
+epi_parsum_S5_R75_20b$eradication <- 0.75
+epi_parsum_S5_R75_20b$budget <- 20
+epi_parsum_S5_R75_20b$data <- 'both'
+
+#--- Combine bias_params ---#
+param_sum_20 <- rbind(hsb_parsum_S5_R75_20,hsb_parsum_S5_R75_20b,
+                       epi_parsum_S5_R75_20,epi_parsum_S5_R75_20b)
+
+#-- Budget = 40 --#
+path <- 'D:\\Chapter3\\results-datboth\\budget40\\hstatebins_S5_R75_40'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+hsb_parsum_S5_R75_40 <- fread(file_name)
+hsb_parsum_S5_R75_40 <- data.frame(hsb_parsum_S5_R75_40)[-1]
+
+hsb_parsum_S5_R75_40$location <- 'hstatebins'
+hsb_parsum_S5_R75_40$detection <- 0.5
+hsb_parsum_S5_R75_40$eradication <- 0.75
+hsb_parsum_S5_R75_40$budget <- 40
+hsb_parsum_S5_R75_40$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget40\\hstatebins_S5_R75_40_b'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+hsb_parsum_S5_R75_40b <- fread(file_name)
+hsb_parsum_S5_R75_40b <- data.frame(hsb_parsum_S5_R75_40b)[-1]
+
+hsb_parsum_S5_R75_40b$location <- 'hstatebins'
+hsb_parsum_S5_R75_40b$detection <- 0.5
+hsb_parsum_S5_R75_40b$eradication <- 0.75
+hsb_parsum_S5_R75_40b$budget <- 40
+hsb_parsum_S5_R75_40b$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget40\\smartepicenter_S5_R75_40'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+epi_parsum_S5_R75_40 <- fread(file_name)
+epi_parsum_S5_R75_40 <- data.frame(epi_parsum_S5_R75_40)[-1]
+
+epi_parsum_S5_R75_40$location <- 'smartepicenter'
+epi_parsum_S5_R75_40$detection <- 0.5
+epi_parsum_S5_R75_40$eradication <- 0.75
+epi_parsum_S5_R75_40$budget <- 40
+epi_parsum_S5_R75_40$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget40\\smartepicenter_S5_R75_40_b'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+epi_parsum_S5_R75_40b <- fread(file_name)
+epi_parsum_S5_R75_40b <- data.frame(epi_parsum_S5_R75_40b)[-1]
+
+epi_parsum_S5_R75_40b$location <- 'smartepicenter'
+epi_parsum_S5_R75_40b$detection <- 0.5
+epi_parsum_S5_R75_40b$eradication <- 0.75
+epi_parsum_S5_R75_40b$budget <- 40
+epi_parsum_S5_R75_40b$data <- 'both'
+
+#--- Combine bias_params ---#
+param_sum_40 <- rbind(hsb_parsum_S5_R75_40,hsb_parsum_S5_R75_40b,
+                       epi_parsum_S5_R75_40,epi_parsum_S5_R75_40b)
+
+#-- Budget = 60 --#
+path <- 'D:\\Chapter3\\results-datboth\\budget60\\hstatebins_S5_R75_60'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+hsb_parsum_S5_R75_60 <- fread(file_name)
+hsb_parsum_S5_R75_60 <- data.frame(hsb_parsum_S5_R75_60)[-1]
+
+hsb_parsum_S5_R75_60$location <- 'hstatebins'
+hsb_parsum_S5_R75_60$detection <- 0.5
+hsb_parsum_S5_R75_60$eradication <- 0.75
+hsb_parsum_S5_R75_60$budget <- 60
+hsb_parsum_S5_R75_60$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget60\\hstatebins_S5_R75_60_b'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+hsb_parsum_S5_R75_60b <- fread(file_name)
+hsb_parsum_S5_R75_60b <- data.frame(hsb_parsum_S5_R75_60b)[-1]
+
+hsb_parsum_S5_R75_60b$location <- 'hstatebins'
+hsb_parsum_S5_R75_60b$detection <- 0.5
+hsb_parsum_S5_R75_60b$eradication <- 0.75
+hsb_parsum_S5_R75_60b$budget <- 60
+hsb_parsum_S5_R75_60b$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget60\\smartepicenter_S5_R75_60'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+epi_parsum_S5_R75_60 <- fread(file_name)
+epi_parsum_S5_R75_60 <- data.frame(epi_parsum_S5_R75_60)[-1]
+
+epi_parsum_S5_R75_60$location <- 'smartepicenter'
+epi_parsum_S5_R75_60$detection <- 0.5
+epi_parsum_S5_R75_60$eradication <- 0.75
+epi_parsum_S5_R75_60$budget <- 60
+epi_parsum_S5_R75_60$data <- 'both'
+
+path <- 'D:\\Chapter3\\results-datboth\\budget60\\smartepicenter_S5_R75_60_b'
+file_name = paste(path, 'par_summary.csv',sep = '/')
+epi_parsum_S5_R75_60b <- fread(file_name)
+epi_parsum_S5_R75_60b <- data.frame(epi_parsum_S5_R75_60b)[-1]
+
+epi_parsum_S5_R75_60b$location <- 'smartepicenter'
+epi_parsum_S5_R75_60b$detection <- 0.5
+epi_parsum_S5_R75_60b$eradication <- 0.75
+epi_parsum_S5_R75_60b$budget <- 60
+epi_parsum_S5_R75_60b$data <- 'both'
+
+#--- Combine bias_params ---#
+param_sum_60 <- rbind(hsb_parsum_S5_R75_60,hsb_parsum_S5_R75_60b,
+                       epi_parsum_S5_R75_60,epi_parsum_S5_R75_60b)
+
+#-- Combine bias --#
+param_summary <- rbind(param_sum_20, param_sum_40, param_sum_60)
+
+param_summary$rmse <- sqrt((param_summary$mean - param_summary$truth)^2)
+
+##### RMSE p ####
+param_summary_ps  <- param_summary %>% filter(param %in% c("B0.p.h", "B0.p.h", "B1.p.l", "B1.p.h"))
+param_summary_ps$loc2 <- paste0(param_summary_ps$location, param_summary_ps$detection, param_summary_ps$eradication)
+
+paramp_rmse20 <- param_summary_ps %>% 
+  filter(budget == 20) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rmse),
+            max_c = max(rmse))
+
+paramp_rmse20
+
+paramp_rmse40 <- param_summary_ps %>% 
+  filter(budget == 40) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rmse),
+            max_c = max(rmse))
+
+paramp_rmse40
+
+paramp_rmse60 <- param_summary_ps %>% 
+  filter(budget == 60) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rmse),
+            max_c = max(rmse))
+
+paramp_rmse60
+
+##### RMSE eps ####
+param_summary_eps  <- param_summary %>% filter(param %in% c("B0.eps.h", "B0.eps.h", "B1.eps.l", "B1.eps.h"))
+param_summary_eps$loc2 <- paste0(param_summary_eps$location, param_summary_eps$detection, param_summary_eps$eradication)
+
+parameps_rmse20 <- param_summary_eps %>% 
+  filter(budget == 20) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rmse),
+            max_c = max(rmse))
+
+parameps_rmse20
+
+parameps_rmse40 <- param_summary_eps %>% 
+  filter(budget == 40) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rmse),
+            max_c = max(rmse))
+
+parameps_rmse40
+
+parameps_rmse60 <- param_summary_eps %>% 
+  filter(budget == 60) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rmse),
+            max_c = max(rmse))
+
+parameps_rmse60
+
 #### Bias params ####
 #-- Budget = 20 --#
 path <- 'D:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75_20'
@@ -632,6 +842,9 @@ bias_params <- rbind(bias_param_20, bias_param_40, bias_param_60)
 
 #### Save CSVs ####
 path <- 'D:\\Chapter3\\results-datboth'
+
+file_name = paste(path, 'states.csv',sep = '/')
+fwrite(state,file_name)
 
 file_name = paste(path, 'states_truth.csv',sep = '/')
 fwrite(state_truth,file_name)
