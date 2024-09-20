@@ -242,11 +242,15 @@ legend3 <- cowplot::get_legend(data_legend)
 
 library(cowplot)
 
-plot_grid(
+p3 <- plot_grid(
     plot_grid(p1, p2, nrow = 2, labels = c('A', 'B')),
     plot_grid(legend2, legend1, legend3, nrow = 1, labels = c('', '', '')),
   nrow = 2,
   rel_heights = c(0.8, 0.2)
 )
-                  
 
+p3                  
+
+ggsave("suppression_plot.svg", p3, device = "svg")
+
+#https://nalinan.medium.com/how-to-vectorize-plots-from-r-in-powerpoint-bad7c238e86a

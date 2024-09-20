@@ -8567,6 +8567,8 @@ nc.max95 <- quantile(nc.val2$state, 0.95) -1
 
 ##### Suppression #####
 
+finstate_truth$location[finstate_truth$location == 'smartepicenter'] <- 'epicenter'
+
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 colnames(finstate_truth)[5] <- "Investment"
 
@@ -8582,18 +8584,18 @@ finstate_truth %>%
   scale_x_discrete(breaks = c(
     "hstatebins0.750.5",
     "linear0.750.5", 
-    'smartepicenter0.750.5'),
+    'epicenter0.750.5'),
     labels=c(
       
       "hstatebins0.750.5" = "High invasion",
       "linear0.750.5" = "Linear",
-      "smartepicenter0.750.5" = "smartepicenter"))+
+      "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2, 
-                     labels = c('smartepicenter', 'High invasion', 'Linear') )+
+                     labels = c('Epicenter', 'High invasion', 'Linear') )+
   
   xlab("Spatial priority")+
   ylab("Average final invasion state")+
@@ -8716,7 +8718,7 @@ colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'linear'] <- 'Linear'
-bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'smartepicenter'
+bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'Epicenter'
 
 col_old <- colnames(bias_param_detect_years)
 colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Investment")
@@ -8785,7 +8787,7 @@ colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'linear'] <- 'Linear'
-bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'smartepicenter'
+bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'Epicenter'
 
 bias_param_detect_years_sum <- bias_param_detect_years %>% filter(year == 2 | year == 7)
 bias_param_detect_years_sum <- bias_param_detect_years_sum %>% filter(Prioritization == 'High invasion')
@@ -8934,7 +8936,7 @@ colnames(bias_param_eps_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'linear'] <- 'Linear'
-bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'smartepicenter'] <- 'smartepicenter'
+bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'smartepicenter'] <- 'Epicenter'
 
 colnames(bias_param_eps_years)[5] <- "Investment"
 

@@ -4839,7 +4839,7 @@ bias_param_60 <- rbind(hsb_biasparam_S25_R5_60,hsb_biasparam_S25_R5_60b,
 #-- Combine bias --#
 bias_params <- rbind(bias_param_20, bias_param_40, bias_param_60)
 
-##### results -p ####
+##### results-space2 -p ####
 bias_params$rates <- paste0('(p = )', bias_params$detection, ',  \u03F5 = ', bias_params$eradication)
 bias_params$rates2 <- paste0('(', bias_params$detection, ', ', bias_params$eradication, ")")
 bias_params$loc2 <- paste0(bias_params$location, bias_params$detection, bias_params$eradication)
@@ -4848,7 +4848,7 @@ bias_param_detect  <- bias_params %>% filter(param %in% c("B0.p.h", "B0.p.h", "B
 
 
 
-##### results -eps ####
+##### results-space2 -eps ####
 bias_param_eps  <- bias_params %>% filter(param %in% c("B0.eps.h", "B0.eps.h", "B1.eps.l", "B1.eps.h"))
 
 
@@ -8567,6 +8567,8 @@ nc.max95 <- quantile(nc.val2$state, 0.95) -1
 
 ##### Suppression #####
 
+finstate_truth$location[finstate_truth$location == 'smartepicenter'] <- 'epicenter'
+
 finstate_truth$loc2 <- paste0(finstate_truth$location, finstate_truth$detection, finstate_truth$eradication)
 colnames(finstate_truth)[5] <- "Investment"
 
@@ -8582,18 +8584,18 @@ finstate_truth %>%
   scale_x_discrete(breaks = c(
     "hstatebins0.750.5",
     "linear0.750.5", 
-    'smartepicenter0.750.5'),
+    'epicenter0.750.5'),
     labels=c(
       
       "hstatebins0.750.5" = "High invasion",
       "linear0.750.5" = "Linear",
-      "smartepicenter0.750.5" = "smartepicenter"))+
+      "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2, 
-                     labels = c('smartepicenter', 'High invasion', 'Linear') )+
+                     labels = c('Epicenter', 'High invasion', 'Linear') )+
   
   xlab("Spatial priority")+
   ylab("Average final invasion state")+
@@ -8716,7 +8718,7 @@ colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'linear'] <- 'Linear'
-bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'smartepicenter'
+bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'Epicenter'
 
 col_old <- colnames(bias_param_detect_years)
 colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Investment")
@@ -8773,7 +8775,7 @@ paramp_rmse60
 ##### Bias param time -p #####
 bias_param_detect$rates2 <- paste0('(', bias_param_detect$detection, ', ', bias_param_detect$eradication, ")")
 
-#detach(package:plyr)
+detach(package:plyr)
 
 bias_param_detect_years <- bias_param_detect %>%
   group_by(location, year, rates, rates2, budget) %>%
@@ -8785,7 +8787,7 @@ colnames(bias_param_detect_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'linear'] <- 'Linear'
-bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'smartepicenter'
+bias_param_detect_years$Prioritization[bias_param_detect_years$Prioritization == 'smartepicenter'] <- 'Epicenter'
 
 bias_param_detect_years_sum <- bias_param_detect_years %>% filter(year == 2 | year == 7)
 bias_param_detect_years_sum <- bias_param_detect_years_sum %>% filter(Prioritization == 'High invasion')
@@ -8934,7 +8936,7 @@ colnames(bias_param_eps_years)[c(1,5)] <- c("Prioritization", "Budget")
 
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'hstatebins'] <- 'High invasion'
 bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'linear'] <- 'Linear'
-bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'smartepicenter'] <- 'smartepicenter'
+bias_param_eps_years$Prioritization[bias_param_eps_years$Prioritization == 'smartepicenter'] <- 'Epicenter'
 
 colnames(bias_param_eps_years)[5] <- "Investment"
 
@@ -8987,6 +8989,8 @@ total_visit$rates2 <- paste0('(', total_visit$detection, ', ', total_visit$eradi
 
 total_visit <- total_visit %>% filter(detection < 1 & detection > 0)
 
+total_visit$location[total_visit$location == 'smartepicenter'] <- 'epicenter'
+
 total_visit$loc2 <- paste0(total_visit$location, total_visit$detection, total_visit$eradication)
 
 colnames(total_visit)[7] <- 'Investment'
@@ -9002,18 +9006,18 @@ p1 <- total_visit %>%
   scale_x_discrete(breaks = c(
     "hstatebins0.750.5",
     "linear0.750.5",
-    "smartepicenter0.750.5"),
+    "epicenter0.750.5"),
     labels=c(
       
       "hstatebins0.750.5" = "High invasion",
       "linear0.750.5" = "Linear",
-      "smartepicenter0.750.5" = "smartepicenter"))+
+      "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2, 
-                     labels = c('smartepicenter', 'High invasion', 'Linear') )+
+                     labels = c('Epicenter', 'High invasion', 'Linear') )+
   xlab("Spatial priority")+
   ylab("% of segments visited each week")+
   theme_bw() +   
@@ -9029,6 +9033,8 @@ p1 <- total_visit %>%
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Investment, labeller = label_both, nrow = 3)
 
+p1
+
 ##### Distance #####
 total_dist <- dist_travel
 total_dist$rates <- paste0('(p = ', total_dist$detection, ',  \u03F5 = ', total_dist$eradication)
@@ -9036,6 +9042,8 @@ total_dist$rates <- paste0('(p = ', total_dist$detection, ',  \u03F5 = ', total_
 total_dist$rates2 <- paste0('(', total_dist$detection, ', ', total_dist$eradication, ")")
 
 total_dist <- total_dist %>% filter(detection < 1 & detection > 0)
+
+total_dist$location[total_dist$location == 'smartepicenter'] <- 'epicenter'
 
 total_dist$loc2 <- paste0(total_dist$location, total_dist$detection, total_dist$eradication)
 
@@ -9052,18 +9060,18 @@ p2 <- total_dist %>%
   scale_x_discrete(breaks = c(
     "hstatebins0.750.5",
     "linear0.750.5",
-    "smartepicenter0.750.5"),
+    "epicenter0.750.5"),
     labels=c(
       
       "hstatebins0.750.5" = "High invasion",
       "linear0.750.5" = "Linear",
-      "smartepicenter0.750.5" = "smartepicenter"))+
+      "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                     values = colors) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2, 
-                     labels = c('smartepicenter', 'High invasion', 'Linear') )+
+                     labels = c('Epicenter', 'High invasion', 'Linear') )+
   xlab("Spatial priority")+
   ylab("Average weekly distance traveled (segment units)")+
   theme_bw() +   
@@ -9079,6 +9087,7 @@ p2 <- total_dist %>%
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Investment, labeller = label_both, nrow = 3)
 
+p2
 
 l1 <- total_visit %>% 
   ggplot(aes(x = loc2, y = visit, fill = rates2, #color = location,
@@ -9091,12 +9100,12 @@ l1 <- total_visit %>%
   scale_x_discrete(breaks = c(
     "hstatebins0.750.5",
     "linear0.750.5",
-    "smartepicenter0.750.5"),
+    "epicenter0.750.5"),
     labels=c(
       
       "hstatebins0.750.5" = "High invasion",
       "linear0.750.5" = "Linear",
-      "smartepicenter0.750.5" = "smartepicenter"))+
+      "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
                      values = colors,
@@ -9122,6 +9131,7 @@ l1 <- total_visit %>%
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Investment, nrow = 3)
 
+l1
 
 l2 <- total_visit %>% 
   ggplot(aes(x = loc2, y = visit, color = location, #color = location,
@@ -9134,18 +9144,18 @@ l2 <- total_visit %>%
   scale_x_discrete(breaks = c(
     "hstatebins0.750.5",
     "linear0.750.5",
-    "smartepicenter0.750.5"),
+    "epicenter0.750.5"),
     labels=c(
       
       "hstatebins0.750.5" = "High invasion",
       "linear0.750.5" = "Linear",
-      "smartepicenter0.750.5" = "smartepicenter"))+
+      "epicenter0.750.5" = "Epicenter"))+
   
   # scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
   #                   values = colors) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2,
-                     labels = c('smartepicenter', 'High invasion', 'Linear'),
+                     labels = c('Epicenter', 'High invasion', 'Linear'),
                      guide = guide_legend(
                        direction = "vertical",
                        title.position = "top"
@@ -9174,7 +9184,7 @@ cowplot::plot_grid(p1, p2, legend1, legend2, nrow = 2,labels = c('A', 'B', ''),
                    rel_heights = c(0.8, 0.2))
 
 ##### Add data integration: ####
-path <- 'D:\\Chapter3\\results-datboth-space2'
+path <- 'D:\\Chapter3\\results-space2-datboth'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 finstate_truthAC <- fread(file_name)
 finstate_truthAC <- data.frame(finstate_truthAC)
@@ -9232,9 +9242,7 @@ pareto$location[pareto$location == 'linear'] <- 'Linear'
 pareto$location[pareto$location == 'smartepicenter'] <- 'Epicenter'
 pareto$location[pareto$location == 'hstatebins'] <- 'High Invasion'
 
-pareto
-
-pareto$datav <- c(' ', 'A+C', 'A+C', 'A+C', ' ', ' ', ' ')
+pareto$datav <- c(' ', ' ', 'A+C', ' ', ' ', ' ', ' ', 'A+C')
 
 pareto$location2 <- paste0(pareto$location, ' ', pareto$rates2, ' ', pareto$datav)
 
@@ -9288,15 +9296,15 @@ ggplot(suppression_alls_shift)+
 
 
 #save this data:
-suppression_alls_shift$space <- 2
-pareto$space <- 2
-
-path <- 'D:\\Chapter3\\results-space2'
-file_name = paste(path, 'suppression_data2.csv',sep = '/')
-fwrite(suppression_alls_shift,file_name)
-
-file_name = paste(path, 'pareto_data2.csv',sep = '/')
-fwrite(pareto,file_name)
+# suppression_alls_shift$space <- 2
+# pareto$space <- 2
+# 
+# path <- 'D:\\Chapter3\\results-space2'
+# file_name = paste(path, 'suppression_data2.csv',sep = '/')
+# fwrite(suppression_alls_shift,file_name)
+# 
+# file_name = paste(path, 'pareto_data2.csv',sep = '/')
+# fwrite(pareto,file_name)
 
 
 #### Bias vs outcome ####
