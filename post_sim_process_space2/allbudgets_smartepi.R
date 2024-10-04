@@ -8599,15 +8599,19 @@ finstate_truth %>%
   
   xlab("Spatial priority")+
   ylab("Average final invasion state")+
-  theme_bw() +   
+  theme_bw() +
+  theme_classic()+
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
+        legend.position = "bottom",
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 1, color = 'grey'),
+        text = element_text(size = 15),
         axis.ticks = element_blank(),
-        legend.position = "bottom",
         axis.text.x = element_text(hjust = 1))+
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 1.5, color = 'grey')+
   facet_wrap(~Investment, nrow = 3, labeller = label_both)
 
 colnames(finstate_truth)[5] <- "Budget"
@@ -8733,14 +8737,19 @@ ggplot(bias_param_detect_years,
                      values = colors) +
   ylab(paste0('state relative bias'))+
   xlab("Year")+
-  theme_bw() +   
+  theme_bw() +
+  theme_classic()+
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
+        legend.position = "right",
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 1, color = 'grey'),
+        text = element_text(size = 15),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 1.5, color = 'grey')+
   facet_wrap(~Investment + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
 
@@ -8775,7 +8784,7 @@ paramp_rmse60
 ##### Bias param time -p #####
 bias_param_detect$rates2 <- paste0('(', bias_param_detect$detection, ', ', bias_param_detect$eradication, ")")
 
-detach(package:plyr)
+#detach(package:plyr)
 
 bias_param_detect_years <- bias_param_detect %>%
   group_by(location, year, rates, rates2, budget) %>%
@@ -8806,14 +8815,19 @@ ggplot(bias_param_detect_years,
                      )) +
   ylab(paste0('p parameters relative bias'))+
   xlab("Estimation")+
-  theme_bw() +   
+  theme_bw() +
+  theme_classic()+
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
+        legend.position = "right",
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 1, color = 'grey'),
+        text = element_text(size = 15),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 1.5, color = 'grey')+
   facet_wrap(~Investment + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
 
@@ -8950,14 +8964,19 @@ ggplot(bias_param_eps_years,
                      values = colors) +
   ylab(paste0('\u03F5 parameters relative bias'))+
   xlab("Year")+
-  theme_bw() +   
+  theme_bw() +
+  theme_classic()+
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
+        legend.position = "right",
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 1, color = 'grey'),
+        text = element_text(size = 15),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 1.5, color = 'grey')+
   facet_wrap(~Investment + Prioritization, nrow = 3, labeller = label_both, scales = "free")
 
 budget20_bias_param_eps <- bias_param_eps %>% 
@@ -9020,17 +9039,19 @@ p1 <- total_visit %>%
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
   xlab("Spatial priority")+
   ylab("% of segments visited each week")+
-  theme_bw() +   
+  theme_bw() +
+  theme_classic()+
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
         legend.position = "none",
-      #  strip.text.x = element_blank(),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 1, color = 'grey'),
         text = element_text(size = 15),
         axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 1.5, color = 'grey')+
   facet_wrap(~Investment, labeller = label_both, nrow = 3)
 
 p1
@@ -9074,17 +9095,19 @@ p2 <- total_dist %>%
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
   xlab("Spatial priority")+
   ylab("Average weekly distance traveled (segment units)")+
-  theme_bw() +   
+  theme_bw() +
+  theme_classic()+
   theme(strip.background=element_rect(colour="white",
                                       fill="white"),
         legend.position = "none",
-      #  strip.text.x = element_blank(),
-        panel.border = element_rect(colour = "gray", size = 1.5), 
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
+        axis.line = element_line(linewidth = 1, color = 'grey'),
         text = element_text(size = 15),
+        axis.ticks = element_blank(),
         axis.text.x = element_text(hjust = 1))+
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 1.5, color = 'grey')+
   facet_wrap(~Investment, labeller = label_both, nrow = 3)
 
 p2
