@@ -29,12 +29,12 @@ p1 <- ggplot(suppression_alls1)+
   geom_point(aes(x = Budget, y = state,
                  shape = location,
                  color = rates2, size = data))+
-  geom_text_repel(data=pareto_alls1, aes(x = Budget, y = state,
+  geom_text_repel(data=pareto_alls1, aes(x = Budget-1, y = state,
                                          label=pareto_alls1$location2), 
                   color="black", 
                   segment.color = "white",
                   size=4 , fontface="bold", 
-                  nudge_y = -0.1,
+                  nudge_y = -0.2,
                   nudge_x = 2
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
@@ -82,13 +82,13 @@ p2<- ggplot(suppression_alls2)+
   geom_point(aes(x = Budget, y = state,
                  shape = location,
                  color = rates2, size = data))+
-  geom_text_repel(data=pareto_alls2, aes(x = Budget, y = state,
+  geom_text_repel(data=pareto_alls2, aes(x = Budget-1, y = state,
                                          label=pareto_alls2$location2), 
                   color="black", 
                   segment.color = "white",
                   size=4 , fontface="bold", 
-                  nudge_y = -0.1,
-                  nudge_x = 2
+                  nudge_y = -0.05,
+                  nudge_x = 1.5
   )+
   scale_size_manual(name = 'Data', values = c(2,5))+
   scale_shape_manual(name = "Spatial priority",
@@ -242,11 +242,15 @@ legend3 <- cowplot::get_legend(data_legend)
 
 library(cowplot)
 
-plot_grid(
+p3 <- plot_grid(
     plot_grid(p1, p2, nrow = 2, labels = c('A', 'B')),
     plot_grid(legend2, legend1, legend3, nrow = 1, labels = c('', '', '')),
   nrow = 2,
   rel_heights = c(0.8, 0.2)
 )
-                  
 
+p3                  
+
+ggsave("suppression_plot.svg", p3, device = "svg")
+
+#https://nalinan.medium.com/how-to-vectorize-plots-from-r-in-powerpoint-bad7c238e86a

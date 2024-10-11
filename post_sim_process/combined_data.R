@@ -4,224 +4,224 @@ library(plyr)
 library(data.table)
 
 #### States Fin ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'states_fin.csv',sep = '/')
-hstate_finstate <- fread(file_name)
-hstate_finstate <- data.frame(hstate_finstate)
+hstatebins_finstate <- fread(file_name)
+hstatebins_finstate <- data.frame(hstatebins_finstate)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'states_fin.csv',sep = '/')
-epicenter_finstate <- fread(file_name)
-epicenter_finstate <- data.frame(epicenter_finstate)
+smartepicenter_finstate <- fread(file_name)
+smartepicenter_finstate <- data.frame(smartepicenter_finstate)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'states_fin.csv',sep = '/')
 linear_finstate <- fread(file_name)
 linear_finstate <- data.frame(linear_finstate)
 
-finstate <- rbind(hstate_finstate,epicenter_finstate,linear_finstate)
+finstate <- rbind(hstatebins_finstate,smartepicenter_finstate,linear_finstate)
 
-path <- 'E:\\Chapter3\\results'
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'finstates.csv',sep = '/')
 fwrite(finstate,file_name)
 
 #### States Fin truth ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
-hstate_finstate_truth <- fread(file_name)
-hstate_finstate_truth <- data.frame(hstate_finstate_truth)
+hstatebins_finstate_truth <- fread(file_name)
+hstatebins_finstate_truth <- data.frame(hstatebins_finstate_truth)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
-epicenter_finstate_truth <- fread(file_name)
-epicenter_finstate_truth <- data.frame(epicenter_finstate_truth)
+smartepicenter_finstate_truth <- fread(file_name)
+smartepicenter_finstate_truth <- data.frame(smartepicenter_finstate_truth)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 linear_finstate_truth <- fread(file_name)
 linear_finstate_truth <- data.frame(linear_finstate_truth)
 
-path <- 'E:\\Chapter3\\results\\noremoval'
+path <- 'D:\\Chapter3\\results\\noremoval'
 file_name = paste(path, 'states_fin_truth.csv',sep = '/')
 noremoval_finstate_truth <- fread(file_name)
 noremoval_finstate_truth <- data.frame(noremoval_finstate_truth)
 
-true_finstate <- rbind(hstate_finstate_truth,
-                       epicenter_finstate_truth,
+true_finstate <- rbind(hstatebins_finstate_truth,
+                       smartepicenter_finstate_truth,
                        linear_finstate_truth,
                        noremoval_finstate_truth)
 
-path <- 'E:\\Chapter3\\results'
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'true_finstates.csv',sep = '/')
 fwrite(true_finstate,file_name)
 
 #### Bias state ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'bias_state.csv',sep = '/')
-hstate_bias_state <- fread(file_name)
-hstate_bias_state <- data.frame(hstate_bias_state)
+hstatebins_bias_state <- fread(file_name)
+hstatebins_bias_state <- data.frame(hstatebins_bias_state)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'bias_state.csv',sep = '/')
-epicenter_bias_state <- fread(file_name)
-epicenter_bias_state <- data.frame(epicenter_bias_state)
+smartepicenter_bias_state <- fread(file_name)
+smartepicenter_bias_state <- data.frame(smartepicenter_bias_state)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'bias_state.csv',sep = '/')
 linear_bias_state <- fread(file_name)
 linear_bias_state <- data.frame(linear_bias_state)
 
-bias_state <- rbind(hstate_bias_state, epicenter_bias_state, linear_bias_state)
+bias_state <- rbind(hstatebins_bias_state, smartepicenter_bias_state, linear_bias_state)
 
-path <- 'E:\\Chapter3\\results'
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'bais_states.csv',sep = '/')
 fwrite(bias_state,file_name)
 
 #### CI state ####
 
 #### Params ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'params.csv',sep = '/')
-hstate_params <- fread(file_name)
-hstate_params <- data.frame(hstate_params)
+hstatebins_params <- fread(file_name)
+hstatebins_params <- data.frame(hstatebins_params)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'params.csv',sep = '/')
-epicenter_params <- fread(file_name)
-epicenter_params <- data.frame(epicenter_params)
+smartepicenter_params <- fread(file_name)
+smartepicenter_params <- data.frame(smartepicenter_params)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'params.csv',sep = '/')
 linear_params <- fread(file_name)
 linear_params <- data.frame(linear_params)
 
-params <- rbind(hstate_params, epicenter_params, linear_params)
-path <- 'E:\\Chapter3\\results'
+params <- rbind(hstatebins_params, smartepicenter_params, linear_params)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'params.csv',sep = '/')
 fwrite(params,file_name)
 
 #### Bias params ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'bias_params.csv',sep = '/')
-hstate_bias_param <- fread(file_name)
-hstate_bias_param <- data.frame(hstate_bias_param)
+hstatebins_bias_param <- fread(file_name)
+hstatebins_bias_param <- data.frame(hstatebins_bias_param)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'bias_params.csv',sep = '/')
-epicenter_bias_param <- fread(file_name)
-epicenter_bias_param <- data.frame(epicenter_bias_param)
+smartepicenter_bias_param <- fread(file_name)
+smartepicenter_bias_param <- data.frame(smartepicenter_bias_param)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 linear_bias_param <- fread(file_name)
 linear_bias_param <- data.frame(linear_bias_param)
 
-bias_param <- rbind(hstate_bias_param, epicenter_bias_param, linear_bias_param)
-path <- 'E:\\Chapter3\\results'
+bias_param <- rbind(hstatebins_bias_param, smartepicenter_bias_param, linear_bias_param)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'bias_params.csv',sep = '/')
 fwrite(bias_param,file_name)
 
 #### CI params ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'CI_param.csv',sep = '/')
-hstate_CI_param <- fread(file_name)
-hstate_CI_param <- data.frame(hstate_CI_param)
+hstatebins_CI_param <- fread(file_name)
+hstatebins_CI_param <- data.frame(hstatebins_CI_param)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'CI_param.csv',sep = '/')
-epicenter_CI_param <- fread(file_name)
-epicenter_CI_param <- data.frame(epicenter_CI_param)
+smartepicenter_CI_param <- fread(file_name)
+smartepicenter_CI_param <- data.frame(smartepicenter_CI_param)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'CI_param.csv',sep = '/')
 linear_CI_param <- fread(file_name)
 linear_CI_param <- data.frame(linear_CI_param)
 
-CI_param <- rbind(hstate_CI_param, epicenter_CI_param, linear_CI_param)
-path <- 'E:\\Chapter3\\results'
+CI_param <- rbind(hstatebins_CI_param, smartepicenter_CI_param, linear_CI_param)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'CI_params.csv',sep = '/')
 fwrite(CI_param,file_name)
 
 #### Param summary ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'param_summary.csv',sep = '/')
-hstate_paramsum <- fread(file_name)
-hstate_paramsum <- data.frame(hstate_paramsum)
+hstatebins_paramsum <- fread(file_name)
+hstatebins_paramsum <- data.frame(hstatebins_paramsum)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'param_summary.csv',sep = '/')
-epicenter_paramsum <- fread(file_name)
-epicenter_paramsum <- data.frame(epicenter_paramsum)
+smartepicenter_paramsum <- fread(file_name)
+smartepicenter_paramsum <- data.frame(smartepicenter_paramsum)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'param_summary.csv',sep = '/')
 linear_paramsum <- fread(file_name)
 linear_paramsum <- data.frame(linear_paramsum)
 
-paramsum <- rbind(hstate_paramsum, epicenter_paramsum, linear_paramsum)
-path <- 'E:\\Chapter3\\results'
+paramsum <- rbind(hstatebins_paramsum, smartepicenter_paramsum, linear_paramsum)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'param_summary.csv',sep = '/')
 fwrite(paramsum,file_name)
 
 #### Dist travel ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'dist.csv',sep = '/')
-hstate_dist <- fread(file_name)
-hstate_dist <- data.frame(hstate_dist)
+hstatebins_dist <- fread(file_name)
+hstatebins_dist <- data.frame(hstatebins_dist)
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'dist.csv',sep = '/')
-epicenter_dist <- fread(file_name)
-epicenter_dist <- data.frame(epicenter_dist)
+smartepicenter_dist <- fread(file_name)
+smartepicenter_dist <- data.frame(smartepicenter_dist)
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'dist.csv',sep = '/')
 linear_dist <- fread(file_name)
 linear_dist <- data.frame(linear_dist)
 
-dist <- rbind(hstate_dist, epicenter_dist, linear_dist)
-path <- 'E:\\Chapter3\\results'
+dist <- rbind(hstatebins_dist, smartepicenter_dist, linear_dist)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'dist.csv',sep = '/')
 fwrite(dist,file_name)
 
 #### Sites Visit ####
 ##### total visit ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'sites.csv',sep = '/')
-hstate_sites <- fread(file_name)
-hstate_sites <- data.frame(hstate_sites)
+hstatebins_sites <- fread(file_name)
+hstatebins_sites <- data.frame(hstatebins_sites)
 
-hstate_total_visit <- hstate_sites
-hstate_total_visit$visit[hstate_total_visit$visit == 2] <- 1 
+hstatebins_total_visit <- hstatebins_sites
+hstatebins_total_visit$visit[hstatebins_total_visit$visit == 2] <- 1 
 
-hstate_total_visit <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
-                           data = as.data.frame(hstate_total_visit), 
+hstatebins_total_visit <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
+                           data = as.data.frame(hstatebins_total_visit), 
                            FUN = sum)
 
 #sometimes the max is > 1 if we visited at second observation 
-hstate_total_visit <- hstate_total_visit %>% filter(week < 5)
-hstate_total_visit$visit <- hstate_total_visit$visit/40
+hstatebins_total_visit <- hstatebins_total_visit %>% filter(week < 5)
+hstatebins_total_visit$visit <- hstatebins_total_visit$visit/40
 
-hstate_total_visit$visit[hstate_total_visit$visit > 1] <- 1
+hstatebins_total_visit$visit[hstatebins_total_visit$visit > 1] <- 1
 
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'sites.csv',sep = '/')
-epicenter_sites <- fread(file_name)
-epicenter_sites <- data.frame(epicenter_sites)
+smartepicenter_sites <- fread(file_name)
+smartepicenter_sites <- data.frame(smartepicenter_sites)
 
-epicenter_total_visit <- epicenter_sites
-epicenter_total_visit$visit[epicenter_total_visit$visit == 2] <- 1 
+smartepicenter_total_visit <- smartepicenter_sites
+smartepicenter_total_visit$visit[smartepicenter_total_visit$visit == 2] <- 1 
 
-epicenter_total_visit <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
-                                data = as.data.frame(epicenter_total_visit), 
+smartepicenter_total_visit <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
+                                data = as.data.frame(smartepicenter_total_visit), 
                                 FUN = sum)
 
-epicenter_total_visit <- epicenter_total_visit %>% filter(week < 5)
-epicenter_total_visit$visit <- epicenter_total_visit$visit/40 #as a percentage
-epicenter_total_visit$visit[epicenter_total_visit$visit > 1] <- 1
+smartepicenter_total_visit <- smartepicenter_total_visit %>% filter(week < 5)
+smartepicenter_total_visit$visit <- smartepicenter_total_visit$visit/40 #as a percentage
+smartepicenter_total_visit$visit[smartepicenter_total_visit$visit > 1] <- 1
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'sites.csv',sep = '/')
 linear_sites <- fread(file_name)
 linear_sites <- data.frame(linear_sites)
@@ -238,48 +238,48 @@ linear_total_visit$visit <- linear_total_visit$visit/40 #as a percentage
 linear_total_visit$visit[linear_total_visit$visit > 1] <- 1
 
 
-total_visit <- rbind(hstate_total_visit, epicenter_total_visit, linear_total_visit)
-path <- 'E:\\Chapter3\\results'
+total_visit <- rbind(hstatebins_total_visit, smartepicenter_total_visit, linear_total_visit)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'total_visit.csv',sep = '/')
 fwrite(total_visit,file_name)
 
 ##### total remove ####
-path <- 'E:\\Chapter3\\results\\hstate'
+path <- 'D:\\Chapter3\\results\\hstatebins'
 file_name = paste(path, 'sites.csv',sep = '/')
-hstate_sites <- fread(file_name)
-hstate_sites <- data.frame(hstate_sites)
+hstatebins_sites <- fread(file_name)
+hstatebins_sites <- data.frame(hstatebins_sites)
 
-hstate_total_rem <- hstate_sites
-hstate_total_rem$visit[hstate_total_rem$visit == 1] <- 0 
-hstate_total_rem$visit[hstate_total_rem$visit == 2] <- 1 
+hstatebins_total_rem <- hstatebins_sites
+hstatebins_total_rem$visit[hstatebins_total_rem$visit == 1] <- 0 
+hstatebins_total_rem$visit[hstatebins_total_rem$visit == 2] <- 1 
 
-hstate_total_rem <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
-                                data = as.data.frame(hstate_total_rem), 
+hstatebins_total_rem <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
+                                data = as.data.frame(hstatebins_total_rem), 
                                 FUN = sum)
 
-hstate_total_rem <- hstate_total_rem %>% filter(week < 5)
-hstate_total_rem$visit <- hstate_total_rem$visit/40 #as a percentage
-hstate_total_rem$visit[hstate_total_rem$visit > 1] <- 1
+hstatebins_total_rem <- hstatebins_total_rem %>% filter(week < 5)
+hstatebins_total_rem$visit <- hstatebins_total_rem$visit/40 #as a percentage
+hstatebins_total_rem$visit[hstatebins_total_rem$visit > 1] <- 1
 
-path <- 'E:\\Chapter3\\results\\epicenter'
+path <- 'D:\\Chapter3\\results\\smartepicenter'
 file_name = paste(path, 'sites.csv',sep = '/')
-epicenter_sites <- fread(file_name)
-epicenter_sites <- data.frame(epicenter_sites)
+smartepicenter_sites <- fread(file_name)
+smartepicenter_sites <- data.frame(smartepicenter_sites)
 
-epicenter_total_rem <- epicenter_sites
-epicenter_total_rem$visit[epicenter_total_rem$visit == 1] <- 0 
-epicenter_total_rem$visit[epicenter_total_rem$visit == 2] <- 1 
+smartepicenter_total_rem <- smartepicenter_sites
+smartepicenter_total_rem$visit[smartepicenter_total_rem$visit == 1] <- 0 
+smartepicenter_total_rem$visit[smartepicenter_total_rem$visit == 2] <- 1 
 
-epicenter_total_rem <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
-                             data = as.data.frame(epicenter_total_rem), 
+smartepicenter_total_rem <- aggregate(visit ~ week + year + sim + location + detection + eradication + budget, 
+                             data = as.data.frame(smartepicenter_total_rem), 
                              FUN = sum)
 
-epicenter_total_rem <- epicenter_total_rem %>% filter(week < 5)
-epicenter_total_rem$visit <- epicenter_total_rem$visit/40 #as a percentage
-epicenter_total_rem$visit[epicenter_total_rem$visit > 1] <- 1
+smartepicenter_total_rem <- smartepicenter_total_rem %>% filter(week < 5)
+smartepicenter_total_rem$visit <- smartepicenter_total_rem$visit/40 #as a percentage
+smartepicenter_total_rem$visit[smartepicenter_total_rem$visit > 1] <- 1
 
 
-path <- 'E:\\Chapter3\\results\\linear'
+path <- 'D:\\Chapter3\\results\\linear'
 file_name = paste(path, 'sites.csv',sep = '/')
 linear_sites <- fread(file_name)
 linear_sites <- data.frame(linear_sites)
@@ -297,8 +297,8 @@ linear_total_rem$visit <- linear_total_rem$visit/40 #as a percentage
 linear_total_rem$visit[linear_total_rem$visit > 1] <- 1
 
 
-total_rem <- rbind(hstate_total_rem, epicenter_total_rem, linear_total_rem)
-path <- 'E:\\Chapter3\\results'
+total_rem <- rbind(hstatebins_total_rem, smartepicenter_total_rem, linear_total_rem)
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'total_rem.csv',sep = '/')
 fwrite(total_rem,file_name)
 
