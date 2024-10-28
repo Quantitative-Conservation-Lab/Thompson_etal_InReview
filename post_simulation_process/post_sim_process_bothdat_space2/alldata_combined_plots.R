@@ -325,7 +325,8 @@ state_rmse60 <- state_est_week5 %>%
   filter(budget == 60) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rmse),
-            max_c = max(rmse))
+            max_c = max(rmse),
+            max95 = quantile(rmse, c(0.95)))
 
 state_rmse60
 
