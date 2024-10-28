@@ -5259,6 +5259,72 @@ sites_60 <- rbind(sites_S25_R5_60,sites_S25_R5_60b,
 
 sites_hsd <- rbind(sites_20, sites_40, sites_60 )
 
+###### BOTH DAT ####
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_20_bothdat <- fread(file_name)
+sites_S5_R75_20_bothdat <- data.frame(sites_S5_R75_20_bothdat)[-1]
+
+sites_S5_R75_20_bothdat$location <- 'hstatebins'
+sites_S5_R75_20_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_20_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_20_bothdat$budget <- 20
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget20\\hstatebins_S5_R75_20_b'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_20_bothdatb <- fread(file_name)
+sites_S5_R75_20_bothdatb <- data.frame(sites_S5_R75_20_bothdatb)[-1]
+
+sites_S5_R75_20_bothdatb$location <- 'hstatebins'
+sites_S5_R75_20_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_20_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_20_bothdatb$budget <- 20
+
+#40
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget40\\hstatebins_S5_R75_40'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_40_bothdat <- fread(file_name)
+sites_S5_R75_40_bothdat <- data.frame(sites_S5_R75_40_bothdat)[-1]
+
+sites_S5_R75_40_bothdat$location <- 'hstatebins'
+sites_S5_R75_40_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_40_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_40_bothdat$budget <- 40
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget40\\hstatebins_S5_R75_40_b'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_40_bothdatb <- fread(file_name)
+sites_S5_R75_40_bothdatb <- data.frame(sites_S5_R75_40_bothdatb)[-1]
+
+sites_S5_R75_40_bothdatb$location <- 'hstatebins'
+sites_S5_R75_40_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_40_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_40_bothdatb$budget <- 40
+
+#60
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\hstatebins_S5_R75_60'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_60_bothdat <- fread(file_name)
+sites_S5_R75_60_bothdat <- data.frame(sites_S5_R75_60_bothdat)[-1]
+
+sites_S5_R75_60_bothdat$location <- 'hstatebins'
+sites_S5_R75_60_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_60_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_60_bothdat$budget <- 60
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\hstatebins_S5_R75_60_b'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_60_bothdatb <- fread(file_name)
+sites_S5_R75_60_bothdatb <- data.frame(sites_S5_R75_60_bothdatb)[-1]
+
+sites_S5_R75_60_bothdatb$location <- 'hstatebins'
+sites_S5_R75_60_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_60_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_60_bothdatb$budget <- 60
+
+sites_hsd <- rbind(sites_hsd,sites_S5_R75_20_bothdat,sites_S5_R75_20_bothdatb,
+                   sites_S5_R75_40_bothdat, sites_S5_R75_40_bothdatb,
+                   sites_S5_R75_60_bothdat,sites_S5_R75_60_bothdatb)
 
 ##### linear #####
 #--- S25_R5_20 ---#
@@ -6071,6 +6137,75 @@ sites_60 <- rbind(sites_S25_R5_60,sites_S25_R5_60b,
 
 sites_smartepicenter <- rbind(sites_20, sites_40, sites_60)
 
+###### BOTH DAT ####
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget20\\smartepicenter_S5_R75_20'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_20_bothdat <- fread(file_name)
+sites_S5_R75_20_bothdat <- data.frame(sites_S5_R75_20_bothdat)[-1]
+
+sites_S5_R75_20_bothdat$location <- 'smartepicenter'
+sites_S5_R75_20_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_20_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_20_bothdat$budget <- 20
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget20\\smartepicenter_S5_R75_20_b'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_20_bothdatb <- fread(file_name)
+sites_S5_R75_20_bothdatb <- data.frame(sites_S5_R75_20_bothdatb)[-1]
+
+sites_S5_R75_20_bothdatb$location <- 'smartepicenter'
+sites_S5_R75_20_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_20_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_20_bothdatb$budget <- 20
+
+#40
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget40\\smartepicenter_S5_R75_40'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_40_bothdat <- fread(file_name)
+sites_S5_R75_40_bothdat <- data.frame(sites_S5_R75_40_bothdat)[-1]
+
+sites_S5_R75_40_bothdat$location <- 'smartepicenter'
+sites_S5_R75_40_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_40_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_40_bothdat$budget <- 40
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget40\\smartepicenter_S5_R75_40_b'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_40_bothdatb <- fread(file_name)
+sites_S5_R75_40_bothdatb <- data.frame(sites_S5_R75_40_bothdatb)[-1]
+
+sites_S5_R75_40_bothdatb$location <- 'smartepicenter'
+sites_S5_R75_40_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_40_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_40_bothdatb$budget <- 40
+
+#60
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\smartepicenter_S5_R75_60'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_60_bothdat <- fread(file_name)
+sites_S5_R75_60_bothdat <- data.frame(sites_S5_R75_60_bothdat)[-1]
+
+sites_S5_R75_60_bothdat$location <- 'smartepicenter'
+sites_S5_R75_60_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_60_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_60_bothdat$budget <- 60
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\smartepicenter_S5_R75_60_b'
+file_name = paste(path, 'sites_visit.txt',sep = '/')
+sites_S5_R75_60_bothdatb <- fread(file_name)
+sites_S5_R75_60_bothdatb <- data.frame(sites_S5_R75_60_bothdatb)[-1]
+
+sites_S5_R75_60_bothdatb$location <- 'smartepicenter'
+sites_S5_R75_60_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+sites_S5_R75_60_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+sites_S5_R75_60_bothdatb$budget <- 60
+
+sites_smartepicenter <- rbind(sites_smartepicenter,
+                              sites_S5_R75_20_bothdat,sites_S5_R75_20_bothdatb,
+                              sites_S5_R75_40_bothdat, sites_S5_R75_40_bothdatb,
+                              sites_S5_R75_60_bothdat,sites_S5_R75_60_bothdatb)
+
+
 sites <- rbind(sites_hsd, sites_linear, sites_smartepicenter)
 
 sites$visit[sites$visit > 1] <- 1
@@ -6081,7 +6216,7 @@ sites_visit <- aggregate(visit ~ week + year + sim + location + detection + erad
 
 sites_visit <- sites_visit %>% filter(week < 5)
 sites_visit$visit <- sites_visit$visit/40
-
+sites_visit$visit[sites_visit$visit > 1] <- 1 #because some of the multistate data visits sites >1
 
 #### dist traveled ####
 #-- Budget = 20 --#
@@ -6489,6 +6624,73 @@ dist_60 <- rbind(dist_S25_R5_60,dist_S25_R5_60b,
                  dist_S75_R75_60,dist_S5_R75_60b)
 
 dist_hsd <- rbind(dist_20, dist_40, dist_60)
+
+###### BOTH DAT ####
+path <- 'D:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75_20'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_20_bothdat <- fread(file_name)
+dist_S5_R75_20_bothdat <- data.frame(dist_S5_R75_20_bothdat)[-1]
+
+dist_S5_R75_20_bothdat$location <- 'hstatebins'
+dist_S5_R75_20_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_20_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_20_bothdat$budget <- 20
+
+path <- 'D:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75_20_b'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_20_bothdatb <- fread(file_name)
+dist_S5_R75_20_bothdatb <- data.frame(dist_S5_R75_20_bothdatb)[-1]
+
+dist_S5_R75_20_bothdatb$location <- 'hstatebins'
+dist_S5_R75_20_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_20_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_20_bothdatb$budget <- 20
+
+#40
+path <- 'D:\\Chapter3\\results-datboth\\budget40\\hstatebins_S5_R75_40'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_40_bothdat <- fread(file_name)
+dist_S5_R75_40_bothdat <- data.frame(dist_S5_R75_40_bothdat)[-1]
+
+dist_S5_R75_40_bothdat$location <- 'hstatebins'
+dist_S5_R75_40_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_40_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_40_bothdat$budget <- 40
+
+path <- 'D:\\Chapter3\\results-datboth\\budget40\\hstatebins_S5_R75_40_b'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_40_bothdatb <- fread(file_name)
+dist_S5_R75_40_bothdatb <- data.frame(dist_S5_R75_40_bothdatb)[-1]
+
+dist_S5_R75_40_bothdatb$location <- 'hstatebins'
+dist_S5_R75_40_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_40_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_40_bothdatb$budget <- 40
+
+#60
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\hstatebins_S5_R75_60'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_60_bothdat <- fread(file_name)
+dist_S5_R75_60_bothdat <- data.frame(dist_S5_R75_60_bothdat)[-1]
+
+dist_S5_R75_60_bothdat$location <- 'hstatebins'
+dist_S5_R75_60_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_60_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_60_bothdat$budget <- 60
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\hstatebins_S5_R75_60_b'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_60_bothdatb <- fread(file_name)
+dist_S5_R75_60_bothdatb <- data.frame(dist_S5_R75_60_bothdatb)[-1]
+
+dist_S5_R75_60_bothdatb$location <- 'hstatebins'
+dist_S5_R75_60_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_60_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_60_bothdatb$budget <- 60
+
+dist_hsd <- rbind(dist_hsd,dist_S5_R75_20_bothdat,dist_S5_R75_20_bothdatb,
+                  dist_S5_R75_40_bothdat, dist_S5_R75_40_bothdatb,
+                  dist_S5_R75_60_bothdat,dist_S5_R75_60_bothdatb)
 
 ##### linear #####
 #--- S25_R5_20 ---#
@@ -7301,6 +7503,73 @@ dist_60 <- rbind(dist_S25_R5_60,dist_S25_R5_60b,
 
 
 dist_smartepicenter <- rbind(dist_20, dist_40, dist_60)
+
+###### BOTH DAT ####
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget20\\smartepicenter_S5_R75_20'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_20_bothdat <- fread(file_name)
+dist_S5_R75_20_bothdat <- data.frame(dist_S5_R75_20_bothdat)[-1]
+
+dist_S5_R75_20_bothdat$location <- 'smartepicenter'
+dist_S5_R75_20_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_20_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_20_bothdat$budget <- 20
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget20\\smartepicenter_S5_R75_20_b'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_20_bothdatb <- fread(file_name)
+dist_S5_R75_20_bothdatb <- data.frame(dist_S5_R75_20_bothdatb)[-1]
+
+dist_S5_R75_20_bothdatb$location <- 'smartepicenter'
+dist_S5_R75_20_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_20_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_20_bothdatb$budget <- 20
+
+#40
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget40\\smartepicenter_S5_R75_40'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_40_bothdat <- fread(file_name)
+dist_S5_R75_40_bothdat <- data.frame(dist_S5_R75_40_bothdat)[-1]
+
+dist_S5_R75_40_bothdat$location <- 'smartepicenter'
+dist_S5_R75_40_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_40_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_40_bothdat$budget <- 40
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget40\\smartepicenter_S5_R75_40_b'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_40_bothdatb <- fread(file_name)
+dist_S5_R75_40_bothdatb <- data.frame(dist_S5_R75_40_bothdatb)[-1]
+
+dist_S5_R75_40_bothdatb$location <- 'smartepicenter'
+dist_S5_R75_40_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_40_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_40_bothdatb$budget <- 40
+
+#60
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\smartepicenter_S5_R75_60'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_60_bothdat <- fread(file_name)
+dist_S5_R75_60_bothdat <- data.frame(dist_S5_R75_60_bothdat)[-1]
+
+dist_S5_R75_60_bothdat$location <- 'smartepicenter'
+dist_S5_R75_60_bothdat$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_60_bothdat$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_60_bothdat$budget <- 60
+
+path <- 'D:\\Chapter3\\results-datboth-space2\\budget60\\smartepicenter_S5_R75_60_b'
+file_name = paste(path, 'dist_travel.csv',sep = '/')
+dist_S5_R75_60_bothdatb <- fread(file_name)
+dist_S5_R75_60_bothdatb <- data.frame(dist_S5_R75_60_bothdatb)[-1]
+
+dist_S5_R75_60_bothdatb$location <- 'smartepicenter'
+dist_S5_R75_60_bothdatb$detection <- 0.5 #actually 0.5 but need different for plot
+dist_S5_R75_60_bothdatb$eradication <- 0.76 #actually 0.75 but need for plot
+dist_S5_R75_60_bothdatb$budget <- 60
+
+dist_smartepicenter <- rbind(dist_smartepicenter,dist_S5_R75_20_bothdat,dist_S5_R75_20_bothdatb,
+                             dist_S5_R75_40_bothdat, dist_S5_R75_40_bothdatb,
+                             dist_S5_R75_60_bothdat,dist_S5_R75_60_bothdatb)
 
 dist <- rbind(dist_hsd, dist_linear, dist_smartepicenter)
 
@@ -9014,6 +9283,8 @@ total_visit$loc2 <- paste0(total_visit$location, total_visit$detection, total_vi
 
 colnames(total_visit)[7] <- 'Investment'
 
+colorsup <- c(colors[1:4], 'white', colors[5:6])
+
 p1 <- total_visit %>% 
   ggplot(aes(x = loc2, y = visit, fill = rates2, color = location,
              group = interaction(location, rates)))+
@@ -9033,7 +9304,9 @@ p1 <- total_visit %>%
       "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
-                    values = colors) +
+                    values = colorsup,
+                    labels = c('(0.25, 0.5)', '(0.25, 0.75)', '(0.5, 0.5)','(0.5, 0.75)',
+                               '(0.5, 0.75) A+C', '(0.75, 0.5)', '(0.75, 0.75)')) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2, 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
@@ -9089,7 +9362,9 @@ p2 <- total_dist %>%
       "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
-                    values = colors) +
+                    values = colorsup,
+                    labels = c('(0.25, 0.5)', '(0.25, 0.75)', '(0.5, 0.5)','(0.5, 0.75)',
+                               '(0.5, 0.75) A+C', '(0.75, 0.5)', '(0.75, 0.75)')) +
   scale_color_manual(name = "Spatial priority",
                      values = colors2, 
                      labels = c('Epicenter', 'High invasion', 'Linear') )+
@@ -9131,11 +9406,13 @@ l1 <- total_visit %>%
       "epicenter0.750.5" = "Epicenter"))+
   
   scale_fill_manual(name = paste0('Target probabilities (p, ', '\u03F5 )'),
-                     values = colors,
-                     guide = guide_legend(
-                       direction = "horizontal",
-                       title.position = "top"
-                     )) +
+                    values = colorsup,
+                    labels = c('(0.25, 0.5)', '(0.25, 0.75)', '(0.5, 0.5)','(0.5, 0.75)',
+                               '(0.5, 0.75) A+C', '(0.75, 0.5)', '(0.75, 0.75)'),
+                    guide = guide_legend(
+                      direction = "horizontal",
+                      title.position = "top"
+                    )) +
   # scale_color_manual(name = "Priotization",
   #                    values = colors2, 
   #                    labels = c('smartepicenter', 'High invasion', 'Linear') )+
@@ -9198,6 +9475,8 @@ l2 <- total_visit %>%
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Investment, nrow = 3)
 
+
+
 l2
 ##### COMBINED PLOTS ####
 legend1 <- cowplot::get_legend(l1)
@@ -9205,6 +9484,7 @@ legend2 <- cowplot::get_legend(l2)
 
 cowplot::plot_grid(p1, p2, legend1, legend2, nrow = 2,labels = c('A', 'B', ''),
                    rel_heights = c(0.8, 0.2))
+
 
 ##### Add data integration: ####
 path <- 'D:\\Chapter3\\results-space2-datboth'
