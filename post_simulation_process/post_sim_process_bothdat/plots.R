@@ -144,7 +144,8 @@ budget20_biasstate <- bias_stateAC %>%
   filter(Budget == 20) %>% 
   group_by(loc2) %>%
   summarise(mean_c = mean(rel.bias),
-            max_c = max(rel.bias))
+            max_c = max(rel.bias),
+            upper = quantile(rel.bias, 0.9))
 
 budget20_biasstate
 
@@ -164,11 +165,241 @@ budget60_biasstate <- bias_stateAC %>%
 
 budget60_biasstate
 
-bias_state <- rbind(bias_stateAC, bias_stateA)
+##### comparison Rel. bias ####
+path <- 'D:\\Chapter3\\results\\smartepicenter\\S5_R75_20'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+smartepicenter_biasstate_S5_R75_20 <- fread(file_name)
+smartepicenter_biasstate_S5_R75_20 <- data.frame(smartepicenter_biasstate_S5_R75_20)[-1]
 
-bias_state  <- bias_state  %>% filter(Budget == 20)
+smartepicenter_biasstate_S5_R75_20$location <- 'smartepicenter'
+smartepicenter_biasstate_S5_R75_20$detection <- 0.5
+smartepicenter_biasstate_S5_R75_20$eradication <- 0.75
+smartepicenter_biasstate_S5_R75_20$budget <- 20
 
-bias_state %>% 
+path <- 'D:\\Chapter3\\results\\smartepicenter\\S5_R75_20_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+smartepicenter_biasstate_S5_R75_20b <- fread(file_name)
+smartepicenter_biasstate_S5_R75_20b <- data.frame(smartepicenter_biasstate_S5_R75_20b)[-1]
+
+smartepicenter_biasstate_S5_R75_20b$location <- 'smartepicenter'
+smartepicenter_biasstate_S5_R75_20b$detection <- 0.5
+smartepicenter_biasstate_S5_R75_20b$eradication <- 0.75
+smartepicenter_biasstate_S5_R75_20b$budget <- 20
+
+path <- 'D:\\Chapter3\\results\\smartepicenter\\S5_R75_40'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+smartepicenter_biasstate_S5_R75_40 <- fread(file_name)
+smartepicenter_biasstate_S5_R75_40 <- data.frame(smartepicenter_biasstate_S5_R75_40)[-1]
+
+smartepicenter_biasstate_S5_R75_40$location <- 'smartepicenter'
+smartepicenter_biasstate_S5_R75_40$detection <- 0.5
+smartepicenter_biasstate_S5_R75_40$eradication <- 0.75
+smartepicenter_biasstate_S5_R75_40$budget <- 40
+
+path <- 'D:\\Chapter3\\results\\smartepicenter\\S5_R75_40_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+smartepicenter_biasstate_S5_R75_40b <- fread(file_name)
+smartepicenter_biasstate_S5_R75_40b <- data.frame(smartepicenter_biasstate_S5_R75_40b)[-1]
+
+smartepicenter_biasstate_S5_R75_40b$location <- 'smartepicenter'
+smartepicenter_biasstate_S5_R75_40b$detection <- 0.5
+smartepicenter_biasstate_S5_R75_40b$eradication <- 0.75
+smartepicenter_biasstate_S5_R75_40b$budget <- 40
+
+#
+path <- 'D:\\Chapter3\\results\\smartepicenter\\S5_R75_60'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+smartepicenter_biasstate_S5_R75_60 <- fread(file_name)
+smartepicenter_biasstate_S5_R75_60 <- data.frame(smartepicenter_biasstate_S5_R75_60)[-1]
+
+smartepicenter_biasstate_S5_R75_60$location <- 'smartepicenter'
+smartepicenter_biasstate_S5_R75_60$detection <- 0.5
+smartepicenter_biasstate_S5_R75_60$eradication <- 0.75
+smartepicenter_biasstate_S5_R75_60$budget <- 60
+
+path <- 'D:\\Chapter3\\results\\smartepicenter\\S5_R75_60_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+smartepicenter_biasstate_S5_R75_60b <- fread(file_name)
+smartepicenter_biasstate_S5_R75_60b <- data.frame(smartepicenter_biasstate_S5_R75_60b)[-1]
+
+smartepicenter_biasstate_S5_R75_60b$location <- 'smartepicenter'
+smartepicenter_biasstate_S5_R75_60b$detection <- 0.5
+smartepicenter_biasstate_S5_R75_60b$eradication <- 0.75
+smartepicenter_biasstate_S5_R75_60b$budget <- 60
+
+bias_stateA_eps <- rbind(smartepicenter_biasstate_S5_R75_20, smartepicenter_biasstate_S5_R75_20b,
+                         smartepicenter_biasstate_S5_R75_40,smartepicenter_biasstate_S5_R75_40b,
+                         smartepicenter_biasstate_S5_R75_60,smartepicenter_biasstate_S5_R75_60b)
+
+
+bias_stateA_eps$rates <- paste0('p = ', bias_stateA_eps$detection, ', e = ', bias_stateA_eps$eradication)
+bias_stateA_eps$loc2 <- paste0(bias_stateA_eps$location, bias_stateA_eps$detection, bias_stateA_eps$eradication)
+bias_stateA_eps$rates2 <- paste0('(', bias_stateA_eps$detection, ', ', bias_stateA_eps$eradication, ")")
+
+colnames(bias_stateA_eps)[8] <- 'Budget'
+
+bias_stateA_eps$data <- 'A'
+bias_stateA_eps$loc2 <- paste0(bias_stateA_eps$location, bias_stateA_eps$detection, bias_stateA_eps$eradication, bias_stateA_eps$data)
+
+#----------------
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hstatebins_biasstate_S5_R75_20 <- fread(file_name)
+hstatebins_biasstate_S5_R75_20 <- data.frame(hstatebins_biasstate_S5_R75_20)[-1]
+
+hstatebins_biasstate_S5_R75_20$location <- 'hstatebins'
+hstatebins_biasstate_S5_R75_20$detection <- 0.5
+hstatebins_biasstate_S5_R75_20$eradication <- 0.75
+hstatebins_biasstate_S5_R75_20$budget <- 20
+
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_20_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hstatebins_biasstate_S5_R75_20b <- fread(file_name)
+hstatebins_biasstate_S5_R75_20b <- data.frame(hstatebins_biasstate_S5_R75_20b)[-1]
+
+hstatebins_biasstate_S5_R75_20b$location <- 'hstatebins'
+hstatebins_biasstate_S5_R75_20b$detection <- 0.5
+hstatebins_biasstate_S5_R75_20b$eradication <- 0.75
+hstatebins_biasstate_S5_R75_20b$budget <- 20
+
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hstatebins_biasstate_S5_R75_40 <- fread(file_name)
+hstatebins_biasstate_S5_R75_40 <- data.frame(hstatebins_biasstate_S5_R75_40)[-1]
+
+hstatebins_biasstate_S5_R75_40$location <- 'hstatebins'
+hstatebins_biasstate_S5_R75_40$detection <- 0.5
+hstatebins_biasstate_S5_R75_40$eradication <- 0.75
+hstatebins_biasstate_S5_R75_40$budget <- 40
+
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_40_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hstatebins_biasstate_S5_R75_40b <- fread(file_name)
+hstatebins_biasstate_S5_R75_40b <- data.frame(hstatebins_biasstate_S5_R75_40b)[-1]
+
+hstatebins_biasstate_S5_R75_40b$location <- 'hstatebins'
+hstatebins_biasstate_S5_R75_40b$detection <- 0.5
+hstatebins_biasstate_S5_R75_40b$eradication <- 0.75
+hstatebins_biasstate_S5_R75_40b$budget <- 40
+
+#
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hstatebins_biasstate_S5_R75_60 <- fread(file_name)
+hstatebins_biasstate_S5_R75_60 <- data.frame(hstatebins_biasstate_S5_R75_60)[-1]
+
+hstatebins_biasstate_S5_R75_60$location <- 'hstatebins'
+hstatebins_biasstate_S5_R75_60$detection <- 0.5
+hstatebins_biasstate_S5_R75_60$eradication <- 0.75
+hstatebins_biasstate_S5_R75_60$budget <- 60
+
+path <- 'D:\\Chapter3\\results\\hstatebins\\S5_R75_60_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+hstatebins_biasstate_S5_R75_60b <- fread(file_name)
+hstatebins_biasstate_S5_R75_60b <- data.frame(hstatebins_biasstate_S5_R75_60b)[-1]
+
+hstatebins_biasstate_S5_R75_60b$location <- 'hstatebins'
+hstatebins_biasstate_S5_R75_60b$detection <- 0.5
+hstatebins_biasstate_S5_R75_60b$eradication <- 0.75
+hstatebins_biasstate_S5_R75_60b$budget <- 60
+
+bias_stateA_hstate <- rbind(hstatebins_biasstate_S5_R75_20, hstatebins_biasstate_S5_R75_20b,
+                            hstatebins_biasstate_S5_R75_40,hstatebins_biasstate_S5_R75_40b,
+                            hstatebins_biasstate_S5_R75_60,hstatebins_biasstate_S5_R75_60b)
+
+bias_stateA_hstate$rates <- paste0('p = ', bias_stateA_hstate$detection, ', e = ', bias_stateA_hstate$eradication)
+bias_stateA_hstate$loc2 <- paste0(bias_stateA_hstate$location, bias_stateA_hstate$detection, bias_stateA_hstate$eradication)
+bias_stateA_hstate$rates2 <- paste0('(', bias_stateA_hstate$detection, ', ', bias_stateA_hstate$eradication, ")")
+
+colnames(bias_stateA_hstate)[8] <- 'Budget'
+
+bias_stateA_hstate$data <- 'A'
+bias_stateA_hstate$loc2 <- paste0(bias_stateA_hstate$location, bias_stateA_hstate$detection, bias_stateA_hstate$eradication, bias_stateA_hstate$data)
+
+#----------------
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+linear_biasstate_S5_R75_20 <- fread(file_name)
+linear_biasstate_S5_R75_20 <- data.frame(linear_biasstate_S5_R75_20)[-1]
+
+linear_biasstate_S5_R75_20$location <- 'linear'
+linear_biasstate_S5_R75_20$detection <- 0.5
+linear_biasstate_S5_R75_20$eradication <- 0.75
+linear_biasstate_S5_R75_20$budget <- 20
+
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_20_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+linear_biasstate_S5_R75_20b <- fread(file_name)
+linear_biasstate_S5_R75_20b <- data.frame(linear_biasstate_S5_R75_20b)[-1]
+
+linear_biasstate_S5_R75_20b$location <- 'linear'
+linear_biasstate_S5_R75_20b$detection <- 0.5
+linear_biasstate_S5_R75_20b$eradication <- 0.75
+linear_biasstate_S5_R75_20b$budget <- 20
+
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+linear_biasstate_S5_R75_40 <- fread(file_name)
+linear_biasstate_S5_R75_40 <- data.frame(linear_biasstate_S5_R75_40)[-1]
+
+linear_biasstate_S5_R75_40$location <- 'linear'
+linear_biasstate_S5_R75_40$detection <- 0.5
+linear_biasstate_S5_R75_40$eradication <- 0.75
+linear_biasstate_S5_R75_40$budget <- 40
+
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_40_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+linear_biasstate_S5_R75_40b <- fread(file_name)
+linear_biasstate_S5_R75_40b <- data.frame(linear_biasstate_S5_R75_40b)[-1]
+
+linear_biasstate_S5_R75_40b$location <- 'linear'
+linear_biasstate_S5_R75_40b$detection <- 0.5
+linear_biasstate_S5_R75_40b$eradication <- 0.75
+linear_biasstate_S5_R75_40b$budget <- 40
+
+#
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+linear_biasstate_S5_R75_60 <- fread(file_name)
+linear_biasstate_S5_R75_60 <- data.frame(linear_biasstate_S5_R75_60)[-1]
+
+linear_biasstate_S5_R75_60$location <- 'linear'
+linear_biasstate_S5_R75_60$detection <- 0.5
+linear_biasstate_S5_R75_60$eradication <- 0.75
+linear_biasstate_S5_R75_60$budget <- 60
+
+path <- 'D:\\Chapter3\\results\\linear\\S5_R75_60_b'
+file_name = paste(path, 'bias_states.csv',sep = '/')
+linear_biasstate_S5_R75_60b <- fread(file_name)
+linear_biasstate_S5_R75_60b <- data.frame(linear_biasstate_S5_R75_60b)[-1]
+
+linear_biasstate_S5_R75_60b$location <- 'linear'
+linear_biasstate_S5_R75_60b$detection <- 0.5
+linear_biasstate_S5_R75_60b$eradication <- 0.75
+linear_biasstate_S5_R75_60b$budget <- 60
+
+bias_stateA_lin <- rbind(linear_biasstate_S5_R75_20, linear_biasstate_S5_R75_20b,
+                         linear_biasstate_S5_R75_40,linear_biasstate_S5_R75_40b,
+                         linear_biasstate_S5_R75_60,linear_biasstate_S5_R75_60b)
+
+bias_stateA_lin$rates <- paste0('p = ', bias_stateA_lin$detection, ', e = ', bias_stateA_lin$eradication)
+bias_stateA_lin$loc2 <- paste0(bias_stateA_lin$location, bias_stateA_lin$detection, bias_stateA_lin$eradication)
+bias_stateA_lin$rates2 <- paste0('(', bias_stateA_lin$detection, ', ', bias_stateA_lin$eradication, ")")
+
+colnames(bias_stateA_lin)[8] <- 'Budget'
+
+bias_stateA_lin$data <- 'A'
+bias_stateA_lin$loc2 <- paste0(bias_stateA_lin$location, bias_stateA_lin$detection, bias_stateA_lin$eradication, bias_stateA_lin$data)
+
+
+#----------------
+
+bias_stateAC <- bias_stateAC 
+
+bias_stateA <- rbind(bias_stateA_eps, bias_stateA_hstate, bias_stateA_lin)
+bias_states<- rbind(bias_stateAC, bias_stateA)
+
+bias_states %>% 
   ggplot(aes(x = loc2, y = rel.bias, fill = rates2, color =data,
              group = interaction(location, rates2, data)))+
   geom_boxplot() +
@@ -178,10 +409,18 @@ bias_state %>%
                    group = interaction(location, rates)),
                width = .75, color = "black", linewidth = 1)+ 
   scale_x_discrete(breaks = c("smartepicenter0.50.75A",
-                              "linear0.50.75A"),
+                              "smartepicenter0.50.75AC",
+                              "hstate0.50.75A",
+                              "hstate0.50.75AC",
+                              "linear0.50.75A",
+                              "linear0.50.75AC"),
                    labels=c(
-                     "smartepicenter0.50.75A" = "smartepicenter",
-                     "linear0.50.75A" = "Linear"))+
+                     "smartepicenter0.50.75A" = "Epicenter",
+                     "smartepicenter0.50.75AC" = "Epicenter A + C",
+                     "hstate0.50.75A" = "High invasion",
+                     "hstate0.50.75AC" = "High invasion A + C",
+                     "linear0.50.75A" = "Linear",
+                     "linear0.50.75AC" = "Linear A + C"))+
   
   scale_fill_manual(name = paste0('Management rates (p, ', '\u03F5 )'),
                     values = colors) +
@@ -201,6 +440,38 @@ bias_state %>%
         axis.text.x = element_text(hjust = 1))+
   facet_wrap(~Budget, nrow = 3, labeller = label_both)
 
+budget20_comp <- bias_states %>% 
+  filter(Budget == 20) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rel.bias),
+            max_c = max(rel.bias),
+            upper = quantile(rel.bias, 0.95),
+            low = quantile(rel.bias, 0.05),
+            min = min(rel.bias))
+
+budget20_comp
+
+budget40_comp <- bias_states %>% 
+  filter(Budget == 40) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rel.bias),
+            max_c = max(rel.bias),
+            upper = quantile(rel.bias, 0.95),
+            low = quantile(rel.bias, 0.05),
+            min = min(rel.bias))
+
+budget40_comp
+
+budget60_comp <- bias_states %>% 
+  filter(Budget == 60) %>% 
+  group_by(loc2) %>%
+  summarise(mean_c = mean(rel.bias),
+            max_c = max(rel.bias),
+            upper = quantile(rel.bias, 0.95),
+            low = quantile(rel.bias, 0.01),
+            min = round(min(rel.bias),4))
+
+budget60_comp
 ##### Bias state- time ####
 bias_state_years <- bias_state %>%
   group_by(location, year, rates, rates2, Budget) %>%

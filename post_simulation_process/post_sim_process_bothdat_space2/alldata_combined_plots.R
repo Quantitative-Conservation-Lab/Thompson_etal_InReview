@@ -860,3 +860,5 @@ fwrite(bias_state,file_name)
 file_name = paste(path, 'bias_params.csv',sep = '/')
 fwrite(bias_params,file_name)
 
+file_name = paste(path, 'rmse_state.csv',sep = '/')
+fwrite(state_est_week5,file_name)
