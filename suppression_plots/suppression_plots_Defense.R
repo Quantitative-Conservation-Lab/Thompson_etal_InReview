@@ -11,7 +11,7 @@ cols <- brewer.pal(12, "Paired")
 colors <- c(cols[1:4], cols[9:10])
 
 ##### plots space 1 ####
-path <- 'E:\\Chapter3\\results'
+path <- 'D:\\Chapter3\\results'
 file_name = paste(path, 'suppression_data2.csv',sep = '/')
 suppression_alls1 <- fread(file_name)
 
@@ -65,7 +65,7 @@ p1 <- ggplot(suppression_alls1)+
 p1
 
 ##### plots space 2 ####
-path <- 'E:\\Chapter3\\results-space2'
+path <- 'D:\\Chapter3\\results-space2'
 file_name = paste(path, 'suppression_data2.csv',sep = '/')
 suppression_alls2 <- fread(file_name)
 
