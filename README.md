@@ -27,7 +27,5 @@ The repository is organized as follows.
 * Jags txt files are as follows:
   + Flower_datM_est1_explore = year 1 and 2 estimitation model during the period where we 'explore' and learn about the relationship between detection probability and hours spent monitoring, using only agency data
   + Flower_datM_est2_explore = year 3 estimitation model during the period where we 'explore' and learn about the relationship between detection probability and hours spent monitoring, using only agency data
-  + Flower_datM_est1_explore = year 1 and 2 estimitation model during the period where we 'explore' and learn about the relationship between detection probability and hours spent monitoring, using only agency data
-  + Flower_datM_est2_explore = year 3 estimitation model during the period where we 'explore' and learn about the relationship between detection probability and hours spent monitoring, using only agency data
   + Flower_datM_est2.txt = year 4+ estimation model, using only agency data
   + Flower_datB_est2.txt = year 4+ estimation model, using agency and community science data
