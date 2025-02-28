@@ -1,0 +1,13 @@
+When recreating the scripts. Change the budget level and detection and eradication probabilities at the onset. The default in the scripts are 20 budget hours with 0.5 detection probability with 0.75 eradication probability. 
+
+The files in this folder include the following: 
+1. Estimation: Includes estimation model code. Folders labeled 'Bothdata' indicate scripts where community science data is integrated. Folders labeled 'MultistateDNDdata' indicate that only agency data is included. Folders indicated with 'space2' are analysis for an emergent invasion.
+2. No-removal: Include no removal scenario scripts
+3. Parameters: parametersets_R: files 'a' and 'b' simulate parameter sets for the study
+
+Jags txt files are as follows:
+
+Flower_datM_est1_explore = year 1 and 2 estimitation model during the period where we 'explore' and learn about the relationship between detection probability and hours spent monitoring, using only agency data
+Flower_datM_est2_explore = year 3 estimitation model during the period where we 'explore' and learn about the relationship between detection probability and hours spent monitoring, using only agency data
+Flower_datM_est2.txt = year 4+ estimation model, using only agency data
+Flower_datB_est2.txt = year 4+ estimation model, using agency and community science data
