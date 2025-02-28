@@ -16,19 +16,19 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load(here::here(data, "parameters_data.RData"))
 
 p.goal <- 0.5
 eps.goal <- 0.75
 
 ##### Path to save data ####
-path <- 'E:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75'
-res <- 'E:/Chapter3/densplots/results-datboth/budget20/hstatebins_S5_R75'
+path <- 'pathname'
+res <- 'pathname'
 
 n.resource <- 20 #total hours per week
 
 #year 3 data path
-y3 <- 'E:\\Chapter3\\results\\first3yrs_20'
+y3 <- 'first3years_results'
 
 #citizen science detection/non-detection data
 # B0.pl.D <- rnorm(200,0, 0.5)
@@ -36,8 +36,8 @@ y3 <- 'E:\\Chapter3\\results\\first3yrs_20'
 # saveRDS(B0.pl.D, file = "B0plD.rds")
 # saveRDS(B0.ph.D, file = "B0phD.rds")
 
-B0.pl.D <- readRDS("B0plD.rds")
-B0.ph.D <- readRDS("B0phD.rds")
+B0.pl.D <- readRDS(here::here("B0plD.rds"))
+B0.ph.D <- readRDS(here::here("B0phD.rds"))
 
 B0.pl.D <- B0.pl.D[1:100]
 B0.ph.D <- B0.ph.D[1:100]
@@ -1055,7 +1055,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### Save data ####
-path <- 'E:\\Chapter3\\results-datboth\\budget20\\hstatebins_S5_R75'
+path <- 'pathname'
 
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[1]], res.params[[2]], res.params[[3]], res.params[[4]],

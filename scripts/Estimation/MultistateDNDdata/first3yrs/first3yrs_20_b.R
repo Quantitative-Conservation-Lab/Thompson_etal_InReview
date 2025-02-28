@@ -17,12 +17,12 @@ library(readr)
 #------------------------------------------------------------------------------#
 #### Path to save data ####
 #### Change name ####
-path <- 'E:\\Chapter3\\results\\first3yrs_20_b'
+path <- 'pathname_b'
 
-res <- 'E:/Chapter3/densplots/first3yrs_20_b'
+res <- 'pathname_b'
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data_b.RData")
+load(here::here(data, "parameters_data_b.RData"))
 #rule = by highest estimated state
 n.resource <- 20 #total hours per week
 
@@ -35,7 +35,7 @@ n.weeks <- 5 #number of weeks
 n.occs <- 2 #number of occasions for occupancy data collection
 n.states <- 3 #number of states
 
-hours.dat <- readRDS("hours_dat.rds")
+hours.dat <- readRDS(here::here(data, "hours_dat.rds"))
 
 max.spent <- array(NA, dim = c(n.sites,n.weeks, n.years, n.sims))
 
@@ -894,7 +894,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### SAVE SOME data ####
-path <- 'E:\\Chapter3\\results\\first3yrs_20_b'
+path <- 'pathname_b'
 
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[2]], res.params[[3]])

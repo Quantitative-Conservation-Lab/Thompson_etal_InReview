@@ -16,19 +16,19 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data.RData")
+load(here::here(data,"parameters_data.RData"))
 
 p.goal <- 0.5
 eps.goal <- 0.75
 
 ##### Path to save data ####
-path <- here::here("results-datboth", "budget20", "smartepicenter_S5_R75")
-res <- here::here("results-datboth", "budget20", "smartepicenter_S5_R75", "densplots")
+path <- 'pathname'
+res <- 'pathname'
 
 n.resource <- 20 #total hours per week
 
 #year 3 data path
-y3 <- here::here("results", "first3yrs_20") 
+y3 <- 'first3years_results_b'
 
 #citizen science detection/non-detection data
 # B0.pl.D <- rnorm(200,0, 0.5)
@@ -36,8 +36,8 @@ y3 <- here::here("results", "first3yrs_20")
 # saveRDS(B0.pl.D, file = "B0plD.rds")
 # saveRDS(B0.ph.D, file = "B0phD.rds")
 
-B0.pl.D <- readRDS("B0plD.rds")
-B0.ph.D <- readRDS("B0phD.rds")
+B0.pl.D <- readRDS(here::here(data,"B0plD.rds"))
+B0.ph.D <- readRDS(here::here(data,"B0phD.rds"))
 
 B0.pl.D <- B0.pl.D[1:100]
 B0.ph.D <- B0.ph.D[1:100]

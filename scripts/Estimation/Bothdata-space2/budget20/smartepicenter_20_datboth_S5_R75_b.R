@@ -16,19 +16,19 @@ library(readr)
 
 #------------------------------------------------------------------------------#
 #### Management Strategy ####
-load("parameters_data_b.RData")
+load(here::here(data, "parameters_data_b.RData"))
 
 
 p.goal <- 0.5
 eps.goal <- 0.75
 
 ##### Path to save data ####
-path <- here::here("results-datboth-space2", "budget20", "smartepicenter_S5_R75_b")
-res <- here::here("results-datboth-space2", "budget20", "smartepicenter_S5_R75_b", "densplots")
+path <- "pathname"
+res <- "pathname"
 n.resource <- 20 #total hours per week
 
 #year 3 data path
-y3 <- here::here("results", "space2", "first3yrs_20_b") 
+y3 <- "year3results_b"
 
 #citizen science detection/non-detection data
 # B0.pl.D <- rnorm(200,0, 0.5)
@@ -1045,7 +1045,7 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 
 #### Save data ####
-path <- here::here("results-datboth-space2", "budget20", "smartepicenter_S5_R75_b")
+path <- "pathname"
 
 ###### 1. Estimated parameters #####
 res.par.df <- rbind(res.params[[1]], res.params[[2]], res.params[[3]], res.params[[4]],
