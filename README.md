@@ -22,7 +22,7 @@ The repository is organized as follows.
   + Raw result files can be obtained by emailing the first author
 
 
-##Required Packages and Versions Used
+## Required Packages and Versions Used
 LaplacesDemon_16.1.6
 rjags_4-15
 R2jags_0.8-5
