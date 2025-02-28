@@ -24,12 +24,19 @@ The repository is organized as follows.
 
 ## Required Packages and Versions Used
 LaplacesDemon_16.1.6
+
 rjags_4-15
+
 R2jags_0.8-5
+
 MCMCvis_0.16.3
+
 tidyverse_2.0.0
+
 strex_2.0.0
+
 plyr_1.8.9
+
 readr_2.1.5
 
 ## Details of Article
